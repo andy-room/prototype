@@ -203,11 +203,11 @@ body[data-view="mobile"] .stage{display:none}
   <div class="toolbar__title">iLearn 프로토타입</div>
   <div class="seg" role="group" aria-label="UI개선 선택">
     <button class="seg__btn" data-set-type="1" aria-pressed="true">UI개선 1 <small>우상단 아이콘</small></button>
+    <button class="seg__btn" data-set-type="4" aria-pressed="false">UI개선 1 모바일 <small>375px</small></button>
     <button class="seg__btn" data-set-type="2" aria-pressed="false">UI개선 2 <small>탭 안 화상·채팅</small></button>
     <button class="seg__btn" data-set-type="3" aria-pressed="false">UI개선 3 <small>우상단 화상·채팅 버튼</small></button>
-    <button class="seg__btn" data-set-type="4" aria-pressed="false">UI개선 1 모바일 <small>375px</small></button>
   </div>
-  <div class="toolbar__hint">키보드 1 · 2 · 3 · 4 로 전환</div>
+  <div class="toolbar__hint">키보드 1 · 2 · 3 · M(모바일) 으로 전환</div>
 </header>
 
 <div class="mobile">
@@ -358,7 +358,8 @@ body[data-view="mobile"] .stage{display:none}
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') { setMore(false); return; }
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4') setType(e.key);
+    if (e.key === '1' || e.key === '2' || e.key === '3') setType(e.key);       // 숫자 = UI개선 번호
+    else if (e.code === 'KeyM' || e.key === '4') setType('4');                   // M = UI개선 1 모바일 (한글 입력 상태 'ㅡ'도 포함)
   });
 
   // 프레임(데스크톱 2500×1200 / 모바일 375×812)을 툴바 아래 영역에 맞춰 비율 유지 축소(최대 1배), 가운데 정렬
