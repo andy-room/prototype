@@ -5,4 +5,4 @@
 | 폴더 | 내용 | 보기 |
 |---|---|---|
 | [ilearn-type-compare](ilearn-type-compare/) | iLearn 채팅·화상 진입 방식 — 현재 버전(LABS3.0) vs UI개선 1(+모바일)/2/3 비교 (상단 탭 또는 키보드 0·1·2·3·M으로 전환) | https://andy-room.github.io/prototype/ilearn-type-compare/ |
-| [ilearn-ui1](ilearn-ui1/) | iLearn 현재 버전(LABS3.0) vs UI개선 1 (+모바일) — 상단 탭 또는 키보드 0·1·M으로 전환 | https://andy-room.github.io/prototype/ilearn-ui1/ |
+| [ilearn-ui1](ilearn-ui1/) | iLearn 현재 버전(LABS3.0) vs 개선안 (+모바일) — 상단 탭 또는 키보드 0·1·M으로 전환 | https://andy-room.github.io/prototype/ilearn-ui1/ |

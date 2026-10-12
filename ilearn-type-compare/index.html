@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>iLearn UI개선 비교</title><style>
 :root{
-  --toolbar-h:56px;
+  --toolbar-h:64px;
   --page-bg:#E9EAEC;
-  --bar-bg:#FFFFFF;
+  --bar-bg:#171719;
   --bar-line:#E1E2E6;
   --text:#171719;
   --text-2:#70737C;
@@ -20,26 +20,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 svg{display:block}
 img{display:block;user-select:none;-webkit-user-drag:none}
 
-/* ===================== UI개선 전환 툴바 ===================== */
+/* ===================== 화면 전환 툴바 — 어두운 바 + 파란 선택 탭으로 눈에 잘 띄게 ===================== */
 .toolbar{
   position:fixed;left:0;right:0;top:0;height:var(--toolbar-h);z-index:10;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:0 16px;background:var(--bar-bg);border-bottom:1px solid var(--bar-line);
+  padding:0 20px;background:var(--bar-bg);box-shadow:0 2px 12px rgba(0,0,0,.18);
 }
-.toolbar__title{font-size:14px;font-weight:700;white-space:nowrap}
-.toolbar__hint{font-size:12px;color:var(--text-2);white-space:nowrap}
-.seg{display:flex;gap:2px;padding:3px;border-radius:10px;background:var(--seg-bg)}
+.toolbar__title{font-size:15px;font-weight:700;color:#FFFFFF;white-space:nowrap}
+.toolbar__hint{font-size:13px;color:rgba(255,255,255,.72);white-space:nowrap}
+.toolbar__hint b{color:#FFFFFF;font-weight:700}
+.seg{display:flex;gap:6px;padding:5px;border-radius:12px;background:rgba(255,255,255,.1)}
 .seg__btn{
-  display:flex;align-items:baseline;gap:6px;height:34px;padding:0 14px;border-radius:8px;
-  font-size:13px;font-weight:600;color:var(--text-2);white-space:nowrap;
+  display:flex;align-items:center;gap:7px;height:42px;padding:0 18px;border-radius:9px;
+  font-size:15px;font-weight:700;color:rgba(255,255,255,.78);white-space:nowrap;
   transition:background .15s ease,color .15s ease,box-shadow .15s ease;
 }
-.seg__btn small{font-size:11.5px;font-weight:500}
-.seg__btn[aria-pressed="true"]{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(23,23,25,.12)}
-.seg__btn:focus-visible{outline:2px solid #6C5CE7;outline-offset:1px}
-@media (max-width:1100px){ .toolbar__hint{display:none} }
-@media (max-width:860px){ .seg__btn small{display:none} }
-@media (max-width:480px){ .toolbar__title{display:none} .toolbar{justify-content:center} }
+.seg__btn small{font-size:12.5px;font-weight:500;opacity:.8}
+.seg__btn:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.seg__btn[aria-pressed="true"]{background:#0066FF;color:#FFFFFF;box-shadow:0 2px 8px rgba(0,102,255,.45)}
+.seg__btn:focus-visible{outline:2px solid #99C2FF;outline-offset:2px}
+@media (max-width:1400px){ .toolbar__hint{display:none} }
+@media (max-width:1100px){ .seg__btn small{display:none} }
+@media (max-width:520px){ .toolbar__title{display:none} .toolbar{justify-content:center} }
 
 /* ===================== STAGE — Figma 프레임(2500×1200)을 창 크기에 맞춰 축소 ===================== */
 .stage{
@@ -227,7 +229,7 @@ body[data-view="mobile"] .stage{display:none}
     <button class="seg__btn" data-set-type="2" aria-pressed="false">UI개선 2 <small>탭 안 화상·채팅</small></button>
     <button class="seg__btn" data-set-type="3" aria-pressed="false">UI개선 3 <small>우상단 화상·채팅 버튼</small></button>
   </div>
-  <div class="toolbar__hint">키보드 0(현재) · 1 · 2 · 3 · M(모바일) 으로 전환</div>
+  <div class="toolbar__hint"><b>탭을 눌러 화면 전환</b> · 키보드 0 · 1 · 2 · 3 · M</div>
 </header>
 
 <div class="mobile">
