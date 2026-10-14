@@ -1,6 +1,6 @@
 # Blur: Bubbles & Carousel Motion Style
 
-Motion style spec taken from the Jitter template "Blur: Bubbles & Carousel". It lives in its own folder so it does not overlap with the Petals style in the repo root. Use it as a reference to build your own motion from your own images or files. The machine-readable values are in motion-style.json in this folder.
+Motion style spec taken from the Jitter template "Blur: Bubbles & Carousel". Use it as a reference to build your own motion from your own images or files. The machine-readable values are in motion-style.json in this folder.
 
 ## Look
 

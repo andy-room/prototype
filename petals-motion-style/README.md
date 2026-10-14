@@ -1,40 +1,16 @@
-# Petals Motion Style
+# Motion Styles (from Jitter templates)
 
-Motion style spec taken from the Jitter template "Gradients: Petals". Use it as a reference to build your own motion from your own images or files. The machine-readable values are in motion-style.json.
+Jitter 템플릿에서 읽어낸 모션 스타일 스펙 모음. 각 폴더에 사람이 읽는 `README.md`와 기계가 읽는 `motion-style.json`이 한 쌍으로 들어 있다. 새 템플릿을 추가할 때는 같은 구조로 폴더를 하나 더 만든다.
 
-## Look
+| 폴더 | 템플릿 | 한 줄 요약 |
+|---|---|---|
+| [petals](petals/) | Gradients: Petals | 네이비 배경 위 그라데이션 원 6개가 Exclusion 블렌드로 겹치며 3비트로 스케일·회전, 필름 그레인 오버레이. 4.55s, 텍스트 없음 |
+| [blur-bubbles-carousel](blur-bubbles-carousel/) | Blur: Bubbles & Carousel | 블랙 캔버스에 사진 버블 링이 블러와 함께 스핀 인, 타이틀 블러 인/아웃, 히어로 버블 줌 → 세로 캐러셀 → 블러 아웃. 14s, Poppins |
 
-Dark navy canvas (#0C1533) with six large gradient circles ("coins"). The coins use Exclusion blending, so where they overlap they produce rainbow colors that are not in the source gradients. A 16mm film grain video sits on top with Overlay blending. There is no text in this template.
+## 사용법
 
-## Core recipe
+AI 어시스턴트(또는 본인)에게 해당 폴더의 `motion-style.json`을 넘기고 "이 스펙의 구조·이징·타이밍을 유지하되 내 에셋으로 교체해 모션을 만들어줘"라고 요청한다. 구체적인 브리프 예시는 각 폴더 README의 "How to use with your own assets" 참고.
 
-1. Canvas 1920x1080, 4.55s, background #0C1533. Also make 9:16 and 4:5 versions.
-2. 2. Put 6 circles (about 246px) inside one group called Comp. Set the blend of each circle group to Exclusion.
-   3. 3. Fill each circle with a 4-stop radial gradient from motion-style.json (rose, ultramarine, sunset_coral, azure, jade). Rose is used twice.
-      4. 4. Add a crescent shape on each circle with a linear gradient stroke (#D1FFEE, #4B0BFF, #FFD8D8).
-         5. 5. Overlay grain-16mm (or any film grain video), rotation 20 degrees, Overlay blend, 100 percent, for the full duration.
-           
-            6. ## Motion
-           
-            7. The key trick: the Comp group starts at 250 percent scale so the circles overlap heavily, then scales down while rotating.
-           
-            8. Beat 1 (0.00s, easing A): Comp rotate to 135 degrees and scale 250 to 100 percent over 1.45s. Each coin scales 90 to 120 percent and rotates to -45 degrees over 1.45s. Gradients shift position and angle (1.32s), shapes morph to circles.
-           
-            9. Beat 2 (about 1.19s, easing A): Comp rotate to 135 degrees and scale to 150 percent over 1.77s. Coins scale to 80 percent over 1.45s. Stroke weight 30 and changes from purple to light blue linear.
-           
-            10. Beat 3 (about 2.73s, easing B): Comp scale to 256 percent and rotate to 149 degrees over 1.84s. Coins scale to 91 percent over 1.71s.
-           
-            11. Easing A is cubic-bezier(0.80, 0.00, 0.42, 1.00). Easing B is Jitter "Smooth" (ease in out, strength 50).
-           
-            12. Beat 2 and 3 start times were read from timeline bars, so they are approximate.
-           
-            13. ## How to use with your own assets
-           
-            14. Give an AI assistant or yourself this brief: "Using motion-style.json in this repo, build a motion for [my image or file]. Keep the navy background, exclusion-blended gradient circles, the 3-beat scale-and-rotate structure, easing A for the main moves and film grain overlay. Replace the circles or colors with elements from my asset, and sample 4 colors from my image to make the radial gradients."
-           
-            15. Ideas: swap the circles for cutouts of your logo or product, build the gradients from colors sampled from your own image, change durations but keep the easing, or add your own text (this template has none, so typography is up to you).
-           
-            16. ## Source
-           
-            17. Jitter template "Gradients: Petals" (jitter.video). Values were read from the template editor. Respect the template's license and terms when publishing derived work.
-            18. 
+## 출처
+
+모든 값은 jitter.video 템플릿 편집기에서 읽었으며, 타임라인 바에서 읽은 시작 시간은 근사치다. 파생물 공개 시 템플릿 라이선스를 확인할 것.
