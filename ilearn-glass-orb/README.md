@@ -9,5 +9,6 @@
 
 ## 조정 포인트
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
+- 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 그림자: `--sh-y`, `--sh-blur`, `--sh-a`
-- 모션 주기: `--float-d`, `--float-y`, `--ping-d`(글린트 주기)
+- 모션 주기: `--float-d`, `--float-y`, `--ping-d`(링 주기), `--swirl-d`(안개 순환 주기)
