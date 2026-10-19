@@ -126,7 +126,7 @@
   /* 마법 구슬: 안개 셋이 가로·세로를 서로 다른 주기로 오가며(리사주 궤적) 모양도 따로 일렁인다.
      주기 비율이 정수배가 아니라 겹치는 모양이 매번 달라 불규칙하게 순환하는 것처럼 보이고,
      크기·궤적이 캡슐 너비에 비례해 펼친 캡슐과 접힌 구슬 모두 같은 느낌을 낸다 */
-  .swirl{position:absolute;border-radius:50%;pointer-events:none;mix-blend-mode:screen;filter:blur(5px);transition:opacity .35s .05s}
+  .swirl{position:absolute;border-radius:50%;pointer-events:none;mix-blend-mode:screen;filter:blur(5px)}
   .swirl.s1{left:-8%;top:12%;width:66%;height:110%;background:radial-gradient(closest-side,var(--mist-a),transparent);
     animation:mist-x calc(var(--swirl-d)*.55) ease-in-out infinite alternate,mist-y calc(var(--swirl-d)*.37) ease-in-out infinite alternate,mist-s calc(var(--swirl-d)*.71) ease-in-out infinite alternate}
   .swirl.s2{left:42%;top:-32%;width:62%;height:104%;background:radial-gradient(closest-side,var(--mist-b),transparent);
@@ -136,21 +136,14 @@
   @keyframes mist-x{from{translate:-28% 0}to{translate:28% 0}}
   @keyframes mist-y{from{transform:translateY(-20%)}to{transform:translateY(20%)}}
   @keyframes mist-s{from{scale:.82 1.12}to{scale:1.18 .88}}
-  /* 문구가 펼쳐진 동안은 플랫하게 — 톤 색 평면(--flat-bg)으로 덮고 안개는 멈추며,
-     유리 하이라이트·입체 음영은 숨긴다. 접히면 덮개가 걷히고 유리 구슬로 돌아온다 */
-  .calm{position:absolute;inset:0;pointer-events:none;background:var(--flat-bg,linear-gradient(100deg,var(--orb-c1,#8a6cf7),var(--orb-c0,#5a3ad9)));
-    opacity:0;transition:opacity .35s .05s}
-  .orb[data-open="true"] .calm{opacity:1;transition:opacity .3s}
-  .orb[data-open="true"] .swirl{animation-play-state:paused}
+  /* 상단 유리 광택 — 접힌 구슬에서만 보이고, 문구가 펼쳐진 캡슐에서는 숨긴다
+     (배경색·안개·입체 음영은 두 상태가 같은 결로 공유) */
   .glass::after{content:"";position:absolute;left:18%;top:9%;width:46%;height:26%;border-radius:50%;
     background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,0));filter:blur(.6px);transition:opacity .3s .12s}
   .orb[data-open="true"] .glass::after{opacity:0;transition:opacity .2s}
   /* 3) 배경 분리: 흰 테두리 — 색이 겹치는 자리에서 윤곽을 끊어 준다 */
   .rim{position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-    box-shadow:inset 0 0 0 1px var(--hairline,rgba(255,255,255,.35)),0 0 0 1.25px rgba(255,255,255,var(--ring-a)),0 0 0 1.75px rgba(40,20,120,calc(var(--ring-a)*.25))}
-  /* 구체 입체 음영 — 접힌 구슬에서만 보인다 */
-  .rim::before{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:var(--glass-shade);transition:opacity .3s .12s}
-  .orb[data-open="true"] .rim::before{opacity:0;transition:opacity .2s}
+    box-shadow:var(--glass-shade),inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 1.25px rgba(255,255,255,var(--ring-a)),0 0 0 1.75px rgba(40,20,120,calc(var(--ring-a)*.25))}
   /* 캡슐 전체가 아이런 열기 버튼이고, X 만 그 위에 따로 얹힌다 */
   .hit{position:absolute;inset:0;z-index:1;margin:0;padding:0;border:0;border-radius:inherit;background:none;cursor:pointer;font:inherit}
   .hit:focus-visible{outline:none}
@@ -178,13 +171,12 @@
     transition:opacity .14s cubic-bezier(.55,0,1,.45),translate .16s cubic-bezier(.55,0,1,.45),visibility 0s .45s}
   .orb[data-open="false"] .close{scale:.4;transition:background .2s,scale .12s cubic-bezier(.55,0,1,.45)}
 
-  .orb-wrap[data-tone="purple"]{--orb-c0:#5a3ad9;--orb-c1:#8a6cf7;--orb-c2:#c0acff;--orb-shadow:rgba(60,30,170,var(--sh-a));--mist-a:rgba(255,186,248,.72);--mist-b:rgba(128,204,255,.66);--mist-deep:rgba(38,12,138,.6);--flat-bg:linear-gradient(100deg,#7b5df2,#6747e3)}
-  .orb-wrap[data-tone="iris"]{--orb-c0:#3a2fcf;--orb-c1:#6a5cf5;--orb-c2:#9fd0ff;--orb-shadow:rgba(30,40,160,var(--sh-a));--mist-a:rgba(150,236,255,.72);--mist-b:rgba(214,168,255,.62);--mist-deep:rgba(18,16,128,.6);--flat-bg:linear-gradient(100deg,#5a4ef0,#4537d9)}
+  .orb-wrap[data-tone="purple"]{--orb-c0:#5a3ad9;--orb-c1:#8a6cf7;--orb-c2:#c0acff;--orb-shadow:rgba(60,30,170,var(--sh-a));--mist-a:rgba(255,186,248,.72);--mist-b:rgba(128,204,255,.66);--mist-deep:rgba(38,12,138,.6)}
+  .orb-wrap[data-tone="iris"]{--orb-c0:#3a2fcf;--orb-c1:#6a5cf5;--orb-c2:#9fd0ff;--orb-shadow:rgba(30,40,160,var(--sh-a));--mist-a:rgba(150,236,255,.72);--mist-b:rgba(214,168,255,.62);--mist-deep:rgba(18,16,128,.6)}
   .orb-wrap[data-tone="frost"]{--orb-c0:#dcd3ff;--orb-c1:#f1ecff;--orb-c2:#ffffff;--orb-shadow:rgba(40,25,140,var(--sh-a));--mist-a:rgba(255,140,215,.62);--mist-b:rgba(90,175,255,.66);--mist-deep:rgba(130,90,250,.42);
     --glass-shade:inset 0 -8px 14px rgba(90,60,200,.18),inset 0 2px 4px rgba(255,255,255,.9);
     --sym:#6a48ee;
-    --msg-ink:#33228f;--msg-shadow:none;--close-bg:rgba(106,72,238,.1);--close-bg-hover:rgba(106,72,238,.2);
-    --flat-bg:linear-gradient(100deg,#f4f0ff,#e9e2ff);--hairline:rgba(106,72,238,.14)}
+    --msg-ink:#33228f;--msg-shadow:none;--close-bg:rgba(106,72,238,.1);--close-bg-hover:rgba(106,72,238,.2)}
   /* 흰 유리는 바탕이 밝아 screen 이 안 보이므로 안개를 그대로 얹고, 색은 진하게·블러는 줄여 흐름이 보이게 한다 */
   .orb-wrap[data-tone="frost"] .swirl{mix-blend-mode:normal;filter:blur(4px)}
   .orb-wrap[data-tone="frost"] .swirl.s3{filter:blur(6px)}
@@ -273,7 +265,7 @@
       <div class="orb-wrap" id="orbWrap" data-tone="purple">
         <span class="halo"></span>
         <div class="orb" id="orb" data-open="true">
-          <span class="glass"><i class="swirl s1"></i><i class="swirl s2"></i><i class="swirl s3"></i><i class="calm"></i></span>
+          <span class="glass"><i class="swirl s1"></i><i class="swirl s2"></i><i class="swirl s3"></i></span>
           <span class="rim"></span>
           <button class="hit" aria-label="AI Tutor iLearn 열기" aria-describedby="ilearnMsg"></button>
           <span class="sym" aria-hidden="true"><i class="icon"></i></span>
