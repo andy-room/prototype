@@ -10,7 +10,7 @@
 ## 조정 포인트
 - 플로팅 전체 크기: `--ilearn-scale` (현재 .88 — 구슬 64px 기준 약 56px, 안내 문구 15px → 약 13px)
 - 안내 문구 접기·펼치기: `.orb[data-open]` (`.tail` 의 `grid-template-columns` 1fr ↔ 0fr)
-  - 접힘: 문구·X ease-in 으로 빠짐 → 캡슐 .62s `cubic-bezier(.86,0,.07,1)` → 착지 `@keyframes land`
+  - 접힘: 문구·X ease-in 으로 빠짐 → 캡슐 .4s `cubic-bezier(.86,0,.07,1)` (전체 약 .45s)
   - 펼침: 캡슐 .6s `cubic-bezier(.16,1,.3,1)` → 문구가 뒤따라 나타남
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
