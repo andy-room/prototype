@@ -17,6 +17,7 @@
     --shadow:0 10px 30px rgba(31,36,80,.14);
     --font:'Noto Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
     --orb:64px;
+    --ilearn-scale:.8; /* 아이런 플로팅 전체 크기(구슬·말풍선·그림자 함께), 오른쪽 아래 기준 */
     /* 주목도 파라미터 (패널에서 조정) */
     --halo-a:0; --ring-a:0; --sh-y:10px; --sh-blur:18px; --sh-a:.42;
     --float-d:4.6s; --float-y:-4px; --ping-d:5.2s; --ping-peak:.7; --ping-scale:1.75; --swirl-d:8s; --turn-d:9s;
@@ -94,7 +95,7 @@
   .stage[data-ctx="sub"] .quick .recent{background:var(--surface);color:var(--ink-2);font-weight:400}
 
   /* ── 아이런 플로팅 버튼 ── */
-  .ilearn{position:absolute;right:22px;bottom:24px;display:flex;align-items:center;gap:12px;z-index:5}
+  .ilearn{position:absolute;right:22px;bottom:24px;display:flex;align-items:center;gap:12px;z-index:5;scale:var(--ilearn-scale);transform-origin:100% 100%}
   .bubble{background:var(--bubble);color:var(--bubble-ink);border-radius:12px;padding:12px 16px;font-weight:700;font-size:15px;letter-spacing:-.01em;box-shadow:var(--shadow);position:relative;white-space:nowrap}
   .bubble::after{content:"";position:absolute;right:-6px;top:50%;width:12px;height:12px;background:var(--bubble);transform:translateY(-50%) rotate(45deg);border-radius:2px}
   .bubble[hidden]{display:none}

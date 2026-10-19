@@ -8,6 +8,7 @@
 - 최종 적용 시 심볼은 SVG 원본으로 교체 권장 (같은 마스크 자리에 파일만 교체)
 
 ## 조정 포인트
+- 플로팅 전체 크기: `--ilearn-scale` (현재 .8 — 구슬 64px 기준 약 51px, 말풍선 글자 15px → 12px)
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 그림자: `--sh-y`, `--sh-blur`, `--sh-a`
