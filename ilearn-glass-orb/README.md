@@ -9,10 +9,11 @@
 
 ## 조정 포인트
 - 플로팅 전체 크기: `--ilearn-scale` (현재 .88 — 구슬 64px 기준 약 56px, 안내 문구 15px → 약 13px)
-- 안내 문구 접기·펼치기: `.orb[data-open]` (`.tail` 의 `grid-template-columns` 1fr ↔ 0fr, .55s)
+- 안내 문구 접기·펼치기: `.orb[data-open]` (`.tail` 의 `grid-template-columns` 1fr ↔ 0fr)
+  - 접힘: 문구·X ease-in 으로 빠짐 → 캡슐 .62s `cubic-bezier(.86,0,.07,1)` → 착지 `@keyframes land`
+  - 펼침: 캡슐 .6s `cubic-bezier(.16,1,.3,1)` → 문구가 뒤따라 나타남
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 구슬 그림자: `--sh-y`, `--sh-blur`, `--sh-a`
-- 로고 플랫 그림자: `.sym` 의 `drop-shadow(2.5px 2.5px 0 …)`, 색은 `--sym-shadow` (마스크 로고라 `.icon` 이 아니라 `.sym` 에 준다)
 - 둥실 부양 (`.stage[data-float]`): `--float-d`(부양 주기), `--float-y`(부양 높이)
 - 구슬 속 움직임 (`.stage[data-inner]`): `--swirl-d`(안개 순환 주기), `--turn-d`(심볼 선회 주기)
