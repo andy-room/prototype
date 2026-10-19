@@ -8,12 +8,15 @@
 - 배경색·안개 순환·입체 음영·그림자·부양은 펼친 캡슐과 접힌 구슬이 같은 결로 공유하고, 상단 유리 광택(`.glass::after`)만 접힌 구슬에서 보인다
 - 아이런 심볼은 Figma 「iLearn UI 리뉴얼」 컴포넌트의 logo 벡터(SVG)를 CSS 마스크(`--icon-mask`)로 사용 → 색은 `--sym` 변수로 제어
 
+처음 열었을 때 기본 설정: 서브(흰 바탕) · 흰 유리 · 흰 테두리 켬 · 부양 그림자 가벼움 · 둥실 부양 은은 · 구슬 속 움직임 은은 · 안내 문구 펼침
+
 ## 조정 포인트
 - 플로팅 전체 크기: `--ilearn-scale` (현재 .88 — 구슬 64px 기준 약 56px, 안내 문구 15px → 약 13px)
 - 안내 문구 접기·펼치기: `.orb[data-open]` (`.tail` 의 `grid-template-columns` 1fr ↔ 0fr)
   - 접힘: 문구·X ease-in 으로 빠짐 → 캡슐 .4s `cubic-bezier(.86,0,.07,1)` (전체 약 .45s)
   - 펼침: 캡슐 .6s `cubic-bezier(.16,1,.3,1)` → 문구가 뒤따라 나타남
 - 접힌 구슬 마우스 오버 시 확대: `--hover-scale` (기본 1.08, .25s)
+- 유리(배경색·안개) 밝기: `--glass-bright` — 접힌 구슬 1 → 오버 1.06, 펼친 캡슐 1.06 → 오버 1.12
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 구슬 그림자: `--sh-y`, `--sh-blur`, `--sh-a`

@@ -20,7 +20,7 @@
     /* 아이런 심볼 — Figma 「iLearn UI 리뉴얼」 컴포넌트 > logo 벡터. 마스크로 써서 색은 --sym 으로 바꾼다 */
     --icon-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 37'%3E%3Cpath d='M4.3564 6.14806C5.65138 5.4059 7.1423 5.16462 8.58882 5.45782C8.5031 5.88388 8.45871 6.3191 8.45871 6.75279V20.9028C8.45871 22.0191 9.06028 23.0591 10.0307 23.618L22.3132 30.6899C22.8382 30.9938 23.4076 31.2229 24 31.3741C24.7562 31.5711 25.5261 31.6352 26.2823 31.5711L19.5778 35.4315C17.7042 36.5127 15.3775 36.5127 13.5039 35.4315L1.2261 28.3596C0.469927 27.9244 0 27.112 0 26.24V12.0884C0 10.204 0.889343 8.43106 2.36342 7.29185L4.3564 6.14653V6.14806ZM33.0909 10.9737V24.154C33.0909 26.0384 32.2062 27.8098 30.7367 28.9445L28.7345 30.0959C27.4839 30.8136 26.0374 31.0625 24.6307 30.8106V16.3093C24.6322 14.5944 23.7076 12.9971 22.2183 12.1404L10.7777 5.5525C10.2527 5.25013 9.68481 5.01954 9.09089 4.86836C8.36227 4.679 7.62141 4.61181 6.89126 4.66526L11.4757 1.98063L13.5085 0.810885C15.3821 -0.270295 17.7103 -0.270295 19.5824 0.810885L31.0229 7.39875C32.2995 8.13328 33.0909 9.50308 33.0909 10.9721V10.9737ZM32.6899 11.273L31.1944 10.9095C29.5427 10.5079 28.2523 9.2221 27.8498 7.57284L27.4854 6.08087L27.1211 7.57284C26.7186 9.22057 25.4297 10.5079 23.7765 10.9095L22.281 11.273L23.7765 11.6364C25.4282 12.038 26.7186 13.3239 27.1211 14.9731L27.4854 16.4651L27.8498 14.9731C28.2523 13.3254 29.5412 12.038 31.1944 11.6364L32.6899 11.273Z'/%3E%3Cpath d='M17.2711 13.294L17.5475 12.1594L17.8239 13.294C18.1293 14.5477 19.1081 15.5266 20.3618 15.832L21.4963 16.1084L20.3618 16.3848C19.1081 16.6902 18.1293 17.6691 17.8239 18.9228L17.5475 20.0575L17.2711 18.9228C16.9657 17.6691 15.9869 16.6902 14.7332 16.3848L13.5986 16.1084L14.7332 15.832C15.9869 15.5266 16.9657 14.5477 17.2711 13.294Z'/%3E%3Cpath d='M20.7293 20.0245L20.8574 19.5013L20.9856 20.0245C21.1259 20.6026 21.5789 21.0557 22.157 21.196L22.6802 21.3241L22.157 21.4523C21.5789 21.5926 21.1259 22.0456 20.9856 22.6238L20.8574 23.147L20.7293 22.6238C20.589 22.0456 20.136 21.5926 19.5579 21.4523L19.0347 21.3241L19.5579 21.196C20.136 21.0557 20.589 20.6026 20.7293 20.0245Z'/%3E%3C/svg%3E");
     /* 주목도 파라미터 (패널에서 조정) */
-    --halo-a:0; --ring-a:0; --sh-y:10px; --sh-blur:18px; --sh-a:.42;
+    --halo-a:0; --ring-a:.95; --sh-y:10px; --sh-blur:18px; --sh-a:.42;
     --float-d:4.6s; --float-y:-4px; --swirl-d:8s; --turn-d:9s;
   }
   @media (prefers-color-scheme:dark){
@@ -113,14 +113,17 @@
     transition:filter .35s,scale .25s cubic-bezier(.2,.8,.2,1);
     /* 2) 떠 있음: 그림자는 두 겹 — 바닥에 닿는 짙은 접촉 그림자 + 넓게 번지는 부양 그림자 */
     filter:drop-shadow(0 3px 4px rgba(20,10,70,calc(var(--sh-a)*.9))) drop-shadow(0 var(--sh-y) var(--sh-blur) var(--orb-shadow,rgba(60,40,180,var(--sh-a))))}
-  .orb:hover{filter:drop-shadow(0 4px 5px rgba(20,10,70,.5)) drop-shadow(0 calc(var(--sh-y) + 6px) calc(var(--sh-blur) + 10px) var(--orb-shadow,rgba(60,40,180,.6))) brightness(1.06)}
+  .orb:hover{filter:drop-shadow(0 4px 5px rgba(20,10,70,.5)) drop-shadow(0 calc(var(--sh-y) + 6px) calc(var(--sh-blur) + 10px) var(--orb-shadow,rgba(60,40,180,.6)))}
   .orb:has(.hit:focus-visible){outline:2px solid #fff;outline-offset:3px}
+  /* 유리(배경색·안개) 밝기 — 접힌 구슬 1 → 오버 1.06, 펼친 캡슐은 1.06 으로 시작 → 오버 1.12 */
+  .orb:hover,.orb[data-open="true"]{--glass-bright:1.06}
+  .orb[data-open="true"]:hover{--glass-bright:1.12}
   /* 접힌 구슬에 마우스를 올리면 살짝 커진다(터치 기기 제외) */
   @media (hover:hover){.orb[data-open="false"]:hover{scale:var(--hover-scale,1.08)}}
   .orb:has(.hit:active){scale:.96}
   @keyframes float{0%,100%{translate:0 0}50%{translate:0 var(--float-y)}}
   /* 유리 — 그라데이션은 ellipse 라 원에서는 예전 구슬과 같고, 캡슐에서는 가로로 늘어난다 */
-  .glass{position:absolute;inset:0;border-radius:inherit;overflow:hidden;
+  .glass{position:absolute;inset:0;border-radius:inherit;overflow:hidden;filter:brightness(var(--glass-bright,1));transition:filter .35s;
     background:
       radial-gradient(ellipse at 30% 24%,rgba(255,255,255,.55) 0,rgba(255,255,255,.08) 28%,transparent 42%),
       radial-gradient(ellipse at 70% 80%,var(--orb-c2,#b9a2ff) 0,transparent 55%),
@@ -206,24 +209,24 @@
     <p class="sub">유색 퀵메뉴 위에서 얼마나 눈에 들어오는지를 봅니다. 메인에는 경쟁 팝업을 일부러 두었습니다.</p>
 
     <div class="group"><span>보는 화면</span>
-      <div class="seg" role="group"><button data-ctx="main" aria-pressed="true">메인 (유색)</button><button data-ctx="sub" aria-pressed="false">서브 (흰 바탕)</button></div></div>
+      <div class="seg" role="group"><button data-ctx="main" aria-pressed="false">메인 (유색)</button><button data-ctx="sub" aria-pressed="true">서브 (흰 바탕)</button></div></div>
 
     <div class="group"><span>구체 색</span>
-      <div class="seg" role="group"><button data-tone="purple" aria-pressed="true">보라 (현행)</button><button data-tone="iris" aria-pressed="false">퀵메뉴 톤</button><button data-tone="frost" aria-pressed="false">흰 유리</button></div></div>
+      <div class="seg" role="group"><button data-tone="purple" aria-pressed="false">보라 (현행)</button><button data-tone="iris" aria-pressed="false">퀵메뉴 톤</button><button data-tone="frost" aria-pressed="true">흰 유리</button></div></div>
 
     <div class="group"><span>배경에서 떼어내기</span>
       <label class="row"><span>후광 (뒤에서 밝히기)</span><span class="switch"><input type="checkbox" id="halo"><i></i></span></label>
-      <label class="row"><span>흰 테두리</span><span class="switch"><input type="checkbox" id="ring"><i></i></span></label>
+      <label class="row"><span>흰 테두리</span><span class="switch"><input type="checkbox" id="ring" checked><i></i></span></label>
     </div>
 
     <div class="group"><span>부양 그림자</span>
-      <div class="seg" role="group"><button data-shadow="light" aria-pressed="false">가벼움</button><button data-shadow="deep" aria-pressed="true">깊음</button><button data-shadow="lift" aria-pressed="false">높이 띄움</button></div></div>
+      <div class="seg" role="group"><button data-shadow="light" aria-pressed="true">가벼움</button><button data-shadow="deep" aria-pressed="false">깊음</button><button data-shadow="lift" aria-pressed="false">높이 띄움</button></div></div>
 
     <div class="group"><span>둥실 부양</span>
-      <div class="seg" role="group"><button data-float="off" aria-pressed="false">정지</button><button data-float="soft" aria-pressed="false">은은</button><button data-float="bold" aria-pressed="true">또렷</button></div></div>
+      <div class="seg" role="group"><button data-float="off" aria-pressed="false">정지</button><button data-float="soft" aria-pressed="true">은은</button><button data-float="bold" aria-pressed="false">또렷</button></div></div>
 
     <div class="group"><span>구슬 속 움직임 (안개·심볼)</span>
-      <div class="seg" role="group"><button data-inner="off" aria-pressed="false">정지</button><button data-inner="soft" aria-pressed="false">은은</button><button data-inner="bold" aria-pressed="true">또렷</button></div></div>
+      <div class="seg" role="group"><button data-inner="off" aria-pressed="false">정지</button><button data-inner="soft" aria-pressed="true">은은</button><button data-inner="bold" aria-pressed="false">또렷</button></div></div>
 
     <label class="row"><span>안내 문구 펼침 (X로 접기)</span><span class="switch"><input type="checkbox" id="openMsg" checked><i></i></span></label>
 
@@ -235,7 +238,7 @@
     </p>
   </aside>
 
-  <section class="stage" id="stage" data-ctx="main" data-float="bold" data-inner="bold" data-shadow="deep">
+  <section class="stage" id="stage" data-ctx="sub" data-float="soft" data-inner="soft" data-shadow="light">
     <div class="lms" aria-hidden="true">
       <div class="topbar"><span class="logo">신한라이프 연수원</span><nav><b>홈</b><span>수강신청</span><span>나의 강의실</span><span>커뮤니티</span></nav></div>
       <div class="content">
@@ -264,7 +267,7 @@
     </div>
 
     <div class="ilearn">
-      <div class="orb-wrap" id="orbWrap" data-tone="purple">
+      <div class="orb-wrap" id="orbWrap" data-tone="frost">
         <span class="halo"></span>
         <div class="orb" id="orb" data-open="true">
           <span class="glass"><i class="swirl s1"></i><i class="swirl s2"></i><i class="swirl s3"></i></span>
