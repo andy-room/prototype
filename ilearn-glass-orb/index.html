@@ -163,21 +163,21 @@
   .icon{position:relative;display:block;width:60%;height:60%;background:var(--sym,#fff);
     -webkit-mask:var(--icon-mask) center/contain no-repeat;mask:var(--icon-mask) center/contain no-repeat}
   /* 안내 문구 + X — 열 너비를 1fr ↔ 0fr 로 바꿔 글자 폭만큼 정확히 접고 편다.
-     펼칠 때 캡슐이 .5s 동안 부드럽게 가속했다 감속하며(cubic-bezier(.4,0,.2,1)) 벌어지고, 문구는 벌어진 만큼 왼쪽부터 드러난다.
+     펼칠 때 캡슐이 접힐 때와 같은 가속도(cubic-bezier(.86,0,.07,1))로 .4s 동안 느리게 출발해 급히 벌어졌다가 감속하고, 문구는 벌어진 만큼 왼쪽부터 드러난다.
              드러나는 끝은 페이드(--reveal-fade)로 부드럽게 처리하고, 다 열리면 페이드를 걷어 X 까지 또렷하게 보인다
      접힐 때 ① 문구·X 가 가속하며(ease-in) 아이콘 쪽으로 빨려 들고
              ② 캡슐은 느리게 출발해 중간에 급히 줄었다가 끝에서 감속(easeInOutQuint) — 전체 약 .4s */
   @property --reveal-fade{syntax:"<length>";inherits:false;initial-value:0px}
   /* 문구 영역은 페이드 마스크로 별도 레이어가 되므로 열기 버튼(.hit) 위로 올리고, 클릭은 X 만 받는다(문구 클릭은 .hit 로 통과) */
-  .tail{position:relative;z-index:2;pointer-events:none;display:grid;grid-template-columns:1fr;transition:grid-template-columns .5s cubic-bezier(.4,0,.2,1)}
-  .tail-in{min-width:0;overflow:hidden;display:flex;align-items:center;white-space:nowrap;transition:opacity .18s;
+  .tail{position:relative;z-index:2;pointer-events:none;display:grid;grid-template-columns:1fr;transition:grid-template-columns .4s cubic-bezier(.86,0,.07,1)}
+  .tail-in{min-width:0;overflow:hidden;display:flex;align-items:center;white-space:nowrap;transition:opacity .14s;
     -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - var(--reveal-fade)),transparent);
     mask-image:linear-gradient(90deg,#000 calc(100% - var(--reveal-fade)),transparent)}
-  .orb[data-open="true"] .tail-in{animation:reveal .5s cubic-bezier(.4,0,.2,1) both}
+  .orb[data-open="true"] .tail-in{animation:reveal .4s linear both}
   @keyframes reveal{from{--reveal-fade:64px}75%{--reveal-fade:64px}to{--reveal-fade:0px}}
   .msg{font-size:calc(16px / var(--ilearn-scale));font-weight:500;letter-spacing:-.01em;color:var(--msg-ink,#fff);text-shadow:var(--msg-shadow,0 1px 2px rgba(30,12,100,.4))}
   .close{position:relative;z-index:2;pointer-events:auto;flex:none;display:grid;place-items:center;width:26px;height:26px;margin:0 16px 0 10px;padding:0;border:0;border-radius:50%;
-    background:var(--close-bg,rgba(255,255,255,.18));color:var(--msg-ink,#fff);cursor:pointer;transition:background .2s,opacity .22s,scale .4s .11s cubic-bezier(.16,1,.3,1)}
+    background:var(--close-bg,rgba(255,255,255,.18));color:var(--msg-ink,#fff);cursor:pointer;transition:background .2s,opacity .18s,scale .32s .09s cubic-bezier(.16,1,.3,1)}
   .close:hover{background:var(--close-bg-hover,rgba(255,255,255,.32))}
   .close:focus-visible{outline:2px solid currentColor;outline-offset:1px}
   .close svg{width:12px;height:12px}
