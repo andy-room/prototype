@@ -13,6 +13,7 @@
 - 안내 문구 접기·펼치기: `.orb[data-open]` (`.tail` 의 `grid-template-columns` 1fr ↔ 0fr)
   - 접힘: 문구·X ease-in 으로 빠짐 → 캡슐 .4s `cubic-bezier(.86,0,.07,1)` (전체 약 .45s)
   - 펼침: 캡슐 .6s `cubic-bezier(.16,1,.3,1)` → 문구가 뒤따라 나타남
+- 접힌 구슬 마우스 오버 시 확대: `--hover-scale` (기본 1.08, .25s)
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 구슬 그림자: `--sh-y`, `--sh-blur`, `--sh-a`

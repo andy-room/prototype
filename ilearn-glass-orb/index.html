@@ -110,11 +110,13 @@
   .orb{position:relative;display:flex;align-items:center;height:var(--orb);border-radius:calc(var(--orb)/2);
     isolation:isolate;perspective:300px;
     animation:float var(--float-d) ease-in-out infinite;
-    transition:filter .35s,scale .15s;
+    transition:filter .35s,scale .25s cubic-bezier(.2,.8,.2,1);
     /* 2) 떠 있음: 그림자는 두 겹 — 바닥에 닿는 짙은 접촉 그림자 + 넓게 번지는 부양 그림자 */
     filter:drop-shadow(0 3px 4px rgba(20,10,70,calc(var(--sh-a)*.9))) drop-shadow(0 var(--sh-y) var(--sh-blur) var(--orb-shadow,rgba(60,40,180,var(--sh-a))))}
   .orb:hover{filter:drop-shadow(0 4px 5px rgba(20,10,70,.5)) drop-shadow(0 calc(var(--sh-y) + 6px) calc(var(--sh-blur) + 10px) var(--orb-shadow,rgba(60,40,180,.6))) brightness(1.06)}
   .orb:has(.hit:focus-visible){outline:2px solid #fff;outline-offset:3px}
+  /* 접힌 구슬에 마우스를 올리면 살짝 커진다(터치 기기 제외) */
+  @media (hover:hover){.orb[data-open="false"]:hover{scale:var(--hover-scale,1.08)}}
   .orb:has(.hit:active){scale:.96}
   @keyframes float{0%,100%{translate:0 0}50%{translate:0 var(--float-y)}}
   /* 유리 — 그라데이션은 ellipse 라 원에서는 예전 구슬과 같고, 캡슐에서는 가로로 늘어난다 */
