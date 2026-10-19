@@ -162,10 +162,11 @@
   .orb-wrap[data-tone="frost"] .icon{filter:drop-shadow(0 2px 3px rgba(80,50,180,.175))}
   .orb-wrap[data-tone="purple"]{--orb-c0:#5a3ad9;--orb-c1:#8a6cf7;--orb-c2:#c0acff;--orb-glow:rgba(255,255,255,.85);--orb-shadow:rgba(60,30,170,var(--sh-a));--mist-a:rgba(255,186,248,.72);--mist-b:rgba(128,204,255,.66);--mist-deep:rgba(38,12,138,.6)}
   .orb-wrap[data-tone="iris"]{--orb-c0:#3a2fcf;--orb-c1:#6a5cf5;--orb-c2:#9fd0ff;--orb-glow:rgba(255,255,255,.85);--orb-shadow:rgba(30,40,160,var(--sh-a));--mist-a:rgba(150,236,255,.72);--mist-b:rgba(214,168,255,.62);--mist-deep:rgba(18,16,128,.6)}
-  .orb-wrap[data-tone="frost"]{--orb-c0:#dcd3ff;--orb-c1:#f1ecff;--orb-c2:#ffffff;--orb-glow:rgba(255,255,255,.95);--orb-shadow:rgba(40,25,140,var(--sh-a));--mist-a:rgba(196,168,255,.5);--mist-b:rgba(156,208,255,.46);--mist-deep:rgba(126,96,238,.28);
+  .orb-wrap[data-tone="frost"]{--orb-c0:#dcd3ff;--orb-c1:#f1ecff;--orb-c2:#ffffff;--orb-glow:rgba(255,255,255,.95);--orb-shadow:rgba(40,25,140,var(--sh-a));--mist-a:rgba(255,140,215,.62);--mist-b:rgba(90,175,255,.66);--mist-deep:rgba(130,90,250,.42);
     --glass-shade:inset 0 -8px 14px rgba(90,60,200,.18),inset 0 2px 4px rgba(255,255,255,.9)}
-  /* 흰 유리는 바탕이 밝아 screen 이 안 보이므로 안개를 그대로 얹는다 */
-  .orb-wrap[data-tone="frost"] .swirl{mix-blend-mode:normal}
+  /* 흰 유리는 바탕이 밝아 screen 이 안 보이므로 안개를 그대로 얹고, 색은 진하게·블러는 줄여 흐름이 보이게 한다 */
+  .orb-wrap[data-tone="frost"] .swirl{mix-blend-mode:normal;filter:blur(4px)}
+  .orb-wrap[data-tone="frost"] .swirl.s3{filter:blur(6px)}
   .orb-wrap[data-tone="frost"] .sym svg{filter:drop-shadow(0 2px 3px rgba(80,50,180,.175))}
 
   /* 모션 강도 */
