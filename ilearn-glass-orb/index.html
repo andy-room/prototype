@@ -183,6 +183,9 @@
   /* 타자 효과 — 아직 안 써진 글자(.ghost)는 자리만 차지해 캡슐 너비가 처음부터 고정된다.
      써지는 동안은 커서가 깜빡이고 X 는 다 써진 뒤에 나타난다 */
   .msg .ghost{visibility:hidden}
+  /* 새 글자는 아래에서 살짝 떠오르며 흐림이 걷힌다 */
+  .typed .ch{display:inline-block;white-space:pre;animation:char-in .3s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes char-in{from{opacity:0;translate:0 .35em;filter:blur(3px)}to{opacity:1;translate:0 0;filter:blur(0)}}
   .orb.typing .typed::after{content:"";display:inline-block;width:2px;height:1em;margin:0 -3px 0 1px;vertical-align:-.12em;border-radius:1px;
     background:currentColor;animation:caret .7s steps(1) infinite}
   @keyframes caret{50%{opacity:0}}
@@ -319,12 +322,17 @@
   msg.innerHTML='<span class="typed"></span><span class="ghost"></span>';
   var typed=msg.firstChild,ghost=msg.lastChild;
   function show(n){typed.textContent=chars.slice(0,n).join('');ghost.textContent=chars.slice(n).join('')}
-  function typeFrom(n){show(n);if(n<chars.length){timer=setTimeout(function(){typeFrom(n+1)},n?55:200)}else{orb.classList.remove('typing')}}
+  // 글자당 약 26ms, 공백은 더 짧게, 쉼표 뒤엔 짧게 쉬어 말하듯 써진다. 새 글자는 .ch 로 감싸 떠오르는 애니메이션을 준다
+  function gap(c){return c===' '?14:c===','?90:26}
+  function typeFrom(n){
+    if(!n){show(0)}else{var ch=document.createElement('span');ch.className='ch';ch.textContent=chars[n-1];typed.appendChild(ch);ghost.textContent=chars.slice(n).join('')}
+    if(n<chars.length){timer=setTimeout(function(){typeFrom(n+1)},n?gap(chars[n-1]):90)}else{timer=setTimeout(function(){orb.classList.remove('typing')},120)}
+  }
   function setOpen(open){
     clearTimeout(timer);orb.setAttribute('data-open',open?'true':'false');openMsg.checked=open;
     if(open&&!reduce){orb.classList.add('typing');typeFrom(0)}else{orb.classList.remove('typing');show(chars.length)}
   }
-  function play(){setOpen(false);timer=setTimeout(function(){setOpen(true)},1200)}
+  function play(){setOpen(false);timer=setTimeout(function(){setOpen(true)},700)}
   document.getElementById('ilearnClose').addEventListener('click',function(){setOpen(false);orb.querySelector('.hit').focus({preventScroll:true})});
   openMsg.addEventListener('change',function(e){setOpen(e.target.checked)});
   document.getElementById('replay').addEventListener('click',play);
