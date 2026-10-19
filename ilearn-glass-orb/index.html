@@ -33,15 +33,12 @@
 
   .app{height:100%;min-height:600px}
 
-  /* 컨트롤 패널 — 평소엔 숨기고, 화면 왼쪽 끝(.edge)에 마우스를 2초간 두면 서랍처럼 열린다 */
+  /* 컨트롤 패널 — 외부 공유용이라 평소엔 숨기고 보이는 단서도 두지 않는다. 화면 왼쪽 끝(.edge)에 마우스를 2초간 두면 서랍처럼 열린다 */
   .panel{position:fixed;left:0;top:0;bottom:0;z-index:20;width:290px;max-width:86vw;background:var(--surface);border-right:1px solid var(--line);
     padding:24px 22px;overflow:auto;box-shadow:0 0 40px rgba(20,24,60,.18);translate:-100% 0;visibility:hidden;
     transition:translate .35s cubic-bezier(.2,.8,.2,1),visibility 0s .35s}
   .panel.open{translate:0 0;visibility:visible;transition:translate .35s cubic-bezier(.2,.8,.2,1)}
   .edge{position:fixed;left:0;top:0;bottom:0;width:12px;z-index:19}
-  /* 왼쪽 끝에 머무는 동안 얇은 막대가 2초에 걸쳐 차올라 열릴 때를 알려 준다 */
-  .edge::after{content:"";position:absolute;left:0;top:0;width:3px;height:0;border-radius:0 2px 2px 0;background:var(--brand);opacity:0;transition:height .2s,opacity .2s}
-  .edge.arming::after{height:100%;opacity:.85;transition:height 2s linear,opacity .2s}
   .panel h1{font-size:17px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
   .panel .sub{color:var(--ink-2);margin:0 0 22px;font-size:13px}
   .group{margin-bottom:18px}
@@ -65,50 +62,18 @@
   .note{font-size:12px;color:var(--ink-2);line-height:1.6;border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
   .note b{color:var(--ink);font-weight:500}
 
-  /* LMS 모의 화면 */
+  /* 무대 — 실제 서비스 화면 시안을 폭에 맞춰 깔고 스크롤한다(컬러 배경: main.jpg, 흰 배경: sub.jpg). 아이런 버튼은 무대에 고정 */
   .stage{position:relative;overflow:hidden;background:var(--bg);height:100%}
-  /* 메인 — 실제 서비스 메인 화면 시안을 폭에 맞춰 깔고 스크롤한다. 아이런 버튼은 무대에 고정 */
   .shot{position:absolute;inset:0;display:none;overflow-y:auto;overscroll-behavior:contain;background:#fff;scrollbar-width:none}
   .shot::-webkit-scrollbar{display:none}
   .shot img{display:block;width:100%;height:auto}
-  .stage[data-ctx="main"] .shot{display:block}
-  .stage[data-ctx="main"] .lms{display:none}
-  .lms{position:absolute;inset:0;display:flex;flex-direction:column}
-  .topbar{height:56px;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:22px;padding:0 28px;flex:none}
-  .topbar .logo{font-weight:700;letter-spacing:-.02em;font-size:16px}
-  .topbar nav{display:flex;gap:18px;color:var(--ink-2);font-size:13px}
-  .topbar nav b{color:var(--ink);font-weight:500}
-  .content{flex:1;display:grid;grid-template-columns:1fr 110px;min-height:0}
-  .main{padding:26px 28px;overflow:hidden}
-  .hero{height:150px;border-radius:14px;background:linear-gradient(120deg,#1c2a9a,#3d55ff 55%,#7e9bff);margin-bottom:22px;position:relative;overflow:hidden}
-  .hero::after{content:"";position:absolute;right:-40px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.12)}
-  .hero p{color:#fff;margin:0;position:absolute;left:26px;bottom:22px;font-size:20px;font-weight:700;letter-spacing:-.02em}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;height:112px}
-  .card i{display:block;height:48px;border-radius:6px;background:var(--surface-2);margin-bottom:10px}
-  .card span{display:block;height:9px;border-radius:4px;background:var(--line);width:80%}
-  .card span+span{width:55%;margin-top:6px}
-  /* 메인은 팝업·배너가 많다 — 경쟁 요소를 일부러 둔다 */
-  .noise{position:absolute;right:140px;bottom:30px;width:300px;height:170px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:16px}
-  .noise b{display:block;font-size:14px;margin-bottom:8px}
-  .noise span{display:block;height:9px;border-radius:4px;background:var(--line);margin:7px 0;width:85%}
-  .noise .cta{margin-top:14px;width:110px;height:30px;border-radius:7px;background:#ff6a3d}
-  .stage[data-ctx="sub"] .noise{display:none}
-  .sub-doc{display:none}
-  .stage[data-ctx="sub"] .sub-doc{display:block}
-  .stage[data-ctx="sub"] .hero,.stage[data-ctx="sub"] .cards{display:none}
-  .sub-doc h2{font-size:20px;margin:0 0 14px;letter-spacing:-.02em}
-  .sub-doc p{color:var(--ink-2);margin:0 0 10px;max-width:60ch}
-  .sub-doc .line{height:10px;border-radius:4px;background:var(--line);margin:8px 0;max-width:62ch}
-
-  .quick{display:flex;flex-direction:column;border-left:1px solid var(--line);background:var(--surface)}
-  .quick .item{height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;color:#fff;font-weight:500}
-  .quick .item i{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.25);display:block}
-  .quick .item.a{background:#ff6a3d}.quick .item.b{background:#12b886}.quick .item.c{background:#f59f00}
-  .quick .recent{flex:1;background:var(--quick);color:#fff;display:flex;flex-direction:column;align-items:center;padding-top:16px;font-size:12px;font-weight:500}
-  .stage[data-ctx="sub"] .quick .item{background:var(--surface);color:var(--ink-2);font-weight:400}
-  .stage[data-ctx="sub"] .quick .item i{background:var(--surface-2)}
-  .stage[data-ctx="sub"] .quick .recent{background:var(--surface);color:var(--ink-2);font-weight:400}
+  .stage[data-ctx="main"] .shot.main,.stage[data-ctx="sub"] .shot.sub{display:block}
+  /* 상단 배경 탭 — 공유받은 사람도 컬러/흰 배경을 바로 바꿔 볼 수 있게 */
+  .ctx-tabs{position:absolute;top:12px;left:50%;translate:-50% 0;z-index:6;display:flex;gap:2px;padding:3px;border-radius:999px;
+    background:rgba(20,24,48,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(10,14,40,.18)}
+  .ctx-tabs button{border:0;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;font-weight:500;color:rgba(255,255,255,.82);background:transparent;cursor:pointer;transition:background .2s,color .2s}
+  .ctx-tabs button[aria-pressed="true"]{background:#fff;color:#1d2140}
+  .ctx-tabs button:focus-visible{outline:2px solid #fff;outline-offset:1px}
 
   /* ── 아이런 플로팅 버튼 ──
      처음엔 가로형 캡슐(아이콘 + 안내 문구 + X)로 펼쳐져 있고, X 를 누르면 문구 영역이 접히며
@@ -229,10 +194,10 @@
   <div class="edge" id="edge" aria-hidden="true"></div>
   <aside class="panel" id="panel">
     <h1>iLearn 플로팅 버튼</h1>
-    <p class="sub">실제 서비스 메인 화면(시안)과 흰 바탕 서브 화면에서 버튼이 얼마나 눈에 들어오는지 봅니다. 이 패널은 화면 왼쪽 끝에 마우스를 2초간 두면 열리고, 밖으로 나가거나 Esc 를 누르면 닫힙니다.</p>
+    <p class="sub">실제 서비스 화면(컬러 배경·흰 배경)에서 버튼이 얼마나 눈에 들어오는지 봅니다. 이 패널은 화면 왼쪽 끝에 마우스를 2초간 두면 열리고, 밖으로 나가거나 Esc 를 누르면 닫힙니다(화면에는 단서 없음).</p>
 
-    <div class="group"><span>보는 화면</span>
-      <div class="seg" role="group"><button data-ctx="main" aria-pressed="true">메인 (실제 화면)</button><button data-ctx="sub" aria-pressed="false">서브 (흰 바탕)</button></div></div>
+    <div class="group"><span>배경 (상단 탭과 연동)</span>
+      <div class="seg" role="group"><button data-ctx="main" aria-pressed="true">컬러 배경</button><button data-ctx="sub" aria-pressed="false">흰 배경</button></div></div>
 
     <div class="group"><span>구체 색</span>
       <div class="seg" role="group"><button data-tone="purple" aria-pressed="false">보라 (현행)</button><button data-tone="iris" aria-pressed="false">퀵메뉴 톤</button><button data-tone="frost" aria-pressed="true">흰 유리</button></div></div>
@@ -263,33 +228,9 @@
   </aside>
 
   <section class="stage" id="stage" data-ctx="main" data-float="soft" data-inner="soft" data-shadow="light">
-    <div class="shot" aria-hidden="true"><img src="main.jpg" alt="" width="1504" height="2000"></div>
-    <div class="lms" aria-hidden="true">
-      <div class="topbar"><span class="logo">신한라이프 연수원</span><nav><b>홈</b><span>수강신청</span><span>나의 강의실</span><span>커뮤니티</span></nav></div>
-      <div class="content">
-        <div class="main">
-          <div class="hero"><p>이번 달 추천 과정</p></div>
-          <div class="cards">
-            <div class="card"><i></i><span></span><span></span></div><div class="card"><i></i><span></span><span></span></div>
-            <div class="card"><i></i><span></span><span></span></div><div class="card"><i></i><span></span><span></span></div>
-            <div class="card"><i></i><span></span><span></span></div><div class="card"><i></i><span></span><span></span></div>
-          </div>
-          <div class="sub-doc">
-            <h2>과정 안내</h2>
-            <p>서브페이지는 흰 바탕이라 보라 구체가 잘 드러납니다. 같은 설정을 두 맥락에서 번갈아 확인하세요.</p>
-            <div class="line"></div><div class="line" style="max-width:48ch"></div><div class="line" style="max-width:56ch"></div>
-            <div class="line" style="max-width:40ch"></div><div class="line"></div><div class="line" style="max-width:52ch"></div>
-          </div>
-        </div>
-        <div class="quick">
-          <div class="item a"><i></i>출석체크</div>
-          <div class="item b"><i></i>수강현황</div>
-          <div class="item c"><i></i>문의하기</div>
-          <div class="recent">최근 본 과정</div>
-        </div>
-      </div>
-      <div class="noise"><b>신규 과정 오픈 안내</b><span></span><span></span><span style="width:60%"></span><div class="cta"></div></div>
-    </div>
+    <div class="shot main" aria-hidden="true"><img src="main.jpg" alt="" width="1504" height="2000"></div>
+    <div class="shot sub" aria-hidden="true"><img src="sub.jpg" alt="" width="1227" height="2000"></div>
+    <div class="ctx-tabs" role="group" aria-label="배경"><button data-ctx="main" aria-pressed="true">컬러 배경</button><button data-ctx="sub" aria-pressed="false">흰 배경</button></div>
 
     <div class="ilearn">
       <div class="orb-wrap" id="orbWrap" data-tone="frost">
@@ -317,12 +258,15 @@
     btns.forEach(function(b){b.addEventListener('click',function(){
       btns.forEach(function(o){o.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');fn(b.getAttribute(attr));});});
   }
-  seg('data-ctx',function(v){stage.setAttribute('data-ctx',v)});
+  // 배경: 패널 버튼과 상단 탭이 같은 값을 공유한다
+  var ctxBtns=document.querySelectorAll('button[data-ctx]');
+  function setCtx(v){stage.setAttribute('data-ctx',v);ctxBtns.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-ctx')===v?'true':'false')})}
+  ctxBtns.forEach(function(b){b.addEventListener('click',function(){setCtx(b.getAttribute('data-ctx'))})});
   // 컨트롤 패널: 화면 왼쪽 끝에 마우스를 2초간 두면 열리고, 패널 밖으로 나가거나 Esc 를 누르면 닫힌다
   var panel=document.getElementById('panel'),edge=document.getElementById('edge'),armT=0,closeT=0;
   function closePanel(){panel.classList.remove('open')}
-  edge.addEventListener('mouseenter',function(){clearTimeout(armT);edge.classList.add('arming');armT=setTimeout(function(){edge.classList.remove('arming');panel.classList.add('open')},2000)});
-  edge.addEventListener('mouseleave',function(){clearTimeout(armT);edge.classList.remove('arming')});
+  edge.addEventListener('mouseenter',function(){clearTimeout(armT);armT=setTimeout(function(){panel.classList.add('open')},2000)});
+  edge.addEventListener('mouseleave',function(){clearTimeout(armT)});
   panel.addEventListener('mouseleave',function(){closeT=setTimeout(closePanel,400)});
   panel.addEventListener('mouseenter',function(){clearTimeout(closeT)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()});
