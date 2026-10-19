@@ -11,4 +11,5 @@
 - 구체 색: `.orb-wrap[data-tone]` 의 `--orb-c0/c1/c2`
 - 구슬 속 안개 색: `.orb-wrap[data-tone]` 의 `--mist-a/b/deep`
 - 그림자: `--sh-y`, `--sh-blur`, `--sh-a`
-- 모션 주기: `--float-d`, `--float-y`, `--ping-d`(링 주기), `--swirl-d`(안개 순환 주기)
+- 둥실 부양 (`.stage[data-float]`): `--float-d`(부양 주기), `--float-y`(부양 높이)
+- 구슬 속 움직임 (`.stage[data-inner]`): `--swirl-d`(안개 순환 주기), `--turn-d`(심볼 선회 주기)
