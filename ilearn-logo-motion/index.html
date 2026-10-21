@@ -38,6 +38,15 @@
   .scene{position:absolute;right:12px;top:10px;z-index:3;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.85);border:1px solid var(--line);font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
   .scene b{color:var(--il);font-weight:700;margin-right:6px}
   .hint{position:absolute;left:0;right:0;bottom:3%;text-align:center;font-size:12.5px;color:#8A879C;pointer-events:none}
+  /* 목업: 실제 화면 1440×900 을 칸에 맞춰 줄이고(1배 넘게 키우지는 않음), 버튼은 실제 사이트 자리(오른쪽 24px·아래 40px)·실제 크기 */
+  .screen{position:absolute;inset:0}
+  .pane.mock{background:#E9E8EE}
+  .pane.mock .screen{inset:auto;left:0;top:0;width:1440px;height:900px;transform-origin:0 0;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+  .mock-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .pane:not(.mock) .mock-frame{display:none}
+  .pane.mock .hint{display:none}
+  .pane.mock .scene{top:auto;bottom:12px;right:auto;left:12px}
+  #paneOld.fit iframe{position:absolute;left:0;top:0;width:1440px;height:900px;transform-origin:0 0}
 
   /* ---------- 조정판 ---------- */
   .panel{display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line);background:#fff;font-size:12.5px}
@@ -72,6 +81,10 @@
   .row .cv input[type=text]{width:76px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-size:12px;font-family:ui-monospace,Menlo,monospace}
   .row .seg button{font-size:12px;padding:4px 9px}
   .row input[type=checkbox]{width:16px;height:16px;accent-color:var(--il)}
+  .row .presets{grid-column:1/-1;display:flex;gap:4px;margin-top:2px}
+  .row .presets button{flex:1;padding:5px 0;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;color:var(--sub);font-variant-numeric:tabular-nums}
+  .row .presets button:hover{border-color:#CFC8E6;color:var(--ink)}
+  .row .presets button.on{border-color:var(--il);color:var(--il);font-weight:700;background:#F7F4FF}
   .row .note{grid-column:1/-1;font-size:11px;line-height:1.5;color:var(--sub)}
   /* 모핑 타임라인 (누르거나 끌면 그 순간에 멈춰 봄) */
   .tl{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:10px;background:#FAF9FD;border:1px solid var(--line)}
@@ -100,13 +113,15 @@
   /* 오른쪽 끝 고정(실제 화면처럼 폭이 늘면 왼쪽 끝만 움직임) / 가운데 */
   .v2.anchor-right{right:calc(50% - 150px * var(--k));transform:scale(var(--k));transform-origin:100% 100%}
   .v2.anchor-center{left:50%;transform:translateX(-50%) scale(var(--k));transform-origin:50% 100%}
+  .v2.in-mock.anchor-right{right:24px;bottom:40px;transform:none}
   .v2 *{box-sizing:border-box}
   :where(.v2) button{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
   /* 캡슐 — 그림자는 --shadow 하나만 씀. 호버·누름·반짝·접힘 어느 때도 바뀌지 않음 (트랜지션·애니메이션 없음) */
-  .v2-cap{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px;border-radius:30px;cursor:pointer;
+  /* 로고 크기(--logo)가 바뀌어도 버튼 높이 60px·접힌 원 60×60 은 그대로 → 로고 왼쪽 여백으로 맞춤 */
+  .v2-cap{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px 0 calc((58px - var(--logo,30px)) / 2);border-radius:30px;cursor:pointer;
     background:#fff;border:1px solid transparent;color:var(--ink);box-shadow:var(--shadow);
-    transition:transform .25s cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1)}
+    transition:transform .25s cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1),padding .55s cubic-bezier(.3,.7,.2,1)}
   .v2-cap:hover{transform:translateY(var(--lift))}
   .v2-cap:active{transform:translateY(var(--lift)) scale(.97)}
   .v2-cap:focus-visible{outline:2px solid #7749F4;outline-offset:3px}
@@ -114,7 +129,7 @@
   /* 호버로 떠오른 만큼 아래를 메워 둠 → 가장자리에 마우스가 있어도 올림/내림이 깜빡이지 않음 */
   .v2-cap::after{content:"";position:absolute;left:0;right:0;top:100%;height:calc(var(--lift) * -1)}
   /* 육각형·별은 아이콘 칸 밖으로 그려지기도 하므로, 마우스 판정은 캡슐로만 */
-  .v2-logo{flex:none;width:30px;height:30px;display:block;overflow:visible;pointer-events:none}
+  .v2-logo{flex:none;width:var(--logo,30px);height:var(--logo,30px);display:block;overflow:visible;pointer-events:none}
   /* 글자 칸: 폭·글자 움직임은 스크립트가 직접 (이전 문구가 다 사라진 뒤 → 폭 맞춤 → 새 문구) */
   .v2-txt{display:block;height:26px;width:0;overflow:hidden}
   .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:15px;line-height:26px;font-weight:500}
@@ -127,7 +142,7 @@
   .v2-x:active{background:rgba(23,23,25,.1);opacity:1}
   .v2-x:focus-visible{outline:2px solid #7749F4;outline-offset:1px}
   /* 접힌 원 = 60×60 */
-  .v2.collapsed .v2-cap{gap:0}
+  .v2.collapsed .v2-cap{gap:0;padding:0 calc((58px - var(--logo,30px)) / 2)}
   .v2.collapsed .v2-x{width:0;margin-left:0;opacity:0;pointer-events:none}
 
   /* 배경 빛(구슬 느낌): 흰 바탕 가장자리에서 분홍·하늘·연보라 빛이 움직임 — 색·세기·뚜렷함·크기는 조정판 값(--g*)
@@ -193,6 +208,7 @@
     <h1>iLearn 로고 모션 조정</h1>
     <div class="grp"><button class="btn play" id="play" type="button" aria-label="일시정지">❚❚</button><button class="btn" id="again" type="button">처음부터</button></div>
     <label class="grp speed">속도<input type="range" id="speed" min=".1" max="2" step=".05" value="1.3"><output id="speedOut">1.3×</output></label>
+    <div class="grp">목업<div class="seg" data-k="mock"><button type="button" data-v="on">켬</button><button type="button" data-v="off">끔</button></div></div>
     <div class="grp">반복<div class="seg" data-k="loop"><button type="button" data-v="all">전체 순환</button><button type="button" data-v="morph">모핑만</button><button type="button" data-v="ask">질문만</button></div></div>
     <div class="grp">버튼<div class="seg" data-k="view"><button type="button" data-v="open">펼침</button><button type="button" data-v="closed">접힌 원</button></div></div>
     <div class="grp">마우스 올리면 질문<div class="seg" data-k="menu"><button type="button" data-v="on">켬</button><button type="button" data-v="off">끔</button></div></div>
@@ -204,6 +220,9 @@
     <div class="pane" id="paneNew">
       <span class="tag" id="tagNew" hidden>수정안</span>
       <span class="scene" id="scene"></span>
+      <!-- 목업을 켜면 이 칸이 실제 화면(1440×900) 크기가 되고, 뒤에 연수원 메인 화면(mock.html)을 깔고 버튼을 실제 자리에 얹음 -->
+      <div class="screen" id="screen">
+      <iframe class="mock-frame" id="mockFrame" title="연수원 메인 화면 목업" hidden></iframe>
       <div class="v2 anchor-right" id="v2">
         <div class="v2-menu" id="v2menu"><h4>iLearn에게 물어보기</h4></div>
         <span class="v2-aura" aria-hidden="true"></span>
@@ -230,6 +249,7 @@
           <span class="v2-txt" id="v2txt"></span>
           <button class="v2-x" id="v2x" type="button" aria-label="안내 문구 닫기"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
         </div>
+      </div>
       </div>
       <div class="hint">마우스를 올리면 물어볼 거리 · 누르면 iLearn 창 · ✕ 누르면 접힌 원</div>
     </div>
@@ -290,6 +310,10 @@ var HEX_R=7.9, STAR_R=8.4, LOGO_R=7.4, MERGED_R=1.7;
    ===================================================================== */
 var EASES=[['linear','등속'],['in','가속'],['out','감속'],['inOut','가속 → 감속'],['back','튕김(살짝 넘침)']];
 var SCHEMA=[
+  {g:'로고 크기', open:true, items:[
+    {k:'logoSize',l:'버튼 안 iLearn 로고',t:'range',min:20,max:44,step:1,d:30,u:'px',presets:[24,27,30,33,36,40],
+      note:'기본 30px · 아래 숫자를 누르면 바로 바꿔 비교 · 버튼 높이 60px와 접힌 원 크기는 그대로, 로고(와 모핑 도형)만 커지고 작아짐'}
+  ]},
   {g:'문구', open:true, items:[
     {k:'namePre',l:'이름 앞말',t:'text',d:'AI 튜터'},
     {k:'name',l:'이름',t:'text',d:'iLearn'},
@@ -411,7 +435,7 @@ var SCHEMA=[
     {k:'menuOn',l:'마우스 올리면 질문 목록',t:'toggle',d:true}
   ]}
 ];
-var DEF={loop:'all',view:'open',speed:1.3}, ITEM={};
+var DEF={loop:'all',view:'open',speed:1.3,mock:'on'}, ITEM={};
 SCHEMA.forEach(function(g){ g.items.forEach(function(it){ if(it.k){ DEF[it.k]=it.d; ITEM[it.k]=it } }) });
 var STORE='ilearn-logo-motion/v1';
 var P=JSON.parse(JSON.stringify(DEF));
@@ -880,15 +904,32 @@ function apply(){
   if(!orbit) GLOW_VARS.forEach(function(v){ sheen.style.removeProperty(v) });       // 좌우 흐름으로 돌아가면 v2iris 가 다시 위치를 맡음
   if(!(orbit&&P.auraFollow)) aura.style.removeProperty('--v2a');
   s.setProperty('--aura-a',P.auraAlpha/100); s.setProperty('--aura-b',P.auraBreath/100); s.setProperty('--aura-blur',P.auraBlur+'px'); s.setProperty('--aura-y',P.auraY+'px');
-  box.classList.toggle('anchor-right',P.anchor!=='center'); box.classList.toggle('anchor-center',P.anchor==='center');
+  s.setProperty('--logo',P.logoSize+'px');
+  var anc=mockOn()?'right':P.anchor;                // 목업 위에선 실제처럼 오른쪽 끝 고정
+  box.classList.toggle('anchor-right',anc!=='center'); box.classList.toggle('anchor-center',anc==='center');
   box.classList.toggle('nomenu',!P.menuOn);
   document.documentElement.style.setProperty('--stage-bg',P.stageBg);
   layout(); syncAnims();
 }
 // 확대: 가장 긴 문구 캡슐 + 질문 목록이 칸 안에 다 들어오는 만큼까지만 (세로 기준은 original.html 버튼만 보기와 같음 → 나란히 볼 때 크기가 맞음)
 var zoomNote=null;
+// 목업: 실제 화면 1440×900 을 칸 가운데에 맞춰 줄임 (1배보다 키우지 않음)
+function fitScreen(pane,el){
+  var w=pane.clientWidth, h=pane.clientHeight, f=Math.min(1,w/1440,h/900);
+  el.style.transform='scale('+f.toFixed(4)+')'; el.style.left=((w-1440*f)/2).toFixed(1)+'px'; el.style.top=((h-900*f)/2).toFixed(1)+'px';
+  return f;
+}
+function clearFit(el){ el.style.transform=''; el.style.left=''; el.style.top='' }
 function layout(){
   var w=paneNew.clientWidth, h=paneNew.clientHeight; if(!w||!h) return;
+  var scr=$('screen');
+  if(mockOn()){
+    var f=fitScreen(paneNew,scr);
+    if(oldFrame&&paneOld.classList.contains('fit')) fitScreen(paneOld,oldFrame);
+    if(zoomNote) zoomNote.textContent='목업을 켜면 실제 화면 1440×900 을 '+(f<.999?f.toFixed(2)+'배로 줄여':'실제 크기로')+' 보여 줌 · 버튼은 실제 자리(오른쪽 24px·아래 40px)에 실제 크기로 · 위의 확대·폭 기준·배경색은 목업을 끈 화면에만 적용';
+    return;
+  }
+  clearFit(scr);
   var kw=P.anchor==='center'?w*.9/360:(w/2-12)/190, kh=h*.82/300;
   var k=Math.max(.5,Math.min(P.zoom,kw,kh));
   box.style.setProperty('--k',k.toFixed(3));
@@ -948,7 +989,12 @@ function row(it){
     var rg=document.createElement('input'); rg.type='range'; rg.min=it.min; rg.max=it.max; rg.step=it.step; rg.setAttribute('aria-label',it.l); r.appendChild(rg);
     rg.addEventListener('input',function(){ set(it,+rg.value) });
     ni.addEventListener('change',function(){ var v=parseFloat(ni.value); set(it,isNaN(v)?P[it.k]:v) });
-    put=function(v){ rg.value=v; if(document.activeElement!==ni) ni.value=fmt(+v) };
+    var pbs=[];
+    if(it.presets){
+      var pr=document.createElement('div'); pr.className='presets'; r.appendChild(pr);
+      it.presets.forEach(function(pv){ var b=document.createElement('button'); b.type='button'; b.textContent=pv+(it.u||''); b.dataset.v=pv; b.addEventListener('click',function(){ set(it,pv) }); pr.appendChild(b); pbs.push(b) });
+    }
+    put=function(v){ rg.value=v; if(document.activeElement!==ni) ni.value=fmt(+v); pbs.forEach(function(b){ b.classList.toggle('on',+b.dataset.v===+v) }) };
   } else if(it.t==='ease'){
     var sel=document.createElement('select'); sel.id=id;
     EASES.forEach(function(e){ var o=document.createElement('option'); o.value=e[0]; o.textContent=e[1]; sel.appendChild(o) });
@@ -1037,12 +1083,29 @@ function setSpeed(v){ speed=+v; P.speed=speed; $('speed').value=speed; $('speedO
 var oldFrame=null, cmpOn=false;
 function setCmp(on){
   cmpOn=on; stage.classList.toggle('two',on); $('tagNew').hidden=!on;
-  if(on){ if(!oldFrame){ oldFrame=document.createElement('iframe'); oldFrame.title='기존 모션'; paneOld.appendChild(oldFrame) } oldFrame.src='original.html?c=4&embed&t='+Date.now() }
+  if(on){ if(!oldFrame){ oldFrame=document.createElement('iframe'); oldFrame.title='기존 모션'; paneOld.appendChild(oldFrame) } loadOld() }
   else if(oldFrame){ oldFrame.remove(); oldFrame=null }
   syncSegs(); layout(); restart();
 }
+// 기존과 나란히: 목업을 켰으면 기존 목업(original-mock.html), 껐으면 기존 버튼만(original.html)
+function loadOld(){
+  if(!oldFrame) return;
+  var m=mockOn(); paneOld.classList.toggle('fit',m); if(!m) clearFit(oldFrame);
+  oldFrame.src=(m?'original-mock.html':'original.html')+'?c=4&embed&t='+Date.now();
+  layout();
+}
+function mockOn(){ return P.mock==='on' }
+var mockFrame=$('mockFrame');
+function setMock(on,quiet){
+  P.mock=on?'on':'off'; if(!quiet) save();
+  paneNew.classList.toggle('mock',on); mockFrame.hidden=!on;
+  if(on&&!mockFrame.getAttribute('src')) mockFrame.src='mock.html';
+  box.classList.toggle('in-mock',on);
+  syncSegs(); apply();
+  if(cmpOn) loadOld();
+}
 function syncSegs(){
-  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off',menu:P.menuOn?'on':'off'};
+  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off',menu:P.menuOn?'on':'off',mock:P.mock};
   [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){ [].forEach.call(g.children,function(b){ b.classList.toggle('on',b.dataset.v===st[g.dataset.k]) }) });
 }
 [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){
@@ -1051,11 +1114,12 @@ function syncSegs(){
     if(k==='loop'){ P.loop=v; save(); syncSegs(); restart() }
     else if(k==='view') setView(v);
     else if(k==='cmp') setCmp(v==='on');
+    else if(k==='mock') setMock(v==='on');
     else if(k==='menu') set(ITEM.menuOn,v==='on');          // 조정판 '화면 → 마우스 올리면 질문 목록'과 같은 값
   });
 });
 $('play').addEventListener('click',function(){ setPaused(!paused) });
-$('again').addEventListener('click',function(){ if(paused) setPaused(false); if(cmpOn&&oldFrame) oldFrame.src='original.html?c=4&embed&t='+Date.now(); restart() });
+$('again').addEventListener('click',function(){ if(paused) setPaused(false); if(cmpOn) loadOld(); restart() });
 $('speed').addEventListener('input',function(){ setSpeed($('speed').value) });
 addEventListener('keydown',function(e){
   var t=e.target, tag=t&&t.tagName;
@@ -1069,7 +1133,7 @@ var toastT;
 function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){ t.classList.remove('on') },1800) }
 function refreshAll(){
   for(var k in rowUpd) rowUpd[k]();
-  save(); buildMenu(); drawTimeline(); apply(); countChanged(); setSpeed(P.speed);
+  save(); buildMenu(); drawTimeline(); setMock(mockOn(),true); countChanged(); setSpeed(P.speed);
   collapsed=P.view==='closed'; box.classList.toggle('collapsed',collapsed); syncSegs();
   textNow(collapsed?null:NAME()); finishLogo(); restart();
 }
@@ -1096,7 +1160,7 @@ $('resetAll').addEventListener('click',function(){
    ===================================================================== */
 buildPanel(); buildMenu(); drawTimeline(); countChanged();
 collapsed=P.view==='closed'; box.classList.toggle('collapsed',collapsed);
-apply(); setSpeed(P.speed); syncSegs();
+setMock(mockOn(),true); setSpeed(P.speed); syncSegs();
 textNow(collapsed?null:NAME());
 // 글꼴이 늦게 받아지면 폭이 좁게 재져 글자가 잘리므로, 글꼴을 다 받은 뒤 다시 잼
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ var c=wrap.firstChild; if(c&&wrap.children.length===1&&curKey!=='none'&&c.style.opacity!=='0') wrap.style.width=widthOf(c.cloneNode(true))+'px' });

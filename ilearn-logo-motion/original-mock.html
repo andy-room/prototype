@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html><head>
+ <title>기존 목업</title>
+ <meta charset="UTF-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="shortcut icon" href="https://img.hunet.co.kr/files/B2B/2162/favicon/favicon.ico?rev=20261020113240" type="image/x-icon">
+ <link type="text/css" rel="Stylesheet" href="https://365.hunet.co.kr/Common/select2-2.1.0/select2.css">
+ <link rel="stylesheet" href="https://img.hunet.co.kr/_assets/levelup/css/common/common.min.css?v=20260305">
+ <link rel="stylesheet" href="https://img.hunet.co.kr/_assets/levelup/css/common/style.min.css">
+ <link rel="stylesheet" href="https://img.hunet.co.kr/_assets/levelup/css/common/sub.min.css">
+	<link type="text/css" rel="stylesheet" href="https://img.hunet.co.kr/_assets/levelup/css/custom/2162_arete.min.css">
+ <style type="text/css">
+ /* ,sidebar=#7195b7,sidebarFontColor=#ffffff,fontType=Noto Sans KR,hoverColor=#f20808,subTitleFontColor=#333333,subButtonColor=#f20b08,subLine=#f20b08,botPositionLeft=N, $[info]$ 첫번째 줄 변경 및 삭제 금지 */
+:root { 
+ --sidebar-color: #7195b7; /* 1. 메인 퀵메뉴 배경 : sidebar */ 
+ --sidebar-font-color: #ffffff; /* 2. 메인 퀵메뉴 텍스트 : sidebarFontColor*/ 
+ --hover-color: #f20808; /* 3. 텍스트 : 상단 메뉴 영역 | 서브 좌측 메뉴 영역 : hoverColor (기본값)*/ 
+ --sub-title-font-color: #333333; /* 4. 서브 타이틀 텍스트 : subTitleFontColor*/ 
+ --sub-button-color: #f20b08; /* 5. 서브 화면 버튼 : 서브 검색 조건 영역 | 서브 리스트 페이징 버튼 | 서브 화면 버튼 : subButtonColor*/ 
+ --sub-line-color: #f20b08; /* 6. 서브 화면 라인 : subLine*/ 
+ } 
+ </style>
+<style>#hunet-chatbot-container {position: fixed;bottom: 40px;right: 40px;z-index: 999999999;}#hunet-chatbot-area {display: none;position: fixed;inset: auto 40px 120px auto;width: 400px;height: 540px;opacity: 0;background: transparent;border-radius: 20px;box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.4);margin: 0px;padding: 0px;transform: translateY(50px);transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out;overflow: hidden;}#hunet-chatbot-area[data-fullscreen="true"] {inset: auto;left: 0;top: 0;bottom: 0;right: 0;width: 100%;height: 100%;border-radius: 0;flex-direction: column;}#hunet-chatbot-area[data-fullscreen="true"] > #hunet-chatbot-frame-wrapper {position: relative;right: auto;top: auto;justify-content: flex-end;padding: 4px 8px;}#hunet-chatbot-area[data-fullscreen="true"][data-theme="light"] > #hunet-chatbot-frame-wrapper {background-color: #fff;}#hunet-chatbot-area[data-fullscreen="true"][data-theme="dark"] > #hunet-chatbot-frame-wrapper {background-color: #191F28;}#hunet-chatbot-area[data-fullscreen="true"] > iframe {position: relative;left: auto;top: auto;flex: 1;}#hunet-chatbot-area[data-open="true"] {transform: translateY(0px);opacity: 1;}#hunet-chatbot-area > iframe {position: absolute;left: 0;top: 0;width: 100%;height: 100%;border: none;}#hunet-chatbot-area > #hunet-chatbot-frame-wrapper {display: flex;position: absolute;right: 8px;top: 9px;z-index: 1;}#hunet-chatbot-area > #hunet-chatbot-frame-wrapper button {padding: 8px;color: #191F28;border: none;cursor: pointer;background-color: transparent;}#hunet-chatbot-area[data-theme="light"] > #hunet-chatbot-frame-wrapper button {color: #191F28;}#hunet-chatbot-area[data-theme="dark"] > #hunet-chatbot-frame-wrapper button {color: #fff;}#hunet-chatbot-area > #hunet-chatbot-frame-wrapper svg {display: block;width: 16px;height: 16px;}#hunet-chatbot-trigger-button {overflow: hidden;box-sizing: border-box;margin: 0;padding: 0;display: flex;align-items: center;cursor: pointer;border-style: none;text-align: left;border-radius: 30px;}#hunet-chatbot-trigger-button.reverse {flex-direction: row-reverse}#hunet-chatbot-trigger-icon { display: flex;align-items: center;justify-content: center;width: 60px;height: 60px;background-color: #2c1768;border-radius: 9999px;color: #fff;pointer-events: none;}#hunet-chatbot-trigger-icon img {width: 100%;}#hunet-chatbot-tooltip-box {overflow: hidden;white-space: nowrap;width: 0;transition: width 0.3s ease;padding-right: 0;background-color: inherit;height: 60px;display: flex;align-items: center;border-radius: 30px;border-top-right-radius: 0;border-bottom-right-radius: 0;}#hunet-chatbot-tooltip-box pre {overflow: visible;font-weight: 400;padding-left: 20px;padding-right: 20px;font-size: 20px;font-family: inherit;letter-spacing: -0.2px;}</style></head>
+<body id="main">
+ <input type="hidden" data-gtm-uuid="user">
+ <div>
+ <input type="hidden" id="menuTreeNode" name="menuTreeNode" data-info="[{&quot;index&quot;:0,&quot;menuNo&quot;:9,&quot;menuNm&quot;:&quot;휴넷 Inside&quot;,&quot;menuPath&quot;:&quot;/Edu/About/Intro?arete&quot;,&quot;aliasNm&quot;:&quot;휴넷 Inside&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:6,&quot;asideNodeCnt&quot;:6,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:10,&quot;menuNm&quot;:&quot;아레테 휴넷 소개&quot;,&quot;menuPath&quot;:&quot;/Edu/About/Intro?arete&quot;,&quot;aliasNm&quot;:&quot;아레테 휴넷 소개&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:11,&quot;menuNm&quot;:&quot;아레테 아카데미아&quot;,&quot;menuPath&quot;:&quot;/Edu/About/Intro?academy&quot;,&quot;aliasNm&quot;:&quot;아레테 아카데미아&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:12,&quot;menuNm&quot;:&quot;휴넷 News&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,93,94,95,100,106,108\u0026categoryNo1=90&quot;,&quot;aliasNm&quot;:&quot;휴넷 News&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:1,&quot;asideNodeCnt&quot;:3,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:195,&quot;menuNm&quot;:&quot;휴넷 Culture&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,93,94,95,100,106,108\u0026categoryNo1=90\u0026categoryNo2=128&quot;,&quot;aliasNm&quot;:&quot;휴넷 Culture&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:24,&quot;menuNm&quot;:&quot;아레테 타운홀&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,93,94,95,100,106,108\u0026categoryNo1=90\u0026categoryNo2=91&quot;,&quot;aliasNm&quot;:&quot;아레테 타운홀&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:25,&quot;menuNm&quot;:&quot;CEO 툭앤톡 \u0026 워크샵&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,93,94,95,100,106,108\u0026categoryNo1=90\u0026categoryNo2=92&quot;,&quot;aliasNm&quot;:&quot;CEO 툭앤톡 \u0026 워크샵&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:3,&quot;menuNo&quot;:191,&quot;menuNm&quot;:&quot;휴넷 업무 꿀Tip&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/CardNews?communitySeq=6149\u0026boardSeq=23275&quot;,&quot;aliasNm&quot;:&quot;휴넷 업무 꿀Tip&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:1,&quot;asideNodeCnt&quot;:1,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:192,&quot;menuNm&quot;:&quot;Slack&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/CardNews?communitySeq=6149\u0026boardSeq=23275&quot;,&quot;aliasNm&quot;:&quot;Slack&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:4,&quot;menuNo&quot;:13,&quot;menuNm&quot;:&quot;온보딩 Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,94,95,100,106,108\u0026categoryNo1=93&quot;,&quot;aliasNm&quot;:&quot;온보딩 Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:5,&quot;menuNo&quot;:22,&quot;menuNm&quot;:&quot;BARO&quot;,&quot;menuPath&quot;:&quot;https://chatgpt.hunet.ai/baro&quot;,&quot;aliasNm&quot;:&quot;BARO&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:1,&quot;menuNo&quot;:26,&quot;menuNm&quot;:&quot;휴넷 Insight +&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,95,100,106,108\u0026categoryNo1=94&quot;,&quot;aliasNm&quot;:&quot;휴넷 Insight +&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:4,&quot;asideNodeCnt&quot;:4,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:27,&quot;menuNm&quot;:&quot;혁신아카데미&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,95,100,106,108\u0026categoryNo1=94&quot;,&quot;aliasNm&quot;:&quot;혁신아카데미&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:28,&quot;menuNm&quot;:&quot;Findings \u0026 Insight&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6105\u0026boardSeq=23080&quot;,&quot;aliasNm&quot;:&quot;Findings \u0026 Insight&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:36,&quot;menuNm&quot;:&quot;콕 letter&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6105\u0026boardSeq=23081&quot;,&quot;aliasNm&quot;:&quot;콕 letter&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:43,&quot;menuNm&quot;:&quot;휴넷인 콕 릴레이&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6105\u0026boardSeq=23082&quot;,&quot;aliasNm&quot;:&quot;휴넷인 콕 릴레이&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:2,&quot;menuNo&quot;:44,&quot;menuNm&quot;:&quot;Book적Book적&quot;,&quot;menuPath&quot;:&quot;/Edu/Online?processtype2=7&quot;,&quot;aliasNm&quot;:&quot;Book적Book적&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:3,&quot;asideNodeCnt&quot;:3,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:45,&quot;menuNm&quot;:&quot;북러닝&quot;,&quot;menuPath&quot;:&quot;/Edu/Online?categoryNo=1000&quot;,&quot;aliasNm&quot;:&quot;북러닝&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:46,&quot;menuNm&quot;:&quot;휴넷 책방&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6106\u0026boardSeq=23083&quot;,&quot;aliasNm&quot;:&quot;휴넷 책방&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:4,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:47,&quot;menuNm&quot;:&quot;오독오독 필독서&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6106\u0026boardSeq=23083&quot;,&quot;aliasNm&quot;:&quot;오독오독 필독서&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:48,&quot;menuNm&quot;:&quot;CEO의 서재&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6106\u0026boardSeq=23084&quot;,&quot;aliasNm&quot;:&quot;CEO의 서재&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:49,&quot;menuNm&quot;:&quot;리더의 서재&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6106\u0026boardSeq=23085&quot;,&quot;aliasNm&quot;:&quot;리더의 서재&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:50,&quot;menuNm&quot;:&quot;휴넷인의 서재&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6106\u0026boardSeq=23086&quot;,&quot;aliasNm&quot;:&quot;휴넷인의 서재&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:2,&quot;menuNo&quot;:54,&quot;menuNm&quot;:&quot;도서구입신청&quot;,&quot;menuPath&quot;:&quot;/Edu/OutSide?outsideFlag=54&quot;,&quot;aliasNm&quot;:&quot;도서구입신청&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:3,&quot;menuNo&quot;:55,&quot;menuNm&quot;:&quot;직무 College&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23087&quot;,&quot;aliasNm&quot;:&quot;직무 College&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:4,&quot;asideNodeCnt&quot;:4,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:56,&quot;menuNm&quot;:&quot;세일즈 칼리지&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23087&quot;,&quot;aliasNm&quot;:&quot;세일즈 칼리지&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:5,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:57,&quot;menuNm&quot;:&quot;공지사항&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23087&quot;,&quot;aliasNm&quot;:&quot;공지사항&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:30,&quot;menuNm&quot;:&quot;L\u0026D 전문성&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=96,97,99,89,90,93,94,100,106,108,112,113\u0026categoryNo1=95\u0026categoryNo2=111&quot;,&quot;aliasNm&quot;:&quot;L\u0026D 전문성&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:31,&quot;menuNm&quot;:&quot;상품 전문성&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=96,97,99,89,90,93,94,100,106,108,111,113\u0026categoryNo1=95\u0026categoryNo2=112&quot;,&quot;aliasNm&quot;:&quot;상품 전문성&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:37,&quot;menuNm&quot;:&quot;영업 전문성&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=96,97,99,89,90,93,94,100,106,108,111,112\u0026categoryNo1=95\u0026categoryNo2=113&quot;,&quot;aliasNm&quot;:&quot;영업 전문성&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:196,&quot;menuNm&quot;:&quot;Special 과정&quot;,&quot;menuPath&quot;:&quot;/Edu/Online/lm&quot;,&quot;aliasNm&quot;:&quot;Special 과정&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:1,&quot;menuNo&quot;:68,&quot;menuNm&quot;:&quot;교육서비스 칼리지&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23089&quot;,&quot;aliasNm&quot;:&quot;교육서비스 칼리지&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:6,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:69,&quot;menuNm&quot;:&quot;공지사항&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23089&quot;,&quot;aliasNm&quot;:&quot;공지사항&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:72,&quot;menuNm&quot;:&quot;사례 공유&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23092&quot;,&quot;aliasNm&quot;:&quot;사례 공유&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:73,&quot;menuNm&quot;:&quot;인사이트 공유&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23093&quot;,&quot;aliasNm&quot;:&quot;인사이트 공유&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:74,&quot;menuNm&quot;:&quot;업무 가이드&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23094&quot;,&quot;aliasNm&quot;:&quot;업무 가이드&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:75,&quot;menuNm&quot;:&quot;L\u0026D 트렌드&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23095&quot;,&quot;aliasNm&quot;:&quot;L\u0026D 트렌드&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:5,&quot;menuNo&quot;:76,&quot;menuNm&quot;:&quot;AI 활용사례&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23096&quot;,&quot;aliasNm&quot;:&quot;AI 활용사례&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:2,&quot;menuNo&quot;:77,&quot;menuNm&quot;:&quot;L\u0026D 칼리지&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23097&quot;,&quot;aliasNm&quot;:&quot;L\u0026D 칼리지&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:7,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:78,&quot;menuNm&quot;:&quot;L\u0026D칼리지 소개&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23097&quot;,&quot;aliasNm&quot;:&quot;L\u0026D칼리지 소개&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:79,&quot;menuNm&quot;:&quot;L\u0026D Basic&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,106,108\u0026categoryNo1=100\u0026categoryNo2=101&quot;,&quot;aliasNm&quot;:&quot;L\u0026D Basic&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:80,&quot;menuNm&quot;:&quot;L\u0026D Core&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,106,108\u0026categoryNo1=100\u0026categoryNo2=102&quot;,&quot;aliasNm&quot;:&quot;L\u0026D Core&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:81,&quot;menuNm&quot;:&quot;L\u0026D Advanced&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,106,108\u0026categoryNo1=100\u0026categoryNo2=103&quot;,&quot;aliasNm&quot;:&quot;L\u0026D Advanced&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:82,&quot;menuNm&quot;:&quot;Insight Library&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23098&quot;,&quot;aliasNm&quot;:&quot;Insight Library&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:83,&quot;menuNm&quot;:&quot;리더십 라이브러리&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23098&quot;,&quot;aliasNm&quot;:&quot;리더십 라이브러리&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:84,&quot;menuNm&quot;:&quot;연구원 라이브러리&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23099&quot;,&quot;aliasNm&quot;:&quot;연구원 라이브러리&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:2,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:152,&quot;menuNm&quot;:&quot;&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/BBSDetail?communitySeq=6107\u0026boardSeq=23099&quot;,&quot;aliasNm&quot;:&quot;&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:156,&quot;menuNm&quot;:&quot;&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/BBSWrite?communitySeq=6107\u0026boardSeq=23099&quot;,&quot;aliasNm&quot;:&quot;&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]}]},{&quot;index&quot;:5,&quot;menuNo&quot;:85,&quot;menuNm&quot;:&quot;연구원 오픈톡&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23100&quot;,&quot;aliasNm&quot;:&quot;연구원 오픈톡&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:6,&quot;menuNo&quot;:86,&quot;menuNm&quot;:&quot;연구원 인사이트&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,106,108\u0026categoryNo1=100\u0026categoryNo2=104&quot;,&quot;aliasNm&quot;:&quot;연구원 인사이트&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:3,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:87,&quot;menuNm&quot;:&quot;CLG Festival&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,91,92,96,97,98,99,101,102,103,107,110,93,94&quot;,&quot;aliasNm&quot;:&quot;CLG Festival&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:88,&quot;menuNm&quot;:&quot;사례공유&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23101&quot;,&quot;aliasNm&quot;:&quot;사례공유&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:89,&quot;menuNm&quot;:&quot;Trend\u0026Insight&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23102&quot;,&quot;aliasNm&quot;:&quot;Trend\u0026Insight&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]}]},{&quot;index&quot;:3,&quot;menuNo&quot;:90,&quot;menuNm&quot;:&quot;테크 칼리지&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23103&quot;,&quot;aliasNm&quot;:&quot;테크 칼리지&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:5,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:91,&quot;menuNm&quot;:&quot;Tech Roles&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23103&quot;,&quot;aliasNm&quot;:&quot;Tech Roles&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:92,&quot;menuNm&quot;:&quot;Skill&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23104&quot;,&quot;aliasNm&quot;:&quot;Skill&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:93,&quot;menuNm&quot;:&quot;Trend&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23105&quot;,&quot;aliasNm&quot;:&quot;Trend&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:94,&quot;menuNm&quot;:&quot;Culture&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23106&quot;,&quot;aliasNm&quot;:&quot;Culture&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:95,&quot;menuNm&quot;:&quot;Hunet Busniness&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6107\u0026boardSeq=23107&quot;,&quot;aliasNm&quot;:&quot;Hunet Busniness&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]}]},{&quot;index&quot;:4,&quot;menuNo&quot;:96,&quot;menuNm&quot;:&quot;리더십 Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,100,108&quot;,&quot;aliasNm&quot;:&quot;리더십 Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:4,&quot;asideNodeCnt&quot;:4,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:97,&quot;menuNm&quot;:&quot;HiPo Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,100,108&quot;,&quot;aliasNm&quot;:&quot;HiPo Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:98,&quot;menuNm&quot;:&quot;HiPo Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,100,108&quot;,&quot;aliasNm&quot;:&quot;HiPo Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:99,&quot;menuNm&quot;:&quot;HiPo 추천도서&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23108&quot;,&quot;aliasNm&quot;:&quot;HiPo 추천도서&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:1,&quot;menuNo&quot;:100,&quot;menuNm&quot;:&quot;신임 리더 온보딩 Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,100,106\u0026categoryNo1=108\u0026categoryNo2=110&quot;,&quot;aliasNm&quot;:&quot;신임 리더 온보딩 Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:101,&quot;menuNm&quot;:&quot;신임 리더 Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam?notcategorysno=89,90,93,94,95,100,106\u0026categoryNo1=108\u0026categoryNo2=110&quot;,&quot;aliasNm&quot;:&quot;신임 리더 Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:102,&quot;menuNm&quot;:&quot;신임 리더 추천도서&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23109&quot;,&quot;aliasNm&quot;:&quot;신임 리더 추천도서&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:2,&quot;menuNo&quot;:103,&quot;menuNm&quot;:&quot;아레테 리더 Journey&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23110&quot;,&quot;aliasNm&quot;:&quot;아레테 리더 Journey&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:3,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:104,&quot;menuNm&quot;:&quot;아레테 리더 타운홀미팅&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23110&quot;,&quot;aliasNm&quot;:&quot;아레테 리더 타운홀미팅&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:105,&quot;menuNm&quot;:&quot;아레테 리더 콕 letter&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23111&quot;,&quot;aliasNm&quot;:&quot;아레테 리더 콕 letter&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:106,&quot;menuNm&quot;:&quot;아레테 리더 추천도서&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23112&quot;,&quot;aliasNm&quot;:&quot;아레테 리더 추천도서&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:3,&quot;menuNo&quot;:107,&quot;menuNm&quot;:&quot;리더십 ToolKit&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6108\u0026boardSeq=23113&quot;,&quot;aliasNm&quot;:&quot;리더십 ToolKit&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:5,&quot;menuNo&quot;:108,&quot;menuNm&quot;:&quot;아레테 Hub&quot;,&quot;menuPath&quot;:&quot;/Edu/Cop&quot;,&quot;aliasNm&quot;:&quot;아레테 Hub&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:2,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:110,&quot;menuNm&quot;:&quot;필드앤포럼&quot;,&quot;menuPath&quot;:&quot;/Edu/Cop&quot;,&quot;aliasNm&quot;:&quot;필드앤포럼&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:111,&quot;menuNm&quot;:&quot;필드앤포럼 그룹목록&quot;,&quot;menuPath&quot;:&quot;/Edu/Cop&quot;,&quot;aliasNm&quot;:&quot;필드앤포럼 그룹목록&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:112,&quot;menuNm&quot;:&quot;필드앤포럼 활동방&quot;,&quot;menuPath&quot;:&quot;/Edu/BBS/Index?communitySeq=6109\u0026boardSeq=23114&quot;,&quot;aliasNm&quot;:&quot;필드앤포럼 활동방&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:1,&quot;menuNo&quot;:114,&quot;menuNm&quot;:&quot;휴넷LIVE&quot;,&quot;menuPath&quot;:&quot;/Lvb/Home&quot;,&quot;aliasNm&quot;:&quot;휴넷LIVE&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:6,&quot;menuNo&quot;:115,&quot;menuNm&quot;:&quot;교육신청&quot;,&quot;menuPath&quot;:&quot;/Edu/Online?notcategoryNo=1000&quot;,&quot;aliasNm&quot;:&quot;교육신청&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:7,&quot;asideNodeCnt&quot;:7,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:117,&quot;menuNm&quot;:&quot;온라인과정&quot;,&quot;menuPath&quot;:&quot;/Edu/Online?customNotInCategory=1000&quot;,&quot;aliasNm&quot;:&quot;온라인과정&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:118,&quot;menuNm&quot;:&quot;마이크로러닝&quot;,&quot;menuPath&quot;:&quot;/Edu/Imagine?notcategorysno=7&quot;,&quot;aliasNm&quot;:&quot;마이크로러닝&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:189,&quot;menuNm&quot;:&quot;휴넷CEO&quot;,&quot;menuPath&quot;:&quot;/Edu/Imagine?categoryNo=7&quot;,&quot;aliasNm&quot;:&quot;휴넷CEO&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:3,&quot;menuNo&quot;:119,&quot;menuNm&quot;:&quot;Youtube 컨텐츠&quot;,&quot;menuPath&quot;:&quot;/Edu/Youtube/YoutubeLearningContents&quot;,&quot;aliasNm&quot;:&quot;Youtube 컨텐츠&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:120,&quot;menuNm&quot;:&quot;사내교육 신청&quot;,&quot;menuPath&quot;:&quot;/Edu/Offline&quot;,&quot;aliasNm&quot;:&quot;사내교육 신청&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:5,&quot;menuNo&quot;:121,&quot;menuNm&quot;:&quot;사외교육 신청&quot;,&quot;menuPath&quot;:&quot;/Edu/OutSide&quot;,&quot;aliasNm&quot;:&quot;사외교육 신청&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:6,&quot;menuNo&quot;:193,&quot;menuNm&quot;:&quot;러닝메이커&quot;,&quot;menuPath&quot;:&quot;/Edu/Online/lm&quot;,&quot;aliasNm&quot;:&quot;러닝메이커&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:7,&quot;menuNo&quot;:122,&quot;menuNm&quot;:&quot;MY PAGE&quot;,&quot;menuPath&quot;:&quot;/Edu/Classroom/MyMileage&quot;,&quot;aliasNm&quot;:&quot;MY PAGE&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:11,&quot;asideNodeCnt&quot;:11,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:123,&quot;menuNm&quot;:&quot;나의 성장보드&quot;,&quot;menuPath&quot;:&quot;/Edu/Classroom/MyMileage&quot;,&quot;aliasNm&quot;:&quot;나의 성장보드&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:124,&quot;menuNm&quot;:&quot;MY 학습분석 리포트&quot;,&quot;menuPath&quot;:&quot;/Edu/dashboard/home&quot;,&quot;aliasNm&quot;:&quot;MY 학습분석 리포트&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:125,&quot;menuNm&quot;:&quot;학습현황&quot;,&quot;menuPath&quot;:&quot;/Edu/ClassroomOnline/Ing&quot;,&quot;aliasNm&quot;:&quot;학습현황&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:151,&quot;menuNm&quot;:&quot;온라인 학습현황&quot;,&quot;menuPath&quot;:&quot;/Edu/ClassroomOnline/Ing&quot;,&quot;aliasNm&quot;:&quot;온라인 학습현황&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:150,&quot;menuNm&quot;:&quot;마이크로러닝 학습현황&quot;,&quot;menuPath&quot;:&quot;/Edu/ClassroomImagine/Ing&quot;,&quot;aliasNm&quot;:&quot;마이크로러닝 학습현황&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:3,&quot;menuNo&quot;:126,&quot;menuNm&quot;:&quot;교육이력&quot;,&quot;menuPath&quot;:&quot;/Edu/StudyHistory&quot;,&quot;aliasNm&quot;:&quot;교육이력&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:4,&quot;menuNo&quot;:127,&quot;menuNm&quot;:&quot;스크랩&quot;,&quot;menuPath&quot;:&quot;/Edu/Scrap/Process&quot;,&quot;aliasNm&quot;:&quot;스크랩&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:157,&quot;menuNm&quot;:&quot;온라인 스크랩&quot;,&quot;menuPath&quot;:&quot;/Edu/Scrap/Process&quot;,&quot;aliasNm&quot;:&quot;온라인 스크랩&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:158,&quot;menuNm&quot;:&quot;마이크로러닝 스크랩&quot;,&quot;menuPath&quot;:&quot;/Edu/Scrap/Imagine&quot;,&quot;aliasNm&quot;:&quot;마이크로러닝 스크랩&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:5,&quot;menuNo&quot;:128,&quot;menuNm&quot;:&quot;결제내역조회&quot;,&quot;menuPath&quot;:&quot;/Payment/ManageOrder&quot;,&quot;aliasNm&quot;:&quot;결제내역조회&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:6,&quot;menuNo&quot;:129,&quot;menuNm&quot;:&quot;학습 결재 및 관리&quot;,&quot;menuPath&quot;:&quot;/Edu/Classroom/Concern&quot;,&quot;aliasNm&quot;:&quot;학습 결재 및 관리&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:130,&quot;menuNm&quot;:&quot;결재관리&quot;,&quot;menuPath&quot;:&quot;/Edu/Classroom/Concern&quot;,&quot;aliasNm&quot;:&quot;결재관리&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:7,&quot;menuNo&quot;:199,&quot;menuNm&quot;:&quot;NEW러닝메이커 학습자버전&quot;,&quot;menuPath&quot;:&quot;/LmHome&quot;,&quot;aliasNm&quot;:&quot;NEW러닝메이커 학습자버전&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:8,&quot;menuNo&quot;:132,&quot;menuNm&quot;:&quot;Creator H (러닝메이커)&quot;,&quot;menuPath&quot;:&quot;/Sam/LearningTourManager/Index&quot;,&quot;aliasNm&quot;:&quot;Creator H(러닝메이커)&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:true,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:2,&quot;asideNodeCnt&quot;:2,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:133,&quot;menuNm&quot;:&quot;과정제작&quot;,&quot;menuPath&quot;:&quot;/Sam/LearningTourManager/Index&quot;,&quot;aliasNm&quot;:&quot;과정제작&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:135,&quot;menuNm&quot;:&quot;학습현황&quot;,&quot;menuPath&quot;:&quot;/Edu/Sam/MyLearning&quot;,&quot;aliasNm&quot;:&quot;학습현황&quot;,&quot;target&quot;:&quot;_target&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]},{&quot;index&quot;:9,&quot;menuNo&quot;:136,&quot;menuNm&quot;:&quot;비밀번호 변경&quot;,&quot;menuPath&quot;:&quot;javascript:fn_loadChangePassword();&quot;,&quot;aliasNm&quot;:&quot;비밀번호 변경&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:10,&quot;menuNo&quot;:137,&quot;menuNm&quot;:&quot;상담실&quot;,&quot;menuPath&quot;:&quot;/Edu/Counsel/Regist&quot;,&quot;aliasNm&quot;:&quot;상담실&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:true,&quot;locationType&quot;:&quot;H&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:3,&quot;Nodes&quot;:[{&quot;index&quot;:0,&quot;menuNo&quot;:138,&quot;menuNm&quot;:&quot;상담신청&quot;,&quot;menuPath&quot;:&quot;/Edu/Counsel/Regist&quot;,&quot;aliasNm&quot;:&quot;상담신청&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:1,&quot;menuNo&quot;:139,&quot;menuNm&quot;:&quot;나의 상담내역&quot;,&quot;menuPath&quot;:&quot;/Edu/Counsel&quot;,&quot;aliasNm&quot;:&quot;나의 상담내역&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null},{&quot;index&quot;:2,&quot;menuNo&quot;:140,&quot;menuNm&quot;:&quot;학습장애 원격상담&quot;,&quot;menuPath&quot;:&quot;/Edu/StudyProblem&quot;,&quot;aliasNm&quot;:&quot;학습장애 원격상담&quot;,&quot;target&quot;:&quot;_self&quot;,&quot;selectMenu&quot;:false,&quot;showMenu&quot;:true,&quot;hasHeaderShowChild&quot;:false,&quot;hasAsideShowChild&quot;:false,&quot;locationType&quot;:&quot;S&quot;,&quot;imageFile&quot;:null,&quot;etc&quot;:null,&quot;headerNodeCnt&quot;:0,&quot;asideNodeCnt&quot;:0,&quot;Nodes&quot;:null}]}]}]" value="">
+ <input type="hidden" id="companyInfo" name="companyInfo" data-info="{}" value="">
+ <input type="hidden" id="userInfo" name="userInfo" data-info="{}" value="">
+ <input type="hidden" id="mainDisplayInfo" name="mainDisplayInfo" data-info="{&quot;backgroundTopImageUseYn&quot;:&quot;Y&quot;,&quot;studyInfoType&quot;:3,&quot;bestContentsType&quot;:2,&quot;youtubeUseYn&quot;:&quot;N&quot;,&quot;onlineRecommandUseYn&quot;:&quot;Y&quot;,&quot;microRecommandUseYn&quot;:&quot;Y&quot;,&quot;samRecommandUseYn&quot;:&quot;Y&quot;,&quot;myListRecommandUseYn&quot;:&quot;N&quot;,&quot;recommandDisplayOrder&quot;:&quot;1/2/3/4&quot;}" value="">
+ <input type="hidden" id="userInfoCustom" name="userInfoCustom" data-info="{}" value="">
+ </div>
+ <article class="popup browser-info" data-popup-content="browser-info popupPopup_BrowserVersionPopup" id="Pop_BrowserVersionPopup" style="display:none;">
+ <header>
+ <button class="btn-close">
+ <div class="hide">닫기</div>
+ </button>
+ </header>
+ <article class="pop-content">
+ <img src="https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/Images/edu/common/browser-info-popup.jpg" alt="브라우저 환경 안내">
+ <div class="btn-link">
+ <a href="https://www.google.co.kr/intl/ko/chrome" target="_blank">크롬브라우저</a>
+ <a href="https://www.microsoft.com/ko-kr/edge" target="_blank">엣지브라우저</a>
+ </div>
+ <div class="cookie_check mt10">
+ <input type="checkbox" id="cookie_check" name="cookie_check" class="iCheckbox">
+ <label for="cookie_check">오늘하루 열지 않습니다.</label>
+ </div>
+ </article>
+ </article>
+<div class="main-bg">
+ <div class="main-visual">
+<!-- main-visual -->
+<div class="main-visual">
+	<!-- header1 -->
+	<header class="header allnew">
+ <div class="header-wrap main-header-wrap">
+ <div>
+ <div class="d-flex justify-end items-center">
+ <div class="links">
+ <a href="https://365.hunet.co.kr/Edu/Member/Confirm" class="icon-modify">정보수정</a>
+ <a href="https://365.hunet.co.kr/Login/Logout" class="icon-logout">로그아웃</a>
+ </div>
+ <div class="main-app">
+ <button class="btn-app" data-popup="pay-agree">모바일 APP설치 안내</button>
+ </div>
+ </div>
+ <h1>
+ <a href="https://365.hunet.co.kr/"><img src="https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/custom/2162_arete/pc/logo-main.png" alt=""></a>
+ </h1>
+ <h2 class="hide">메뉴</h2>
+ <nav class="gnb">
+ <ul><li class=""> <a href="https://365.hunet.co.kr/Edu/About/Intro?arete" target="_self">휴넷 Inside</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/About/Intro?arete" target="_self">아레테 휴넷 소개</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/About/Intro?academy" target="_self">아레테 아카데미아</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,93,94,95,100,106,108&amp;categoryNo1=90" target="_self">휴넷 News</a> <ul> <li><a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,93,94,95,100,106,108&amp;categoryNo1=90&amp;categoryNo2=128" target="_self">휴넷 Culture</a></li> <li><a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,93,94,95,100,106,108&amp;categoryNo1=90&amp;categoryNo2=91" target="_self">아레테 타운홀</a></li> <li><a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,93,94,95,100,106,108&amp;categoryNo1=90&amp;categoryNo2=92" target="_self">CEO 툭앤톡 &amp; 워크샵</a></li> </ul> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/CardNews?communitySeq=6149&amp;boardSeq=23275" target="_self">휴넷 업무 꿀Tip</a> <ul> <li><a href="https://365.hunet.co.kr/Edu/BBS/CardNews?communitySeq=6149&amp;boardSeq=23275" target="_self">Slack</a></li> </ul> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,94,95,100,106,108&amp;categoryNo1=93" target="_self">온보딩 Journey</a> </li> <li> <a href="https://chatgpt.hunet.ai/baro" target="_target">BARO</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,93,95,100,106,108&amp;categoryNo1=94" target="_self">휴넷 Insight +</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,93,95,100,106,108&amp;categoryNo1=94" target="_self">혁신아카데미</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6105&amp;boardSeq=23080" target="_self">Findings &amp; Insight</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6105&amp;boardSeq=23081" target="_self">콕 letter</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6105&amp;boardSeq=23082" target="_self">휴넷인 콕 릴레이</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Online?processtype2=7" target="_self">Book적Book적</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Online?categoryNo=1000" target="_self">북러닝</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6106&amp;boardSeq=23083" target="_self">휴넷 책방</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/OutSide?outsideFlag=54" target="_self">도서구입신청</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6107&amp;boardSeq=23087" target="_self">직무 College</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6107&amp;boardSeq=23087" target="_self">세일즈 칼리지</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6107&amp;boardSeq=23089" target="_self">교육서비스 칼리지</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6107&amp;boardSeq=23097" target="_self">L&amp;D 칼리지</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6107&amp;boardSeq=23103" target="_self">테크 칼리지</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,93,94,95,100,108" target="_self">리더십 Journey</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,93,94,95,100,108" target="_self">HiPo Journey</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam?notcategorysno=89,90,93,94,95,100,106&amp;categoryNo1=108&amp;categoryNo2=110" target="_self">신임 리더 온보딩 Journey</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6108&amp;boardSeq=23110" target="_self">아레테 리더 Journey</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6108&amp;boardSeq=23113" target="_self">리더십 ToolKit</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Cop" target="_self">아레테 Hub</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Cop" target="_self">필드앤포럼</a> </li> <li> <a href="https://365.hunet.co.kr/Lvb/Home" target="_target">휴넷LIVE</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Online?notcategoryNo=1000" target="_self">교육신청</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Online?customNotInCategory=1000" target="_self">온라인과정</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Imagine?notcategorysno=7" target="_self">마이크로러닝</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Imagine?categoryNo=7" target="_self">휴넷CEO</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Youtube/YoutubeLearningContents" target="_self">Youtube 컨텐츠</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Offline" target="_self">사내교육 신청</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/OutSide" target="_self">사외교육 신청</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Online/lm" target="_self">러닝메이커</a> </li> </ul> </li> <li class=""> <a href="https://365.hunet.co.kr/Edu/Classroom/MyMileage" target="_self">MY PAGE</a> <ul> <li> <a href="https://365.hunet.co.kr/Edu/Classroom/MyMileage" target="_self">나의 성장보드</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/dashboard/home" target="_self">MY 학습분석 리포트</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/ClassroomOnline/Ing" target="_self">학습현황</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/StudyHistory" target="_self">교육이력</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Scrap/Process" target="_self">스크랩</a> </li> <li> <a href="https://365.hunet.co.kr/Payment/ManageOrder" target="_self">결제내역조회</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Classroom/Concern" target="_self">학습 결재 및 관리</a> </li> <li> <a href="https://365.hunet.co.kr/LmHome" target="_target">NEW러닝메이커 학습자버전</a> </li> <li> <a href="https://365.hunet.co.kr/Sam/LearningTourManager/Index" target="_target">Creator H (러닝메이커)</a> <ul> <li><a href="https://365.hunet.co.kr/Sam/LearningTourManager/Index" target="_target">과정제작</a></li> <li><a href="https://365.hunet.co.kr/Edu/Sam/MyLearning" target="_target">학습현황</a></li> </ul> </li> <li> <a href="javascript:fn_loadChangePassword();" target="_self">비밀번호 변경</a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Counsel/Regist" target="_self">상담실</a> </li> </ul> </li></ul>
+ </nav>
+ </div>
+ </div>
+ </header>
+	<div class="container d-flex mt146">
+ <!-- search -->
+ <div class="main-search">
+ <input type="text" id="headPortalSearch" class="iText" placeholder="검색어를 입력해주세요.">
+ <button type="submit" class="btn-search">검색하기</button>
+ </div>
+ <!-- //search -->
+	</div>
+</div>
+<!-- /main-visual -->
+ </div>
+ <div class="container d-flex">
+<div class="main-mileage">
+	<h3 class="title">Step &amp; Mileage</h3>
+	<div class="d-flex">
+ <img id="myLevelImg" src="https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/custom/2162_arete/pc/level_img01.png">
+ <ul>
+ <li>
+ <p>Step</p>
+ <span id="myLevel">1/6</span>
+ </li>
+ <li>
+ <p>Mileage</p>
+ <span id="myPoint">0</span>
+ </li>
+ </ul>
+	</div>
+</div>
+<!-- main-status -->
+<div class="main-status">
+	<h3 class="title">
+ 홍길동님의 학습 현황
+ <a href="https://365.hunet.co.kr/Edu/ClassroomOnline/Ing" class="btn-more">더보기<i></i></a>
+	</h3>
+	<!-- body -->
+	<div class="body">
+ <div class="tab-status">
+ <ul>
+ <li tabvalue="online" class="active"><a href="javascript:void(0);">온라인교육</a></li>
+ <li tabvalue="imagine"><a href="javascript:void(0);">마이크로러닝</a></li>
+ <li tabvalue="lm" style="display: none;"><a href="javascript:void(0);">러닝메이커</a></li> 
+ </ul>
+ </div>
+ <!-- 수강중 -->
+ <div id="myLectureInfo"><div class="no-data">학습중인 과정이 없습니다.</div></div>
+ <!-- //수강중 -->
+ <!-- 수강중인 과정이 없을 때 -->
+ <div class="no-data" style="display: none">
+ <p>수강중인 과정이 없습니다.</p>
+ </div>
+ <!-- //수강중인 과정이 없을 때 -->
+	</div>
+	<!-- /body -->
+</div>
+<!-- //main-status -->
+ </div>
+ <div class="main-display-wrap">
+ <div class="container">
+<div class="main-display" id="microContents"><p class="thumb-img"> <a href="https://365.hunet.co.kr/Edu/Imagine/Detail?goodsId=Y00408157"> <span class="thumb"> <img src="https://img.hunet.co.kr/Files/mall/imagine/261015140453368.jpg" alt=""> </span> </a> </p> <a href="https://365.hunet.co.kr/Edu/Imagine/Detail?goodsId=Y00408157"> <div class="text-wrap"> <p class="label-area"><span>#휴넷CEO</span></p> <p class="subject">170년 유리 기업의 AI 전환, 코닝의 원천기술 재배치 전략</p> <p class="ellipsis3">AI 데이터센터의 경쟁축이 GPU에서 전력과 냉각, 네트워크와 광학 연결로 빠르게 확장되고 있다. 코닝은 이러한 변화 속에서 광섬유를 단순한 부품이 아니라 데이터센터의 연결 밀도와 에너지 효율, 구축 속도를 좌우하는 핵심 솔루션으로 재정의했다. 원천기술의 축적, 산업 병목의 발견, 수요에 기반한 생산 확대가 어떻게 새로운 성장 전략으로 연결되는지 확인할 수 있다.
+</p> </div> </a></div>
+<ul class="main-nav">
+	<li class="nav01">
+ <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6105&amp;boardSeq=23081">
+ <i></i>
+ <span>콕 letter</span>
+ </a>
+	</li>
+	<li class="nav02">
+ <a href="https://365.hunet.co.kr/Edu/Cop">
+ <i></i>
+ <span>필드앤포럼</span>
+ </a>
+	</li>
+	<li class="nav03">
+ <a href="https://365.hunet.co.kr/Edu/BBS/Index?communitySeq=6106&amp;boardSeq=23084">
+ <i></i>
+ <span>이달의 추천도서</span>
+ </a>
+	</li>
+</ul>
+ </div>
+	</div>
+	<div class="container d-flex main-board">
+ <div>
+<div class="main-board-wrap">
+	<h3 class="title">세일즈 칼리지</h3>
+	<ul class="list" id="ulSamList2"><li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM26128&amp;processSettingSeq=23816"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%EB%B3%80%EC%9E%AC%EB%AA%85(0).jpg" alt=""> </span> <span class="subject"> <span class="ellipsis2">L&amp;D테크본부와 커스터마이즈의 이해(IT전략기획팀 변재명 팀장님)</span> </span> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM25365&amp;processSettingSeq=23121"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%EB%B0%95%EC%9A%A9%ED%98%B8.jpg" alt=""> </span> <span class="subject"> <span class="ellipsis2">2026년 교육 체계 수립 설명회(인천대 창의인재개발학과 박용호 교수)</span> </span> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM24101&amp;processSettingSeq=21946"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%EC%9D%B4%EC%9E%AC%EA%B8%B8.JPG" alt=""> </span> <span class="subject"> <span class="ellipsis2">러닝메이커의 이해(러닝메이커솔루션팀 이재길님)</span> </span> </a> </li></ul>
+</div>
+<div class="main-board-wrap">
+	<h3 class="title">혁신아카데미</h3>
+	<ul class="list" id="ulSamList"><li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM28918&amp;processSettingSeq=26372"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%ED%98%81%EC%8B%A0%EC%95%84%EC%B9%B4%EB%8D%B0%EB%AF%B8%20%EC%8D%B8%EB%84%A4%EC%9D%BC(0).jpg" alt=""> </span> <span class="subject"> <span class="ellipsis2">[AI포럼] 644회 - 나노벤처(유니크굿컴퍼니 송인혁 대표님)</span> </span> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM28803&amp;processSettingSeq=26260"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202026-09-28%20182910(0).jpg" alt=""> </span> <span class="subject"> <span class="ellipsis2">[AI포럼] 643회 - AI Native, 조직을 다시 설계하다(카카오 AI Studio 황민호 수석님)</span> </span> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Sam/Detail?processCd=SAM28584&amp;processSettingSeq=26061"> <span class="thumb zoom"> <img src="https://img.hunet.co.kr/files/B2B/2162/%ED%99%94%EB%A9%B4%20%EC%BA%A1%EC%B2%98%202026-09-01%20162129(0).jpg" alt=""> </span> <span class="subject"> <span class="ellipsis2">[AI포럼] 642회 - 디스킬 제너레이션(경희대학교 비교문화연구소 김재인 교수님)</span> </span> </a> </li></ul>
+</div>
+ </div>
+<div class="main-rank">
+	<h3 class="title">이달의 신규과정</h3>
+	<ol id="onlineRecommandContents"><li> <a href="https://365.hunet.co.kr/Edu/Online/Detail?processCd=HLSP87217&amp;cpCd=hunet"> <div class="text"> <p>터닝포인트 팀장리더십스쿨 Online</p> </div> <div class="thumb"> <img src="https://img.hunet.co.kr/files/Process/Course/Sample/341_2.png" alt=""> </div> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Online/Detail?processCd=HLSP87152&amp;cpCd=hunet"> <div class="text"> <p>터닝포인트 팀장리더십 : 생각관리</p> </div> <div class="thumb"> <img src="https://img.hunet.co.kr/files/Process/Course/Sample/%EC%83%9D%EA%B0%81%EA%B4%80%EB%A6%AC%20217.png" alt=""> </div> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Online/Detail?processCd=HLSP78179&amp;cpCd=hunet"> <div class="text"> <p>GPT-X 시대의 마케팅</p> </div> <div class="thumb"> <img src="https://img.hunet.co.kr/files/Process/Course/Sample/GPT-X_%EA%B3%BC%EC%A0%95%EB%AA%85%20sum_217x157(1).jpg" alt=""> </div> </a> </li> <li> <a href="https://365.hunet.co.kr/Edu/Online/Detail?processCd=HLSP82973&amp;cpCd=hunet"> <div class="text"> <p>Executive MBA Online</p> </div> <div class="thumb"> <img src="https://img.hunet.co.kr/files/Process/Course/Sample/HLSP82973(1).png" alt=""> </div> </a> </li></ol>
+</div>
+ </div>
+	<div class="main-cs">
+ <div class="container">
+ <!-- app-cs -->
+ <div class="main-app-cs d-flex">
+<div class="main-app">
+	<h3 class="title">모바일 APP<br>설치 안내</h3>
+	<!-- qrcode /-->
+	<div class="main-app-qr">
+ <div class="d-flex justify-start">
+ <h4 class="title">1</h4>
+ <p>네이버, 다음 등의 어플 중<br>하나를 실행하여<br>QR코드를 촬영해주세요.</p>
+ </div>
+ <p class="qrcode-img">
+ <img src="https://img.hunet.co.kr/Files/CLS/TrainingCenter/MainImage/hu.jpg" alt="">
+ </p>
+	</div>
+	<!--/ qrcode -->
+	<div class="main-app-input">
+ <div class="d-flex justify-start">
+ <h4 class="title">2</h4>
+ <p class="text">설치 URL을 보내드립니다.</p>
+ </div>
+ <div class="send">
+ <form id="smsMainForm" name="smsMainForm">
+ <input type="text" name="hpNum" id="hpNum" placeholder="휴대폰 번호 입력">
+ <input type="hidden" name="sendSubject" id="sendSubject" value="${subject}">
+ <input type="hidden" name="smsType" id="smsType" value="QR">
+ <input type="hidden" name="sendNum" id="sendNum" value="1588-6559">
+ <input type="hidden" name="sendMsg" id="sendMsg" value="ORJChtbSQHvHEDyPJex0ky7QqqWTmDZRqJ4U8YdaLjCJCg91pcU7eIAySSFGIBju">
+ <button type="submit">보내기</button>
+ </form>
+ </div>
+	</div>
+</div>
+<!-- notice -->
+<div class="main-notice">
+	<h3 class="title">공지사항<a href="https://365.hunet.co.kr/Edu/Notice" class="btn-more">더보기<i></i></a></h3>
+	<ul id="notice" class="list-bullet"><li><a href="https://365.hunet.co.kr/Edu/Notice/Detail?noticeSeq=885532">2019년 외부교육 수강매뉴얼(신청/결제/결과보고/정산)</a></li> <li><a href="https://365.hunet.co.kr/Edu/Notice/Detail?noticeSeq=885527">2019년 필드&amp;포럼 활동가이드</a></li> <li><a href="https://365.hunet.co.kr/Edu/Notice/Detail?noticeSeq=885407">2019년 365학점제 가이드</a></li> <li><a href="https://365.hunet.co.kr/Edu/Notice/Detail?noticeSeq=895974">10월 온라인 학습일정을 안내해드립니다.</a></li></ul>
+</div>
+<!-- /notice -->
+ </div>
+ </div>
+	</div>
+</div>
+<!-- 모달팝업 -->
+<div id="pop-app" class="popup pop-app" data-popup-content="pay-agree">
+	<div class="inner">
+ <div class="modal-dialog">
+ <div class="modal-content">
+ <div class="modal-header">
+ <h2>모바일 APP설치 안내</h2>
+ <button type="button" class="btn-close">X</button>
+ </div>
+ <div class="modal-body">
+ <ul>
+ <li class="d-flex">
+ <dl>
+ <dt>QR코드</dt>
+ <dd>네이버, 다음 등 어플 중 하나를 실행 후 QR 코드를 촬영해 주세요.</dd>
+ </dl>
+ <div class="qrcode-img">
+ <img src="https://img.hunet.co.kr/Files/CLS/TrainingCenter/MainImage/hu.jpg" alt="">
+ </div>
+ </li>
+ <li>
+ <dl>
+ <dt>설치 URL 받기</dt>
+ <dd>휴대번호를 입력해주시면 설치 URL을 보내드립니다.</dd>
+ </dl>
+ <div class="send">
+ <form id="smsForm" name="smsForm">
+ <input type="text" name="hpNum" id="hpNum" placeholder="휴대폰 번호">
+ <input type="hidden" name="sendSubject" id="sendSubject" value="${subject}">
+ <input type="hidden" name="smsType" id="smsType" value="QR">
+ <input type="hidden" name="sendNum" id="sendNum" value="1588-6559">
+ <input type="hidden" name="sendMsg" id="sendMsg" value="ORJChtbSQHvHEDyPJex0ky7QqqWTmDZRqJ4U8YdaLjCJCg91pcU7eIAySSFGIBju">
+ <button type="submit">보내기</button>
+ </form>
+ </div>
+ </li>
+ </ul>
+ </div>
+ </div>
+ </div>
+	</div>
+</div>
+<!-- //모달팝업 --> 
+<footer class="footer allnew">
+ <div class="btm"><div> <div> <address>Copyright © All rights reserved by 휴넷(자체).</address> <ul class="list-bar"> <li><a href="javascript:;">[개인정보 처리방침]</a></li> </ul> </div> </div></div>
+</footer>
+<link rel="stylesheet" href="https://img.hunet.co.kr/_assets/levelup/css/common/chatbot_iLearn.min.css">
+ <style type="text/css">
+ .remote .icon-wrap {margin-bottom:0;position:fixed!important;bottom: 23px!important;display:block!important;z-index:10000000!important;font-family:Avenir,"Noto Sans Japanese","Hiragino Kaku Gothic ProN",YuGothic,"Yu Gothic",メイリオ,"Apple SD Gothic Neo","Nanum Barun Gothic",Helvetica,Arial,"Malgun Gothic","맑은 고딕",돋움,Dotum,sans-serif!important;flex-wrap:nowrap!important;right:24px!important;overflow:initial!important;background:transparent!important;}
+ .remote .icon-wrap {bottom: 90px!important;}
+ .remote .txt {display:block!important;position:absolute!important;height:58px!important;top:2px!important;box-sizing:border-box!important;box-shadow:rgba(0,0,0,0.12)0px 3px 12px 0px!important;color:black!important;font-family:Avenir,"Noto Sans Japanese","Hiragino Kaku Gothic ProN",YuGothic,"Yu Gothic",メイリオ,"Apple SD Gothic Neo","Nanum Barun Gothic",Helvetica,Arial,"Malgun Gothic","맑은 고딕",돋움,Dotum,sans-serif!important;font-size: 0px!important;font-weight:600!important;line-height:1.29!important;text-overflow:ellipsis!important;white-space:nowrap!important;user-select:none!important;cursor:pointer!important;right: 0 !important;text-align:right!important;width: 58px; padding:20px 20px 20px 20px!important;background:rgb(255,255,255)!important;overflow:hidden!important; opacity: 0; transition: right, padding 0.5s ease-out 0s!important; border-radius: 50% !important; z-index: 2000000;}
+ .remote .icon-wrap:hover .txt {right: 34px!important; width: auto; padding: 20px 40px 20px 24px!important; border-radius: 30px 10px 10px 30px!important; opacity: 1;background:rgb(255,255,255)!important; font-size:14px!important; z-index: 1;}
+ .remote .icon {position:relative!important;display:flex!important;-webkit-box-align:center!important;align-items:center!important;-webkit-box-pack:center!important;justify-content:center!important;box-shadow:rgba(0,0,0,0.15)0px 4px 6px 0px!important;box-sizing:border-box!important;cursor:pointer!important;flex-wrap:nowrap!important;width:62px!important;height:62px!important;overflow:initial!important;transition:box-shadow 0.2s ease-out 0s!important;animation:0.2s cubic-bezier(0.1,0,0.6,1)0.35s 1normal backwards running eLtMsx!important;background:linear-gradient(rgb(236,28,36)0%,rgb(236,28,36)50%,rgb(236,69,28)100%)!important;border-radius:31px!important; z-index: 10; }
+ .remote .icon:before {content:""!important;display:block!important;flex-basis:initial!important;width:34px!important;height:34px!important;background-image: url(https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/Images/edu/common/ico/icon_remote.png) !important;background-size: 34px auto !important;background-position-x:0px!important;background-position-y:0px!important;}
+ .remote .support {position:relative;width:170px;height:72px;cursor:pointer;background-image:url(https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/Images/edu/common/ico/remote.png);background-size:cover;font-size:0;}
+ </style>
+ <div id="dvRemote" class="remote">
+ </div>
+ <div id="__layer__"></div>
+ <div id="__loading__"></div>
+ <div id="__sublayer__"></div>
+ <div>
+ <form name="frmHunetLogin" id="frmHunetLogin">
+ <input type="hidden" name="mUserId" id="mUserId">
+ <input type="hidden" name="mPwd" id="mPwd">
+ <input type="hidden" name="returnUrl" id="returnUrl">
+ <input type="hidden" name="siteType" id="siteType">
+ </form>
+ <form name="frmECampus" id="frmECampus" method="post">
+ <input type="hidden" name="qq" id="qq">
+ <input type="hidden" name="domain_code" id="domain_code">
+ <input type="hidden" name="cmd" id="cmd" value="studySSO">
+ <input type="hidden" name="diploma" id="diploma" value="">
+ </form>
+ </div>
+<!-- ===== 프로토타입용 플로팅 버튼 =====
+     주소 뒤 ?c=0 원본 / ?c=4 개선안 흰 바탕 캡슐(ilearn-v2.html)
+     (예전 시안: ?c=1 샤인 스윕 / ?c=2 회전 링 / ?c=3 1차 개선안 — 아래 띠에선 숨김)
+     공통 규칙: 대기 상태는 은은하게, 테두리 색·글로우 등 강조는 호버·누름에서만 -->
+<style>
+  /* 원격지원 — 원본 이미지 그대로 */
+  /* 실제 사이트에서 잰 위치: 원격지원은 오른쪽 24px·아래 108px, 아이런은 원격지원과 같은 오른쪽 끝(24px)·아래 40px */
+  .proto-remote{position:fixed;right:24px;bottom:108px;z-index:10000000;width:170px;height:72px;cursor:pointer;
+    background:url("https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/Images/edu/common/ico/remote.png") center/cover no-repeat}
+
+  /* ---------- 원본 버튼 값 ---------- */
+  #ilearn-fab{position:fixed;right:24px;bottom:40px;z-index:999999999}
+  #ilearn-fab .shell{position:relative;border-radius:30px}
+  #ilearn-fab .btn{position:relative;z-index:1;display:flex;flex-direction:row-reverse;align-items:center;overflow:hidden;box-sizing:border-box;
+    margin:0;padding:0;border:none;border-radius:30px;background:transparent;cursor:pointer;
+    box-shadow:2px 12px 40px 0 rgba(119,73,244,.5);transition:transform .15s ease}
+  #ilearn-fab .icon{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:60px;height:60px;
+    border-radius:9999px;background:#7749F4;pointer-events:none;overflow:hidden}
+  /* 로고: 아이런 아이콘 소스(260811_시안2_수정)에서 추출한 마크를 흰색으로 */
+  #ilearn-fab .icon img{position:relative;width:30px;height:30px}
+  #ilearn-fab .tip{overflow:hidden;white-space:nowrap;width:0;height:60px;box-sizing:border-box;display:flex;align-items:center;
+    background:#fff;border:0 solid #E1E2E4;border-right:0;border-radius:30px 0 0 30px;transition:width .3s}
+  #ilearn-fab .tip p{margin:0;padding:0 20px;font:500 16px/normal "Noto Sans KR",sans-serif;letter-spacing:-.2px;color:#000}
+  #ilearn-fab .btn:hover .tip{border-width:1px}
+
+  /* ---------- 시안 공통: 테두리 고리 · 글로우 (호버 때만 켜짐) ---------- */
+  @property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+  @property --flow{syntax:"<percentage>";inherits:false;initial-value:0%}
+  .c1 #ilearn-fab .ring,.c2 #ilearn-fab .ring,
+  .c1 #ilearn-fab .glow,.c2 #ilearn-fab .glow{position:absolute;inset:0;border-radius:30px;pointer-events:none}
+  .c1 #ilearn-fab .ring,.c2 #ilearn-fab .ring{z-index:2;padding:1.5px;opacity:0;transition:opacity .25s;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    background:linear-gradient(90deg,#86A4F3,#9E76EE,#86A4F3,#9E76EE) var(--flow) 0/300% 100%;animation:flow 3s linear infinite}
+  .c1 #ilearn-fab .glow,.c2 #ilearn-fab .glow{z-index:0;opacity:0;transition:opacity .25s;
+    background:linear-gradient(90deg,#86A4F3,#9E76EE);filter:blur(8px)}
+  @keyframes flow{to{--flow:300%}}
+  .c1 #ilearn-fab .shell:hover .ring,.c2 #ilearn-fab .shell:hover .ring{opacity:1}
+  .c1 #ilearn-fab .shell:hover .glow,.c2 #ilearn-fab .shell:hover .glow{opacity:.38}
+  /* 호버 땐 원래 보라 그림자 대신 글로우가 그 역할 */
+  .c1 #ilearn-fab .shell:hover .btn,.c2 #ilearn-fab .shell:hover .btn{box-shadow:none}
+  /* 누름: 살짝 눌림 (어두워지는 효과는 쓰지 않음) */
+  .c1 #ilearn-fab .shell:active .btn,.c2 #ilearn-fab .shell:active .btn{transform:scale(.97)}
+  .c1 #ilearn-fab .shell:active .ring,.c2 #ilearn-fab .shell:active .ring,
+  .c1 #ilearn-fab .shell:active .glow,.c2 #ilearn-fab .shell:active .glow{transform:scale(.97)}
+
+  /* ---------- 시안1 샤인 스윕 ---------- */
+  /* 대기: 보라 원 위로 옅은 빛이 가끔 지나감 */
+  .c1 #ilearn-fab .shine{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%) -120% 0/250% 100% no-repeat;
+    animation:sweep 4.5s ease-in-out infinite}
+  @keyframes sweep{0%,55%{background-position:-120% 0}85%,100%{background-position:220% 0}}
+  .c1 #ilearn-fab .shell:hover .shine{animation-play-state:paused;opacity:0}
+  /* 누름: 글로우가 한 번 번쩍 */
+  .c1 #ilearn-fab .shell.flash .glow{animation:flash .45s ease-out}
+  @keyframes flash{0%{opacity:.85;filter:blur(12px)}100%{opacity:.38;filter:blur(8px)}}
+
+  /* ---------- 시안2 회전 링 ---------- */
+  /* 대기: 원 테두리를 따라 컬러 빛 한 줄기가 돎 (양끝은 흐려짐) */
+  /* 원이 보라색이라 빛이 묻히지 않게, 원에서 2px 띄운 바깥 고리로 돎 */
+  .c2 #ilearn-fab .comet{position:absolute;top:-4px;right:-4px;z-index:2;width:68px;height:68px;box-sizing:border-box;
+    border-radius:50%;padding:2px;pointer-events:none;
+    background:conic-gradient(from var(--ang),transparent 0 62%,rgba(134,164,243,.0) 62%,#86A4F3 80%,#9E76EE 92%,transparent 100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    animation:spin 2.8s linear infinite;transition:opacity .2s}
+  @keyframes spin{to{--ang:360deg}}
+  .c2 #ilearn-fab .shell:hover .comet{opacity:0}
+  /* 누름: 바깥 글로우는 끄고 안쪽에서 빛이 차오름 */
+  .c2 #ilearn-fab .shell:active .glow{opacity:0}
+  .c2 #ilearn-fab .shell:active .btn{box-shadow:inset 0 0 14px rgba(158,118,238,.55),inset 0 0 6px rgba(134,164,243,.6)}
+  .c2 #ilearn-fab .shell:active .tip{box-shadow:inset 0 0 14px rgba(158,118,238,.45)}
+
+  /* 시안 전용 요소는 원본에선 숨김 */
+  .c0 #ilearn-fab .ring,.c0 #ilearn-fab .glow,.c0 #ilearn-fab .shine,.c0 #ilearn-fab .comet,
+  .c2 #ilearn-fab .shine,.c1 #ilearn-fab .comet{display:none}
+
+  /* 시안 이름표 (단독으로 열었을 때만) */
+  .proto-label{position:fixed;left:16px;bottom:16px;z-index:1000000000;padding:6px 12px;border-radius:8px;
+    background:rgba(0,0,0,.72);color:#fff;font:500 13px "Noto Sans KR",sans-serif}
+  .proto-label a{color:#fff;opacity:.6;margin-left:8px;text-decoration:none}
+  .proto-label a.on{opacity:1;text-decoration:underline}
+  .embed .proto-label{display:none}
+  /* 팝업이 막혔을 때 대신 띄우는 창 — 실제 팝업과 같은 폭·자리(오른쪽 위) */
+  #ilearn-popup-fallback{position:fixed;top:0;right:0;z-index:2147483646;width:min(780px,100vw);background:#fff;
+    box-shadow:0 0 0 1px rgba(0,0,0,.08),0 12px 40px rgba(0,0,0,.25)}
+  #ilearn-popup-fallback iframe{display:block;width:100%;height:100%;border:0}
+  #ilearn-popup-fallback button{position:absolute;top:10px;right:12px;width:32px;height:32px;border:0;border-radius:8px;background:#F2F2F4;
+    font:400 20px/32px sans-serif;color:#55555E;cursor:pointer}
+</style>
+
+<div class="proto-remote" title="원격 지원"></div>
+<div id="ilearn-fab">
+  <div class="shell">
+    <span class="glow"></span>
+    <button class="btn" type="button">
+      <span class="icon"><span class="shine"></span><img src="assets/ilearn-logo-white.svg" alt=""></span>
+      <span class="tip"><p>AI Tutor, iLearn과 대화해 보세요</p></span>
+    </button>
+    <span class="ring"></span>
+    <span class="comet"></span>
+  </div>
+</div>
+<div class="proto-label">아이런 버튼: <a href="?c=0">원본</a><a href="?c=4&fx=shadow">개선안 · 그림자 반짝</a><a href="?c=4&fx=line">개선안 · 선 반짝</a></div>
+<script>
+  /* 아이런 창 열기 — 실제 사이트(openChatbotPopup)와 같은 방식:
+     폭 780 팝업을 브라우저 오른쪽 위에 붙여 열고, 높이는 버튼 위까지. 이미 열려 있으면 그 창에 질문만 넘김.
+     팝업이 막힌 환경(미리보기 창 등)에서는 같은 크기·자리에 페이지 안 창으로 대신 띄움 */
+  window.openILearn=function(message, anchor){
+    var name='iLearnChatbot', width=780;
+    var toolbar=window.outerHeight-window.innerHeight;
+    var top=window.screenY+toolbar;
+    var h=anchor?anchor.getBoundingClientRect().top-toolbar:0;
+    var height=h>0?h:window.innerHeight;
+    var left=window.screenX+window.innerWidth-width;
+    var opt='width='+width+',height='+Math.round(height)+',top='+top+',left='+left;
+    var url='ilearn-chat.html'+(message?'?q='+encodeURIComponent(message):'');
+    var w=null; try{ w=window.open('',name,opt) }catch(e){}
+    if(w){
+      var open=false; try{ open=w.location.href!=='about:blank' }catch(e){ open=true }
+      if(open){ w.focus(); if(message) w.postMessage({type:'HUNET_CHATBOT_SEND_MESSAGE',data:{message:message}},'*'); }
+      else w=window.open(url,name,opt);
+      if(w) return;
+    }
+    // 대신 띄우기
+    var box=document.getElementById('ilearn-popup-fallback');
+    if(!box){
+      box=document.createElement('div'); box.id='ilearn-popup-fallback';
+      box.innerHTML='<iframe title="iLearn"></iframe><button type="button" aria-label="아이런 창 닫기">×</button>';
+      box.querySelector('button').onclick=function(){box.remove()};
+      document.body.appendChild(box);
+      box.querySelector('iframe').src=url;
+    } else if(message){ box.querySelector('iframe').contentWindow.postMessage({type:'HUNET_CHATBOT_SEND_MESSAGE',data:{message:message}},'*') }
+    box.style.height=Math.round(anchor?Math.max(anchor.getBoundingClientRect().top-8,320):window.innerHeight*.8)+'px';
+  };
+  (function(){
+    var q=new URLSearchParams(location.search), c=q.get('c')||'0';
+    if(!/^[0-4]$/.test(c)) c='0';
+    document.documentElement.classList.add('c'+c);
+    if(q.has('embed')) document.documentElement.classList.add('embed');
+    var fxq=q.get('fx')||(c==='4'?'shadow':''); document.querySelectorAll('.proto-label a').forEach(function(a){ var h=a.getAttribute('href'); if(h==='?c='+c+(fxq?'&fx='+fxq:'')||h==='?c='+c) a.classList.add('on') });
+
+    var shell=document.querySelector('#ilearn-fab .shell'), btn=shell.querySelector('.btn'), tip=btn.querySelector('.tip');
+    // 원본처럼: 호버 시 말풍선 폭을 글자 길이만큼 펼침
+    shell.addEventListener('mouseenter',function(){tip.style.width=(tip.querySelector('p').scrollWidth+2)+'px'});
+    shell.addEventListener('mouseleave',function(){tip.style.width='0'});
+    btn.addEventListener('click',function(){ window.openILearn('', btn) });
+    // 시안1 누름 글로우 번쩍
+    btn.addEventListener('mousedown',function(){shell.classList.remove('flash');void shell.offsetWidth;shell.classList.add('flash')});
+  })();
+</script>
+<!-- ===== /플로팅 버튼 ===== -->
+<!-- ===== 아이런 개선안 (주소 ?c=3) =====
+     오른쪽 아래 플로팅 안에서만 해결 (콘텐츠 영역은 건드리지 않음)
+     1 흰 캡슐 + 로고(원 없이) + 이름 상시 노출  2 규칙적으로 바뀌는 말풍선 문구  3 호버 시 추천 질문
+     + 어디서 누르든 지금 사이트와 같은 아이런 창(팝업)이 열림 -->
+<style>
+  .c3 #ilearn-fab{display:none}
+  /* 캡슐이 원보다 넓고 높아 원격지원 버튼과 붙음 → 원격지원을 14px 위로 */
+  .c3 .proto-remote{bottom:104px}
+  .c3{--il:#7749F4;--il-deep:#5B2FD6;--il-soft:#F2EDFF;--g1:#86A4F3;--g2:#9E76EE;--line:#E1E2E4;--ink:#191F28;--ink2:#4E5968;--ink3:#8B95A1}
+  .il3{font-family:"Noto Sans KR",sans-serif;letter-spacing:-.2px;color:var(--ink)}
+  .il3 *{box-sizing:border-box}
+  /* 버튼 기본값 지우기 — :where 로 감싸 우선순위를 0으로 (아래 개별 모양이 이기도록) */
+  :where(.il3) button{font:inherit;letter-spacing:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+
+  /* 흐르는 파랑→보라 테두리 (공통) */
+  @property --il3flow{syntax:"<percentage>";inherits:false;initial-value:0%}
+  @keyframes il3flow{to{--il3flow:300%}}
+  .il3-gborder{position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+    background:linear-gradient(90deg,var(--g1),var(--g2),var(--g1),var(--g2)) var(--il3flow) 0/300% 100%;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    animation:il3flow 4s linear infinite}
+
+  /* ---------- 1 흰 캡슐 ---------- */
+  .il3-dock{position:fixed;right:40px;bottom:40px;z-index:999999999;display:flex;flex-direction:row;align-items:center;gap:12px}
+  .il3-cap{position:relative;display:flex;align-items:center;gap:10px;height:60px;padding:0 24px 0 18px;border-radius:30px;background:#fff;
+    box-shadow:0 10px 30px rgba(91,47,214,.22),0 2px 6px rgba(25,31,40,.08);
+    transition:transform .2s,box-shadow .2s}
+  .il3-cap:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(91,47,214,.3),0 2px 6px rgba(25,31,40,.08)}
+  .il3-cap:active{transform:translateY(0) scale(.97)}
+  /* 로고는 원 없이 보라 마크 그대로 */
+  .il3-mark{position:relative;flex:none;display:grid;place-items:center;width:32px;height:32px}
+  .il3-mark img{width:32px;height:32px}
+  .il3-mark.bounce{animation:il3bounce .7s cubic-bezier(.3,.7,.3,1.4)}
+  @keyframes il3bounce{0%{transform:none}30%{transform:translateY(-6px) rotate(-8deg)}60%{transform:translateY(0) rotate(4deg)}100%{transform:none}}
+  .il3-name{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;white-space:nowrap}
+  .il3-name small{font-size:11.5px;font-weight:500;color:var(--il)}
+  .il3-name b{font-size:16px;font-weight:700;color:var(--ink)}
+
+  /* ---------- 2 바뀌는 말풍선 ---------- */
+  .il3-bubble{position:relative;max-width:280px;white-space:nowrap;padding:12px 16px;border-radius:16px 4px 16px 16px;background:#fff;
+    box-shadow:0 8px 24px rgba(25,31,40,.12);font-size:14px;font-weight:500;line-height:1.45;color:var(--ink);cursor:pointer;
+    transition:opacity .3s,transform .3s}
+  .il3-bubble .il3-gborder{animation-duration:6s}
+  .il3-bubble .txt{display:block;transition:opacity .3s,transform .3s}
+  .il3-bubble .txt.out{opacity:0;transform:translateY(6px)}
+  .il3-bubble .caret{display:inline-block;width:2px;height:14px;margin-left:2px;vertical-align:-2px;background:var(--il);animation:il3blink 1s steps(1) infinite}
+  @keyframes il3blink{50%{opacity:0}}
+  .il3-dock.hovering .il3-bubble,.il3-dock.chatting .il3-bubble{opacity:0;transform:translateX(8px);pointer-events:none}
+
+  /* ---------- 3 호버 추천 질문 ---------- */
+  .il3-sugg{position:absolute;z-index:3;right:0;bottom:72px;width:300px;padding:16px;border-radius:18px;background:#fff;
+    box-shadow:0 14px 40px rgba(25,31,40,.16);opacity:0;transform:translateY(8px) scale(.98);transform-origin:100% 100%;pointer-events:none;
+    transition:opacity .22s,transform .22s}
+  .il3-dock.hovering .il3-sugg{opacity:1;transform:none;pointer-events:auto}
+  .il3-sugg h4{margin:0 0 10px;font-size:13px;font-weight:500;color:var(--ink3)}
+  .il3-sugg button{display:flex;align-items:center;gap:8px;width:100%;margin-top:6px;padding:11px 14px;border-radius:12px;
+    background:var(--il-soft);font-size:14px;font-weight:500;color:var(--ink);text-align:left;transition:background .15s,transform .15s}
+  .il3-sugg button:hover{background:#E6DCFF;transform:translateX(-2px)}
+  .il3-sugg button i{font-style:normal;color:var(--il)}
+  /* 호버 판과 캡슐 사이 빈틈에서 닫히지 않게 */
+  .il3-sugg::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px}
+
+  @media (prefers-reduced-motion:reduce){.il3 *,.il3-gborder{animation:none!important;transition:none!important}}
+</style>
+
+<div class="il3" id="il3">
+  <div class="il3-dock" id="il3dock">
+    <div class="il3-bubble" id="il3bubble"><span class="il3-gborder"></span><span class="txt" id="il3txt"></span></div>
+    <div class="il3-sugg" id="il3sugg">
+      <h4>아이런에게 이렇게 물어보세요</h4>
+      <button data-q="지금 듣는 강의 3줄로 요약해 줘"><i>✦</i>지금 듣는 강의 3줄로 요약해 줘</button>
+      <button data-q="나에게 맞는 과정 추천해 줘"><i>✦</i>나에게 맞는 과정 추천해 줘</button>
+      <button data-q="이번 주 학습 계획 세워 줘"><i>✦</i>이번 주 학습 계획 세워 줘</button>
+    </div>
+    <button class="il3-cap" id="il3cap" type="button" aria-label="AI 튜터 아이런 열기">
+      <span class="il3-gborder"></span>
+      <span class="il3-mark" id="il3mark"><img src="assets/ilearn-logo-purple.svg" alt=""></span>
+      <span class="il3-name"><small>AI 튜터</small><b>아이런</b></span>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  if(!document.documentElement.classList.contains('c3')) { document.getElementById('il3').remove(); return; }
+  var $=function(id){return document.getElementById(id)};
+  var dock=$('il3dock'), cap=$('il3cap'), sugg=$('il3sugg'), bubble=$('il3bubble'), txt=$('il3txt'), mark=$('il3mark');
+
+  /* ---- 2 말풍선 문구: 9초마다 글자를 한 자씩 써 내려가며 교체, 바뀔 때 로고가 살짝 튐 ---- */
+  var LINES=['이 강의, 3줄로 요약해 드릴까요?','나에게 맞는 과정을 골라 드려요','모르는 용어는 바로 물어보세요','이번 주 학습 계획, 같이 세워요'];
+  var li=0, typer;
+  function typeLine(s){
+    clearInterval(typer); var n=0; txt.innerHTML='<span class="caret"></span>';
+    typer=setInterval(function(){ n++; txt.innerHTML=s.slice(0,n).replace(/</g,'&lt;')+'<span class="caret"></span>'; if(n>=s.length){clearInterval(typer); setTimeout(function(){txt.innerHTML=s},1200)} },45);
+  }
+  function nextLine(){
+    txt.classList.add('out');
+    setTimeout(function(){ li=(li+1)%LINES.length; txt.classList.remove('out'); typeLine(LINES[li]);
+      mark.classList.remove('bounce'); void mark.offsetWidth; mark.classList.add('bounce'); },300);
+  }
+  typeLine(LINES[0]); setTimeout(function(){mark.classList.add('bounce')},400);
+  setInterval(function(){ if(!dock.classList.contains('hovering')) nextLine() },9000);
+  bubble.addEventListener('click',function(){ openChat(qFromLine(li)) });
+  function qFromLine(i){return ['지금 듣는 강의 3줄로 요약해 줘','나에게 맞는 과정 추천해 줘','','이번 주 학습 계획 세워 줘'][i]}
+
+  /* ---- 3 호버하면 추천 질문 ---- */
+  var hideT;
+  function enter(){ clearTimeout(hideT); dock.classList.add('hovering') }
+  function leave(){ hideT=setTimeout(function(){dock.classList.remove('hovering')},180) }
+  [cap,sugg].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave) });
+  sugg.querySelectorAll('button').forEach(function(b){ b.addEventListener('click',function(){ openChat(b.dataset.q) }) });
+
+  /* ---- 누르면: 지금 사이트와 똑같이 아이런 창(팝업)을 띄움 — float-buttons.html 의 openILearn ---- */
+  function openChat(q){ dock.classList.remove('hovering'); window.openILearn(q, cap) }
+  cap.addEventListener('click',function(){ openChat('') });
+
+})();
+</script>
+<!-- ===== /아이런 개선안 ===== -->
+<!-- ===== 아이런 개선안 — 흰 바탕 한 덩어리 캡슐 (주소 ?c=4) =====
+     원칙: 말풍선을 따로 두지 않고 캡슐 안 글자가 바뀜 · 움직임은 글자 바뀌는 순간 하나 · 그러데이션 테두리 없음
+     &bg=색 을 붙이면 버튼 뒤에 그 색 판을 깔아 진한 퀵메뉴 위에서 어떻게 보이는지 확인 -->
+<style>
+  .c4 #ilearn-fab{display:none}
+
+  /* 실제 사이트 아이런 버튼과 같은 자리(오른쪽 24px·아래 40px) → 원격지원과 오른쪽 끝이 맞음 */
+  .v2{position:fixed;right:24px;bottom:40px;z-index:999999999;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.5px;   /* HDS 서체 */
+    --ink:#1B1A22;--sub:#6E6A80;--il:#7749F4}
+  .v2 *{box-sizing:border-box}
+  :where(.v2) button{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+
+  /* ---------- 캡슐 ---------- */
+  .v2-cap{position:relative;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px 0 14px;border-radius:30px;cursor:pointer;
+    transition:transform .25s cubic-bezier(.3,.7,.3,1),box-shadow .25s,border-color .25s,background-color .25s}
+  .v2-cap:hover{transform:translateY(-2px)}
+  .v2-cap:active{transform:scale(.97)}
+  .v2-logo{flex:none;width:30px;height:30px;display:block;overflow:visible}
+  /* 글자 칸: 폭은 다음 문구 길이에 맞춰 부드럽게 늘고 줄어듦, 글자는 위로 넘어감 */
+  .v2-txt{position:relative;height:26px;overflow:hidden;transition:width .45s cubic-bezier(.3,.7,.3,1)}
+  .v2-cap{transition:transform .25s cubic-bezier(.3,.7,.3,1),box-shadow .25s,border-color .25s,background-color .25s,padding .55s cubic-bezier(.3,.7,.2,1),gap .55s cubic-bezier(.3,.7,.2,1)}
+  .v2-txt{transition:width .55s cubic-bezier(.3,.7,.2,1)}
+  .v2.collapsed .v2-cap{padding:0 14px;gap:0}   /* 접힌 원 = 60×60, 원격지원 원과 같은 크기 */
+  .v2-txt span.name{transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .45s ease .12s}
+  /* 닫을 때: 글자를 오른쪽 끝에 붙여 왼쪽부터 지워지며 오른쪽으로 접힘 */
+  .v2.collapsed .v2-txt span{left:auto;right:0;opacity:0;transform:translateX(8px)}
+  .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:15px;line-height:26px;font-weight:500;
+    transition:transform .45s cubic-bezier(.3,.7,.3,1),opacity .35s}
+  .v2-txt span.name{font-weight:700}
+  .v2-txt span.name em{font-style:normal;font-weight:500;opacity:.6;margin-right:5px}
+  /* 문구 닫기 — HDS button-ghost-icon sm(icon-16) · 회색 대신 black-100 에 투명도(45% → 호버 85%), 호버 배경은 어두운 딤 */
+  .v2-x{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;border-radius:900px;color:#171719;opacity:.45;transition:background-color .15s,opacity .15s}
+  .v2-x svg{width:16px;height:16px;display:block}
+  .v2-x:hover{background:rgba(23,23,25,.06);opacity:.85}
+  .v2-x:active{background:rgba(23,23,25,.1);opacity:1}
+  .v2-x:focus-visible{outline:2px solid var(--il);outline-offset:1px}
+  .v2.collapsed .v2-x{display:none}
+
+  /* ---------- 일렁임 (기본·고정): 흰 바탕 안에서 분홍·연보라·하늘 빛이 천천히 흐르고, 아래로 같은 색이 은은하게 번짐 ---------- */
+  @property --ix1{syntax:"<percentage>";inherits:false;initial-value:20%}
+  @property --iy1{syntax:"<percentage>";inherits:false;initial-value:85%}
+  @property --ix2{syntax:"<percentage>";inherits:false;initial-value:85%}
+  @property --iy2{syntax:"<percentage>";inherits:false;initial-value:20%}
+  @property --ix3{syntax:"<percentage>";inherits:false;initial-value:50%}
+  .v2-sheen{display:none;position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
+  .v2-sheen::before{content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(48% 120% at var(--ix1) var(--iy1),rgba(244,186,236,.3),transparent 72%),
+      radial-gradient(46% 120% at var(--ix2) var(--iy2),rgba(176,200,255,.3),transparent 72%),
+      radial-gradient(40% 110% at var(--ix3) 50%,rgba(214,198,255,.24),transparent 70%);
+    animation:v2iris 9s ease-in-out infinite alternate;
+    /* 가운데는 하얗게 비우고 양 끝에서만 색이 일렁임 */
+    -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 18%,transparent 34%,transparent 66%,rgba(0,0,0,.55) 82%,#000 100%);
+            mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 18%,transparent 34%,transparent 66%,rgba(0,0,0,.55) 82%,#000 100%)}
+  @keyframes v2iris{
+    0%{--ix1:15%;--iy1:90%;--ix2:88%;--iy2:15%;--ix3:45%}
+    35%{--ix1:45%;--iy1:70%;--ix2:60%;--iy2:35%;--ix3:80%}
+    70%{--ix1:80%;--iy1:95%;--ix2:25%;--iy2:20%;--ix3:30%}
+    100%{--ix1:55%;--iy1:80%;--ix2:75%;--iy2:5%;--ix3:60%}}
+  .v2.fx-iris .v2-sheen{display:block}
+  .v2.fx-iris .v2-cap > :not(.v2-sheen){position:relative;z-index:1}
+  /* 회색 테두리 대신: 테두리는 비우고, 안쪽에 흰색 반투명 선 */
+  .c4 .v2.fx-iris.fx-shadow .v2-cap,.c4 .v2.fx-iris.fx-shadow .v2-cap:hover{border-color:transparent}
+  .v2.fx-iris .v2-sheen{inset:-1px}
+  .v2-sheen::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+  /* 그림자·반짝 그림자는 원래 '그림자 강조' 값 그대로 (아래 fx-shadow 규칙) */
+  /* 아래로 번지는 같은 색 빛 — 아주 옅게, 천천히 */
+  .v2.fx-iris.fx-shadow .v2-aura{display:block;inset:6px 4px -10px;filter:blur(16px);opacity:.1;
+    background:conic-gradient(from var(--v2a),#F4B9EC,#C7B6FF,#A9C6FF,#E7B8F5,#F4B9EC);
+    animation:v2auraTurn 12s linear infinite,v2irisBreath 6s ease-in-out infinite}
+  @keyframes v2irisBreath{0%,100%{opacity:.06;transform:scale(.97)}50%{opacity:.12;transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.v2-sheen::before,.v2.fx-iris .v2-aura{animation:none}}
+  .v2-txt span.in{transform:translateY(100%);opacity:0}
+  .v2-txt span.out{transform:translateY(-100%);opacity:0}
+
+  /* ---------- 마우스를 올리면: 물어볼 거리 목록 ---------- */
+  /* 물어볼 거리 목록 — HDS: 안쪽 여백 spacing/4(8) · 모서리 radius/lg(16) · 항목 radius/sm(8) · 항목 body-14(medium) · 머리글 body-12(regular) · 폭은 내용에 맞춤(hug) */
+  .v2-menu{position:absolute;right:0;bottom:72px;width:max-content;display:flex;flex-direction:column;align-items:stretch;padding:8px;border-radius:16px;
+    opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .2s,transform .2s}
+  .v2.open .v2-menu{opacity:1;transform:none;pointer-events:auto}
+  .v2.nomenu .v2-menu{display:none}
+  .v2-menu::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px}
+  .v2-menu h4{margin:0;padding:8px 12px 4px;font-size:12px;font-weight:400;line-height:1.6;letter-spacing:-.5px;white-space:nowrap}
+  .v2-menu button{display:flex;align-items:center;width:100%;white-space:nowrap;padding:12px;border-radius:8px;font-size:14px;font-weight:500;line-height:1.6;letter-spacing:-.5px;
+    text-align:left;transition:background-color .15s}
+
+  /* ---------- 흰 바탕 ---------- */
+  .c4 .v2-cap{background:#fff;border:1px solid #E6E1F4;box-shadow:0 6px 20px rgba(40,22,96,.12),0 1px 2px rgba(40,22,96,.06);color:var(--ink)}
+  .c4 .v2-cap:hover{border-color:#C9BCF5;box-shadow:0 10px 26px rgba(40,22,96,.16),0 1px 2px rgba(40,22,96,.06)}
+  .c4 .v2-txt span.name em{color:var(--il);opacity:1}
+  /* 물어볼 거리 목록 — HDS 토큰 값(밝은 모드) 기준
+     bg-surface #FFFFFF · line-outline #E1E2E4 · black-100 #171719 · black-60 · role/hover · role/pressed · shadow/xl */
+  .c4 .v2-menu{--hds-surface:#FFFFFF;--hds-outline:#E1E2E4;--hds-text:#171719;--hds-text-sub:rgba(23,23,25,.6);--hds-hover:rgba(0,0,0,.03);--hds-pressed:rgba(0,0,0,.05);
+    background:var(--hds-surface);border:1px solid var(--hds-outline);box-shadow:0 12px 24px rgba(23,23,25,.12),0 4px 8px rgba(23,23,25,.06);color:var(--hds-text)}
+  .c4 .v2-menu h4{color:var(--hds-text-sub);text-align:left}
+  .c4 .v2-menu button{color:var(--hds-text);text-align:left;justify-content:flex-start}
+  .c4 .v2-menu button:hover{background:var(--hds-hover)}
+  .c4 .v2-menu button:active{background:var(--hds-pressed)}
+
+  /* ---------- 가만히 있을 때 늘 도는 움직임: 캡슐 아래로 번지는 빛 하나 ----------
+     자잘한 장식(별·스치는 빛·테두리 고리)은 조잡해 보여서 뺐음. 경계선 없는 넓은 빛이 아주 천천히 색과 세기만 바뀜 */
+  @property --v2a{syntax:"<angle>";inherits:false;initial-value:0deg}
+  .v2-aura{position:absolute;inset:-4px -6px;border-radius:40px;z-index:0;pointer-events:none;
+    background:conic-gradient(from var(--v2a),#8EB4FF,#A88BFF,#D29BFF,#8FD3FF,#8EB4FF);
+    filter:blur(16px);opacity:.5;animation:v2auraTurn 9s linear infinite,v2auraBreath 4.5s ease-in-out infinite}
+  @keyframes v2auraTurn{to{--v2a:360deg}}
+  @keyframes v2auraBreath{0%,100%{opacity:.38;transform:scale(.97)}50%{opacity:.62;transform:scale(1.02)}}
+  .v2.still .v2-aura{display:none}
+  /* 빛은 캡슐 뒤(형제 요소), 캡슐은 그 위 */
+  .v2-cap{z-index:1}
+  /* 빛이 그림자 역할을 하므로 캡슐 자체 그림자는 아주 옅게 */
+  .c4 .v2:not(.still) .v2-cap{box-shadow:0 1px 2px rgba(40,22,96,.08)}
+  .c4 .v2:not(.still) .v2-cap:hover{box-shadow:0 2px 6px rgba(40,22,96,.1)}
+
+  /* ---------- 로고 모션: … → 육각형 → 반짝이 → 로고 (레퍼런스: 제미나이 대기 아이콘) ----------
+     레퍼런스에서 뽑은 원칙: 모서리는 전부 말랑하게 / 멈추지 않고 계속 천천히 돎 / 색이 도형 안에서 소용돌이 /
+     모양마다 잠깐 머물며 숨 쉼 / 여유 있는 길이(약 5초) / 꽃잎 쿠키 모양이 굴러가며 통통한 느낌
+     흐름: 동그란 버튼 안 점 셋 오르락내리락 → 녹아 하나 → 둥근 육각형 → 반짝이 별(빤짝) → 로고 → 캡슐이 늘며 이름 → 문구 교대
+     처음 들어올 때 한 번만 */
+  .v2-head{transition:none;transform-box:view-box;transform-origin:25.66px 19.97px}   /* 로고 한가운데를 중심으로 커지고 작아짐 */
+
+  /* ---------- 캡슐 효과: 그림자 강조로 확정 (테두리 강조 시안은 뺌) ----------
+     로고 속 별 셋이 점등되는 순간에 같이 반응 (.shine) */
+  .v2.fx-shadow .v2-aura{display:none}
+  /* 그림자 반짝: 평소엔 옅은 그림자, 반짝일 때 보라·하늘 빛이 그림자에 은은하게 차올랐다 가라앉음 */
+  .c4 .v2.fx-shadow .v2-cap{box-shadow:0 6px 18px rgba(64,40,150,.12),0 1px 2px rgba(40,22,96,.07)}
+  .c4 .v2.fx-shadow .v2-cap:hover{box-shadow:0 8px 22px rgba(64,40,150,.16),0 1px 2px rgba(40,22,96,.07)}
+  .c4 .v2.fx-shadow.shine .v2-cap{animation:v2shadowShine 2.1s cubic-bezier(.37,0,.63,1)}
+  @keyframes v2shadowShine{
+    0%,100%{box-shadow:0 6px 18px rgba(64,40,150,.12),0 1px 2px rgba(40,22,96,.07)}
+    48%{box-shadow:0 8px 24px rgba(119,73,244,.24),0 0 14px rgba(134,164,243,.23),0 1px 2px rgba(40,22,96,.07)}}   /* 처음과 연한 버전의 중간 세기 */
+
+  /* 진한 퀵메뉴 위 시험용 색 판 (&bg=) */
+  .v2-bgtest{position:fixed;right:0;bottom:0;width:720px;height:340px;z-index:9999999;border-top-left-radius:24px}
+
+  @media (prefers-reduced-motion:reduce){.v2 *{transition:none!important;animation:none!important}}
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<div class="v2" id="v2" hidden>
+  <div class="v2-menu" id="v2menu">
+    <h4>아이런에게 물어보기</h4>
+    <button type="button" data-q="연수원 모바일 앱 설치 방법을 알려줘">연수원 모바일 앱 설치 방법을 알려줘</button>
+    <button type="button" data-q="수강신청 기간이 언제야?">수강신청 기간이 언제야?</button>
+    <button type="button" data-q="수료증 출력은 어디서 해?">수료증 출력은 어디서 해?</button>
+  </div>
+  <span class="v2-aura" aria-hidden="true"></span>
+  <div class="v2-cap" id="v2cap" role="button" tabindex="0" aria-label="AI 튜터 아이런 열기">
+    <span class="v2-sheen" aria-hidden="true"></span>
+    <!-- 로고를 조각(왼쪽 판·오른쪽 판·큰 별·중간 별·작은 별)으로 나눠 직접 넣음. 모양은 assets/ilearn-logo-purple.svg 와 같음.
+         원본에서 큰 별은 오른쪽 판에 흰색으로 뚫린 구멍이라, 오른쪽 판을 꽉 채우고 그 위에 흰 별을 얹어 같은 모양을 냄 -->
+    <svg class="v2-logo" id="v2logo" viewBox="17.433 11.740 16.451 16.451" aria-hidden="true"><g class="v2-fluid" id="v2fluid" opacity="0"><g id="v2gooey" filter="url(#v2goo)"><circle cx="22.06" cy="19.97" r="1.3" fill="#784AF6"/><circle cx="25.66" cy="19.97" r="1.3" fill="#784AF6"/><circle cx="29.26" cy="19.97" r="1.3" fill="#784AF6"/><path id="v2a" d="" fill="url(#v2swirl)"/></g><path id="v2c" d="" fill="#fff"/><path id="v2b" d="" fill="#fff"/></g><g class="v2-head" id="v2head"><path class="v2-panel pa" d="M20.1259 14.5304C20.7137 14.1935 21.3904 14.084 22.047 14.2171C22.0081 14.4105 21.9879 14.6081 21.9879 14.8049V21.2278C21.9879 21.7345 22.261 22.2065 22.7015 22.4602L28.2767 25.6703C28.515 25.8082 28.7734 25.9122 29.0423 25.9808C29.3856 26.0702 29.7351 26.0993 30.0783 26.0702L27.035 27.8225C26.1846 28.3133 25.1285 28.3133 24.278 27.8225L18.705 24.6125C18.3617 24.415 18.1484 24.0462 18.1484 23.6504V17.2268C18.1484 16.3715 18.5521 15.5667 19.2212 15.0496L20.1259 14.5297V14.5304Z" fill="#784AF6"/><path class="v2-panel pb" d="M33.1688 16.7208V22.7035C33.1688 23.5589 32.7672 24.363 32.1002 24.878L31.1914 25.4006C30.6237 25.7264 29.9671 25.8394 29.3286 25.725V19.1427C29.3293 18.3643 28.9096 17.6393 28.2336 17.2504L23.0406 14.2601C22.8023 14.1228 22.5445 14.0182 22.2749 13.9496C21.9442 13.8636 21.6079 13.8331 21.2765 13.8574L23.3574 12.6388L24.2801 12.1078C25.1306 11.6171 26.1874 11.6171 27.0371 12.1078L32.2301 15.0981C32.8096 15.4315 33.1688 16.0533 33.1688 16.7201V16.7208Z" fill="#784AF6"/><path class="v2-spark s3" d="M32.9868 16.8567L32.3079 16.6917C31.5582 16.5094 30.9725 15.9258 30.7898 15.1771L30.6244 14.4999L30.459 15.1771C30.2763 15.9251 29.6913 16.5094 28.9409 16.6917L28.2621 16.8567L28.9409 17.0217C29.6906 17.204 30.2763 17.7876 30.459 18.5362L30.6244 19.2134L30.7898 18.5362C30.9725 17.7883 31.5575 17.204 32.3079 17.0217L32.9868 16.8567Z" fill="#fff"/><path class="v2-spark s2" d="M25.9873 17.7738L26.1127 17.2588L26.2382 17.7738C26.3768 18.3429 26.8211 18.7872 27.3902 18.9258L27.9052 19.0513L27.3902 19.1768C26.8211 19.3154 26.3768 19.7597 26.2382 20.3288L26.1127 20.8438L25.9873 20.3288C25.8487 19.7597 25.4044 19.3154 24.8353 19.1768L24.3203 19.0513L24.8353 18.9258C25.4044 18.7872 25.8487 18.3429 25.9873 17.7738Z" fill="#784AF6"/><path class="v2-spark s1" d="M27.5583 20.8288L27.6164 20.5913L27.6746 20.8288C27.7383 21.0912 27.9439 21.2969 28.2063 21.3606L28.4438 21.4187L28.2063 21.4769C27.9439 21.5406 27.7383 21.7462 27.6746 22.0086L27.6164 22.2461L27.5583 22.0086C27.4946 21.7462 27.289 21.5406 27.0265 21.4769L26.7891 21.4187L27.0265 21.3606C27.289 21.2969 27.4946 21.0912 27.5583 20.8288Z" fill="#784AF6"/></g><defs><filter id="v2goo" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation=".55" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"/></filter><linearGradient id="v2swirl" gradientUnits="userSpaceOnUse" x1="17.6" y1="19.97" x2="33.7" y2="19.97"><stop id="v2c1" offset="0" stop-color="#784AF6"/><stop id="v2c2" offset=".55" stop-color="#9E76EE"/><stop id="v2c3" offset="1" stop-color="#86A4F3"/></linearGradient></defs></svg>
+    <span class="v2-txt" id="v2txt"></span>
+    <button class="v2-x" id="v2x" type="button" aria-label="안내 문구 닫기"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var box=document.getElementById('v2');
+  if(!document.documentElement.classList.contains('c4')){ box.remove(); return; }
+  box.hidden=false;
+  box.classList.add('fx-shadow','fx-iris');   // 그림자 강조 + 일렁임 (확정, 고정)
+  // &menu=0 이면 마우스를 올려도 질문 목록을 띄우지 않음 (로고·이름 고정만)
+  if(new URLSearchParams(location.search).get('menu')==='0') box.classList.add('nomenu');   // glow = 예전 번지는 빛 (비교용)
+  // &m=0 이면 움직임 없이 (비교용)
+  if(new URLSearchParams(location.search).get('m')==='0') box.classList.add('still');
+
+  var bg=new URLSearchParams(location.search).get('bg');
+  if(bg && /^#?[0-9a-fA-F]{3,8}$/.test(bg)){ var d=document.createElement('div'); d.className='v2-bgtest'; d.style.background=(bg[0]==='#'?'':'#')+bg; document.body.appendChild(d); }
+
+  var cap=document.getElementById('v2cap'), menu=document.getElementById('v2menu'), wrap=document.getElementById('v2txt');
+  /* 글자: 평소엔 "AI 튜터 아이런", 질문 차례엔 질문 문구 (질문 3개를 차례로) */
+  var NAME={html:'<em>AI 튜터</em>아이런',name:true};
+  var QS=['연수원 모바일 앱 설치 방법을 알려줘','수강신청 기간이 언제야?','수료증 출력은 어디서 해?'];
+  var cur=null, curKey='', curQ='';
+  function make(s){ var el=document.createElement('span'); if(s.name) el.className='name'; if(s.html) el.innerHTML=s.html; else el.textContent=s.text; return el }
+  function widthOf(el){ el.style.visibility='hidden'; el.classList.remove('in','out'); wrap.appendChild(el); var w=Math.ceil(el.offsetWidth)+2; /* 화면 확대(버튼만 보기 2배)와 상관없는 원래 폭 → 캡슐이 글자에 딱 맞음(hug) */ el.remove(); el.style.visibility=''; return w }
+  function show(s,first){
+    var el=make(s), w=widthOf(el);
+    wrap.style.width=w+'px';
+    if(first){ wrap.appendChild(el); cur=el; return }
+    el.classList.add('in'); wrap.appendChild(el);
+    var old=cur; cur=el;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.remove('in'); if(old){ old.classList.add('out'); setTimeout(function(){old.remove()},500) } }) });
+  }
+  function setText(s,q){ var key=s.name?'name':s.text; curQ=q||''; if(key===curKey) return; curKey=key; show(s) }
+  show(NAME,true); curKey='name';
+  // 글꼴이 늦게 받아지면 폭이 좁게 재져 글자가 잘리므로, 글꼴을 다 받은 뒤 다시 잼
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ if(cur){ var c=cur.cloneNode(true); wrap.style.width=widthOf(c)+'px' } });
+
+  /* 마우스를 올리면 목록 + 로고·이름으로 고정, 내리면 다시 순환 */
+  var hideT;
+  function enter(){ clearTimeout(hideT); if(box.classList.contains('open')) return; box.classList.add('open'); window.v2Hover&&window.v2Hover(true) }
+  function leave(){ hideT=setTimeout(function(){ box.classList.remove('open'); window.v2Hover&&window.v2Hover(false) },180) }
+  [cap,menu].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave) });
+
+  /* 누르면 지금 사이트와 같은 아이런 창 (float-buttons.html 의 openILearn) — 질문이 떠 있을 땐 그 질문으로 */
+  cap.addEventListener('click',function(){ box.classList.remove('open'); window.openILearn(curQ, cap) });
+  cap.addEventListener('keydown',function(e){ if((e.key==='Enter'||e.key===' ')&&e.target===cap){ e.preventDefault(); cap.click() } });
+  /* 닫기: 문구를 접고 동그란 버튼으로 → 로고 모양 순환만 반복 */
+  document.getElementById('v2x').addEventListener('click',function(e){ e.stopPropagation(); window.v2Close&&window.v2Close() });
+  menu.querySelectorAll('button').forEach(function(b){ b.addEventListener('click',function(){ box.classList.remove('open'); window.openILearn(b.dataset.q, cap) }) });
+
+  /* ---- 로고 모션: … → 육각형 → 반짝이 → 로고 (한 흐름) ---- */
+  (function(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var head=document.getElementById('v2head'), fluid=document.getElementById('v2fluid'), gooey=document.getElementById('v2gooey');
+    var dots=[].slice.call(gooey.querySelectorAll('circle')), A=document.getElementById('v2a'), B=document.getElementById('v2b'); var C=document.getElementById('v2c');
+    var pa=head.querySelector('.pa'), pb=head.querySelector('.pb');
+    var CX=25.66, CY=19.97, N=180, TAU=Math.PI*2, SX=30.624, SY=16.857;
+    function clamp(x){ return x<0?0:x>1?1:x }
+    function seg(t,a,b){ return clamp((t-a)/(b-a)) }
+    function sm(k){ return k*k*(3-2*k) }                                   // 부드러운 출발·도착
+    function ease5(k){ return k<.5?16*k*k*k*k*k:1-Math.pow(-2*k+2,5)/2 }   // 아주 부드러운 가속·감속
+    function outQ(k){ return 1-Math.pow(1-k,4) }
+    var lerp=function(a,b,k){ return a+(b-a)*k };
+
+    // 모양 = 각도별 반지름
+    function shape(fn){ var a=new Array(N); for(var i=0;i<N;i++) a[i]=fn(i/N*TAU); return a }
+    function soften(a,w){ var o=new Array(N); for(var i=0;i<N;i++){ var sum=0; for(var k=-w;k<=w;k++) sum+=a[(i+k+N)%N]; o[i]=sum/(2*w+1) } return o }
+    function mix(a,b,k){ var o=new Array(N); for(var i=0;i<N;i++) o[i]=a[i]+(b[i]-a[i])*k; return o }
+    function hexR(R){ return function(t){ var a=((t+Math.PI/2)%(Math.PI/3)+Math.PI/3)%(Math.PI/3)-Math.PI/6; return R*Math.cos(Math.PI/6)/Math.cos(a) } }
+    function spark(t){ var q=.46, c=Math.abs(Math.cos(t)), s=Math.abs(Math.sin(t)); return 1/Math.pow(Math.pow(c,q)+Math.pow(s,q),1/q) } // 날렵한 네 갈래 (로고 별 비율)
+    // 실제 로고 바깥선: 두 판을 합친 모양의 가장자리를 각도마다 재서 씀 → 마지막에 로고와 이음매 없이 겹침
+    function logoOutline(){ var svgEl=head.ownerSVGElement, pt=svgEl.createSVGPoint(), out=new Array(N);
+      for(var i=0;i<N;i++){ var t=i/N*TAU, r=9.6; for(; r>2; r-=.02){ pt.x=CX+r*Math.cos(t); pt.y=CY+r*Math.sin(t); if(pa.isPointInFill(pt)||pb.isPointInFill(pt)) break; } out[i]=r }
+      return soften(out,1) }
+    // 레퍼런스처럼 모서리를 말랑하게: 이웃 값을 넓게 평균 내 둥글림
+    // 실제 로고의 빈 구멍(흰 페이지): 가운데서 바깥으로 나가며 처음 판에 닿는 거리 → 끝에서 구멍이 서서히 열림
+    function logoHole(){ var svgEl=head.ownerSVGElement, pt=svgEl.createSVGPoint(), out=new Array(N);
+      for(var i=0;i<N;i++){ var t=i/N*TAU, r=0; for(; r<7.5; r+=.02){ pt.x=CX+r*Math.cos(t); pt.y=CY+r*Math.sin(t); if(pa.isPointInFill(pt)||pb.isPointInFill(pt)) break; } out[i]=Math.min(r,7.5) }
+      return soften(out,1) }
+    var HOLE=null;
+    var CIRCLE=shape(function(){return 1});
+    var HEX=soften(shape(hexR(7.9)),4);                                                   // 육각형 (모서리만 살짝 둥글게, 형태가 또렷하게)
+    var SPARK=soften(shape(spark),2);                                                      // 끝이 둥근 네 갈래 별 (반지름 1)
+    var LOGO=null;
+    function pathOf(rs,scale,rot,cx,cy,sx,sy){ sx=sx||1; sy=sy||1; var d=''; for(var i=0;i<N;i++){ var t=i/N*TAU+rot, r=rs[i]*scale; d+=(i?'L':'M')+(cx+r*Math.cos(t)*sx).toFixed(3)+' '+(cy+r*Math.sin(t)*sy).toFixed(3) } return d+'Z' }
+    // 쫀득함: 모양이 완성되는 순간부터 젤리처럼 위아래로 눌렸다 늘었다 출렁이다 가라앉음 (전체 속도는 그대로)
+    function jelly(t,at,amp){ var d=t-at; return d<=0?0:amp*Math.exp(-d/260)*Math.sin(d/95) }
+    var sine=function(k){ return -(Math.cos(Math.PI*k)-1)/2 };
+    // 모양이 완성될 때 살짝 부풀었다 가라앉는 통통함 (작게)
+    function pop(t,at,amp){ var d=t-at; return d<=0?0:amp*Math.exp(-d/220)*Math.sin(d/70) }
+    var g=document.getElementById('v2swirl'), c1=document.getElementById('v2c1'), c2=document.getElementById('v2c2'), c3=document.getElementById('v2c3');
+    function hexToRgb(h){ var n=parseInt(h.slice(1),16); return [n>>16,n>>8&255,n&255] }
+    function mixRgb(rgb,hex,k){ var x=rgb.match(/\d+/g).map(Number), y=hexToRgb(hex); return 'rgb('+x.map(function(v,i){return Math.round(v+(y[i]-v)*k)}).join(',')+')' }
+    function mixC(a,b,k){ var x=hexToRgb(a),y=hexToRgb(b); return 'rgb('+x.map(function(v,i){return Math.round(v+(y[i]-v)*k)}).join(',')+')' }
+
+    // 반짝이 별이 완성되는 순간(4568ms)에 시간을 0.45초 멈추고, 그동안 별만 '빤짝' (나머지 흐름은 그대로 뒤로 밀림)
+    var TW_AT=4337, TW_LEN=450;   // 반짝이 별이 완성되는 순간 (u = 2/3)
+    var T=TW_AT+260+520+500+TW_LEN+800;   // 로고가 뿅 나타나 출렁임이 가라앉을 때까지 (+ 육각형 머묾 0.8초)
+    var STARS=[head.querySelector('.s1'),head.querySelector('.s2'),head.querySelector('.s3')];
+    STARS.forEach(function(el){ el.style.transformBox='fill-box'; el.style.transformOrigin='center' });
+    // 육각형이 완성되는 순간(3264ms)에도 0.8초 머묾 → 육각형 형태가 또렷이 보이게 (머무는 동안 천천히 돌며 숨 쉼)
+    var HX_AT=3264, HX_LEN=800;
+    function frame(t){
+      var hx=0; if(t>=HX_AT){ if(t<HX_AT+HX_LEN){ hx=(t-HX_AT)/HX_LEN; t=HX_AT; } else t-=HX_LEN; }
+      var tw=0; if(t>=TW_AT){ if(t<TW_AT+TW_LEN){ tw=(t-TW_AT)/TW_LEN; t=TW_AT; } else t-=TW_LEN; }
+      // ① 점 셋: 일정한 속도의 부드러운 물결 (한 바퀴 0.9초)
+      // 한 번에 쫀득하게 모임: 바깥으로 살짝 당겼다가 가운데로 휙 (0.55초)
+      var gk=seg(t,1700,2250), gather=gk<=0?0:gk>=1?1:(2.2*gk*gk*gk-1.2*gk*gk);
+      dots.forEach(function(d,k){
+        // 물결은 실제 시계로 돎 → 되감기·빨리감기와 상관없이 늘 같은 느린 속도 (한 번 오르내리는 데 1.4초)
+        var ph=performance.now()/1400*TAU-k*.9, hop=1.0*(.5-.5*Math.cos(ph))*sine(seg(t,0,700))*(1-gather);
+        var x=CX+(k-1)*5.0*(1-gather)   /* 점 사이 간격 넉넉히 */, r=lerp(1.3,1.7,clamp(gather))*(1-seg(t,2350,2600));
+        d.setAttribute('cx',x.toFixed(3)); d.setAttribute('cy',(CY-hop).toFixed(3)); d.setAttribute('r',Math.max(0,r).toFixed(3));
+        d.setAttribute('opacity',1);
+      });
+      // ② 녹아 하나 → 둥근 육각형 → 쿠키 → 반짝이 → 로고 바깥선
+      // 모양 변화는 한 줄기 진행값 u 하나로: 처음과 끝만 부드럽게, 가운데는 일정한 속도 (구간마다 빨라졌다 느려지는 출렁임 없음)
+      var grow=sine(seg(t,2150,2650));
+      var u=seg(t,2300,5450); u=(u<.12?(u*u)/.24:u>.88?.88-((1-u)*(1-u))/.24:u-.06)/.88;
+      // 원→육각형은 u 0~0.28, 육각형으로 잠깐 머문 뒤(0.28~0.40) 반짝이로 (반짝이 완성은 그대로 u=2/3)
+      var toHex=clamp(u/.28), toSpark=clamp((u-.40)/(2/3-.40)), toLogo=0;
+      var rs=CIRCLE.map(function(){ return lerp(.2,2.9,grow) });
+      rs=mix(rs,HEX,toHex); var sparkRot=0;
+      // 육각형 → 반짝이: 모양을 억지로 섞지 않고, 육각형이 작게 오므라든 뒤 그 점에서 반짝이가 살짝 돌며 피어남 (끝에 아주 살짝 넘침)
+      if(toSpark>0){
+        if(toSpark<.5){ var kk=sine(toSpark*2); rs=HEX.map(function(v){ return v*lerp(1,.2,kk) }); }
+        else { var kb=toSpark*2-1, ob=1+2.2*Math.pow(kb-1,3)+1.2*Math.pow(kb-1,2); rs=SPARK.map(function(v){ return v*8.4*lerp(.2,1,ob) }); sparkRot=(1-sine(kb))*-70*Math.PI/180; }
+      }
+      // ③ 반짝이 → 로고 '뿅!': 반짝이가 빤짝한 뒤 살짝 돌며 쏙 작아지고(0.26초), 그 자리에서 로고가 작게 튀어나와 크게 넘쳤다 쫀득하게 자리잡음
+      var shrink=seg(t,TW_AT,TW_AT+260), POP=TW_AT+260, popK=seg(t,POP,POP+520);
+      if(t>TW_AT){ rs=SPARK.map(function(v){ return v*8.4*(1-sm(shrink)) }); }
+      var bump=1;
+      var rot=-240*(1-Math.min(u,2/3)*1.5)*Math.PI/180+sparkRot;   // 반짝이까지 일정한 속도로 돎
+      if(t>TW_AT) rot=(sm(shrink)*120)*Math.PI/180;                 // 작아질 때 한 번 휙
+      var wob=jelly(t,2250,.16)+jelly(t,3264,.08);   // 모이는 순간 크게 쫀득, 육각형 완성 때 한 번 더
+      // 빤짝: 별이 살짝 커졌다 돌아오며 끝을 한 번 틀고, 안쪽이 밝게 번쩍
+      var flash=tw>0?Math.sin(Math.PI*tw):0, flick=tw>0?Math.sin(Math.PI*tw)*Math.exp(-tw*1.5):0;
+      bump*=1+.2*flash; rot+=flick*22*Math.PI/180;
+      if(tw>0) wob+=.08*Math.exp(-tw*2.5)*Math.sin(tw*9);
+      // 육각형으로 머무는 동안: 천천히 60° 돌며(육각형은 60°마다 같은 모양이라 끝나도 튀지 않음) 은은하게 숨 쉬고 한 번 쫀득
+      if(hx>0){ rot+=sine(hx)*60*Math.PI/180; bump*=1+.05*Math.sin(Math.PI*hx); wob+=.05*Math.sin(Math.PI*2*hx)*(1-hx); }
+      var sx=1+wob, sy=1-wob;
+      A.setAttribute('d', (t<1900||t>=POP)?'':pathOf(rs,bump,rot,CX,CY,sx,sy));
+      var ga=t*.12;
+      g.setAttribute('gradientTransform','rotate('+ga.toFixed(1)+' '+CX+' '+CY+')');
+      var s1='#6A3CF0', s2='#B48BFF', s3='#7FA8FF';
+      if(flash>0){ s1=mixC(s1,'#B79BFF',flash*.7); s2=mixC(s2,'#F3ECFF',flash*.85); s3=mixC(s3,'#CFE0FF',flash*.7); }
+      c1.setAttribute('stop-color',s1); c2.setAttribute('stop-color',s2); c3.setAttribute('stop-color',s3);
+      C.setAttribute('d',''); B.setAttribute('d','');
+      // 로고 뿅: 0에서 1.18배까지 튀었다가 1로 (뒤로 살짝 당겼다 놓는 곡선) + 착지 후 젤리 출렁
+      var pk=popK, pop=pk<=0?0:1+2.9*Math.pow(pk-1,3)+1.9*Math.pow(pk-1,2);
+      var pw=jelly(t,POP+380,.06), psx=pop*(1+pw), psy=pop*(1-pw);
+      head.style.opacity=t>=POP?1:0; fluid.setAttribute('opacity',t>=POP?0:1);
+      head.style.transform='scale('+psx.toFixed(4)+','+psy.toFixed(4)+')';
+      // 로고가 자리 잡으면 반짝이가 릴레이처럼 작은 별 → 중간 별 → 큰 별 순서로 톡, 톡, 톡 (겹치며 이어짐)
+      STARS.forEach(function(el,k){
+        var sk=seg(t,POP+340+k*120,POP+700+k*120), sp=sk<=0?0:1+2.9*Math.pow(sk-1,3)+1.9*Math.pow(sk-1,2);
+        el.style.transform='scale('+sp.toFixed(4)+') rotate('+((1-sk)*-30).toFixed(1)+'deg)';
+      });
+      // 물방울 효과는 점이 모여 합쳐지는 동안에만 → 떨어져 있을 땐 셋 다 완전한 원
+      if(gather>.3&&t<=2750) gooey.setAttribute('filter','url(#v2goo)'); else gooey.removeAttribute('filter');
+    }
+    /* ---- 등장 뒤 평소 움직임: 모양은 그대로, 반짝이 셋이 가끔 릴레이로 이어서 살짝 + 로고 전체가 숨 쉬듯 1px ----
+       모두 고른 사인 곡선 (빨라졌다 느려지는 출렁임 없음) */
+    var idleOn=false, waveT=null, waveI=null;
+    var order=[head.querySelector('.s2'),head.querySelector('.s1'),head.querySelector('.s3')]; // 왼쪽부터
+    order.forEach(function(el){ el.style.transformBox='fill-box'; el.style.transformOrigin='center' });
+    function wave(){
+      // 반짝이 릴레이: 작은 별 → 중간 별 → 큰 별이 같은 동작을 0.14초씩 겹쳐 이어받음
+      var relay=[head.querySelector('.s1'),head.querySelector('.s2'),head.querySelector('.s3')];
+      relay.forEach(function(el,k){
+        el.animate([{transform:'scale(1) rotate(0)'},{transform:'scale(1.25) rotate(16deg)'},{transform:'scale(1) rotate(0)'}],
+          {duration:900,delay:k*140,easing:'cubic-bezier(.37,0,.63,1)'});
+      });
+      // 마지막 큰 별 차례에 캡슐 그림자/선도 이어서 반짝
+      setTimeout(function(){ box.classList.remove('shine'); void box.offsetWidth; box.classList.add('shine'); },280);
+      setTimeout(function(){ box.classList.remove('shine') },3800);
+    }
+    function startIdle(){
+      idleOn=true; waveT=setTimeout(wave,1800); waveI=setInterval(function(){ if(!box.classList.contains('open')) wave(); },5200);
+      var t0=performance.now();
+      (function f(now){ if(!idleOn) return;
+        var y=-Math.sin((now-t0)/4000*TAU)*.55;   // 그림 단위 0.55 ≈ 1px
+        head.style.transform='translateY('+y.toFixed(3)+'px)';
+        requestAnimationFrame(f);
+      })(t0);
+    }
+    function stopIdle(){ idleOn=false; clearTimeout(waveT); clearInterval(waveI); order.forEach(function(el){ el.getAnimations().forEach(function(a){a.cancel()}) }); head.style.transform=''; }
+
+    /* ---- 순환: 로고+이름 → (로고→형태 결합→육각형→반짝임→로고) → 질문 문구 + 점 셋 대기 → 로고+이름 … ----
+       gen 이 바뀌면(마우스 올림 등) 진행 중이던 움직임은 모두 그 자리에서 멈춤 */
+    var gen=0;
+    function later(fn,ms){ var my=gen; setTimeout(function(){ if(my===gen) fn() },ms) }
+    function hold(at,dur,done){ var my=gen, t0=performance.now(); (function f(now){ if(my!==gen) return; frame(at); if(now-t0<dur) requestAnimationFrame(f); else done&&done(); })(t0) }
+    function run(from,to,dur,done,ease){ var my=gen, t0=performance.now(); (function f(now){ if(my!==gen) return; var k=Math.min(1,(now-t0)/dur); frame(lerp(from,to,ease?ease(k):k)); if(k<1) requestAnimationFrame(f); else done&&done(); })(t0) }
+    function showLogo(){
+      head.getAnimations().forEach(function(a){a.cancel()});
+      fluid.setAttribute('opacity',0); A.setAttribute('d',''); head.style.opacity=1; head.style.transform='';
+      STARS.forEach(function(el){ el.style.transform='' });
+    }
+    // 로고가 살짝 눌렸다가 돌며 작은 덩어리로 응축 → 덩어리(형태) 상태에서 이어감
+    function condense(done){
+      var my=gen;
+      head.animate([
+        {transform:'scale(1,1) rotate(0)'},
+        {transform:'scale(1.08,.9) rotate(4deg)',offset:.22},
+        {transform:'scale(.2,.2) rotate(-50deg)'}
+      ],{duration:550,easing:'cubic-bezier(.55,0,.75,.2)',fill:'forwards'}).finished.then(function(){
+        if(my!==gen) return;
+        head.getAnimations().forEach(function(a){a.cancel()});
+        fluid.setAttribute('opacity',1); frame(2250); done();
+      },function(){});
+    }
+    var qi=0, closed=false;
+    var LOGO_MS=5000;                                                                                  // 로고 모양으로 머무는 시간 (넉넉히)
+    function accel(k){ return k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2 }                                      // 완만한 가속 → 감속
+    // 로고 → 형태 결합 → 육각형 → 반짝임 → 로고 (예전보다 조금 빠르게, 완만한 가속)
+    function morph(next){ stopIdle(); condense(function(){ run(2250,T,(T-2250)*.85,function(){ showLogo(); startIdle(); next() },accel) }) }
+    function rest(){ showLogo(); setText(NAME,''); startIdle(); later(function(){ morph(function(){ later(ask,2600) }) },LOGO_MS) }   // 로고 + 이름
+    function restClosed(){ showLogo(); startIdle(); later(function(){ morph(restClosed) },LOGO_MS) }  // 닫은 뒤: 동그란 버튼 안에서 로고 모양 순환만
+    function ask(){                                                                                   // 질문 문구 + 점 셋 대기
+      stopIdle(); var q=QS[qi]; qi=(qi+1)%QS.length;
+      setText({text:q},q);
+      condense(function(){ run(2250,1700,600,function(){ hold(1700,4800,back) },accel) });
+    }
+    function back(){                                                                                  // 점 셋이 모여 로고로 톡
+      setText(NAME,'');
+      run(1700,2250,450,function(){
+        showLogo();
+        head.animate([{transform:'scale(.2)'},{transform:'scale(1.14)',offset:.6},{transform:'scale(1)'}],{duration:520,easing:'cubic-bezier(.34,1.3,.64,1)'});
+        later(rest,520);
+      },accel);
+    }
+    window.v2Close=function(){
+      closed=true; gen++; stopIdle(); showLogo(); setText(NAME,'');
+      box.classList.add('collapsed'); wrap.style.width='0px';
+      later(restClosed,600);
+    };
+    window.v2Hover=function(on){
+      gen++; stopIdle(); showLogo(); if(!closed) setText(NAME,'');
+      if(on) startIdle(); else later(closed?restClosed:rest,0);
+    };
+    if(!LOGO){ LOGO=logoOutline(); HOLE=logoHole(); }
+    showLogo(); setTimeout(rest,300);   // 처음엔 로고 + 이름으로 시작
+  })();
+})();
+</script>
+<!-- ===== /아이런 개선안 2차 ===== -->
+</body></html>
