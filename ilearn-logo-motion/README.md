@@ -4,7 +4,7 @@
 기준 파일은 `ilearn-prototype/button.html`(`?c=4`)이며, 위 막대의 **비교 → 기존과 나란히**에서 기존(최초 `ilearn-prototype/index.html`을 그냥 열었을 때 보이는 원래 사이트 버튼)과 함께 볼 수 있습니다.
 
 - 조정판: `index.html` (GitHub Pages: https://andy-room.github.io/prototype/ilearn-logo-motion/)
-- **보기 전용(공유용)**: `present.html` (https://andy-room.github.io/prototype/ilearn-logo-motion/present.html) — 위 막대·조정판 없이 연수원 메인 화면 위에 수정안 버튼만. 값은 기본값(조정판에서 확정한 값) 그대로이고, 보는 사람 브라우저에 저장된 조정값은 쓰지 않음
+- **보기 전용(공유용)**: `present.html` (https://andy-room.github.io/prototype/ilearn-logo-motion/present.html) — 조정판 화면에서 **오른쪽 조정판만 뺀 것**. 위 막대(재생·처음부터·전체 화면·속도·컬러 반전·목업·반복·버튼·마우스 올리면 질문·비교)는 그대로. 값은 기본값(조정판에서 확정한 값) 그대로이고, 보는 사람 브라우저에 저장된 조정값은 쓰지 않음. `present.html?invert`는 컬러 반전으로 시작
 - 조정판 값은 그 브라우저에만 저장됩니다. 다른 사람과 맞춰 보려면 **설정 복사 → 설정 불러오기**로 주고받으면 됩니다.
 
 ## 이번에 바뀐 점
@@ -81,7 +81,7 @@
 |---|---|
 | `index.html` | 수정안 + 조정판 |
 | `mock.html` | 목업 배경 — 연수원(아레테 아카데미) 메인 화면 복제(`ilearn-prototype/index.html`의 화면 부분). 모양은 휴넷 서버의 CSS·이미지를 불러오므로 인터넷 필요. 버튼은 없음 |
-| `present.html` | 보기 전용 — 조정판 없이 목업 위 수정안 버튼만 (`index.html?present`를 창 가득 띄움) |
+| `present.html` | 보기 전용 — 위 막대는 그대로, 오른쪽 조정판만 없음 (`index.html?present`를 창 가득 띄움) |
 | `original-mock.html` | 기존 목업(`ilearn-prototype/index.html`) — 목업을 켜고 나란히 볼 때 원래 사이트 버튼(`?c=0`)으로 보여 줌 |
 | `original.html` | 기존 버튼(`button.html` 그대로) — 목업을 끄고 나란히 볼 때 원래 사이트 버튼(`?c=0`)으로 보여 줌 |
 | `ilearn-chat.html` | 버튼을 누르면 열리는 iLearn 창 (생김새만 같게 만든 예시) |

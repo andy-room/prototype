@@ -58,8 +58,9 @@
     opacity:0;pointer-events:none;transform:translate(-50%,-8px);transition:opacity .25s,transform .25s}
   .app.fs ~ .fs-exit.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
   .fs-exit:focus-visible{outline:2px solid #fff;outline-offset:2px}
-  /* 보기 전용(present.html): 전체 화면과 같은 모습, 나가기 버튼·안내 없음 */
-  .app.present .hint,.app.present ~ .fs-hot,.app.present ~ .fs-exit{display:none!important}
+  /* 보기 전용(present.html): 위 막대는 그대로, 오른쪽 조정판만 없이 무대가 창 너비 가득 */
+  .app.present{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100vh;min-height:0}
+  .app.present .panel{display:none}
 
   /* ---------- 조정판 ---------- */
   .panel{display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line);background:#fff;font-size:12.5px}
@@ -1401,7 +1402,6 @@ $('play').addEventListener('click',function(){ setPaused(!paused) });
 $('again').addEventListener('click',function(){ if(paused) setPaused(false); if(cmpOn) loadOld(); P.view='open'; userClosed=false; syncSegs(); restart('intro') });
 $('speed').addEventListener('input',function(){ setSpeed($('speed').value) });
 addEventListener('keydown',function(e){
-  if(PRESENT) return;                                    // 보기 전용에선 단축키 없음
   var t=e.target, tag=t&&t.tagName;
   if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'||(t&&t.isContentEditable)) return;
   if(e.key===' '&&t===document.body){ e.preventDefault(); setPaused(!paused) }
@@ -1442,7 +1442,7 @@ $('resetAll').addEventListener('click',function(){
    ===================================================================== */
 buildPanel(); buildMenu(); setEditProf('open'); countChanged();
 P.view='open'; setCollapsedNow(true);                  // 처음은 무조건 접힌 원(iLearn 로고만)
-if(PRESENT){ fsOn=true; appEl.classList.add('fs','present'); document.title='iLearn 버튼 수정안'; if(/[?&]invert\b/.test(location.search)) P.invert=true }   // 보기 전용: 목업을 창 크기 그대로, 조정판 없음 (present.html?invert = 컬러 반전)
+if(PRESENT){ appEl.classList.add('present'); document.title='iLearn 버튼 수정안'; if(/[?&]invert\b/.test(location.search)) P.invert=true }   // 보기 전용: 위 막대는 그대로, 오른쪽 조정판만 없음 (present.html?invert = 컬러 반전으로 시작)
 setMock(mockOn(),true); setSpeed(P.speed); syncSegs();
 textNow(null);
 // 글꼴이 늦게 받아지면 폭이 좁게 재져 글자가 잘리므로, 글꼴을 다 받은 뒤 다시 잼
