@@ -38,10 +38,10 @@
   .scene{position:absolute;right:12px;top:10px;z-index:3;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.85);border:1px solid var(--line);font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums}
   .scene b{color:var(--il);font-weight:700;margin-right:6px}
   .hint{position:absolute;left:0;right:0;bottom:3%;text-align:center;font-size:12.5px;color:#8A879C;pointer-events:none}
-  /* 목업: 실제 화면 1440×900 을 칸에 맞춰 줄이고(1배 넘게 키우지는 않음), 버튼은 실제 사이트 자리(오른쪽 24px·아래 40px)·실제 크기 */
+  /* 목업: 1440px 너비 화면을 칸에 꽉 차게 줄이고(크기·높이는 스크립트 fitScreen), 버튼은 실제 사이트 자리(오른쪽 24px·아래 40px)·실제 크기 */
   .screen{position:absolute;inset:0}
   .pane.mock{background:#E9E8EE}
-  .pane.mock .screen{inset:auto;left:0;top:0;width:1440px;height:900px;transform-origin:0 0;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+  .pane.mock .screen{inset:auto;left:0;top:0;width:1440px;height:900px;transform-origin:0 0;overflow:hidden;background:#fff}
   .mock-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   .pane:not(.mock) .mock-frame{display:none}
   .pane.mock .hint{display:none}
@@ -51,7 +51,7 @@
   .app.fs{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100vh;min-height:0}
   .app.fs .bar,.app.fs .panel,.app.fs #paneOld,.app.fs .tag,.app.fs .scene{display:none}
   .app.fs .stage{grid-template-columns:minmax(0,1fr)}
-  .app.fs .pane.mock .screen{width:100%;height:100%;box-shadow:none}
+  .app.fs .pane.mock .screen{width:100%;height:100%}
   .fs-hot{display:none;position:fixed;left:0;right:0;top:0;height:14px;z-index:29}
   .app.fs ~ .fs-hot{display:block}
   .fs-exit{position:fixed;top:12px;left:50%;z-index:30;padding:8px 14px;border:0;border-radius:999px;background:rgba(23,23,25,.8);color:#fff;font-size:12.5px;cursor:pointer;
@@ -712,7 +712,7 @@ function backAt(tau){
 /* ---- 장면 잇기 ---- */
 async function rest(ms){
   S.relayEnd=null; S.relayT=ms>=2500?clock+Math.min(1800,ms-1300):null;   // 머무는 동안 반짝이 릴레이 한 번
-  label(collapsed?'로고 대기 · 접힌 원':'로고 대기');
+  label(collapsed?'로고 대기 · 접힌 원이라 질문 없음':P.loop==='morph'?'로고 대기 · 모핑만 반복 중(질문 없음)':'로고 대기');
   await sleep(ms);
   S.relayEnd=clock;                           // 하던 릴레이는 끝까지 (끊으면 튐)
 }
@@ -854,7 +854,10 @@ function render(){
     if(d.spread<.75) E.dots.setAttribute('filter','url(#v2goo)'); else E.dots.removeAttribute('filter');   // 붙어 있을 때만 물방울처럼
   } else E.dots.setAttribute('opacity','0');
   renderGlow();
-  var lab=(paused?'<b>멈춤</b>':'')+S.label;
+  // 마우스를 올린 상태가 잘못 남아 순환이 멈추는 것을 막음: 버튼을 눌러 iLearn 창이 뜨거나 창을 오가면
+  // '마우스 뗌'이 안 올 수 있으므로, 실제로 버튼·목록 위에 마우스가 없으면 뗀 것으로 처리
+  if(hovering&&frameNo%15===0&&!cap.matches(':hover')&&!menu.matches(':hover')) leave();
+  var lab=(paused?'<b>멈춤</b>':'')+(hovering&&scrubTau==null?'<b>마우스 올림</b>':'')+S.label;
   if(lab!==lastLabel){ lastLabel=lab; sceneEl.innerHTML=lab }
   if(tlHead){
     if(S.morphTau!=null){ tlHead.style.display='block'; tlHead.style.left=Math.min(100,S.morphTau/mt().t7*100)+'%' }
@@ -867,15 +870,15 @@ function render(){
    ===================================================================== */
 var hovering=false, hideT;
 function enter(){
-  clearTimeout(hideT); if(hovering) return; hovering=true;
+  clearTimeout(hideT); hideT=null; if(hovering) return; hovering=true;
   if(P.menuOn) box.classList.add('open');
   if(scrubTau!=null) return;
   gen++; if(!collapsed) setText(NAME());
   run(function(){ return settle().then(function(){ label('마우스 올림 · 로고 고정') }) });
 }
 function leave(){
-  clearTimeout(hideT);
-  hideT=setTimeout(function(){ hovering=false; box.classList.remove('open'); if(scrubTau!=null) return; gen++; run(cycle) },180);
+  if(hideT) return;                                     // 이미 떼는 중 (다시 부르지 않음 → 매 순간 확인해도 0.18초 뒤 확실히 넘어감)
+  hideT=setTimeout(function(){ hideT=null; hovering=false; box.classList.remove('open'); if(scrubTau!=null) return; gen++; run(cycle) },180);
 }
 [cap,menu].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave) });
 cap.addEventListener('click',function(){ box.classList.remove('open'); window.openILearn(curQ,cap) });
@@ -927,13 +930,15 @@ function apply(){
 }
 // 확대: 가장 긴 문구 캡슐 + 질문 목록이 칸 안에 다 들어오는 만큼까지만 (세로 기준은 original.html 버튼만 보기와 같음 → 나란히 볼 때 크기가 맞음)
 var zoomNote=null;
-// 목업: 실제 화면 1440×900 을 칸 가운데에 맞춰 줄임 (1배보다 키우지 않음)
+// 목업: 칸을 여백 없이 꽉 채움 — 너비는 데스크톱 화면(1440px) 배치를 유지하며 칸 너비에 맞춰 줄이고,
+// 높이는 칸 비율만큼 늘리거나 줄임 (칸이 1440px보다 넓으면 줄이지 않고 그대로)
 function fitScreen(pane,el){
-  var w=pane.clientWidth, h=pane.clientHeight, f=Math.min(1,w/1440,h/900);
-  el.style.transform='scale('+f.toFixed(4)+')'; el.style.left=((w-1440*f)/2).toFixed(1)+'px'; el.style.top=((h-900*f)/2).toFixed(1)+'px';
+  var w=pane.clientWidth, h=pane.clientHeight, f=Math.min(1,w/1440);
+  el.style.width=(w/f).toFixed(1)+'px'; el.style.height=(h/f).toFixed(1)+'px';
+  el.style.transform=f<1?'scale('+f.toFixed(4)+')':''; el.style.left='0px'; el.style.top='0px';
   return f;
 }
-function clearFit(el){ el.style.transform=''; el.style.left=''; el.style.top='' }
+function clearFit(el){ el.style.transform=''; el.style.left=''; el.style.top=''; el.style.width=''; el.style.height='' }
 function layout(){
   var w=paneNew.clientWidth, h=paneNew.clientHeight; if(!w||!h) return;
   var scr=$('screen');
@@ -941,7 +946,7 @@ function layout(){
   if(mockOn()){
     var f=fitScreen(paneNew,scr); mockScrollbars();
     if(oldFrame&&paneOld.classList.contains('fit')) fitScreen(paneOld,oldFrame);
-    if(zoomNote) zoomNote.textContent='목업을 켜면 실제 화면 1440×900 을 '+(f<.999?f.toFixed(2)+'배로 줄여':'실제 크기로')+' 보여 줌 · 버튼은 실제 자리(오른쪽 24px·아래 40px)에 실제 크기로 · 위의 확대·폭 기준·배경색은 목업을 끈 화면에만 적용';
+    if(zoomNote) zoomNote.textContent='목업을 켜면 1440px 너비 화면을 칸에 꽉 차게 '+(f<.999?f.toFixed(2)+'배로 줄여':'실제 크기로')+' 보여 줌 · 버튼은 실제 자리(오른쪽 24px·아래 40px)에 실제 크기로 · 위의 확대·폭 기준·배경색은 목업을 끈 화면에만 적용';
     return;
   }
   clearFit(scr);
