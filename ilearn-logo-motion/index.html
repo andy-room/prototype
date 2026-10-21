@@ -383,14 +383,15 @@ var SCHEMA=[
     {k:'gSharp',l:'뚜렷함',t:'range',min:0,max:100,step:1,d:0,u:'%',note:'높일수록 빛 가운데가 진하게 차고 가장자리가 또렷해짐'},
     {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:100,u:'%'},
     {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:16,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
-    {h:'빛의 움직임 — 살아 있는 것처럼 불규칙하게 천천히 회전'},
-    {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','회전(불규칙)'],['flow','좌우 흐름(기존)']],d:'orbit'},
-    {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:16,u:'s',note:'0이면 돌지 않고 흔들림만'},
-    {k:'gDir',l:'방향',t:'seg',opts:[['cw','시계 방향'],['ccw','반시계 방향']],d:'cw'},
-    {k:'gWobbleDeg',l:'흔들림 각도',t:'range',min:0,max:180,step:5,d:45,u:'°',note:'도는 중에 앞뒤로 머뭇거리며 흔들리는 폭'},
-    {k:'gWobblePeriod',l:'흔들림 주기',t:'range',min:1,max:30,step:.5,d:7,u:'s'},
-    {k:'gIrregular',l:'불규칙함',t:'range',min:0,max:100,step:5,d:60,u:'%',note:'0이면 일정한 사인 흔들림 · 높을수록 빛 셋이 제각각 엇갈리며 궤도도 늘었다 줄었다'},
+    {h:'빛의 움직임 — 빛 셋이 각자 따로, 불규칙하게 천천히'},
+    {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','불규칙 회전'],['flow','좌우 흐름(기존)']],d:'orbit'},
+    {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:18,u:'s',note:'빛마다 속도가 달라(1 : 1.43 : 0.77) 서로 따라가거나 마주 보지 않음 · 0이면 돌지 않고 떠돌기만'},
+    {k:'gDir',l:'방향',t:'seg',opts:[['mix','섞어서'],['cw','시계'],['ccw','반시계']],d:'mix',note:'섞어서 = 가운데 빛만 반대로 돌아 서로 스쳐 지나감'},
+    {k:'gWobbleDeg',l:'흔들림 각도',t:'range',min:0,max:180,step:5,d:70,u:'°',note:'돌다가 멈칫하거나 되돌아가는 폭'},
+    {k:'gWobblePeriod',l:'흔들림이 바뀌는 시간',t:'range',min:1,max:30,step:.5,d:6,u:'s',note:'짧을수록 자주 방향을 틂'},
+    {k:'gIrregular',l:'불규칙함',t:'range',min:0,max:100,step:5,d:85,u:'%',note:'0이면 고른 사인 흔들림 · 높을수록 주기 없는 잡음이라 같은 모양이 되풀이되지 않음'},
     {k:'gOrbit',l:'도는 반경',t:'range',min:20,max:70,step:1,d:45,u:'%'},
+    {k:'gWander',l:'궤도에서 벗어나 떠돎',t:'range',min:0,max:30,step:1,d:12,u:'%',note:'높이면 둘레만 돌지 않고 안쪽으로 흘러들었다 나옴'},
     {k:'gBreath',l:'숨쉬기 (빛 크기 변화)',t:'range',min:0,max:50,step:1,d:12,u:'%'},
     {k:'gBreathPeriod',l:'숨 한 번',t:'range',min:1,max:20,step:.5,d:5,u:'s'},
     {k:'gDur',l:'좌우 흐름 한 번 (기존 방식일 때)',t:'range',min:2,max:30,step:.5,d:9,u:'s'},
@@ -412,8 +413,11 @@ var DEF={loop:'all',view:'open',speed:1}, ITEM={};
 SCHEMA.forEach(function(g){ g.items.forEach(function(it){ if(it.k){ DEF[it.k]=it.d; ITEM[it.k]=it } }) });
 var STORE='ilearn-logo-motion/v1';
 var P=JSON.parse(JSON.stringify(DEF));
-try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'); if(saved) for(var sk in saved) if(sk in DEF) P[sk]=saved[sk]; }catch(e){}
-var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ try{ localStorage.setItem(STORE,JSON.stringify(P)) }catch(e){} },250) }
+// 예전엔 전체 값을 저장해서 기본값이 바뀌어도 반영되지 않았음 → 그때 기본값 그대로였던 항목은 새 기본값을 따르게 함
+var OLD_DEF={gDir:'cw',gWobbleDeg:45,gWobblePeriod:7,gIrregular:60,gRotPeriod:16};
+try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'); if(saved) for(var sk in saved) if(sk in DEF&&!(sk in OLD_DEF&&saved[sk]===OLD_DEF[sk])) P[sk]=saved[sk]; }catch(e){}
+// 바꾼 값만 저장 → 나중에 기본값을 고쳐도 손대지 않은 항목은 새 기본값을 따름
+var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ var diff={}; for(var k in DEF) if(P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
 
 /* =====================================================================
    수학
@@ -732,30 +736,41 @@ function restart(){ scrubTau=null; gen++; run(cycle) }
    그리기 (매 프레임)
    ===================================================================== */
 var RELAY_EVERY=5200, lastLabel='', tlHead=null;
-/* 배경 빛 회전: 평균 속도로 돌면서, 서로 나눠떨어지지 않는 주기의 사인 셋을 겹쳐 앞뒤로 머뭇거림 → 같은 모양이 잘 되풀이되지 않음
-   빛 셋은 각자 조금씩 다른 박자로 엇갈리고, 도는 반경과 크기도 숨 쉬듯 바뀜 */
+/* 배경 빛: 빛 셋이 서로 묶이지 않고 각자 따로 움직임 (예전엔 한 각도를 같이 써서 두 빛이 마주 보며 대칭으로 돎)
+   - 도는 속도가 빛마다 다름(1 : 1.43 : 0.77), '섞어서'면 가운데 빛은 반대로 돎 → 서로 따라가거나 마주 보는 관계가 생기지 않음
+   - 각도·반경·떠돎·크기를 빛마다 다른 씨앗의 부드러운 잡음(펄린 노이즈)으로 흔듦 → 주기가 없어 같은 모양이 되풀이되지 않음
+   - 가운데로 흘러들면 가운데 비움에 가려 저절로 옅어졌다가 다른 자리에서 다시 떠오름 */
 var sheen=document.querySelector('.v2-sheen'), aura=document.querySelector('.v2-aura');
 var GLOW_VARS=['--ix1','--iy1','--ix2','--iy2','--ix3','--iy3','--b1','--b2','--b3'];
-var GLOW_BASE=[140,320,230];          // 처음 자리: 분홍 왼쪽 아래 · 하늘 오른쪽 위 · 연보라 왼쪽 위 (기존 배치와 비슷하게)
-function glowAngle(t){
-  var irr=P.gIrregular/100, T=Math.max(.5,+P.gWobblePeriod);
-  var base=P.gRotPeriod>0?(P.gDir==='ccw'?-1:1)*360*t/P.gRotPeriod:0;
-  var w=(Math.sin(TAU*t/T)+irr*(.6*Math.sin(TAU*t/(T*1.618)+1.7)+.35*Math.sin(TAU*t/(T*2.414)+4.1)))/(1+irr*.95);
-  return base+P.gWobbleDeg*w;
+var GLOW_BASE=[140,335,245], GLOW_SPD=[1,1.43,.77], GLOW_MIX=[1,-1,1];
+function hash1(n){ n=Math.sin(n*127.1+311.7)*43758.5453; return n-Math.floor(n) }
+function noise1(x,seed){                 // 1차원 펄린 노이즈, 대략 -1~1
+  var i=Math.floor(x), f=x-i, s=seed*57.31;
+  var g0=hash1(i+s)*2-1, g1=hash1(i+1+s)*2-1, u=f*f*f*(f*(f*6-15)+10);
+  return 2*lerp(g0*f,g1*(f-1),u);
 }
+function fbm(x,seed){ return (noise1(x,seed)+.5*noise1(x*2.03+17.1,seed+101))/1.5 }
+// 불규칙함 0이면 고른 사인, 100%면 잡음
+function wob(t,T,seed,ph,irr){ return lerp(Math.sin(TAU*t/T+ph),Math.max(-1,Math.min(1,fbm(t/T,seed)*1.6)),irr) }
+var glowA0=0;
 function renderGlow(){
   if(P.gMotion==='flow') return;
-  var t=clock/1000, irr=P.gIrregular/100, T=Math.max(.5,+P.gWobblePeriod), th=glowAngle(t);
+  var t=clock/1000, irr=P.gIrregular/100, T=Math.max(.5,+P.gWobblePeriod), Bp=Math.max(.5,+P.gBreathPeriod);
   for(var i=0;i<3;i++){
-    var own=irr*20*Math.sin(TAU*t/(T*(1.31+i*.37))+i*2.3);
-    var a=(th+GLOW_BASE[i]+own)*DEG;
-    var R=P.gOrbit*(1+.22*irr*Math.sin(TAU*t/(T*1.9)+i*1.7));
-    var br=1+P.gBreath/100*Math.sin(TAU*t/Math.max(.5,P.gBreathPeriod)+i*2.1);
-    sheen.style.setProperty('--ix'+(i+1),(50+R*Math.cos(a)).toFixed(2)+'%');
-    sheen.style.setProperty('--iy'+(i+1),(50+R*1.1*Math.sin(a)).toFixed(2)+'%');
+    var dir=P.gDir==='mix'?GLOW_MIX[i]:P.gDir==='ccw'?-1:1;
+    var spin=P.gRotPeriod>0?dir*360*t*GLOW_SPD[i]/P.gRotPeriod:0;
+    var th=GLOW_BASE[i]+spin+P.gWobbleDeg*wob(t,T*(1+i*.29),11+i,i*2.3,irr);
+    var a=th*DEG;
+    var R=P.gOrbit*(1+.35*irr*fbm(t/(T*1.3),21+i));
+    var x=50+R*Math.cos(a)+P.gWander*fbm(t/(T*.8),31+i);
+    var y=50+R*1.1*Math.sin(a)+P.gWander*1.6*fbm(t/(T*.9),41+i);
+    var br=1+P.gBreath/100*wob(t,Bp*(1+i*.23),51+i,i*2.1,irr);
+    sheen.style.setProperty('--ix'+(i+1),x.toFixed(2)+'%');
+    sheen.style.setProperty('--iy'+(i+1),y.toFixed(2)+'%');
     sheen.style.setProperty('--b'+(i+1),br.toFixed(3));
+    if(i===0) glowA0=th;
   }
-  if(P.auraFollow) aura.style.setProperty('--v2a',(th%360).toFixed(1)+'deg');
+  if(P.auraFollow) aura.style.setProperty('--v2a',(glowA0%360).toFixed(1)+'deg');   // 아래 번지는 빛은 분홍 빛을 따라감
 }
 function relayWave(id){
   if(S.relayT==null) return 0;
