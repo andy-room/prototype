@@ -142,7 +142,7 @@
 
   /* 캡슐 — 그림자는 --shadow 하나만 씀. 호버·누름·반짝·접힘 어느 때도 바뀌지 않음 (트랜지션·애니메이션 없음) */
   /* 로고 크기(--logo)가 바뀌어도 버튼 높이 60px·접힌 원 60×60 은 그대로 → 로고 왼쪽 여백으로 맞춤 */
-  .v2-cap{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px 0 calc((58px - var(--logo,35px)) / 2);border-radius:30px;cursor:pointer;
+  .v2-cap{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px 0 calc((58px - var(--logo,33px)) / 2);border-radius:30px;cursor:pointer;
     background:#fff;border:1px solid transparent;color:var(--ink);box-shadow:var(--shadow);
     transition:transform .25s cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1),padding .55s cubic-bezier(.3,.7,.2,1)}
   .v2-cap:hover{transform:translateY(var(--lift))}
@@ -152,12 +152,12 @@
   /* 호버로 떠오른 만큼 아래를 메워 둠 → 가장자리에 마우스가 있어도 올림/내림이 깜빡이지 않음 */
   .v2-cap::after{content:"";position:absolute;left:0;right:0;top:100%;height:calc(var(--lift) * -1)}
   /* 육각형·별은 아이콘 칸 밖으로 그려지기도 하므로, 마우스 판정은 캡슐로만 */
-  .v2-logo{flex:none;width:var(--logo,35px);height:var(--logo,35px);display:block;overflow:visible;pointer-events:none}
+  .v2-logo{flex:none;width:var(--logo,33px);height:var(--logo,33px);display:block;overflow:visible;pointer-events:none}
   /* 글자 칸: 폭·글자 움직임은 스크립트가 직접 (이전 문구가 다 사라진 뒤 → 폭 맞춤 → 새 문구) */
   /* 글자 크기: 질문 --q-fs, 이름 --name-fs (조정판), 줄 높이는 큰 쪽에 맞춤 */
-  .v2-txt{display:block;height:var(--txt-lh,26px);width:0;overflow:hidden}
-  .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:var(--q-fs,15px);line-height:var(--txt-lh,26px);font-weight:500}
-  .v2-txt span.name{font-weight:700;font-size:var(--name-fs,15px)}
+  .v2-txt{display:block;height:var(--txt-lh,30px);width:0;overflow:hidden}
+  .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:var(--q-fs,16px);line-height:var(--txt-lh,30px);font-weight:500}
+  .v2-txt span.name{font-weight:700;font-size:var(--name-fs,17px)}
   .v2-txt span.name em{font-style:normal;font-weight:500;color:#7749F4;margin-right:5px}
   .v2-x{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;overflow:hidden;border-radius:900px;color:#171719;opacity:.45;
     transition:background-color .15s,opacity .2s,width .45s cubic-bezier(.3,.7,.2,1),margin .45s cubic-bezier(.3,.7,.2,1)}
@@ -166,7 +166,7 @@
   .v2-x:active{background:rgba(23,23,25,.1);opacity:1}
   .v2-x:focus-visible{outline:2px solid #7749F4;outline-offset:1px}
   /* 접힌 원 = 60×60 */
-  .v2.collapsed .v2-cap{gap:0;padding:0 calc((58px - var(--logo,35px)) / 2)}
+  .v2.collapsed .v2-cap{gap:0;padding:0 calc((58px - var(--logo,33px)) / 2)}
   .v2.collapsed .v2-x{width:0;margin-left:0;opacity:0;pointer-events:none}
 
   /* 배경 빛(구슬 느낌): 흰 바탕 가장자리에서 분홍·하늘·연보라 빛이 움직임 — 색·세기·뚜렷함·크기는 조정판 값(--g*)
@@ -337,8 +337,8 @@ var HEX_R=7.9, STAR_R=8.4, LOGO_R=7.4, MERGED_R=1.7;
 var EASES=[['linear','등속'],['in','가속'],['out','감속'],['inOut','가속 → 감속'],['back','튕김(살짝 넘침)']];
 var SCHEMA=[
   {g:'로고 크기', open:true, items:[
-    {k:'logoSize',l:'버튼 안 iLearn 로고',t:'range',min:20,max:44,step:1,d:35,u:'px',presets:[27,30,33,35,38,40],
-      note:'기본 35px(처음 시안은 30px) · 아래 숫자를 누르면 바로 바꿔 비교 · 버튼 높이 60px와 접힌 원 크기는 그대로, 로고(와 모핑 도형)만 커지고 작아짐'}
+    {k:'logoSize',l:'버튼 안 iLearn 로고',t:'range',min:20,max:44,step:1,d:33,u:'px',presets:[27,30,33,35,38,40],
+      note:'기본 33px(처음 시안은 30px) · 아래 숫자를 누르면 바로 바꿔 비교 · 버튼 높이 60px와 접힌 원 크기는 그대로, 로고(와 모핑 도형)만 커지고 작아짐'}
   ]},
   {g:'문구', open:true, items:[
     {h:'처음 시작과 머무는 시간'},
@@ -354,8 +354,8 @@ var SCHEMA=[
     {h:'문구 내용'},
     {k:'namePre',l:'이름 앞말',t:'text',d:'AI 튜터'},
     {k:'name',l:'이름',t:'text',d:'iLearn'},
-    {k:'nameFs',l:'"AI 튜터 iLearn" 글자 크기',t:'range',min:11,max:22,step:.5,d:15,u:'px',presets:[13,14,15,16,17,18]},
-    {k:'qFs',l:'질문 글자 크기',t:'range',min:11,max:22,step:.5,d:15,u:'px',presets:[13,14,15,16,17,18],note:'기본 15px · 버튼 폭은 바뀐 글자에 맞춰 다시 맞춤 (버튼 높이 60px는 그대로)'},
+    {k:'nameFs',l:'"AI 튜터 iLearn" 글자 크기',t:'range',min:11,max:22,step:.5,d:17,u:'px',presets:[13,14,15,16,17,18]},
+    {k:'qFs',l:'질문 글자 크기',t:'range',min:11,max:22,step:.5,d:16,u:'px',presets:[13,14,15,16,17,18],note:'기본 이름 17px · 질문 16px(처음 시안 둘 다 15px) · 버튼 폭은 바뀐 글자에 맞춰 다시 맞춤 (버튼 높이 60px는 그대로)'},
     {k:'q1',l:'질문 1',t:'text',d:'연수원 모바일 앱 설치 방법을 알려줘'},
     {k:'q2',l:'질문 2',t:'text',d:'수강신청 기간이 언제야?'},
     {k:'q3',l:'질문 3',t:'text',d:'수료증 출력은 어디서 해?'},
@@ -448,7 +448,7 @@ var SCHEMA=[
     {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:13,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
     {h:'빛의 움직임 — 빛 셋이 각자 따로, 불규칙하게 천천히'},
     {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','불규칙 회전'],['flow','좌우 흐름(기존)']],d:'orbit'},
-    {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:18,u:'s',note:'빛마다 속도가 달라(1 : 1.43 : 0.77) 서로 따라가거나 마주 보지 않음 · 0이면 돌지 않고 떠돌기만'},
+    {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:13,u:'s',note:'빛마다 속도가 달라(1 : 1.43 : 0.77) 서로 따라가거나 마주 보지 않음 · 0이면 돌지 않고 떠돌기만'},
     {k:'gDir',l:'방향',t:'seg',opts:[['mix','섞어서'],['cw','시계'],['ccw','반시계']],d:'mix',note:'섞어서 = 가운데 빛만 반대로 돌아 서로 스쳐 지나감'},
     {k:'gWobbleDeg',l:'흔들림 각도',t:'range',min:0,max:180,step:5,d:70,u:'°',note:'돌다가 멈칫하거나 되돌아가는 폭'},
     {k:'gWobblePeriod',l:'흔들림이 바뀌는 시간',t:'range',min:1,max:30,step:.5,d:6,u:'s',note:'짧을수록 자주 방향을 틂'},
