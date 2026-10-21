@@ -129,21 +129,28 @@
   .v2.collapsed .v2-cap{gap:0}
   .v2.collapsed .v2-x{width:0;margin-left:0;opacity:0;pointer-events:none}
 
-  /* 배경 빛(구슬 느낌): 흰 바탕 양 끝에서 분홍·하늘·연보라 빛이 천천히 흐름 — 색·세기·뚜렷함·크기는 조정판 값(--g*) */
-  @property --ix1{syntax:"<percentage>";inherits:false;initial-value:20%}
-  @property --iy1{syntax:"<percentage>";inherits:false;initial-value:85%}
-  @property --ix2{syntax:"<percentage>";inherits:false;initial-value:85%}
-  @property --iy2{syntax:"<percentage>";inherits:false;initial-value:20%}
-  @property --ix3{syntax:"<percentage>";inherits:false;initial-value:50%}
+  /* 배경 빛(구슬 느낌): 흰 바탕 가장자리에서 분홍·하늘·연보라 빛이 움직임 — 색·세기·뚜렷함·크기는 조정판 값(--g*)
+     움직임 두 가지: 회전(기본) = 빛 셋이 캡슐 둘레를 불규칙하게 천천히 돎(스크립트가 위치·크기를 매 프레임 넣음) / 좌우 흐름(기존) = 아래 v2iris */
+  @property --ix1{syntax:"<percentage>";inherits:true;initial-value:20%}
+  @property --iy1{syntax:"<percentage>";inherits:true;initial-value:85%}
+  @property --ix2{syntax:"<percentage>";inherits:true;initial-value:85%}
+  @property --iy2{syntax:"<percentage>";inherits:true;initial-value:20%}
+  @property --ix3{syntax:"<percentage>";inherits:true;initial-value:50%}
+  @property --iy3{syntax:"<percentage>";inherits:true;initial-value:50%}
   .v2-sheen{position:absolute;inset:-1px;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:0}
   .v2-sheen::before{content:"";position:absolute;inset:0;
     background:
-      radial-gradient(calc(48% * var(--gsz)) calc(120% * var(--gsz)) at var(--ix1) var(--iy1),var(--g1) var(--gcore),transparent var(--gfade)),
-      radial-gradient(calc(46% * var(--gsz)) calc(120% * var(--gsz)) at var(--ix2) var(--iy2),var(--g2) var(--gcore),transparent var(--gfade)),
-      radial-gradient(calc(40% * var(--gsz)) calc(110% * var(--gsz)) at var(--ix3) 50%,var(--g3) var(--gcore),transparent var(--gfade));
+      radial-gradient(calc(48% * var(--gsz) * var(--b1,1)) calc(120% * var(--gsz) * var(--b1,1)) at var(--ix1) var(--iy1),var(--g1) var(--gcore),transparent var(--gfade)),
+      radial-gradient(calc(46% * var(--gsz) * var(--b2,1)) calc(120% * var(--gsz) * var(--b2,1)) at var(--ix2) var(--iy2),var(--g2) var(--gcore),transparent var(--gfade)),
+      radial-gradient(calc(40% * var(--gsz) * var(--b3,1)) calc(110% * var(--gsz) * var(--b3,1)) at var(--ix3) var(--iy3),var(--g3) var(--gcore),transparent var(--gfade));
     animation:v2iris var(--gdur) ease-in-out infinite alternate;
-    -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) calc(var(--gclear) * .53),transparent var(--gclear),transparent calc(100% - var(--gclear)),rgba(0,0,0,.55) calc(100% - var(--gclear) * .53),#000 100%);
-            mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) calc(var(--gclear) * .53),transparent var(--gclear),transparent calc(100% - var(--gclear)),rgba(0,0,0,.55) calc(100% - var(--gclear) * .53),#000 100%)}
+    /* 좌우 흐름: 양 끝에만 색, 가운데는 비움 (--gedge = 색이 끝나는 자리) */
+    -webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) calc(var(--gedge) * .53),transparent var(--gedge),transparent calc(100% - var(--gedge)),rgba(0,0,0,.55) calc(100% - var(--gedge) * .53),#000 100%);
+            mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) calc(var(--gedge) * .53),transparent var(--gedge),transparent calc(100% - var(--gedge)),rgba(0,0,0,.55) calc(100% - var(--gedge) * .53),#000 100%)}
+  /* 회전: 빛이 위·아래 가장자리로도 지나가므로 가운데만 둥글게 비움 */
+  .v2.glow-orbit .v2-sheen::before{animation:none;
+    -webkit-mask-image:radial-gradient(50% 50% at 50% 50%,transparent var(--gr0),rgba(0,0,0,.55) var(--gr1),#000 100%);
+            mask-image:radial-gradient(50% 50% at 50% 50%,transparent var(--gr0),rgba(0,0,0,.55) var(--gr1),#000 100%)}
   @keyframes v2iris{
     0%{--ix1:15%;--iy1:90%;--ix2:88%;--iy2:15%;--ix3:45%}
     35%{--ix1:45%;--iy1:70%;--ix2:60%;--iy2:35%;--ix3:80%}
@@ -156,6 +163,7 @@
     background:conic-gradient(from var(--v2a),var(--c1),var(--c3),var(--c2),var(--c1));
     filter:blur(var(--aura-blur));opacity:var(--aura-a);
     animation:v2auraTurn 12s linear infinite,v2auraBreath 6s ease-in-out infinite}
+  .v2.aura-follow .v2-aura{animation:v2auraBreath 6s ease-in-out infinite}   /* 회전을 따라갈 땐 각도를 스크립트가 넣음 */
   @keyframes v2auraTurn{to{--v2a:360deg}}
   @keyframes v2auraBreath{0%,100%{opacity:calc(var(--aura-a) - var(--aura-b));transform:scale(.97)}50%{opacity:calc(var(--aura-a) + var(--aura-b));transform:scale(1)}}
 
@@ -374,13 +382,24 @@ var SCHEMA=[
     {k:'gAlpha',l:'세기',t:'range',min:0,max:100,step:1,d:30,u:'%'},
     {k:'gSharp',l:'뚜렷함',t:'range',min:0,max:100,step:1,d:0,u:'%',note:'높일수록 빛 가운데가 진하게 차고 가장자리가 또렷해짐'},
     {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:100,u:'%'},
-    {k:'gClear',l:'가운데 비움',t:'range',min:0,max:50,step:1,d:34,u:'%',note:'0이면 캡슐 전체에 빛이 깔림'},
-    {k:'gDur',l:'흐름 한 번',t:'range',min:2,max:30,step:.5,d:9,u:'s'},
+    {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:16,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
+    {h:'빛의 움직임 — 살아 있는 것처럼 불규칙하게 천천히 회전'},
+    {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','회전(불규칙)'],['flow','좌우 흐름(기존)']],d:'orbit'},
+    {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:16,u:'s',note:'0이면 돌지 않고 흔들림만'},
+    {k:'gDir',l:'방향',t:'seg',opts:[['cw','시계 방향'],['ccw','반시계 방향']],d:'cw'},
+    {k:'gWobbleDeg',l:'흔들림 각도',t:'range',min:0,max:180,step:5,d:45,u:'°',note:'도는 중에 앞뒤로 머뭇거리며 흔들리는 폭'},
+    {k:'gWobblePeriod',l:'흔들림 주기',t:'range',min:1,max:30,step:.5,d:7,u:'s'},
+    {k:'gIrregular',l:'불규칙함',t:'range',min:0,max:100,step:5,d:60,u:'%',note:'0이면 일정한 사인 흔들림 · 높을수록 빛 셋이 제각각 엇갈리며 궤도도 늘었다 줄었다'},
+    {k:'gOrbit',l:'도는 반경',t:'range',min:20,max:70,step:1,d:45,u:'%'},
+    {k:'gBreath',l:'숨쉬기 (빛 크기 변화)',t:'range',min:0,max:50,step:1,d:12,u:'%'},
+    {k:'gBreathPeriod',l:'숨 한 번',t:'range',min:1,max:20,step:.5,d:5,u:'s'},
+    {k:'gDur',l:'좌우 흐름 한 번 (기존 방식일 때)',t:'range',min:2,max:30,step:.5,d:9,u:'s'},
     {h:'캡슐 아래로 번지는 빛'},
     {k:'auraAlpha',l:'세기',t:'range',min:0,max:60,step:1,d:9,u:'%'},
     {k:'auraBreath',l:'숨쉬듯 바뀌는 폭',t:'range',min:0,max:20,step:1,d:3,u:'%'},
     {k:'auraBlur',l:'번짐',t:'range',min:0,max:40,step:1,d:16,u:'px'},
-    {k:'auraY',l:'아래로 내려옴',t:'range',min:-10,max:30,step:1,d:10,u:'px'}
+    {k:'auraY',l:'아래로 내려옴',t:'range',min:-10,max:30,step:1,d:10,u:'px'},
+    {k:'auraFollow',l:'캡슐 빛 회전을 같이 따라감',t:'toggle',d:true,note:'끄면 기존처럼 12초에 한 바퀴 일정하게'}
   ]},
   {g:'화면', items:[
     {k:'zoom',l:'확대',t:'range',min:1,max:4,step:.25,d:2,u:'배'},
@@ -713,6 +732,31 @@ function restart(){ scrubTau=null; gen++; run(cycle) }
    그리기 (매 프레임)
    ===================================================================== */
 var RELAY_EVERY=5200, lastLabel='', tlHead=null;
+/* 배경 빛 회전: 평균 속도로 돌면서, 서로 나눠떨어지지 않는 주기의 사인 셋을 겹쳐 앞뒤로 머뭇거림 → 같은 모양이 잘 되풀이되지 않음
+   빛 셋은 각자 조금씩 다른 박자로 엇갈리고, 도는 반경과 크기도 숨 쉬듯 바뀜 */
+var sheen=document.querySelector('.v2-sheen'), aura=document.querySelector('.v2-aura');
+var GLOW_VARS=['--ix1','--iy1','--ix2','--iy2','--ix3','--iy3','--b1','--b2','--b3'];
+var GLOW_BASE=[140,320,230];          // 처음 자리: 분홍 왼쪽 아래 · 하늘 오른쪽 위 · 연보라 왼쪽 위 (기존 배치와 비슷하게)
+function glowAngle(t){
+  var irr=P.gIrregular/100, T=Math.max(.5,+P.gWobblePeriod);
+  var base=P.gRotPeriod>0?(P.gDir==='ccw'?-1:1)*360*t/P.gRotPeriod:0;
+  var w=(Math.sin(TAU*t/T)+irr*(.6*Math.sin(TAU*t/(T*1.618)+1.7)+.35*Math.sin(TAU*t/(T*2.414)+4.1)))/(1+irr*.95);
+  return base+P.gWobbleDeg*w;
+}
+function renderGlow(){
+  if(P.gMotion==='flow') return;
+  var t=clock/1000, irr=P.gIrregular/100, T=Math.max(.5,+P.gWobblePeriod), th=glowAngle(t);
+  for(var i=0;i<3;i++){
+    var own=irr*20*Math.sin(TAU*t/(T*(1.31+i*.37))+i*2.3);
+    var a=(th+GLOW_BASE[i]+own)*DEG;
+    var R=P.gOrbit*(1+.22*irr*Math.sin(TAU*t/(T*1.9)+i*1.7));
+    var br=1+P.gBreath/100*Math.sin(TAU*t/Math.max(.5,P.gBreathPeriod)+i*2.1);
+    sheen.style.setProperty('--ix'+(i+1),(50+R*Math.cos(a)).toFixed(2)+'%');
+    sheen.style.setProperty('--iy'+(i+1),(50+R*1.1*Math.sin(a)).toFixed(2)+'%');
+    sheen.style.setProperty('--b'+(i+1),br.toFixed(3));
+  }
+  if(P.auraFollow) aura.style.setProperty('--v2a',(th%360).toFixed(1)+'deg');
+}
 function relayWave(id){
   if(S.relayT==null) return 0;
   var e=clock-S.relayT; if(e<0) return 0;
@@ -750,6 +794,7 @@ function render(){
     });
     if(d.spread<.75) E.dots.setAttribute('filter','url(#v2goo)'); else E.dots.removeAttribute('filter');   // 붙어 있을 때만 물방울처럼
   } else E.dots.setAttribute('opacity','0');
+  renderGlow();
   var lab=(paused?'<b>멈춤</b>':'')+S.label;
   if(lab!==lastLabel){ lastLabel=lab; sceneEl.innerHTML=lab }
   if(tlHead){
@@ -805,7 +850,14 @@ function apply(){
   s.setProperty('--c1',P.gc1); s.setProperty('--c2',P.gc2); s.setProperty('--c3',P.gc3);
   var sh=P.gSharp/100;
   s.setProperty('--gcore',(sh*55).toFixed(1)+'%'); s.setProperty('--gfade',(72-sh*10).toFixed(1)+'%');
-  s.setProperty('--gsz',P.gSize/100); s.setProperty('--gclear',P.gClear+'%'); s.setProperty('--gdur',P.gDur+'s');
+  var c=P.gClearW/50;
+  s.setProperty('--gsz',P.gSize/100); s.setProperty('--gdur',P.gDur+'s');
+  s.setProperty('--gedge',(50-P.gClearW)+'%');
+  s.setProperty('--gr0',(c*100).toFixed(1)+'%'); s.setProperty('--gr1',((1-(1-c)*.53)*100).toFixed(1)+'%');
+  var orbit=P.gMotion!=='flow';
+  box.classList.toggle('glow-orbit',orbit); box.classList.toggle('aura-follow',orbit&&P.auraFollow);
+  if(!orbit) GLOW_VARS.forEach(function(v){ sheen.style.removeProperty(v) });       // 좌우 흐름으로 돌아가면 v2iris 가 다시 위치를 맡음
+  if(!(orbit&&P.auraFollow)) aura.style.removeProperty('--v2a');
   s.setProperty('--aura-a',P.auraAlpha/100); s.setProperty('--aura-b',P.auraBreath/100); s.setProperty('--aura-blur',P.auraBlur+'px'); s.setProperty('--aura-y',P.auraY+'px');
   box.classList.toggle('anchor-right',P.anchor!=='center'); box.classList.toggle('anchor-center',P.anchor==='center');
   box.classList.toggle('nomenu',!P.menuOn);
