@@ -296,9 +296,12 @@
 <!-- ===== 목업 배경 전용 =====
      연수원(아레테 아카데미) 메인 화면을 복제한 정적 페이지. 모양은 휴넷 서버의 CSS·이미지를 그대로 불러옴(인터넷 필요).
      아이런 버튼은 넣지 않음 — index.html 이 이 페이지를 뒤에 깔고 그 위에 버튼을 얹음.
-     숨은 필드의 담당자·사용자 정보는 비움(화면에는 보이지 않던 값). 원격지원 버튼만 실제 자리(오른쪽 24px·아래 108px)에 둠 -->
+     숨은 필드의 담당자·사용자 정보는 비움(화면에는 보이지 않던 값).
+     원격지원 버튼: iLearn 버튼(오른쪽 24px·아래 40px·높이 60px)과 오른쪽 끝을 맞추고 그 위로 20px 띄움.
+     이미지(170×72)에서 보이는 알약은 오른쪽 2px·아래 10px 안쪽(아래 10px는 그림자) → 이미지 자리는 오른쪽 22px·아래 110px
+     (기존 실제 사이트 값: 오른쪽 24px·아래 108px) -->
 <style>
-  .proto-remote{position:fixed;right:24px;bottom:108px;z-index:10000000;width:170px;height:72px;cursor:pointer;
+  .proto-remote{position:fixed;right:22px;bottom:110px;z-index:10000000;width:170px;height:72px;cursor:pointer;
     background:url("https://hunetdown.cdn.hunet.co.kr/Resources/HunetDev/HRD_DEV/Images/edu/common/ico/remote.png") center/cover no-repeat}
 </style>
 <div class="proto-remote" title="원격 지원"></div>

@@ -47,6 +47,17 @@
   .pane.mock .hint{display:none}
   .pane.mock .scene{top:auto;bottom:12px;right:auto;left:12px}
   #paneOld.fit iframe{position:absolute;left:0;top:0;width:1440px;height:900px;transform-origin:0 0}
+  /* 전체 화면: 위 막대·조정판을 숨기고 무대만 창 가득. 목업은 줄이지 않고 창 크기 그대로(실제 페이지처럼) */
+  .app.fs{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:100vh;min-height:0}
+  .app.fs .bar,.app.fs .panel,.app.fs #paneOld,.app.fs .tag,.app.fs .scene{display:none}
+  .app.fs .stage{grid-template-columns:minmax(0,1fr)}
+  .app.fs .pane.mock .screen{width:100%;height:100%;box-shadow:none}
+  .fs-hot{display:none;position:fixed;left:0;right:0;top:0;height:14px;z-index:29}
+  .app.fs ~ .fs-hot{display:block}
+  .fs-exit{position:fixed;top:12px;left:50%;z-index:30;padding:8px 14px;border:0;border-radius:999px;background:rgba(23,23,25,.8);color:#fff;font-size:12.5px;cursor:pointer;
+    opacity:0;pointer-events:none;transform:translate(-50%,-8px);transition:opacity .25s,transform .25s}
+  .app.fs ~ .fs-exit.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+  .fs-exit:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
   /* ---------- 조정판 ---------- */
   .panel{display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line);background:#fff;font-size:12.5px}
@@ -113,7 +124,8 @@
   /* 오른쪽 끝 고정(실제 화면처럼 폭이 늘면 왼쪽 끝만 움직임) / 가운데 */
   .v2.anchor-right{right:calc(50% - 150px * var(--k));transform:scale(var(--k));transform-origin:100% 100%}
   .v2.anchor-center{left:50%;transform:translateX(-50%) scale(var(--k));transform-origin:50% 100%}
-  .v2.in-mock.anchor-right{right:24px;bottom:40px;transform:none}
+  /* 실제 사이트처럼 스크롤바 안쪽 기준 (--sbw·--sbh = 목업 페이지의 스크롤바 폭·높이) */
+  .v2.in-mock.anchor-right{right:calc(24px + var(--sbw,0px));bottom:calc(40px + var(--sbh,0px));transform:none}
   .v2 *{box-sizing:border-box}
   :where(.v2) button{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 
@@ -206,7 +218,7 @@
 <div class="app">
   <div class="bar">
     <h1>iLearn 로고 모션 조정</h1>
-    <div class="grp"><button class="btn play" id="play" type="button" aria-label="일시정지">❚❚</button><button class="btn" id="again" type="button">처음부터</button></div>
+    <div class="grp"><button class="btn play" id="play" type="button" aria-label="일시정지">❚❚</button><button class="btn" id="again" type="button">처음부터</button><button class="btn" id="fsBtn" type="button" title="F 키">전체 화면</button></div>
     <label class="grp speed">속도<input type="range" id="speed" min=".1" max="2" step=".05" value="1.3"><output id="speedOut">1.3×</output></label>
     <div class="grp">목업<div class="seg" data-k="mock"><button type="button" data-v="on">켬</button><button type="button" data-v="off">끔</button></div></div>
     <div class="grp">반복<div class="seg" data-k="loop"><button type="button" data-v="all">전체 순환</button><button type="button" data-v="morph">모핑만</button><button type="button" data-v="ask">질문만</button></div></div>
@@ -264,6 +276,8 @@
     <div class="panel-body" id="panelBody"></div>
   </aside>
 </div>
+<div class="fs-hot" id="fsHot" aria-hidden="true"></div>
+<button class="fs-exit" id="fsExit" type="button">전체 화면 나가기 · Esc</button>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -923,8 +937,9 @@ function clearFit(el){ el.style.transform=''; el.style.left=''; el.style.top='' 
 function layout(){
   var w=paneNew.clientWidth, h=paneNew.clientHeight; if(!w||!h) return;
   var scr=$('screen');
+  if(mockOn()&&fsOn){ clearFit(scr); mockScrollbars(); return }       // 전체 화면: 목업을 창 크기 그대로
   if(mockOn()){
-    var f=fitScreen(paneNew,scr);
+    var f=fitScreen(paneNew,scr); mockScrollbars();
     if(oldFrame&&paneOld.classList.contains('fit')) fitScreen(paneOld,oldFrame);
     if(zoomNote) zoomNote.textContent='목업을 켜면 실제 화면 1440×900 을 '+(f<.999?f.toFixed(2)+'배로 줄여':'실제 크기로')+' 보여 줌 · 버튼은 실제 자리(오른쪽 24px·아래 40px)에 실제 크기로 · 위의 확대·폭 기준·배경색은 목업을 끈 화면에만 적용';
     return;
@@ -1096,6 +1111,15 @@ function loadOld(){
 }
 function mockOn(){ return P.mock==='on' }
 var mockFrame=$('mockFrame');
+// 목업 페이지 안의 원격지원 버튼은 스크롤바 안쪽 기준으로 놓이므로, 바깥에 얹은 iLearn 버튼도 같은 만큼 안쪽으로
+function mockScrollbars(){
+  try{
+    var w=mockFrame.contentWindow, de=mockFrame.contentDocument&&mockFrame.contentDocument.documentElement; if(!w||!de) return;
+    box.style.setProperty('--sbw',Math.max(0,w.innerWidth-de.clientWidth)+'px');
+    box.style.setProperty('--sbh',Math.max(0,w.innerHeight-de.clientHeight)+'px');
+  }catch(e){}
+}
+mockFrame.addEventListener('load',mockScrollbars);
 function setMock(on,quiet){
   P.mock=on?'on':'off'; if(!quiet) save();
   paneNew.classList.toggle('mock',on); mockFrame.hidden=!on;
@@ -1118,6 +1142,25 @@ function syncSegs(){
     else if(k==='menu') set(ITEM.menuOn,v==='on');          // 조정판 '화면 → 마우스 올리면 질문 목록'과 같은 값
   });
 });
+/* ---- 전체 화면: 브라우저 전체 화면도 함께 요청 (막힌 환경에선 창 안에서만 가득) ---- */
+var fsOn=false, fsT, appEl=document.querySelector('.app');
+function flashExit(){ var b=$('fsExit'); b.classList.add('show'); clearTimeout(fsT); fsT=setTimeout(function(){ b.classList.remove('show') },2400) }
+function setFs(on){
+  if(on===fsOn) return;
+  fsOn=on; appEl.classList.toggle('fs',on);
+  if(on){
+    try{ if(!document.fullscreenElement&&document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(noop) }catch(e){}
+    flashExit();
+  } else {
+    $('fsExit').classList.remove('show');
+    try{ if(document.fullscreenElement&&document.exitFullscreen) document.exitFullscreen().catch(noop) }catch(e){}
+  }
+  layout();
+}
+$('fsBtn').addEventListener('click',function(){ setFs(true) });
+$('fsExit').addEventListener('click',function(){ setFs(false) });
+$('fsHot').addEventListener('mouseenter',flashExit);     // 목업 위에선 마우스 움직임이 목업 안으로 가므로, 화면 맨 위에 닿으면 나가기 버튼을 보여 줌
+document.addEventListener('fullscreenchange',function(){ if(!document.fullscreenElement&&fsOn) setFs(false) });
 $('play').addEventListener('click',function(){ setPaused(!paused) });
 $('again').addEventListener('click',function(){ if(paused) setPaused(false); if(cmpOn) loadOld(); restart() });
 $('speed').addEventListener('input',function(){ setSpeed($('speed').value) });
@@ -1125,6 +1168,8 @@ addEventListener('keydown',function(e){
   var t=e.target, tag=t&&t.tagName;
   if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'||(t&&t.isContentEditable)) return;
   if(e.key===' '&&t===document.body){ e.preventDefault(); setPaused(!paused) }
+  else if(e.key==='Escape'&&fsOn) setFs(false);
+  else if((e.key==='f'||e.key==='F')&&!e.metaKey&&!e.ctrlKey&&!e.altKey) setFs(!fsOn);
   else if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&scrubTau!=null){ e.preventDefault(); scrubTo(scrubTau+(e.key==='ArrowLeft'?-1:1)*(e.shiftKey?50:10)) }
 });
 
