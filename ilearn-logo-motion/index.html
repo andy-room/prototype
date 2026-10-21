@@ -73,6 +73,7 @@
   .sec>summary .cnt{font-size:11px;font-weight:500;color:var(--il)}
   .sec .body{display:flex;flex-direction:column;gap:11px;padding:0 16px 18px}
   .gnote{margin:0;font-size:11.5px;line-height:1.55;color:var(--sub)}
+  .gnote.info{padding:8px 10px;border-radius:8px;background:#F7F4FF;color:#4A3A86;font-variant-numeric:tabular-nums}
   .sub{margin-top:6px;padding-top:12px;border-top:1px dashed var(--line);font-size:12px;font-weight:700;color:var(--il)}
   .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px 6px}
   .row>label{font-size:12.5px;line-height:1.4}
@@ -329,6 +330,11 @@ var SCHEMA=[
       note:'기본 30px · 아래 숫자를 누르면 바로 바꿔 비교 · 버튼 높이 60px와 접힌 원 크기는 그대로, 로고(와 모핑 도형)만 커지고 작아짐'}
   ]},
   {g:'문구', open:true, items:[
+    {h:'로고 + "AI 튜터 iLearn" 유지 시간'},
+    {k:'restMs',l:'처음 머무는 시간 (모핑 전)',t:'range',min:500,max:15000,step:100,d:5000,u:'ms'},
+    {k:'gapMs',l:'모핑 끝나고 머무는 시간 (질문 전)',t:'range',min:0,max:10000,step:100,d:2600,u:'ms'},
+    {info:'nameTotal'},
+    {h:'문구 내용'},
     {k:'namePre',l:'이름 앞말',t:'text',d:'AI 튜터'},
     {k:'name',l:'이름',t:'text',d:'iLearn'},
     {k:'q1',l:'질문 1',t:'text',d:'연수원 모바일 앱 설치 방법을 알려줘'},
@@ -357,8 +363,6 @@ var SCHEMA=[
   {g:'로고 모션 · 가속도', open:true, timeline:true, items:[
     {k:'power',l:'가속 세기',t:'range',min:1,max:5,step:.1,d:3.3,note:'1 = 등속(기존 느낌) · 클수록 출발·도착은 부드럽고 가운데는 빠름'},
     {k:'partLag',l:'조각 시차',t:'range',min:0,max:120,step:5,d:35,u:'ms',note:'로고가 접힐 땐 별 → 판, 펼칠 땐 판 → 별 순서로 조금씩 늦게 따라옴'},
-    {k:'restMs',l:'로고로 머무는 시간',t:'range',min:1000,max:10000,step:100,d:5000,u:'ms'},
-    {k:'gapMs',l:'모핑 끝나고 질문까지',t:'range',min:0,max:6000,step:100,d:2600,u:'ms'},
     {h:'① 응축 — 로고가 작아짐'},
     {k:'mCondense',l:'시간',t:'range',min:150,max:1500,step:10,d:480,u:'ms'},
     {k:'eCondense',l:'가속 방식',t:'ease',d:'in'},
@@ -968,6 +972,7 @@ function onParam(k){
     clearTimeout(textT); textT=setTimeout(function(){ var t=String(P[k]||'').trim(); if(curIdx===i&&t) setText({text:t,idx:i}) },350);
   }
   if(/^m[A-Z]/.test(k)||k==='relayLag') drawTimeline();
+  if(k==='restMs'||k==='gapMs') nameTotal();
   if(k==='menuOn'){ syncSegs(); if(P.menuOn&&hovering) box.classList.add('open'); else if(!P.menuOn) box.classList.remove('open') }
   if(scrubTau!=null&&/^(m[A-Z]|e[A-Z]|power|partLag|sMin|condenseRot|startSquash|hex|star|twinkle|pop|relayLag)/.test(k)) morphAt(Math.min(scrubTau,mt().t7));
   apply();
@@ -989,6 +994,7 @@ function buildPanel(){
       if(it.h){ var h=document.createElement('div'); h.className='sub'; h.textContent=it.h; body.appendChild(h) }
       else if(it.k) body.appendChild(row(it));
       else if(it.note){ var n=document.createElement('p'); n.className='gnote'; n.textContent=it.note; body.appendChild(n) }
+      else if(it.info){ var inf=document.createElement('p'); inf.className='gnote info'; inf.id=it.info; body.appendChild(inf) }
     });
     if(grp.g==='화면'){ zoomNote=document.createElement('p'); zoomNote.className='gnote'; body.appendChild(zoomNote) }
     det.appendChild(body); root.appendChild(det);
@@ -1082,6 +1088,14 @@ function drawTimeline(){
   tlBar.innerHTML=segs.map(function(s){ return '<span style="flex:'+Math.max(1,s[1])+' 1 0" title="'+s[0]+' · '+Math.round(s[1])+'ms"><i>'+s[0]+'</i></span>' }).join('')+'<em></em>';
   tlHead=tlBar.querySelector('em');
   tlSum.textContent='총 '+(T.t7/1000).toFixed(2)+'초';
+  nameTotal();
+}
+// 이름("AI 튜터 iLearn")은 처음 머묾 → 모핑 → 질문 전 머묾 동안 계속 보임
+function nameTotal(){
+  var el=$('nameTotal'); if(!el) return;
+  var m=mt().end, s=function(ms){ return (+(ms/1000).toFixed(1))+'초' };
+  el.textContent='이름이 보이는 시간: 처음 '+s(P.restMs)+' + 모핑 '+s(m)+' + 질문 전 '+s(P.gapMs)+' = 총 '+s(+P.restMs+m+(+P.gapMs))+
+    (P.speed!==1?' (속도 1배 기준 · 지금 '+(+P.speed)+'배라 실제로는 '+s((+P.restMs+m+(+P.gapMs))/P.speed)+')':' (속도 1배 기준)');
 }
 function scrubTo(tau){
   var T=mt(); tau=Math.max(0,Math.min(T.t7,tau));
@@ -1099,7 +1113,7 @@ function setPaused(v){
   paused=v; $('play').textContent=v?'▶':'❚❚'; $('play').setAttribute('aria-label',v?'재생':'일시정지'); syncAnims();
   if(!v&&scrubTau!=null){ var t=scrubTau; scrubTau=null; gen++; run(cycle,t) }
 }
-function setSpeed(v){ speed=+v; P.speed=speed; $('speed').value=speed; $('speedOut').textContent=(+speed.toFixed(2))+'×'; syncAnims(); save() }
+function setSpeed(v){ speed=+v; P.speed=speed; $('speed').value=speed; $('speedOut').textContent=(+speed.toFixed(2))+'×'; syncAnims(); save(); nameTotal() }
 var oldFrame=null, cmpOn=false;
 function setCmp(on){
   cmpOn=on; stage.classList.toggle('two',on); $('tagNew').hidden=!on;
