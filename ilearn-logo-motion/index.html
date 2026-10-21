@@ -163,7 +163,7 @@
   .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:var(--q-fs,16px);line-height:var(--txt-lh,30px);font-weight:500}
   .v2-txt span.name{font-weight:700;font-size:var(--name-fs,17px)}
   .v2-txt span.name em{font-style:normal;font-weight:500;color:#7749F4;margin-right:5px}
-  .v2-x{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;overflow:hidden;border-radius:900px;color:#171719;opacity:.45;
+  .v2-x{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;overflow:hidden;border-radius:900px;color:#171719;opacity:var(--x-op,.45);
     transition:background-color .15s,opacity .2s,width .45s cubic-bezier(.3,.7,.2,1),margin .45s cubic-bezier(.3,.7,.2,1)}
   .v2-x svg{flex:none;width:16px;height:16px;display:block}
   .v2-x:hover{background:rgba(23,23,25,.06);opacity:.85}
@@ -201,6 +201,18 @@
     70%{--ix1:80%;--iy1:95%;--ix2:25%;--iy2:20%;--ix3:30%}
     100%{--ix1:55%;--iy1:80%;--ix2:75%;--iy2:5%;--ix3:60%}}
   .v2-sheen::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+
+  /* ---------- 컬러 반전 (위 막대 토글): 다른 설정은 그대로, 색만 — 바탕은 iLearn 로고 보라, 글자·로고·모핑 도형·점은 흰색 ----------
+     로고 오른쪽 판의 큰 별(s3)은 원래 판에 뚫린 구멍이라, 반전에서는 바탕 보라로 칠해 같은 모양을 냄 */
+  .v2.invert{--inv-bg:#784AF6;--x-op:.72}
+  .v2.invert .v2-cap{background:var(--inv-bg);color:#fff}
+  .v2.invert .v2-txt span.name em{color:rgba(255,255,255,.82)}
+  .v2.invert #v2pa,.v2.invert #v2pb,.v2.invert #v2s1,.v2.invert #v2s2,.v2.invert #v2dots circle{fill:#fff}
+  .v2.invert #v2s3{fill:var(--inv-bg)}
+  .v2.invert .v2-x{color:#fff}
+  .v2.invert .v2-x:hover{background:rgba(255,255,255,.14);opacity:1}
+  .v2.invert .v2-x:active{background:rgba(255,255,255,.22);opacity:1}
+  .v2.invert .v2-sheen::after{box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
   /* 캡슐 아래로 번지는 같은 색 빛 */
   @property --v2a{syntax:"<angle>";inherits:false;initial-value:0deg}
   .v2-aura{position:absolute;left:4px;right:4px;top:6px;bottom:calc(var(--aura-y) * -1);border-radius:40px;z-index:0;pointer-events:none;
@@ -236,6 +248,7 @@
     <h1>iLearn 로고 모션 조정</h1>
     <div class="grp"><button class="btn play" id="play" type="button" aria-label="일시정지">❚❚</button><button class="btn" id="again" type="button">처음부터</button><button class="btn" id="fsBtn" type="button" title="F 키">전체 화면</button></div>
     <label class="grp speed">속도<input type="range" id="speed" min=".1" max="2" step=".05" value="1.3"><output id="speedOut">1.3×</output></label>
+    <div class="grp">컬러 반전<div class="seg" data-k="invert"><button type="button" data-v="off">끔</button><button type="button" data-v="on">켬</button></div></div>
     <div class="grp">목업<div class="seg" data-k="mock"><button type="button" data-v="on">켬</button><button type="button" data-v="off">끔</button></div></div>
     <div class="grp">반복<div class="seg" data-k="loop"><button type="button" data-v="all">전체 순환</button><button type="button" data-v="morph">모핑만</button><button type="button" data-v="ask">질문만</button></div></div>
     <div class="grp">버튼<div class="seg" data-k="view"><button type="button" data-v="open">펼침</button><button type="button" data-v="closed">접힌 원</button></div></div>
@@ -480,7 +493,7 @@ var SCHEMA=[
     {k:'menuOn',l:'마우스 올리면 질문 목록',t:'toggle',d:false}
   ]}
 ];
-var DEF={loop:'all',view:'open',speed:1.3,mock:'on'}, ITEM={};
+var DEF={loop:'all',view:'open',speed:1.3,mock:'on',invert:false}, ITEM={};
 SCHEMA.forEach(function(g){ g.items.forEach(function(it){ if(it.k){ DEF[it.k]=it.d; ITEM[it.k]=it } }) });
 // 모핑 값은 펼친 상태·접힌 상태 두 벌. 접힌 상태 값은 'c.키'에 따로 정한 것만 두고(null = 펼친 상태 값을 따라감)
 var MKEYS=['power','partLag','mCondense','eCondense','condenseRot','sMin','startSquash','mHex','eHex','hexEnterRot',
@@ -829,6 +842,7 @@ async function fold(close){
   var padC=(58-P.logoSize)/2, cs=getComputedStyle(cap), xs=getComputedStyle(X);
   var w0=parseFloat(wrap.style.width); if(isNaN(w0)) w0=wrap.offsetWidth;
   var g0=parseFloat(cs.columnGap)||0, r0=parseFloat(cs.paddingRight)||0, x0=parseFloat(xs.width)||0, m0=parseFloat(xs.marginLeft)||0, xo0=+xs.opacity;
+  var xOp=parseFloat(getComputedStyle(box).getPropertyValue('--x-op'))||.45;   // 닫기 버튼 평소 진하기 (컬러 반전이면 더 진함)
   var olds=[].slice.call(wrap.children), st=olds.map(function(o){ return o.style.opacity===''?1:+o.style.opacity });
   var el=null, w1=0;
   if(!close){ var s=NAME(); el=make(s); w1=widthOf(el); remember(s); styleSpan(el,0,0,P.txBlur); wrap.appendChild(el) }
@@ -843,7 +857,7 @@ async function fold(close){
       cap.style.paddingRight=lerp(r0,close?padC:14,e).toFixed(2)+'px';
       X.style.width=lerp(x0,close?0:24,e).toFixed(2)+'px';
       X.style.marginLeft=lerp(m0,close?0:-2,e).toFixed(2)+'px';
-      X.style.opacity=(close?xo0*(1-clamp(k*2.5)):.45*clamp((k-.55)/.45)).toFixed(3);
+      X.style.opacity=(close?xo0*(1-clamp(k*2.5)):xOp*clamp((k-.55)/.45)).toFixed(3);
       if(close) olds.forEach(function(o,i){ styleSpan(o,st[i]*(1-easeP('out',clamp(k*2.2),2)),0,P.txBlur*clamp(k*2.2)) });
       else{ olds.forEach(function(o,i){ o.style.opacity=st[i]*(1-clamp(k*3)) }); var a=easeP('out',clamp((k-.4)/.6),2); styleSpan(el,a,0,P.txBlur*(1-a)) }
   };
@@ -915,6 +929,7 @@ function restart(mode){
    그리기 (매 프레임)
    ===================================================================== */
 var RELAY_EVERY=5200, lastLabel='', tlHead=null;
+var INV_SC=['#FFFFFF','#EEE8FF','#DDE8FF'];          // 컬러 반전 때 모핑 도형 안 색 (흰색 → 연보라 → 연하늘)
 /* 배경 빛: 빛 셋이 서로 묶이지 않고 각자 따로 움직임 (예전엔 한 각도를 같이 써서 두 빛이 마주 보며 대칭으로 돎)
    - 도는 속도가 빛마다 다름(1 : 1.43 : 0.77), '섞어서'면 가운데 빛은 반대로 돎 → 서로 따라가거나 마주 보는 관계가 생기지 않음
    - 각도·반경·떠돎·크기를 빛마다 다른 씨앗의 부드러운 잡음(펄린 노이즈)으로 흔듦 → 주기가 없어 같은 모양이 되풀이되지 않음
@@ -973,9 +988,10 @@ function render(){
   else E.blob.setAttribute('d','');
   E.grad.setAttribute('gradientTransform','rotate('+(clock/1000*P.swirlSpeed%360).toFixed(1)+' '+CX+' '+CY+')');
   var f=b.flash;
-  E.stops[0].setAttribute('stop-color',f>0?mixHex(P.sc1,'#B79BFF',f*.7):P.sc1);
-  E.stops[1].setAttribute('stop-color',f>0?mixHex(P.sc2,'#F3ECFF',f*.85):P.sc2);
-  E.stops[2].setAttribute('stop-color',f>0?mixHex(P.sc3,'#CFE0FF',f*.7):P.sc3);
+  var pal=P.invert?INV_SC:[P.sc1,P.sc2,P.sc3];          // 컬러 반전이면 모핑 도형은 흰색 계열
+  E.stops[0].setAttribute('stop-color',f>0?mixHex(pal[0],'#B79BFF',f*.7):pal[0]);
+  E.stops[1].setAttribute('stop-color',f>0?mixHex(pal[1],'#F3ECFF',f*.85):pal[1]);
+  E.stops[2].setAttribute('stop-color',f>0?mixHex(pal[2],'#CFE0FF',f*.7):pal[2]);
   var d=S.dots;
   if(d.o>.002){
     E.dots.setAttribute('opacity',d.o.toFixed(3));
@@ -1072,6 +1088,7 @@ function apply(){
   if(!orbit) GLOW_VARS.forEach(function(v){ sheen.style.removeProperty(v) });       // 좌우 흐름으로 돌아가면 v2iris 가 다시 위치를 맡음
   if(!(orbit&&P.auraFollow)) aura.style.removeProperty('--v2a');
   s.setProperty('--aura-a',P.auraAlpha/100); s.setProperty('--aura-b',P.auraBreath/100); s.setProperty('--aura-blur',P.auraBlur+'px'); s.setProperty('--aura-y',P.auraY+'px');
+  box.classList.toggle('invert',!!P.invert);            // 컬러 반전
   s.setProperty('--logo',P.logoSize+'px');
   s.setProperty('--name-fs',P.nameFs+'px'); s.setProperty('--q-fs',P.qFs+'px');
   s.setProperty('--txt-lh',Math.round(Math.max(P.nameFs,P.qFs)*1.74)+'px');   // 15px → 26px (기존 비율)
@@ -1347,7 +1364,7 @@ function setMock(on,quiet){
   if(cmpOn) loadOld();
 }
 function syncSegs(){
-  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off',menu:P.menuOn?'on':'off',mock:P.mock};
+  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off',menu:P.menuOn?'on':'off',mock:P.mock,invert:P.invert?'on':'off'};
   [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){ [].forEach.call(g.children,function(b){ b.classList.toggle('on',b.dataset.v===st[g.dataset.k]) }) });
 }
 [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){
@@ -1357,6 +1374,7 @@ function syncSegs(){
     else if(k==='view') setView(v);
     else if(k==='cmp') setCmp(v==='on');
     else if(k==='mock') setMock(v==='on');
+    else if(k==='invert'){ P.invert=v==='on'; save(); syncSegs(); apply() }
     else if(k==='menu') set(ITEM.menuOn,v==='on');          // 조정판 '화면 → 마우스 올리면 질문 목록'과 같은 값
   });
 });
@@ -1424,7 +1442,7 @@ $('resetAll').addEventListener('click',function(){
    ===================================================================== */
 buildPanel(); buildMenu(); setEditProf('open'); countChanged();
 P.view='open'; setCollapsedNow(true);                  // 처음은 무조건 접힌 원(iLearn 로고만)
-if(PRESENT){ fsOn=true; appEl.classList.add('fs','present'); document.title='iLearn 버튼 수정안' }   // 보기 전용: 목업을 창 크기 그대로, 조정판 없음
+if(PRESENT){ fsOn=true; appEl.classList.add('fs','present'); document.title='iLearn 버튼 수정안'; if(/[?&]invert\b/.test(location.search)) P.invert=true }   // 보기 전용: 목업을 창 크기 그대로, 조정판 없음 (present.html?invert = 컬러 반전)
 setMock(mockOn(),true); setSpeed(P.speed); syncSegs();
 textNow(null);
 // 글꼴이 늦게 받아지면 폭이 좁게 재져 글자가 잘리므로, 글꼴을 다 받은 뒤 다시 잼
