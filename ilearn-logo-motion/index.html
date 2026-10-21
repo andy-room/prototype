@@ -93,6 +93,7 @@
   .row .cv input[type=text]{width:76px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-size:12px;font-family:ui-monospace,Menlo,monospace}
   .row .seg button{font-size:12px;padding:4px 9px}
   .row input[type=checkbox]{width:16px;height:16px;accent-color:var(--il)}
+  .btn.act{align-self:flex-start;padding:6px 12px;font-size:12.5px}
   .row .presets{grid-column:1/-1;display:flex;gap:4px;margin-top:2px}
   .row .presets button{flex:1;padding:5px 0;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;color:var(--sub);font-variant-numeric:tabular-nums}
   .row .presets button:hover{border-color:#CFC8E6;color:var(--ink)}
@@ -144,9 +145,10 @@
   /* 로고 크기(--logo)가 바뀌어도 버튼 높이 60px·접힌 원 60×60 은 그대로 → 로고 왼쪽 여백으로 맞춤 */
   .v2-cap{position:relative;z-index:1;display:flex;align-items:center;gap:10px;height:60px;padding:0 14px 0 calc((58px - var(--logo,33px)) / 2);border-radius:30px;cursor:pointer;
     background:#fff;border:1px solid transparent;color:var(--ink);box-shadow:var(--shadow);
-    transition:transform .25s cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1),padding .55s cubic-bezier(.3,.7,.2,1)}
+    transition:transform var(--press-ms,250ms) cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1),padding .55s cubic-bezier(.3,.7,.2,1)}
   .v2-cap:hover{transform:translateY(var(--lift))}
-  .v2-cap:active{transform:translateY(var(--lift)) scale(.97)}
+  /* 누름: 살짝 작아짐 (--press = 1 - 작아지는 정도, 조정판) · .pressing 은 조정판 '누름 미리 보기' */
+  .v2-cap:active,.v2-cap.pressing{transform:translateY(var(--lift)) scale(var(--press,.97))}
   .v2-cap:focus-visible{outline:2px solid #7749F4;outline-offset:3px}
   .v2-cap>:not(.v2-sheen){position:relative;z-index:1}
   /* 호버로 떠오른 만큼 아래를 메워 둠 → 가장자리에 마우스가 있어도 올림/내림이 깜빡이지 않음 */
@@ -436,7 +438,11 @@ var SCHEMA=[
     {k:'shColor',l:'색',t:'color',d:'#402896'},
     {k:'shAlpha',l:'진하기',t:'range',min:0,max:.5,step:.01,d:.21},
     {k:'shContact',l:'바닥 닿는 그림자 진하기',t:'range',min:0,max:.3,step:.01,d:.08},
-    {k:'lift',l:'호버 때 떠오름',t:'range',min:0,max:6,step:.5,d:2,u:'px',note:'버튼만 뜨고 그림자 값은 그대로'}
+    {h:'호버·누름 반응'},
+    {k:'lift',l:'호버 때 떠오름',t:'range',min:0,max:6,step:.5,d:2,u:'px',note:'버튼만 뜨고 그림자 값은 그대로'},
+    {k:'pressScale',l:'누를 때 작아지는 정도',t:'range',min:0,max:10,step:.5,d:3,u:'%',presets:[0,2,3,4,6,8],note:'기존 3% · 0이면 작아지지 않음'},
+    {k:'pressMs',l:'누름·호버 반응 시간',t:'range',min:50,max:600,step:10,d:250,u:'ms',note:'작아지고 돌아오는 데 걸리는 시간 (호버 때 떠오름도 같은 시간)'},
+    {act:'pressPreview',l:'누름 미리 보기'}
   ]},
   {g:'배경 빛 — 구슬 느낌', items:[
     {k:'gc1',l:'빛 색 1',t:'color',d:'#AFADFF'},
@@ -825,7 +831,7 @@ async function fold(close){
   else remember(null);
   collapsed=close;
   // 접힘 모양(클래스)은 끝에 붙이고, 그동안은 직접 값을 넣음 — CSS 트랜지션은 끄고, 시작 값을 먼저 넣은 뒤 클래스를 뗌 (첫 프레임에 튀지 않게)
-  cap.style.transition='transform .25s cubic-bezier(.3,.7,.3,1)'; X.style.transition='background-color .15s';
+  cap.style.transition='transform var(--press-ms,250ms) cubic-bezier(.3,.7,.3,1)'; X.style.transition='background-color .15s';
   var frame=function(k){
       var e=ease('inOut',k);
       wrap.style.width=lerp(w0,w1,e).toFixed(2)+'px';
@@ -1033,6 +1039,7 @@ function apply(){
   var s=box.style;
   s.setProperty('--shadow','0 '+P.shY+'px '+P.shBlur+'px '+P.shSpread+'px '+rgba(P.shColor,P.shAlpha)+',0 1px 2px '+rgba('#281660',P.shContact));
   s.setProperty('--lift',(-P.lift)+'px');
+  s.setProperty('--press',(1-P.pressScale/100).toFixed(3)); s.setProperty('--press-ms',P.pressMs+'ms');
   var a=P.gAlpha/100;
   s.setProperty('--g1',rgba(P.gc1,a)); s.setProperty('--g2',rgba(P.gc2,a)); s.setProperty('--g3',rgba(P.gc3,a*.8));
   s.setProperty('--c1',P.gc1); s.setProperty('--c2',P.gc2); s.setProperty('--c3',P.gc3);
@@ -1107,6 +1114,11 @@ function onParam(k){
    조정판 그리기
    ===================================================================== */
 var rowUpd={}, uid=0;
+// 조정판 버튼 동작 — 누름 미리 보기: 버튼을 실제로 누르면 iLearn 창이 열리므로, 눌린 모습만 잠깐 보여 줌
+var ACTIONS={pressPreview:function(){
+  cap.classList.add('pressing');
+  setTimeout(function(){ cap.classList.remove('pressing') },Math.max(450,P.pressMs+250));
+}};
 function fmt(v){ return typeof v==='number'?+v.toFixed(3):v }
 function buildPanel(){
   var root=$('panelBody');
@@ -1120,6 +1132,7 @@ function buildPanel(){
       else if(it.k) body.appendChild(row(it));
       else if(it.note){ var n=document.createElement('p'); n.className='gnote'; n.textContent=it.note; body.appendChild(n) }
       else if(it.info){ var inf=document.createElement('p'); inf.className='gnote info'; inf.id=it.info; body.appendChild(inf) }
+      else if(it.act){ var ab=document.createElement('button'); ab.type='button'; ab.className='btn act'; ab.textContent=it.l; ab.addEventListener('click',ACTIONS[it.act]); body.appendChild(ab) }
     });
     if(grp.g==='화면'){ zoomNote=document.createElement('p'); zoomNote.className='gnote'; body.appendChild(zoomNote) }
     det.appendChild(body); root.appendChild(det);
