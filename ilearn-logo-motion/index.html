@@ -58,6 +58,8 @@
     opacity:0;pointer-events:none;transform:translate(-50%,-8px);transition:opacity .25s,transform .25s}
   .app.fs ~ .fs-exit.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
   .fs-exit:focus-visible{outline:2px solid #fff;outline-offset:2px}
+  /* 보기 전용(present.html): 전체 화면과 같은 모습, 나가기 버튼·안내 없음 */
+  .app.present .hint,.app.present ~ .fs-hot,.app.present ~ .fs-exit{display:none!important}
 
   /* ---------- 조정판 ---------- */
   .panel{display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--line);background:#fff;font-size:12.5px}
@@ -493,14 +495,16 @@ var OLD_DEF={gDir:'cw',gWobbleDeg:45,gWobblePeriod:7,gIrregular:60,gRotPeriod:16
   speed:1,power:3,condenseRot:40,sMin:.2,mHex:900,hexEnterRot:100,mHexSpin:415,hexSpinDeg:60,hexJelly:.04,mToStar:420,starOvershoot:1.2,starEnterRot:90,
   mStarSpin:560,mPop:520,popOvershoot:1.9,popRot:0,relayLag:110,floatAmp:1,floatPeriod:4000,sc3:'#7FA8FF',gc1:'#F4BAEC',gAlpha:30,gSize:100,gClearW:16,gDur:9,anchor:'right'};
 // (_v 표시가 없는 예전 저장분에만 적용 — 새로 저장한 값은 예전 기본값과 같아도 그대로 둠)
-try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'), legacy=saved&&!saved._v;
+// ?present (present.html): 위 막대·조정판 없이 목업 위 버튼만 — 이 브라우저에 저장된 조정값은 쓰지 않고 기본값 그대로
+var PRESENT=/[?&]present\b/.test(location.search);
+if(!PRESENT) try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'), legacy=saved&&!saved._v;
   if(saved) for(var sk in saved) if(sk in DEF&&sk!=='view'&&!(legacy&&sk in OLD_DEF&&saved[sk]===OLD_DEF[sk])) P[sk]=saved[sk]; }catch(e){}   // 접힘 상태는 불러오지 않음 (늘 접힌 로고에서 시작)
 // 바꾼 값만 저장 → 나중에 기본값을 고쳐도 손대지 않은 항목은 새 기본값을 따름
 // 모핑이 읽는 값 묶음: 평소엔 P(펼친 상태), 접힌 원에서 도는 모핑 동안만 접힌 상태 묶음
 var MP=P;
 function prof(closed){ if(!closed) return P; var o=Object.create(P); MKEYS.forEach(function(k){ var v=P['c.'+k]; if(v!=null) o[k]=v }); return o }
 function withProf(closed,fn){ var keep=MP; MP=prof(closed); try{ return fn() }finally{ MP=keep } }
-var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ var diff={_v:2}; for(var k in DEF) if(k!=='view'&&P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
+var saveT; function save(){ if(PRESENT) return; clearTimeout(saveT); saveT=setTimeout(function(){ var diff={_v:2}; for(var k in DEF) if(k!=='view'&&P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
 
 /* =====================================================================
    수학
@@ -999,17 +1003,31 @@ function render(){
 /* =====================================================================
    마우스 · 누름 · 닫기
    ===================================================================== */
-var hovering=false, hideT;
+/* 마우스를 올리면 로고 모핑 한 번 (이미 도는 중이면 처음부터 다시 돌지 않고 하던 모핑을 끝까지) → 로고로 멈춤
+   마우스를 떼도 모핑은 끝까지 돌고, 끝난 뒤에 원래 순환으로 돌아감 */
+var hovering=false, hideT, hoverP=null;
 function enter(){
   clearTimeout(hideT); hideT=null; if(hovering) return; hovering=true;
   if(P.menuOn) box.classList.add('open');
-  if(scrubTau!=null) return;
-  gen++; if(!collapsed) setText(NAME());
-  run(function(){ return settle().then(function(){ label('마우스 올림 · 로고 고정') }) });
+  if(scrubTau!=null||hoverP) return;                    // 모핑 도는 중에 다시 올라오면 그대로 이어감
+  var from=S.morphTau!=null&&S.blob.o>0?S.morphTau:null; // 순환 모핑 도중이면 그 자리부터 마저
+  var g=++gen; if(!collapsed) setText(NAME());
+  var p=hoverP=run(async function(){
+    if(from==null){ await settle(); await morph(0) } else await morph(from);
+    label('마우스 올림 · 로고 고정');
+  }).then(function(){
+    if(hoverP===p) hoverP=null;
+    if(g!==gen) return;                                  // 그사이 다른 흐름(처음부터·접기 등)이 시작됐으면 그쪽에 맡김
+    if(!hovering&&scrubTau==null){ gen++; run(cycle) }   // 이미 마우스를 뗐으면 이제 순환으로
+  });
 }
 function leave(){
   if(hideT) return;                                     // 이미 떼는 중 (다시 부르지 않음 → 매 순간 확인해도 0.18초 뒤 확실히 넘어감)
-  hideT=setTimeout(function(){ hideT=null; hovering=false; box.classList.remove('open'); if(scrubTau!=null) return; gen++; run(cycle) },180);
+  hideT=setTimeout(function(){
+    hideT=null; hovering=false; box.classList.remove('open');
+    if(scrubTau!=null||hoverP) return;                  // 모핑 중이면 끝까지 돌고 나서 순환으로 (enter 쪽에서 이어 줌)
+    gen++; run(cycle);
+  },180);
 }
 [cap,menu].forEach(function(el){ el.addEventListener('mouseenter',enter); el.addEventListener('mouseleave',leave) });
 cap.addEventListener('click',function(){ box.classList.remove('open'); window.openILearn(curQ,cap) });
@@ -1306,7 +1324,7 @@ function setCmp(on){
 function loadOld(){
   if(!oldFrame) return;
   var m=mockOn(); paneOld.classList.toggle('fit',m); if(!m) clearFit(oldFrame);
-  oldFrame.src=(m?'original-mock.html':'original.html')+'?c=4&embed&t='+Date.now();
+  oldFrame.src=(m?'original-mock.html':'original.html')+'?c=0&embed&t='+Date.now();   // c=0: 최초 파일을 그냥 열면 보이는 원래 사이트 버튼(보라색 원) · embed: 아래쪽 시안 전환 이름표만 숨김
   layout();
 }
 function mockOn(){ return P.mock==='on' }
@@ -1365,6 +1383,7 @@ $('play').addEventListener('click',function(){ setPaused(!paused) });
 $('again').addEventListener('click',function(){ if(paused) setPaused(false); if(cmpOn) loadOld(); P.view='open'; userClosed=false; syncSegs(); restart('intro') });
 $('speed').addEventListener('input',function(){ setSpeed($('speed').value) });
 addEventListener('keydown',function(e){
+  if(PRESENT) return;                                    // 보기 전용에선 단축키 없음
   var t=e.target, tag=t&&t.tagName;
   if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'||(t&&t.isContentEditable)) return;
   if(e.key===' '&&t===document.body){ e.preventDefault(); setPaused(!paused) }
@@ -1405,6 +1424,7 @@ $('resetAll').addEventListener('click',function(){
    ===================================================================== */
 buildPanel(); buildMenu(); setEditProf('open'); countChanged();
 P.view='open'; setCollapsedNow(true);                  // 처음은 무조건 접힌 원(iLearn 로고만)
+if(PRESENT){ fsOn=true; appEl.classList.add('fs','present'); document.title='iLearn 버튼 수정안' }   // 보기 전용: 목업을 창 크기 그대로, 조정판 없음
 setMock(mockOn(),true); setSpeed(P.speed); syncSegs();
 textNow(null);
 // 글꼴이 늦게 받아지면 폭이 좁게 재져 글자가 잘리므로, 글꼴을 다 받은 뒤 다시 잼

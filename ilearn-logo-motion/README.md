@@ -1,9 +1,10 @@
 # ilearn-logo-motion
 
 아이런 실행 버튼(개선안 흰 캡슐)의 **로고 모션을 직접 조정해 보는** 프로토타입.
-기준 파일은 `ilearn-prototype/button.html`(`?c=4`)이며, 같은 내용을 `original.html`로 두고 위 막대의 **비교 → 기존과 나란히**로 함께 볼 수 있습니다.
+기준 파일은 `ilearn-prototype/button.html`(`?c=4`)이며, 위 막대의 **비교 → 기존과 나란히**에서 기존(최초 `ilearn-prototype/index.html`을 그냥 열었을 때 보이는 원래 사이트 버튼)과 함께 볼 수 있습니다.
 
-- 열기: `index.html` (GitHub Pages: https://andy-room.github.io/prototype/ilearn-logo-motion/)
+- 조정판: `index.html` (GitHub Pages: https://andy-room.github.io/prototype/ilearn-logo-motion/)
+- **보기 전용(공유용)**: `present.html` (https://andy-room.github.io/prototype/ilearn-logo-motion/present.html) — 위 막대·조정판 없이 연수원 메인 화면 위에 수정안 버튼만. 값은 기본값(조정판에서 확정한 값) 그대로이고, 보는 사람 브라우저에 저장된 조정값은 쓰지 않음
 - 조정판 값은 그 브라우저에만 저장됩니다. 다른 사람과 맞춰 보려면 **설정 복사 → 설정 불러오기**로 주고받으면 됩니다.
 
 ## 이번에 바뀐 점
@@ -39,6 +40,7 @@
 - **모핑 후 머무는 시간도 따로**: 펼친 상태(모핑 끝나고 질문 전), 접힌 상태(✕로 접은 원에서 모핑과 다음 모핑 사이)
 - **접기·펴기**(✕, 처음 펼쳐짐): 글자 칸 폭·간격·닫기 버튼·여백이 한 곡선으로 함께 줄고 늘어남. 글자는 접힐 땐 먼저 사라지고 펼 땐 뒤따라 나타남
 - **글자 크기**(조정판 문구 칸 → 문구 내용): "AI 튜터 iLearn" 글자 크기, 질문 글자 크기를 따로 (기본 이름 17px · 질문 16px, 13~18px 버튼으로 바로 비교). 버튼 폭은 바뀐 글자에 맞춰 다시 맞춰지고 높이 60px는 그대로
+- **마우스를 올리면 모핑 한 번**: 로고가 한 바퀴 돈 뒤 로고로 멈춤(이미 도는 중이면 하던 모핑을 끝까지). 마우스를 떼도 모핑은 끝까지 돌고 나서 원래 순환으로 돌아감
 - **누를 때 작아짐**(조정판 그림자 칸 → 호버·누름 반응): 작아지는 정도(기본 3%, 0·2·3·4·6·8% 버튼), 누름·호버 반응 시간(기본 250ms). '누름 미리 보기'로 iLearn 창을 열지 않고 눌린 모습만 확인
 - **로고 크기**(조정판 맨 위): 버튼 안 iLearn 로고 크기를 슬라이더나 27·30·33·35·38·40px 버튼으로 바로 바꿔 비교(기본 33px). 버튼 높이 60px와 접힌 원 크기는 그대로이고 로고(와 모핑 도형)만 커지고 작아짐
 - **모핑 타임라인**(로고 모션 칸 맨 위): 장면별 길이가 막대로 보이고, 누르거나 끌면 그 순간에 멈춰서 봄. 멈춘 뒤 ← → 로 10ms씩(Shift 50ms), ▶ 누르면 거기서부터 이어서 재생
@@ -78,8 +80,9 @@
 |---|---|
 | `index.html` | 수정안 + 조정판 |
 | `mock.html` | 목업 배경 — 연수원(아레테 아카데미) 메인 화면 복제(`ilearn-prototype/index.html`의 화면 부분). 모양은 휴넷 서버의 CSS·이미지를 불러오므로 인터넷 필요. 버튼은 없음 |
-| `original-mock.html` | 기존 목업(`ilearn-prototype/index.html`, 기존 버튼 포함) — 목업을 켜고 나란히 볼 때 |
-| `original.html` | 기존 버튼(`button.html` 그대로) — 목업을 끄고 나란히 볼 때 |
+| `present.html` | 보기 전용 — 조정판 없이 목업 위 수정안 버튼만 (`index.html?present`를 창 가득 띄움) |
+| `original-mock.html` | 기존 목업(`ilearn-prototype/index.html`) — 목업을 켜고 나란히 볼 때 원래 사이트 버튼(`?c=0`)으로 보여 줌 |
+| `original.html` | 기존 버튼(`button.html` 그대로) — 목업을 끄고 나란히 볼 때 원래 사이트 버튼(`?c=0`)으로 보여 줌 |
 | `ilearn-chat.html` | 버튼을 누르면 열리는 iLearn 창 (생김새만 같게 만든 예시) |
 | `assets/` | 아이런 로고 SVG |
 
