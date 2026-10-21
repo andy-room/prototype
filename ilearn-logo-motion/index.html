@@ -332,6 +332,7 @@ var SCHEMA=[
   {g:'문구', open:true, items:[
     {h:'처음 시작과 머무는 시간'},
     {k:'startMs',l:'처음 접힌 로고로 머무는 시간',t:'range',min:0,max:10000,step:100,d:2000,u:'ms',note:'페이지를 열거나 처음부터를 누르면 늘 접힌 원(iLearn 로고만)으로 시작한 뒤 펼쳐지며 문구가 나옴'},
+    {k:'introMorph',l:'펼쳐질 때 로고 모핑 한 번',t:'toggle',d:true,note:'접힌 원에서 로고가 육각형 → 별 → 로고로 한 번 돈 뒤, 로고가 다시 나타나는 순간 펼쳐지며 "AI 튜터 iLearn"'},
     {k:'restMs',l:'"AI 튜터 iLearn" 등장 후 머무는 시간',t:'range',min:500,max:15000,step:100,d:5000,u:'ms',note:'처음 펼쳐진 뒤 첫 루틴(모핑 → 질문)이 시작되기까지'},
     {k:'loopHoldMs',l:'한 루틴 끝나고 머무는 시간',t:'range',min:500,max:15000,step:100,d:5000,u:'ms',note:'질문 세 개가 끝나고 이름으로 돌아온 뒤 다음 루틴까지'},
     {k:'gapMs',l:'루틴 안 · 모핑 끝나고 질문까지',t:'range',min:0,max:10000,step:100,d:2600,u:'ms'},
@@ -809,12 +810,23 @@ async function fold(close){
   box.classList.toggle('collapsed',close);
 }
 // 처음: 무조건 접힌 원(iLearn 로고만)으로 시작 → 정해 둔 시간 뒤 펼쳐지며 "AI 튜터 iLearn"
+// 처음 펼칠 때 로고 모핑 한 번(켜 두면): 접힌 원에서 로고 → 육각형 → 별 → 로고, 로고가 다시 튀어나오는 순간(⑦)에 맞춰 펼쳐지며 문구
 async function intro(){
   var g=gen;
   await rest(P.startMs,'처음 · 접힌 로고');
   if(userClosed) return;
-  label('펼침 · "AI 튜터 iLearn" 등장');
-  await fold(false); alive(g);
+  var opened=null;
+  if(P.introMorph){
+    var T=mt();
+    await tween(T.end,function(k){
+      var tau=k*T.end; morphAt(tau);
+      if(tau>=T.t6&&!opened&&!userClosed) opened=fold(false);
+    });
+    finishLogo();
+  }
+  if(userClosed) return;
+  if(!opened){ label('펼침 · "AI 튜터 iLearn" 등장'); opened=fold(false) }
+  await opened; alive(g);
 }
 // 접기·펴기는 중간에 끊지 않으므로, 그사이 흐름이 바뀌었으면(마우스 올림 등) 예전 흐름은 여기서 멈춤
 function alive(g){ if(g!==gen) throw CANCEL }
@@ -1038,7 +1050,7 @@ function onParam(k){
     clearTimeout(textT); textT=setTimeout(function(){ var t=String(P[k]||'').trim(); if(curIdx===i&&t) setText({text:t,idx:i}) },350);
   }
   if(/^m[A-Z]/.test(k)||k==='relayLag') drawTimeline();
-  if(/^(restMs|gapMs|startMs|loopHoldMs|qHold|dGather|q[123])$/.test(k)) nameTotal();
+  if(/^(restMs|gapMs|startMs|loopHoldMs|qHold|dGather|q[123]|introMorph)$/.test(k)) nameTotal();
   if(k==='menuOn'){ syncSegs(); if(P.menuOn&&hovering) box.classList.add('open'); else if(!P.menuOn) box.classList.remove('open') }
   if(scrubTau!=null&&/^(m[A-Z]|e[A-Z]|power|partLag|sMin|condenseRot|startSquash|hex|star|twinkle|pop|relayLag)/.test(k)) morphAt(Math.min(scrubTau,mt().t7));
   apply();
@@ -1161,7 +1173,7 @@ function nameTotal(){
   var el=$('nameTotal'); if(!el) return;
   var s=function(ms){ return (+(ms/1000).toFixed(1))+'초' };
   var n=questions().length, m=mt().end, ask=n?n*P.qHold+(+P.dGather)+popTail():0, routine=m+(n?+P.gapMs:0)+ask;
-  el.textContent='흐름: 접힌 로고 '+s(P.startMs)+' → 펼침·"AI 튜터 iLearn" → '+s(P.restMs)+' 머묾 → 루틴 '+s(routine)+
+  el.textContent='흐름: 접힌 로고 '+s(P.startMs)+(P.introMorph?' → 접힌 채 모핑 '+s(mt().t6):'')+' → 펼침·"AI 튜터 iLearn" → '+s(P.restMs)+' 머묾 → 루틴 '+s(routine)+
     ' (모핑 '+s(m)+(n?' · 질문 전 '+s(P.gapMs)+' · 질문 '+n+'개와 이름으로 돌아옴 '+s(ask):'')+') → '+s(P.loopHoldMs)+' 머묾 → 루틴 반복'+
     (P.speed!==1?' · 속도 1배 기준 (지금 '+(+P.speed)+'배)':' · 속도 1배 기준');
 }
