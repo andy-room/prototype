@@ -448,9 +448,9 @@ var SCHEMA=[
     {k:'gc1',l:'빛 색 1',t:'color',d:'#AFADFF'},
     {k:'gc2',l:'빛 색 2',t:'color',d:'#B0C8FF'},
     {k:'gc3',l:'빛 색 3',t:'color',d:'#D6C6FF'},
-    {k:'gAlpha',l:'세기',t:'range',min:0,max:100,step:1,d:36,u:'%'},
+    {k:'gAlpha',l:'세기',t:'range',min:0,max:100,step:1,d:16,u:'%'},
     {k:'gSharp',l:'뚜렷함',t:'range',min:0,max:100,step:1,d:0,u:'%',note:'높일수록 빛 가운데가 진하게 차고 가장자리가 또렷해짐'},
-    {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:195,u:'%'},
+    {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:120,u:'%'},
     {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:13,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
     {h:'빛의 움직임 — 빛 셋이 각자 따로, 불규칙하게 천천히'},
     {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','불규칙 회전'],['flow','좌우 흐름(기존)']],d:'orbit'},
@@ -465,10 +465,10 @@ var SCHEMA=[
     {k:'gBreathPeriod',l:'숨 한 번',t:'range',min:1,max:20,step:.5,d:5,u:'s'},
     {k:'gDur',l:'좌우 흐름 한 번 (기존 방식일 때)',t:'range',min:2,max:30,step:.5,d:18,u:'s'},
     {h:'캡슐 아래로 번지는 빛'},
-    {k:'auraAlpha',l:'세기',t:'range',min:0,max:60,step:1,d:9,u:'%'},
-    {k:'auraBreath',l:'숨쉬듯 바뀌는 폭',t:'range',min:0,max:20,step:1,d:3,u:'%'},
-    {k:'auraBlur',l:'번짐',t:'range',min:0,max:40,step:1,d:16,u:'px'},
-    {k:'auraY',l:'아래로 내려옴',t:'range',min:-10,max:30,step:1,d:10,u:'px'},
+    {k:'auraAlpha',l:'세기',t:'range',min:0,max:60,step:1,d:43,u:'%'},
+    {k:'auraBreath',l:'숨쉬듯 바뀌는 폭',t:'range',min:0,max:20,step:1,d:9,u:'%'},
+    {k:'auraBlur',l:'번짐',t:'range',min:0,max:40,step:1,d:18,u:'px'},
+    {k:'auraY',l:'아래로 내려옴',t:'range',min:-10,max:30,step:1,d:7,u:'px'},
     {k:'auraFollow',l:'캡슐 빛 회전을 같이 따라감',t:'toggle',d:true,note:'끄면 기존처럼 12초에 한 바퀴 일정하게'}
   ]},
   {g:'화면', items:[
@@ -1383,7 +1383,7 @@ function refreshAll(){
   restart('intro');
 }
 $('copy').addEventListener('click',function(){
-  var diff={}; for(var k in DEF) if(P[k]!==DEF[k]) diff[k]=P[k];
+  var diff={}; for(var k in DEF) if(k!=='view'&&P[k]!==DEF[k]) diff[k]=P[k];   // 접힘(✕) 상태는 설정이 아니므로 빼고 복사
   var n=Object.keys(diff).length, txt=JSON.stringify(diff,null,2);
   var done=function(){ toast(n?'바꾼 값 '+n+'개를 복사했어요':'바꾼 값이 없어요 (모두 기본값)') };
   if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done,function(){ prompt('아래 내용을 복사하세요',txt) });
@@ -1391,7 +1391,7 @@ $('copy').addEventListener('click',function(){
 });
 $('paste').addEventListener('click',function(){
   var t=prompt('복사해 둔 설정을 붙여 넣으세요'); if(!t) return;
-  try{ var o=JSON.parse(t), n=0; for(var k in o) if(k in DEF){ P[k]=o[k]; n++ } refreshAll(); toast(n+'개 값을 불러왔어요') }
+  try{ var o=JSON.parse(t), n=0; for(var k in o) if(k in DEF&&k!=='view'){ P[k]=o[k]; n++ } refreshAll(); toast(n+'개 값을 불러왔어요') }
   catch(e){ toast('설정 형식이 맞지 않아요') }
 });
 $('resetAll').addEventListener('click',function(){
