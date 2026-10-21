@@ -830,17 +830,18 @@ async function intro(){
   if(userClosed) return;
   if(!opened){ label('펼침 · "AI 튜터 iLearn" 등장'); opened=fold(false) }
   await opened; alive(g);
+  return !!P.introMorph;                                 // 처음 모핑을 했으면 첫 루틴은 모핑 없이 바로 질문으로
 }
 // 접기·펴기는 중간에 끊지 않으므로, 그사이 흐름이 바뀌었으면(마우스 올림 등) 예전 흐름은 여기서 멈춤
 function alive(g){ if(g!==gen) throw CANCEL }
 // 순환: [처음] 접힌 로고 → 펼침 → 머묾 → 루틴(모핑 → 질문 셋 → 이름으로) → 머묾 → 루틴 …
 // start: 'intro' 처음부터 · 숫자 = 타임라인에서 멈춘 자리부터 · 그 밖 = 지금 상태에서 이어감(마우스 뗌·설정 바꿈)
 async function cycle(start){
-  var first=false, g=gen;
+  var first=false, morphed=false, g=gen;
   if(typeof start==='number'){ await morph(start); await afterMorph() }
   else{
     await settle();
-    if(start==='intro'){ await intro(); first=true }
+    if(start==='intro'){ morphed=await intro(); first=true }
     else if(!userClosed&&collapsed){ await fold(false); alive(g) }
   }
   for(;;){
@@ -849,6 +850,8 @@ async function cycle(start){
     if(P.loop==='morph'){ await rest(1000); await morph(); continue }
     if(P.loop==='ask'){ await rest(1000); await askAll(); continue }
     await rest(first?P.restMs:P.loopHoldMs,first?'"AI 튜터 iLearn" 머묾':'한 루틴 끝 · 머묾');
+    // 처음 펼칠 때 이미 모핑을 했으면 첫 루틴은 모핑을 건너뛰고 바로 질문 (모핑이 두 번 연달아 돌지 않게)
+    if(first&&morphed){ first=false; await askAll(); continue }
     first=false;
     await morph(); await afterMorph();
   }
@@ -1177,7 +1180,9 @@ function nameTotal(){
   var s=function(ms){ return (+(ms/1000).toFixed(1))+'초' };
   var n=questions().length, m=mt().end, ask=n?n*P.qHold+(+P.dGather)+popTail():0, routine=m+(n?+P.gapMs:0)+ask;
   var open=!P.introMorph?' → 펼침·"AI 튜터 iLearn"':P.introUnfold==='pop'?' → 접힌 채 모핑 '+s(mt().t6)+' → 펼침·"AI 튜터 iLearn"':' → 펼침·"AI 튜터 iLearn"과 동시에 모핑 '+s(m);
-  el.textContent='흐름: 접힌 로고 '+s(P.startMs)+open+' → '+s(P.restMs)+' 머묾 → 루틴 '+s(routine)+
+  // 처음 모핑을 하면 첫 루틴은 모핑 없이 바로 질문
+  var firstAsk=P.introMorph&&n?' → 바로 질문 '+n+'개와 이름으로 돌아옴 '+s(ask)+' → '+s(P.loopHoldMs)+' 머묾':'';
+  el.textContent='흐름: 접힌 로고 '+s(P.startMs)+open+' → '+s(P.restMs)+' 머묾'+firstAsk+' → 루틴 '+s(routine)+
     ' (모핑 '+s(m)+(n?' · 질문 전 '+s(P.gapMs)+' · 질문 '+n+'개와 이름으로 돌아옴 '+s(ask):'')+') → '+s(P.loopHoldMs)+' 머묾 → 루틴 반복'+
     (P.speed!==1?' · 속도 1배 기준 (지금 '+(+P.speed)+'배)':' · 속도 1배 기준');
 }
