@@ -13,8 +13,9 @@
   button,input,select{font:inherit;letter-spacing:inherit;color:inherit}
 
   /* ---------- 틀: 위 막대 · 무대 · 조정판 ---------- */
-  .app{display:grid;grid-template-columns:minmax(0,1fr) 384px;grid-template-rows:56px minmax(0,1fr);height:100vh}
-  .bar{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:0 16px;border-bottom:1px solid var(--line);background:#fff;white-space:nowrap;overflow-x:auto}
+  .app{display:grid;grid-template-columns:minmax(0,1fr) 384px;grid-template-rows:auto minmax(0,1fr);height:100vh}
+  /* 칸이 좁으면 두 줄로 → 오른쪽 조절이 화면 밖으로 밀려나지 않음 */
+  .bar{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;min-height:56px;padding:8px 16px;border-bottom:1px solid var(--line);background:#fff;white-space:nowrap}
   .bar h1{margin:0 auto 0 0;font-size:15px;font-weight:700}
   .grp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sub)}
   .seg{display:flex;padding:3px;border-radius:10px;background:var(--soft)}
@@ -88,7 +89,7 @@
   .toast.on{opacity:1;transform:none}
 
   @media (max-width:900px){
-    .app{grid-template-columns:minmax(0,1fr);grid-template-rows:56px 62vh auto;height:auto;min-height:100vh}
+    .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 62vh auto;height:auto;min-height:100vh}
     .panel{border-left:0;border-top:1px solid var(--line)}
     .panel-body{overflow:visible}
   }
@@ -191,9 +192,10 @@
   <div class="bar">
     <h1>iLearn 로고 모션 조정</h1>
     <div class="grp"><button class="btn play" id="play" type="button" aria-label="일시정지">❚❚</button><button class="btn" id="again" type="button">처음부터</button></div>
-    <label class="grp speed">속도<input type="range" id="speed" min=".1" max="2" step=".05" value="1"><output id="speedOut">1×</output></label>
+    <label class="grp speed">속도<input type="range" id="speed" min=".1" max="2" step=".05" value="1.3"><output id="speedOut">1.3×</output></label>
     <div class="grp">반복<div class="seg" data-k="loop"><button type="button" data-v="all">전체 순환</button><button type="button" data-v="morph">모핑만</button><button type="button" data-v="ask">질문만</button></div></div>
     <div class="grp">버튼<div class="seg" data-k="view"><button type="button" data-v="open">펼침</button><button type="button" data-v="closed">접힌 원</button></div></div>
+    <div class="grp">마우스 올리면 질문<div class="seg" data-k="menu"><button type="button" data-v="on">켬</button><button type="button" data-v="off">끔</button></div></div>
     <div class="grp">비교<div class="seg" data-k="cmp"><button type="button" data-v="off">수정안만</button><button type="button" data-v="on">기존과 나란히</button></div></div>
   </div>
 
@@ -211,7 +213,7 @@
           <svg class="v2-logo" id="v2logo" viewBox="17.433 11.740 16.451 16.451" aria-hidden="true">
             <defs>
               <filter id="v2goo" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur in="SourceGraphic" stdDeviation=".55" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"/></filter>
-              <linearGradient id="v2swirl" gradientUnits="userSpaceOnUse" x1="17.6" y1="19.97" x2="33.7" y2="19.97"><stop id="v2c1" offset="0" stop-color="#6A3CF0"/><stop id="v2c2" offset=".55" stop-color="#B48BFF"/><stop id="v2c3" offset="1" stop-color="#7FA8FF"/></linearGradient>
+              <linearGradient id="v2swirl" gradientUnits="userSpaceOnUse" x1="17.6" y1="19.97" x2="33.7" y2="19.97"><stop id="v2c1" offset="0" stop-color="#6A3CF0"/><stop id="v2c2" offset=".55" stop-color="#B48BFF"/><stop id="v2c3" offset="1" stop-color="#3D7BFF"/></linearGradient>
             </defs>
             <g id="v2float">
               <g id="v2dots" opacity="0"><circle cx="22.06" cy="19.97" r="1.3" fill="#784AF6"/><circle cx="25.66" cy="19.97" r="1.3" fill="#784AF6"/><circle cx="29.26" cy="19.97" r="1.3" fill="#784AF6"/></g>
@@ -315,34 +317,34 @@ var SCHEMA=[
     {k:'gatherAnticip',l:'모이기 전 살짝 벌어짐',t:'range',min:0,max:3,step:.1,d:1.2}
   ]},
   {g:'로고 모션 · 가속도', open:true, timeline:true, items:[
-    {k:'power',l:'가속 세기',t:'range',min:1,max:5,step:.1,d:3,note:'1 = 등속(기존 느낌) · 클수록 출발·도착은 부드럽고 가운데는 빠름'},
+    {k:'power',l:'가속 세기',t:'range',min:1,max:5,step:.1,d:3.3,note:'1 = 등속(기존 느낌) · 클수록 출발·도착은 부드럽고 가운데는 빠름'},
     {k:'partLag',l:'조각 시차',t:'range',min:0,max:120,step:5,d:35,u:'ms',note:'로고가 접힐 땐 별 → 판, 펼칠 땐 판 → 별 순서로 조금씩 늦게 따라옴'},
     {k:'restMs',l:'로고로 머무는 시간',t:'range',min:1000,max:10000,step:100,d:5000,u:'ms'},
     {k:'gapMs',l:'모핑 끝나고 질문까지',t:'range',min:0,max:6000,step:100,d:2600,u:'ms'},
     {h:'① 응축 — 로고가 작아짐'},
     {k:'mCondense',l:'시간',t:'range',min:150,max:1500,step:10,d:480,u:'ms'},
     {k:'eCondense',l:'가속 방식',t:'ease',d:'in'},
-    {k:'condenseRot',l:'회전',t:'range',min:-180,max:180,step:5,d:40,u:'°'},
-    {k:'sMin',l:'가장 작을 때 크기',t:'range',min:.05,max:.5,step:.01,d:.2},
+    {k:'condenseRot',l:'회전',t:'range',min:-180,max:180,step:5,d:0,u:'°'},
+    {k:'sMin',l:'가장 작을 때 크기',t:'range',min:.05,max:.5,step:.01,d:.05},
     {k:'startSquash',l:'시작할 때 찌그러짐',t:'range',min:0,max:.2,step:.01,d:0,note:'기존 0.1 → 0: 아래로 눌리거나 밀리지 않고 바로 움직임'},
     {h:'② 육각형 형성'},
-    {k:'mHex',l:'시간',t:'range',min:150,max:2000,step:10,d:900,u:'ms'},
+    {k:'mHex',l:'시간',t:'range',min:150,max:2000,step:10,d:150,u:'ms'},
     {k:'eHex',l:'가속 방식',t:'ease',d:'out'},
-    {k:'hexEnterRot',l:'회전',t:'range',min:-360,max:360,step:5,d:100,u:'°'},
+    {k:'hexEnterRot',l:'회전',t:'range',min:-360,max:360,step:5,d:-10,u:'°'},
     {h:'③ 육각형 회전'},
-    {k:'mHexSpin',l:'시간',t:'range',min:80,max:1500,step:5,d:415,u:'ms',note:'기존 약 590ms → 30% 짧게'},
+    {k:'mHexSpin',l:'시간',t:'range',min:80,max:1500,step:5,d:1345,u:'ms',note:'기존 약 590ms'},
     {k:'eHexSpin',l:'가속 방식',t:'ease',d:'inOut'},
-    {k:'hexSpinDeg',l:'회전',t:'range',min:0,max:360,step:5,d:60,u:'°',note:'60° 단위면 끝 모양이 처음과 같음'},
-    {k:'hexJelly',l:'형성될 때 탄성',t:'range',min:0,max:.2,step:.01,d:.04},
+    {k:'hexSpinDeg',l:'회전',t:'range',min:0,max:360,step:5,d:280,u:'°',note:'60° 단위면 끝 모양이 처음과 같음'},
+    {k:'hexJelly',l:'형성될 때 탄성',t:'range',min:0,max:.2,step:.01,d:.14},
     {h:'④ 육각형 → 별'},
-    {k:'mToStar',l:'시간',t:'range',min:120,max:1500,step:10,d:420,u:'ms'},
+    {k:'mToStar',l:'시간',t:'range',min:120,max:1500,step:10,d:790,u:'ms'},
     {k:'eHexOut',l:'육각형 작아짐',t:'ease',d:'in'},
     {k:'hexExitRot',l:'육각형 회전',t:'range',min:-360,max:360,step:5,d:60,u:'°'},
     {k:'eStarIn',l:'별 피어남',t:'ease',d:'back'},
-    {k:'starOvershoot',l:'별 튕김',t:'range',min:0,max:3,step:.1,d:1.2},
-    {k:'starEnterRot',l:'별 피어나며 회전',t:'range',min:0,max:360,step:5,d:90,u:'°'},
+    {k:'starOvershoot',l:'별 튕김',t:'range',min:0,max:3,step:.1,d:2},
+    {k:'starEnterRot',l:'별 피어나며 회전',t:'range',min:0,max:360,step:5,d:335,u:'°'},
     {h:'⑤ 별 회전'},
-    {k:'mStarSpin',l:'시간',t:'range',min:0,max:2000,step:10,d:560,u:'ms'},
+    {k:'mStarSpin',l:'시간',t:'range',min:0,max:2000,step:10,d:0,u:'ms',note:'0이면 별이 피어난 뒤 바로 로고로 (이 장면을 건너뜀)'},
     {k:'eStarSpin',l:'가속 방식',t:'ease',d:'inOut'},
     {k:'starSpinDeg',l:'회전',t:'range',min:0,max:720,step:15,d:90,u:'°',note:'90° 단위면 별 모양이 처음과 같음 · 기존은 거의 멈춰서 반짝이기만 함'},
     {k:'twinkle',l:'반짝 세기',t:'range',min:0,max:1,step:.05,d:.8},
@@ -351,18 +353,18 @@ var SCHEMA=[
     {k:'eToLogo',l:'가속 방식',t:'ease',d:'in'},
     {k:'starExitDeg',l:'작아지며 회전',t:'range',min:0,max:720,step:15,d:150,u:'°',note:'기존 120°'},
     {h:'⑦ 로고 등장'},
-    {k:'mPop',l:'시간',t:'range',min:150,max:1500,step:10,d:520,u:'ms'},
+    {k:'mPop',l:'시간',t:'range',min:150,max:1500,step:10,d:680,u:'ms'},
     {k:'ePop',l:'가속 방식',t:'ease',d:'back'},
-    {k:'popOvershoot',l:'튕김',t:'range',min:0,max:3,step:.1,d:1.9},
-    {k:'popRot',l:'등장 회전',t:'range',min:-180,max:180,step:5,d:0,u:'°'},
+    {k:'popOvershoot',l:'튕김',t:'range',min:0,max:3,step:.1,d:.7},
+    {k:'popRot',l:'등장 회전',t:'range',min:-180,max:180,step:5,d:-55,u:'°'},
     {k:'popJelly',l:'자리 잡을 때 탄성',t:'range',min:0,max:.2,step:.01,d:.03},
-    {k:'relayLag',l:'작은 별 → 큰 별 시차',t:'range',min:0,max:300,step:10,d:110,u:'ms'},
+    {k:'relayLag',l:'작은 별 → 큰 별 시차',t:'range',min:0,max:300,step:10,d:0,u:'ms'},
     {h:'평소 움직임 · 도형 색'},
-    {k:'floatAmp',l:'둥실 높이',t:'range',min:0,max:4,step:.1,d:1,u:'px'},
-    {k:'floatPeriod',l:'둥실 한 번',t:'range',min:1000,max:8000,step:100,d:4000,u:'ms'},
+    {k:'floatAmp',l:'둥실 높이',t:'range',min:0,max:4,step:.1,d:0,u:'px'},
+    {k:'floatPeriod',l:'둥실 한 번',t:'range',min:1000,max:8000,step:100,d:1000,u:'ms'},
     {k:'sc1',l:'도형 색 1',t:'color',d:'#6A3CF0'},
     {k:'sc2',l:'도형 색 2',t:'color',d:'#B48BFF'},
-    {k:'sc3',l:'도형 색 3',t:'color',d:'#7FA8FF'},
+    {k:'sc3',l:'도형 색 3',t:'color',d:'#3D7BFF'},
     {k:'swirlSpeed',l:'도형 안 색 도는 속도',t:'range',min:0,max:720,step:10,d:120,u:'°/s'}
   ]},
   {g:'그림자 — 모든 장면에서 같은 값', items:[
@@ -376,13 +378,13 @@ var SCHEMA=[
     {k:'lift',l:'호버 때 떠오름',t:'range',min:0,max:6,step:.5,d:2,u:'px',note:'버튼만 뜨고 그림자 값은 그대로'}
   ]},
   {g:'배경 빛 — 구슬 느낌', items:[
-    {k:'gc1',l:'빛 색 1',t:'color',d:'#F4BAEC'},
+    {k:'gc1',l:'빛 색 1',t:'color',d:'#AFADFF'},
     {k:'gc2',l:'빛 색 2',t:'color',d:'#B0C8FF'},
     {k:'gc3',l:'빛 색 3',t:'color',d:'#D6C6FF'},
-    {k:'gAlpha',l:'세기',t:'range',min:0,max:100,step:1,d:30,u:'%'},
+    {k:'gAlpha',l:'세기',t:'range',min:0,max:100,step:1,d:51,u:'%'},
     {k:'gSharp',l:'뚜렷함',t:'range',min:0,max:100,step:1,d:0,u:'%',note:'높일수록 빛 가운데가 진하게 차고 가장자리가 또렷해짐'},
-    {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:100,u:'%'},
-    {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:16,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
+    {k:'gSize',l:'크기',t:'range',min:40,max:200,step:5,d:165,u:'%'},
+    {k:'gClearW',l:'가운데 비움',t:'range',min:0,max:45,step:1,d:13,u:'%',note:'0이면 가운데까지 빛이 들어옴 · 클수록 가장자리에만'},
     {h:'빛의 움직임 — 빛 셋이 각자 따로, 불규칙하게 천천히'},
     {k:'gMotion',l:'움직임',t:'seg',opts:[['orbit','불규칙 회전'],['flow','좌우 흐름(기존)']],d:'orbit'},
     {k:'gRotPeriod',l:'한 바퀴 평균 시간',t:'range',min:0,max:60,step:.5,d:18,u:'s',note:'빛마다 속도가 달라(1 : 1.43 : 0.77) 서로 따라가거나 마주 보지 않음 · 0이면 돌지 않고 떠돌기만'},
@@ -394,7 +396,7 @@ var SCHEMA=[
     {k:'gWander',l:'궤도에서 벗어나 떠돎',t:'range',min:0,max:30,step:1,d:12,u:'%',note:'높이면 둘레만 돌지 않고 안쪽으로 흘러들었다 나옴'},
     {k:'gBreath',l:'숨쉬기 (빛 크기 변화)',t:'range',min:0,max:50,step:1,d:12,u:'%'},
     {k:'gBreathPeriod',l:'숨 한 번',t:'range',min:1,max:20,step:.5,d:5,u:'s'},
-    {k:'gDur',l:'좌우 흐름 한 번 (기존 방식일 때)',t:'range',min:2,max:30,step:.5,d:9,u:'s'},
+    {k:'gDur',l:'좌우 흐름 한 번 (기존 방식일 때)',t:'range',min:2,max:30,step:.5,d:18,u:'s'},
     {h:'캡슐 아래로 번지는 빛'},
     {k:'auraAlpha',l:'세기',t:'range',min:0,max:60,step:1,d:9,u:'%'},
     {k:'auraBreath',l:'숨쉬듯 바뀌는 폭',t:'range',min:0,max:20,step:1,d:3,u:'%'},
@@ -404,20 +406,24 @@ var SCHEMA=[
   ]},
   {g:'화면', items:[
     {k:'zoom',l:'확대',t:'range',min:1,max:4,step:.25,d:2,u:'배'},
-    {k:'anchor',l:'폭이 바뀔 때',t:'seg',opts:[['right','오른쪽 끝 고정'],['center','가운데']],d:'right'},
+    {k:'anchor',l:'폭이 바뀔 때',t:'seg',opts:[['right','오른쪽 끝 고정'],['center','가운데']],d:'center'},
     {k:'stageBg',l:'배경색',t:'color',d:'#F5F4F9'},
     {k:'menuOn',l:'마우스 올리면 질문 목록',t:'toggle',d:true}
   ]}
 ];
-var DEF={loop:'all',view:'open',speed:1}, ITEM={};
+var DEF={loop:'all',view:'open',speed:1.3}, ITEM={};
 SCHEMA.forEach(function(g){ g.items.forEach(function(it){ if(it.k){ DEF[it.k]=it.d; ITEM[it.k]=it } }) });
 var STORE='ilearn-logo-motion/v1';
 var P=JSON.parse(JSON.stringify(DEF));
 // 예전엔 전체 값을 저장해서 기본값이 바뀌어도 반영되지 않았음 → 그때 기본값 그대로였던 항목은 새 기본값을 따르게 함
-var OLD_DEF={gDir:'cw',gWobbleDeg:45,gWobblePeriod:7,gIrregular:60,gRotPeriod:16};
-try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'); if(saved) for(var sk in saved) if(sk in DEF&&!(sk in OLD_DEF&&saved[sk]===OLD_DEF[sk])) P[sk]=saved[sk]; }catch(e){}
+var OLD_DEF={gDir:'cw',gWobbleDeg:45,gWobblePeriod:7,gIrregular:60,gRotPeriod:16,
+  speed:1,power:3,condenseRot:40,sMin:.2,mHex:900,hexEnterRot:100,mHexSpin:415,hexSpinDeg:60,hexJelly:.04,mToStar:420,starOvershoot:1.2,starEnterRot:90,
+  mStarSpin:560,mPop:520,popOvershoot:1.9,popRot:0,relayLag:110,floatAmp:1,floatPeriod:4000,sc3:'#7FA8FF',gc1:'#F4BAEC',gAlpha:30,gSize:100,gClearW:16,gDur:9,anchor:'right'};
+// (_v 표시가 없는 예전 저장분에만 적용 — 새로 저장한 값은 예전 기본값과 같아도 그대로 둠)
+try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'), legacy=saved&&!saved._v;
+  if(saved) for(var sk in saved) if(sk in DEF&&!(legacy&&sk in OLD_DEF&&saved[sk]===OLD_DEF[sk])) P[sk]=saved[sk]; }catch(e){}
 // 바꾼 값만 저장 → 나중에 기본값을 고쳐도 손대지 않은 항목은 새 기본값을 따름
-var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ var diff={}; for(var k in DEF) if(P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
+var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ var diff={_v:2}; for(var k in DEF) if(P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
 
 /* =====================================================================
    수학
@@ -640,7 +646,7 @@ function morphAt(tau){
     rs=SPARKN; sc=STAR_R*(1+.18*flash); rot=P.starSpinDeg*k; label('⑤ 별 회전');
   } else {
     k=ease(P.eToLogo,seg(tau,T.t5,T.t6));
-    rs=SPARKN; sc=STAR_R*(1-k); rot=+P.starSpinDeg+P.starExitDeg*k; label('⑥ 별 → 로고');
+    rs=SPARKN; sc=STAR_R*(1-k); rot=(T.t5>T.t4?+P.starSpinDeg:0)+P.starExitDeg*k; label('⑥ 별 → 로고');   // ⑤를 건너뛰면 돌지 않은 자리에서 이어감
   }
   var d=tau-T.t2, w=(d>0&&tau<m)?P.hexJelly*Math.exp(-d/260)*Math.sin(d/95):0;   // 육각형이 형성되는 순간 한 번 쫀득
   b.rs=rs; b.scale=Math.max(0,sc); b.rot=rot; b.sx=1+w; b.sy=1-w; b.flash=flash;
@@ -901,6 +907,7 @@ function onParam(k){
     clearTimeout(textT); textT=setTimeout(function(){ var t=String(P[k]||'').trim(); if(curIdx===i&&t) setText({text:t,idx:i}) },350);
   }
   if(/^m[A-Z]/.test(k)||k==='relayLag') drawTimeline();
+  if(k==='menuOn'){ syncSegs(); if(P.menuOn&&hovering) box.classList.add('open'); else if(!P.menuOn) box.classList.remove('open') }
   if(scrubTau!=null&&/^(m[A-Z]|e[A-Z]|power|partLag|sMin|condenseRot|startSquash|hex|star|twinkle|pop|relayLag)/.test(k)) morphAt(Math.min(scrubTau,mt().t7));
   apply();
 }
@@ -1035,7 +1042,7 @@ function setCmp(on){
   syncSegs(); layout(); restart();
 }
 function syncSegs(){
-  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off'};
+  var st={loop:P.loop,view:P.view,cmp:cmpOn?'on':'off',menu:P.menuOn?'on':'off'};
   [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){ [].forEach.call(g.children,function(b){ b.classList.toggle('on',b.dataset.v===st[g.dataset.k]) }) });
 }
 [].forEach.call(document.querySelectorAll('.bar .seg'),function(g){
@@ -1044,6 +1051,7 @@ function syncSegs(){
     if(k==='loop'){ P.loop=v; save(); syncSegs(); restart() }
     else if(k==='view') setView(v);
     else if(k==='cmp') setCmp(v==='on');
+    else if(k==='menu') set(ITEM.menuOn,v==='on');          // 조정판 '화면 → 마우스 올리면 질문 목록'과 같은 값
   });
 });
 $('play').addEventListener('click',function(){ setPaused(!paused) });
@@ -1097,7 +1105,7 @@ if(window.ResizeObserver) new ResizeObserver(layout).observe(paneNew);
 requestAnimationFrame(step);
 setTimeout(function(){ run(cycle) },300);
 // 확인용
-window.__motion={P:P,S:S,scrubTo:scrubTo,mt:mt,setPaused:setPaused,restart:restart,clock:function(){ return clock }};
+window.__motion={P:P,DEF:DEF,S:S,scrubTo:scrubTo,mt:mt,setPaused:setPaused,restart:restart,clock:function(){ return clock }};
 })();
 </script>
 </body></html>
