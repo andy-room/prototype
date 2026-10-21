@@ -154,9 +154,10 @@
   /* 육각형·별은 아이콘 칸 밖으로 그려지기도 하므로, 마우스 판정은 캡슐로만 */
   .v2-logo{flex:none;width:var(--logo,35px);height:var(--logo,35px);display:block;overflow:visible;pointer-events:none}
   /* 글자 칸: 폭·글자 움직임은 스크립트가 직접 (이전 문구가 다 사라진 뒤 → 폭 맞춤 → 새 문구) */
-  .v2-txt{display:block;height:26px;width:0;overflow:hidden}
-  .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:15px;line-height:26px;font-weight:500}
-  .v2-txt span.name{font-weight:700}
+  /* 글자 크기: 질문 --q-fs, 이름 --name-fs (조정판), 줄 높이는 큰 쪽에 맞춤 */
+  .v2-txt{display:block;height:var(--txt-lh,26px);width:0;overflow:hidden}
+  .v2-txt span{position:absolute;left:0;top:0;white-space:nowrap;font-size:var(--q-fs,15px);line-height:var(--txt-lh,26px);font-weight:500}
+  .v2-txt span.name{font-weight:700;font-size:var(--name-fs,15px)}
   .v2-txt span.name em{font-style:normal;font-weight:500;color:#7749F4;margin-right:5px}
   .v2-x{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;overflow:hidden;border-radius:900px;color:#171719;opacity:.45;
     transition:background-color .15s,opacity .2s,width .45s cubic-bezier(.3,.7,.2,1),margin .45s cubic-bezier(.3,.7,.2,1)}
@@ -353,6 +354,8 @@ var SCHEMA=[
     {h:'문구 내용'},
     {k:'namePre',l:'이름 앞말',t:'text',d:'AI 튜터'},
     {k:'name',l:'이름',t:'text',d:'iLearn'},
+    {k:'nameFs',l:'"AI 튜터 iLearn" 글자 크기',t:'range',min:11,max:22,step:.5,d:15,u:'px',presets:[13,14,15,16,17,18]},
+    {k:'qFs',l:'질문 글자 크기',t:'range',min:11,max:22,step:.5,d:15,u:'px',presets:[13,14,15,16,17,18],note:'기본 15px · 버튼 폭은 바뀐 글자에 맞춰 다시 맞춤 (버튼 높이 60px는 그대로)'},
     {k:'q1',l:'질문 1',t:'text',d:'연수원 모바일 앱 설치 방법을 알려줘'},
     {k:'q2',l:'질문 2',t:'text',d:'수강신청 기간이 언제야?'},
     {k:'q3',l:'질문 3',t:'text',d:'수료증 출력은 어디서 해?'},
@@ -639,6 +642,12 @@ function setText(s){
     await tween(P.txResize*(1-P.txOverlap),null,ok);
     await tween(P.txIn,function(k){ var e=easeP('out',k,2); styleSpan(el,e,lerp(P.txDist,0,e),lerp(P.txBlur,0,e)) },ok);
   })().catch(function(e){ if(e!==CANCEL) console.error(e) });
+}
+// 글자 크기가 바뀌면 지금 보이는 문구에 맞춰 버튼 폭을 다시 맞춤 (문구가 바뀌는 중이면 다음 문구 때 저절로 맞춰짐)
+function refitText(){
+  var c=wrap.firstElementChild;
+  if(!c||wrap.children.length!==1||collapsed||curKey==='none'||c.style.opacity==='0') return;
+  wrap.style.width=widthOf(c.cloneNode(true))+'px';
 }
 function questions(){ return [P.q1,P.q2,P.q3].map(function(t,i){ return {text:String(t||'').trim(),idx:i} }).filter(function(q){ return q.text }) }
 
@@ -1039,6 +1048,8 @@ function apply(){
   if(!(orbit&&P.auraFollow)) aura.style.removeProperty('--v2a');
   s.setProperty('--aura-a',P.auraAlpha/100); s.setProperty('--aura-b',P.auraBreath/100); s.setProperty('--aura-blur',P.auraBlur+'px'); s.setProperty('--aura-y',P.auraY+'px');
   s.setProperty('--logo',P.logoSize+'px');
+  s.setProperty('--name-fs',P.nameFs+'px'); s.setProperty('--q-fs',P.qFs+'px');
+  s.setProperty('--txt-lh',Math.round(Math.max(P.nameFs,P.qFs)*1.74)+'px');   // 15px → 26px (기존 비율)
   var anc=mockOn()?'right':P.anchor;                // 목업 위에선 실제처럼 오른쪽 끝 고정
   box.classList.toggle('anchor-right',anc!=='center'); box.classList.toggle('anchor-center',anc==='center');
   box.classList.toggle('nomenu',!P.menuOn);
@@ -1084,6 +1095,7 @@ function onParam(k){
     buildMenu(); var i=+k.charAt(1)-1;
     clearTimeout(textT); textT=setTimeout(function(){ var t=String(P[k]||'').trim(); if(curIdx===i&&t) setText({text:t,idx:i}) },350);
   }
+  if(k==='nameFs'||k==='qFs'){ apply(); refitText() }
   if(/^m[A-Z]/.test(k)||k==='relayLag') drawTimeline();
   if(/^(restMs|gapMs|startMs|loopHoldMs|closedHoldMs|qHold|dGather|q[123]|introMorph|introUnfold)$/.test(k)||MKEYS.indexOf(k)>=0) nameTotal();
   if(k==='menuOn'){ syncSegs(); if(P.menuOn&&hovering) box.classList.add('open'); else if(!P.menuOn) box.classList.remove('open') }
