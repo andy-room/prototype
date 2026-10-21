@@ -99,6 +99,16 @@
   .row .presets button.on{border-color:var(--il);color:var(--il);font-weight:700;background:#F7F4FF}
   .row .note{grid-column:1/-1;font-size:11px;line-height:1.5;color:var(--sub)}
   /* 모핑 타임라인 (누르거나 끌면 그 순간에 멈춰 봄) */
+  /* 고칠 모핑 (펼친 상태 / 접힌 상태) — 접힌 상태를 고치는 동안은 모핑 항목에 파란 표시 */
+  .prof{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:10px;background:#F7F4FF;border:1px solid #E4DCFB}
+  .prof-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px}
+  .prof .seg button{font-size:12px;padding:5px 9px}
+  .prof-act{display:flex;gap:6px;flex-wrap:wrap}
+  .prof-act .btn{padding:5px 9px;font-size:12px}
+  .sec.edit-closed .prof{background:#EEF4FF;border-color:#C9DAFB}
+  .sec.edit-closed .prof .seg button.on{color:#2F5BD3}
+  .sec.edit-closed .row.morph{box-shadow:inset 3px 0 0 #9DB8F2;padding-left:8px}
+  .sec.edit-closed .row.morph>label{color:#2F5BD3}
   .tl{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:10px;background:#FAF9FD;border:1px solid var(--line)}
   .tl-top{display:flex;justify-content:space-between;font-size:12px}
   .tl-top span{color:var(--sub);font-variant-numeric:tabular-nums}
@@ -336,7 +346,8 @@ var SCHEMA=[
     {k:'introUnfold',l:'펼쳐지는 시점',t:'seg',opts:[['start','모핑 시작과 동시'],['pop','로고 다시 나올 때']],d:'start',note:'동시 = 펼쳐지며 "AI 튜터 iLearn"이 나오는 동안 로고가 돎 · 로고 다시 나올 때 = 접힌 채 돌고 나서 펼침'},
     {k:'restMs',l:'"AI 튜터 iLearn" 등장 후 머무는 시간',t:'range',min:500,max:15000,step:100,d:5000,u:'ms',note:'처음 펼쳐진 뒤 첫 루틴(모핑 → 질문)이 시작되기까지'},
     {k:'loopHoldMs',l:'한 루틴 끝나고 머무는 시간',t:'range',min:500,max:15000,step:100,d:5000,u:'ms',note:'질문 세 개가 끝나고 이름으로 돌아온 뒤 다음 루틴까지'},
-    {k:'gapMs',l:'루틴 안 · 모핑 끝나고 질문까지',t:'range',min:0,max:10000,step:100,d:2600,u:'ms'},
+    {k:'gapMs',l:'펼친 상태 · 모핑 끝나고 머무는 시간 (질문 전)',t:'range',min:0,max:10000,step:100,d:2600,u:'ms'},
+    {k:'closedHoldMs',l:'접힌 상태 · 모핑 끝나고 머무는 시간',t:'range',min:0,max:15000,step:100,d:5000,u:'ms',note:'✕로 접어 둔 원에서 모핑과 다음 모핑 사이'},
     {k:'foldMs',l:'접히고 펼쳐지는 시간',t:'range',min:150,max:1500,step:10,d:600,u:'ms',note:'처음 펼쳐질 때와 ✕로 접을 때 · 글자 칸·간격·닫기 버튼이 한 곡선으로 함께 움직임 (가속 세기를 따름)'},
     {info:'nameTotal'},
     {h:'문구 내용'},
@@ -460,6 +471,12 @@ var SCHEMA=[
 ];
 var DEF={loop:'all',view:'open',speed:1.3,mock:'on'}, ITEM={};
 SCHEMA.forEach(function(g){ g.items.forEach(function(it){ if(it.k){ DEF[it.k]=it.d; ITEM[it.k]=it } }) });
+// 모핑 값은 펼친 상태·접힌 상태 두 벌. 접힌 상태 값은 'c.키'에 따로 정한 것만 두고(null = 펼친 상태 값을 따라감)
+var MKEYS=['power','partLag','mCondense','eCondense','condenseRot','sMin','startSquash','mHex','eHex','hexEnterRot',
+  'mHexSpin','eHexSpin','hexSpinDeg','hexJelly','mToStar','eHexOut','hexExitRot','eStarIn','starOvershoot',
+  'starEnterRot','mStarSpin','eStarSpin','starSpinDeg','twinkle','mToLogo','eToLogo','starExitDeg','mPop',
+  'ePop','popOvershoot','popRot','popJelly','relayLag'];
+MKEYS.forEach(function(k){ DEF['c.'+k]=null; if(ITEM[k]) ITEM[k].morph=true });
 var STORE='ilearn-logo-motion/v1';
 var P=JSON.parse(JSON.stringify(DEF));
 // 예전엔 전체 값을 저장해서 기본값이 바뀌어도 반영되지 않았음 → 그때 기본값 그대로였던 항목은 새 기본값을 따르게 함
@@ -470,6 +487,10 @@ var OLD_DEF={gDir:'cw',gWobbleDeg:45,gWobblePeriod:7,gIrregular:60,gRotPeriod:16
 try{ var saved=JSON.parse(localStorage.getItem(STORE)||'null'), legacy=saved&&!saved._v;
   if(saved) for(var sk in saved) if(sk in DEF&&sk!=='view'&&!(legacy&&sk in OLD_DEF&&saved[sk]===OLD_DEF[sk])) P[sk]=saved[sk]; }catch(e){}   // 접힘 상태는 불러오지 않음 (늘 접힌 로고에서 시작)
 // 바꾼 값만 저장 → 나중에 기본값을 고쳐도 손대지 않은 항목은 새 기본값을 따름
+// 모핑이 읽는 값 묶음: 평소엔 P(펼친 상태), 접힌 원에서 도는 모핑 동안만 접힌 상태 묶음
+var MP=P;
+function prof(closed){ if(!closed) return P; var o=Object.create(P); MKEYS.forEach(function(k){ var v=P['c.'+k]; if(v!=null) o[k]=v }); return o }
+function withProf(closed,fn){ var keep=MP; MP=prof(closed); try{ return fn() }finally{ MP=keep } }
 var saveT; function save(){ clearTimeout(saveT); saveT=setTimeout(function(){ var diff={_v:2}; for(var k in DEF) if(k!=='view'&&P[k]!==DEF[k]) diff[k]=P[k]; try{ localStorage.setItem(STORE,JSON.stringify(diff)) }catch(e){} },250) }
 
 /* =====================================================================
@@ -489,7 +510,7 @@ function easeP(type,k,p,s){
     default: return k;
   }
 }
-function ease(type,k,s){ return easeP(type,k,P.power,s) }
+function ease(type,k,s){ return easeP(type,k,MP.power,s) }
 
 // 도형 = 각도별 반지름 (기존과 같은 모양)
 function shape(fn){ var a=new Array(N); for(var i=0;i<N;i++) a[i]=fn(i/N*TAU); return a }
@@ -627,22 +648,22 @@ function questions(){ return [P.q1,P.q2,P.q3].map(function(t,i){ return {text:St
    ===================================================================== */
 // 모핑 시각표 (ms)
 function mt(){
-  var t1=+P.mCondense, t2=t1+(+P.mHex), t3=t2+(+P.mHexSpin), t4=t3+(+P.mToStar), t5=t4+(+P.mStarSpin), t6=t5+(+P.mToLogo), t7=t6+(+P.mPop);
+  var t1=+MP.mCondense, t2=t1+(+MP.mHex), t3=t2+(+MP.mHexSpin), t4=t3+(+MP.mToStar), t5=t4+(+MP.mStarSpin), t6=t5+(+MP.mToLogo), t7=t6+(+MP.mPop);
   return {t1:t1,t2:t2,t3:t3,t4:t4,t5:t5,t6:t6,t7:t7,end:t6+popTail()};
 }
-function popTail(){ return Math.max(+P.mPop,P.mPop*.6+2*P.relayLag+340)+150 }
+function popTail(){ return Math.max(+MP.mPop,MP.mPop*.6+2*MP.relayLag+340)+150 }
 
 // ① 응축: 별 → 오른쪽 판 → 왼쪽 판 순서로 조금씩 늦게 가운데로 접힘. 찌그러짐 없이 바로 출발(가속)
 var CORDER=['s1','s2','s3','pb','pa'];
 function condenseAt(tau,dur){
-  var n=CORDER.length, lag=Math.min(P.partLag,dur*.5/(n-1)), span=dur-(n-1)*lag;
+  var n=CORDER.length, lag=Math.min(MP.partLag,dur*.5/(n-1)), span=dur-(n-1)*lag;
   CORDER.forEach(function(id,i){
-    var p=S.parts[id], e=ease(P.eCondense,clamp((tau-i*lag)/span));
-    p.g=lerp(1,P.sMin,e); p.r=P.condenseRot*e; if(p.star){ p.ls=1; p.lr=0 }
+    var p=S.parts[id], e=ease(MP.eCondense,clamp((tau-i*lag)/span));
+    p.g=lerp(1,MP.sMin,e); p.r=MP.condenseRot*e; if(p.star){ p.ls=1; p.lr=0 }
   });
-  var sq=P.startSquash*Math.sin(Math.PI*clamp(tau/dur/.45));
+  var sq=MP.startSquash*Math.sin(Math.PI*clamp(tau/dur/.45));
   S.hsx=1+sq*.8; S.hsy=1-sq;
-  var lastG=S.parts[CORDER[n-1]].g, done=(1-lastG)/(1-P.sMin);
+  var lastG=S.parts[CORDER[n-1]].g, done=(1-lastG)/(1-MP.sMin);
   var cf=clamp((done-.8)/.2);                 // 판이 80% 넘게 접히면 덩어리로 바뀌기 시작
   partsO(1-cf);
   return {cf:cf,g:lastG};
@@ -650,57 +671,57 @@ function condenseAt(tau,dur){
 // ⑦ 로고 등장: 왼쪽 판 → 오른쪽 판이 튀어나오고, 이어서 작은 별 → 큰 별 릴레이
 var PORDER=['pa','pb'], SORDER=['s1','s2','s3'];
 function popAt(tau,from){
-  var dur=+P.mPop, lag=Math.min(P.partLag,dur*.4), span=dur-lag;
+  var dur=+MP.mPop, lag=Math.min(MP.partLag,dur*.4), span=dur-lag;
   PORDER.forEach(function(id,i){
-    var p=S.parts[id], kr=clamp((tau-i*lag)/span), k=ease(P.ePop,kr,P.popOvershoot);
-    p.g=Math.max(0,lerp(from,1,k)); p.r=P.popRot*(1-ease('out',kr)); p.o=1;
+    var p=S.parts[id], kr=clamp((tau-i*lag)/span), k=ease(MP.ePop,kr,MP.popOvershoot);
+    p.g=Math.max(0,lerp(from,1,k)); p.r=MP.popRot*(1-ease('out',kr)); p.o=1;
   });
   var pb=S.parts.pb;
   SORDER.forEach(function(id,j){
-    var p=S.parts[id], kr=clamp((tau-dur*.6-j*P.relayLag)/340);
+    var p=S.parts[id], kr=clamp((tau-dur*.6-j*MP.relayLag)/340);
     p.g=pb.g; p.r=pb.r; p.o=1; p.ls=Math.max(0,easeP('back',kr,3,1.9)); p.lr=-30*(1-easeP('out',kr,3));
   });
-  var d=tau-dur*.7, w=d>0?P.popJelly*Math.exp(-d/260)*Math.sin(d/95):0;
+  var d=tau-dur*.7, w=d>0?MP.popJelly*Math.exp(-d/260)*Math.sin(d/95):0;
   S.hsx=1+w; S.hsy=1-w;
 }
 // 로고 → 육각형 → 별 → 로고 (한 흐름)
 function morphAt(tau){
   var T=mt(), b=S.blob;
-  S.morphTau=tau; S.dots.o=0;
+  S.morphTau=tau; S.morphT7=T.t7; S.dots.o=0;
   if(tau<T.t1){
     var c=condenseAt(tau,T.t1);
-    b.o=c.cf; b.rs=CIRCLE; b.scale=LOGO_R*c.g*.92; b.rot=P.condenseRot; b.sx=b.sy=1; b.flash=0;
+    b.o=c.cf; b.rs=CIRCLE; b.scale=LOGO_R*c.g*.92; b.rot=MP.condenseRot; b.sx=b.sy=1; b.flash=0;
     label('① 응축'); return;
   }
   if(tau>=T.t6){ b.o=0; popAt(tau-T.t6,0); label('⑦ 로고 등장'); return }
   partsO(0); S.hsx=S.hsy=1; b.o=1;
-  var r0=LOGO_R*P.sMin*.92, base=+P.condenseRot, rs, sc, rot, flash=0, k, kr;
+  var r0=LOGO_R*MP.sMin*.92, base=+MP.condenseRot, rs, sc, rot, flash=0, k, kr;
   var m=T.t3+(T.t4-T.t3)*.45;                 // ④ 앞쪽 45%: 육각형이 작아짐, 뒤쪽: 별이 피어남
   if(tau<T.t2){
-    k=ease(P.eHex,seg(tau,T.t1,T.t2));
-    rs=mixArr(CIRCLE,HEXN,clamp(k)); sc=lerp(r0,HEX_R,k); rot=base+P.hexEnterRot*k; label('② 육각형 형성');
+    k=ease(MP.eHex,seg(tau,T.t1,T.t2));
+    rs=mixArr(CIRCLE,HEXN,clamp(k)); sc=lerp(r0,HEX_R,k); rot=base+MP.hexEnterRot*k; label('② 육각형 형성');
   } else if(tau<T.t3){
-    k=ease(P.eHexSpin,seg(tau,T.t2,T.t3));
-    rs=HEXN; sc=HEX_R; rot=base+P.hexEnterRot+P.hexSpinDeg*k; label('③ 육각형 회전');
+    k=ease(MP.eHexSpin,seg(tau,T.t2,T.t3));
+    rs=HEXN; sc=HEX_R; rot=base+MP.hexEnterRot+MP.hexSpinDeg*k; label('③ 육각형 회전');
   } else if(tau<m){
-    k=ease(P.eHexOut,seg(tau,T.t3,m));
-    rs=HEXN; sc=HEX_R*lerp(1,.12,k); rot=base+P.hexEnterRot+P.hexSpinDeg+P.hexExitRot*k; label('④ 육각형 → 별');
+    k=ease(MP.eHexOut,seg(tau,T.t3,m));
+    rs=HEXN; sc=HEX_R*lerp(1,.12,k); rot=base+MP.hexEnterRot+MP.hexSpinDeg+MP.hexExitRot*k; label('④ 육각형 → 별');
   } else if(tau<T.t4){
-    kr=seg(tau,m,T.t4); k=ease(P.eStarIn,kr,P.starOvershoot);
-    rs=SPARKN; sc=STAR_R*lerp(.12,1,k); rot=-P.starEnterRot*(1-ease('out',kr)); label('④ 육각형 → 별');
+    kr=seg(tau,m,T.t4); k=ease(MP.eStarIn,kr,MP.starOvershoot);
+    rs=SPARKN; sc=STAR_R*lerp(.12,1,k); rot=-MP.starEnterRot*(1-ease('out',kr)); label('④ 육각형 → 별');
   } else if(tau<T.t5){
-    kr=seg(tau,T.t4,T.t5); k=ease(P.eStarSpin,kr); flash=Math.sin(Math.PI*kr)*P.twinkle;
-    rs=SPARKN; sc=STAR_R*(1+.18*flash); rot=P.starSpinDeg*k; label('⑤ 별 회전');
+    kr=seg(tau,T.t4,T.t5); k=ease(MP.eStarSpin,kr); flash=Math.sin(Math.PI*kr)*MP.twinkle;
+    rs=SPARKN; sc=STAR_R*(1+.18*flash); rot=MP.starSpinDeg*k; label('⑤ 별 회전');
   } else {
-    k=ease(P.eToLogo,seg(tau,T.t5,T.t6));
-    rs=SPARKN; sc=STAR_R*(1-k); rot=(T.t5>T.t4?+P.starSpinDeg:0)+P.starExitDeg*k; label('⑥ 별 → 로고');   // ⑤를 건너뛰면 돌지 않은 자리에서 이어감
+    k=ease(MP.eToLogo,seg(tau,T.t5,T.t6));
+    rs=SPARKN; sc=STAR_R*(1-k); rot=(T.t5>T.t4?+MP.starSpinDeg:0)+MP.starExitDeg*k; label('⑥ 별 → 로고');   // ⑤를 건너뛰면 돌지 않은 자리에서 이어감
   }
-  var d=tau-T.t2, w=(d>0&&tau<m)?P.hexJelly*Math.exp(-d/260)*Math.sin(d/95):0;   // 육각형이 형성되는 순간 한 번 쫀득
+  var d=tau-T.t2, w=(d>0&&tau<m)?MP.hexJelly*Math.exp(-d/260)*Math.sin(d/95):0;   // 육각형이 형성되는 순간 한 번 쫀득
   b.rs=rs; b.scale=Math.max(0,sc); b.rot=rot; b.sx=1+w; b.sy=1-w; b.flash=flash;
 }
 // 로고 → 말줄임표: 응축 뒤 한 덩어리가 세 점으로 갈라지며 살짝 넘쳤다 자리 잡음
 function toDotsAt(tau){
-  var tc=+P.mCondense, d=S.dots; S.blob.o=0; S.morphTau=null;
+  var tc=+MP.mCondense, d=S.dots; S.blob.o=0; S.morphTau=null;
   label('로고 → 말줄임표');
   if(tau<tc){ var c=condenseAt(tau,tc); d.o=c.cf; d.spread=0; d.hop=0; d.r=MERGED_R; return }
   partsO(0); S.hsx=S.hsy=1; d.o=1;
@@ -715,7 +736,7 @@ function backAt(tau){
     d.o=1; d.spread=1-e; d.hop=1-s; d.r=lerp(P.dotSize/2*UNIT,MERGED_R,s); partsO(0); label('말줄임표 → 로고'); return;
   }
   var tp=tau-tg; d.spread=0; d.hop=0; d.r=MERGED_R;
-  popAt(tp,P.sMin); d.o=1-clamp(tp/(P.mPop*.3)); label('⑦ 로고 등장');
+  popAt(tp,MP.sMin); d.o=1-clamp(tp/(MP.mPop*.3)); label('⑦ 로고 등장');
 }
 
 /* ---- 장면 잇기 ---- */
@@ -725,15 +746,19 @@ async function rest(ms,lab){
   await sleep(ms);
   S.relayEnd=clock;                           // 하던 릴레이는 끝까지 (끊으면 튐)
 }
-async function morph(from){
-  from=from||0;
-  var len=Math.max(1,mt().end-from);
-  await tween(len,function(k){ morphAt(from+k*len) });
+// closed: 접힌 상태 모핑 값으로 (생략하면 지금 접혀 있는지에 따라)
+async function morph(from,closed){
+  from=from||0; if(closed==null) closed=collapsed;
+  MP=prof(closed);
+  try{
+    var len=Math.max(1,mt().end-from);
+    await tween(len,function(k){ morphAt(from+k*len) });
+  }finally{ MP=P }
   finishLogo();
 }
 async function askAll(){
   var qs=questions(); if(!qs.length) return;
-  var tin=(+P.mCondense)+(+P.dSpread);
+  var tin=(+MP.mCondense)+(+P.dSpread);
   for(var i=0;i<qs.length;i++){
     setText(qs[i]);
     if(i===0) await tween(tin,function(k){ toDotsAt(k*tin) });
@@ -766,9 +791,9 @@ async function settle(){
     b.scale=b0*(1-e); d.spread=sp0*(1-e); d.hop=hp0*(1-e); d.r=lerp(r0,MERGED_R,e);
     partsEach(function(p,id){ p.o=snap[id].o*(1-e) });
   });
-  var from=do0>=.5?P.sMin:0; b.o=0;
+  var from=do0>=.5?MP.sMin:0; b.o=0;
   var tot=popTail();
-  await tween(tot,function(k){ var t=k*tot; popAt(t,from); d.o=from?1-clamp(t/(P.mPop*.3)):0 });
+  await tween(tot,function(k){ var t=k*tot; popAt(t,from); d.o=from?1-clamp(t/(MP.mPop*.3)):0 });
   finishLogo();
 }
 /* ---- 접기·펴기: 글자 칸 폭·간격·닫기 버튼·오른쪽 여백이 한 곡선으로 함께 줄고(늘고),
@@ -819,12 +844,16 @@ async function intro(){
   if(userClosed) return;
   var opened=null;
   if(P.introMorph){
-    var T=mt(), at=P.introUnfold==='pop'?T.t6:0;
-    if(at===0) opened=fold(false);
-    await tween(T.end,function(k){
-      var tau=k*T.end; morphAt(tau);
-      if(tau>=at&&!opened&&!userClosed) opened=fold(false);
-    });
+    var pop=P.introUnfold==='pop';
+    MP=prof(pop);                                        // 접힌 채 도는 경우는 접힌 상태 모핑 값, 펼치며 도는 경우는 펼친 상태 값
+    try{
+      var T=mt(), at=pop?T.t6:0;
+      if(at===0) opened=fold(false);
+      await tween(T.end,function(k){
+        var tau=k*T.end; morphAt(tau);
+        if(tau>=at&&!opened&&!userClosed) opened=fold(false);
+      });
+    }finally{ MP=P }
     finishLogo();
   }
   if(userClosed) return;
@@ -838,14 +867,14 @@ function alive(g){ if(g!==gen) throw CANCEL }
 // start: 'intro' 처음부터 · 숫자 = 타임라인에서 멈춘 자리부터 · 그 밖 = 지금 상태에서 이어감(마우스 뗌·설정 바꿈)
 async function cycle(start){
   var first=false, morphed=false, g=gen;
-  if(typeof start==='number'){ await morph(start); await afterMorph() }
+  if(typeof start==='number'){ await morph(start,editProf==='closed'); await afterMorph() }
   else{
     await settle();
     if(start==='intro'){ morphed=await intro(); first=true }
     else if(!userClosed&&collapsed){ await fold(false); alive(g) }
   }
   for(;;){
-    if(userClosed){ await rest(P.loopHoldMs); await morph(); continue }
+    if(userClosed){ await rest(P.closedHoldMs,'접힌 원 · 모핑 후 머묾 (질문 없음)'); await morph(0,true); continue }
     setText(NAME());
     if(P.loop==='morph'){ await rest(1000); await morph(); continue }
     if(P.loop==='ask'){ await rest(1000); await askAll(); continue }
@@ -947,7 +976,7 @@ function render(){
   var lab=(paused?'<b>멈춤</b>':'')+(hovering&&scrubTau==null?'<b>마우스 올림</b>':'')+S.label;
   if(lab!==lastLabel){ lastLabel=lab; sceneEl.innerHTML=lab }
   if(tlHead){
-    if(S.morphTau!=null){ tlHead.style.display='block'; tlHead.style.left=Math.min(100,S.morphTau/mt().t7*100)+'%' }
+    if(S.morphTau!=null){ tlHead.style.display='block'; tlHead.style.left=Math.min(100,S.morphTau/(S.morphT7||mt().t7)*100)+'%' }
     else tlHead.style.display='none';
   }
 }
@@ -1056,9 +1085,9 @@ function onParam(k){
     clearTimeout(textT); textT=setTimeout(function(){ var t=String(P[k]||'').trim(); if(curIdx===i&&t) setText({text:t,idx:i}) },350);
   }
   if(/^m[A-Z]/.test(k)||k==='relayLag') drawTimeline();
-  if(/^(restMs|gapMs|startMs|loopHoldMs|qHold|dGather|q[123]|introMorph|introUnfold)$/.test(k)) nameTotal();
+  if(/^(restMs|gapMs|startMs|loopHoldMs|closedHoldMs|qHold|dGather|q[123]|introMorph|introUnfold)$/.test(k)||MKEYS.indexOf(k)>=0) nameTotal();
   if(k==='menuOn'){ syncSegs(); if(P.menuOn&&hovering) box.classList.add('open'); else if(!P.menuOn) box.classList.remove('open') }
-  if(scrubTau!=null&&/^(m[A-Z]|e[A-Z]|power|partLag|sMin|condenseRot|startSquash|hex|star|twinkle|pop|relayLag)/.test(k)) morphAt(Math.min(scrubTau,mt().t7));
+  if(scrubTau!=null&&MKEYS.indexOf(k)>=0) scrubTo(scrubTau);
   apply();
 }
 
@@ -1073,7 +1102,7 @@ function buildPanel(){
     var det=document.createElement('details'); det.className='sec'; det.open=!!grp.open;
     var sm=document.createElement('summary'); sm.textContent=grp.g; det.appendChild(sm);
     var body=document.createElement('div'); body.className='body';
-    if(grp.timeline) body.appendChild(buildTimeline());
+    if(grp.timeline){ body.appendChild(buildProfSwitch()); body.appendChild(buildTimeline()) }
     grp.items.forEach(function(it){
       if(it.h){ var h=document.createElement('div'); h.className='sub'; h.textContent=it.h; body.appendChild(h) }
       else if(it.k) body.appendChild(row(it));
@@ -1098,7 +1127,7 @@ function row(it){
     num.appendChild(ni); num.appendChild(un); r.appendChild(num);
     var rg=document.createElement('input'); rg.type='range'; rg.min=it.min; rg.max=it.max; rg.step=it.step; rg.setAttribute('aria-label',it.l); r.appendChild(rg);
     rg.addEventListener('input',function(){ set(it,+rg.value) });
-    ni.addEventListener('change',function(){ var v=parseFloat(ni.value); set(it,isNaN(v)?P[it.k]:v) });
+    ni.addEventListener('change',function(){ var v=parseFloat(ni.value); set(it,isNaN(v)?val(it):v) });
     var pbs=[];
     if(it.presets){
       var pr=document.createElement('div'); pr.className='presets'; r.appendChild(pr);
@@ -1133,25 +1162,61 @@ function row(it){
     put=function(v){ cb.checked=!!v };
   }
   if(it.note){ var n=document.createElement('div'); n.className='note'; n.textContent=it.note; r.appendChild(n) }
-  rs.addEventListener('click',function(){ set(it,DEF[it.k]) });
-  rowUpd[it.k]=function(){ put(P[it.k]); r.classList.toggle('changed',P[it.k]!==DEF[it.k]) };
+  if(it.morph) r.classList.add('morph');
+  rs.addEventListener('click',function(){ set(it,editing(it)?null:DEF[it.k]) });
+  rowUpd[it.k]=function(){
+    put(val(it)); r.classList.toggle('changed',isChanged(it));
+    rs.title=editing(it)?'펼친 상태 값('+fmt(P[it.k])+(it.u||'')+')을 따라가게':'기본값 '+fmt(it.d)+(it.u||'')+'(으)로';
+  };
   rowUpd[it.k]();
   return r;
 }
+// 모핑 값은 '고칠 모핑'이 접힌 상태면 'c.키'를 읽고 씀 (따로 정하지 않았으면 펼친 상태 값을 보여 줌)
+function editing(it){ return !!it.morph&&editProf==='closed' }
+function val(it){ if(editing(it)){ var v=P['c.'+it.k]; return v!=null?v:P[it.k] } return P[it.k] }
+function isChanged(it){ return editing(it)?P['c.'+it.k]!=null:P[it.k]!==DEF[it.k] }
 function set(it,v){
-  if(it.t==='range') v=Math.min(it.max,Math.max(it.min,v));
-  P[it.k]=v; rowUpd[it.k](); save(); onParam(it.k); countChanged();
+  if(it.t==='range'&&v!=null) v=Math.min(it.max,Math.max(it.min,v));
+  P[editing(it)?'c.'+it.k:it.k]=v; rowUpd[it.k](); save(); onParam(it.k); countChanged();
 }
 function countChanged(){
   [].forEach.call(document.querySelectorAll('.sec'),function(det,gi){
-    var n=SCHEMA[gi].items.filter(function(it){ return it.k&&P[it.k]!==DEF[it.k] }).length;
+    var n=SCHEMA[gi].items.filter(function(it){ return it.k&&(P[it.k]!==DEF[it.k]||(it.morph&&P['c.'+it.k]!=null)) }).length;
     var sm=det.firstChild, c=sm.querySelector('.cnt');
     if(!c){ c=document.createElement('span'); c.className='cnt'; sm.appendChild(c) }
     c.textContent=n?'바꾼 값 '+n:'';
   });
 }
 
-/* ---- 모핑 타임라인: 장면별 길이 + 누르거나 끌면 그 순간에 멈춰 봄 ---- */
+/* ---- 고칠 모핑: 펼친 상태(캡슐) / 접힌 상태(원) ---- */
+var editProf='open';
+function buildProfSwitch(){
+  var w=document.createElement('div'); w.className='prof';
+  w.innerHTML='<div class="prof-top"><b>고칠 모핑</b><div class="seg"><button type="button" data-v="open">펼친 상태 (캡슐)</button><button type="button" data-v="closed">접힌 상태 (원)</button></div></div>'+
+    '<p class="gnote" id="profNote"></p>'+
+    '<div class="prof-act"><button type="button" class="btn" id="profView">이 상태로 보기</button><button type="button" class="btn" id="profReset">접힌 상태 값 모두 펼친 상태와 같게</button></div>';
+  w.querySelector('.seg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) setEditProf(b.dataset.v) });
+  w.querySelector('#profView').addEventListener('click',function(){ setView(editProf==='closed'?'closed':'open') });
+  w.querySelector('#profReset').addEventListener('click',function(){
+    MKEYS.forEach(function(k){ P['c.'+k]=null }); save(); refreshMorphRows(); toast('접힌 상태 모핑을 펼친 상태와 같게 했어요');
+  });
+  return w;
+}
+function setEditProf(v){
+  editProf=v;
+  [].forEach.call(document.querySelectorAll('.prof .seg button'),function(b){ b.classList.toggle('on',b.dataset.v===v) });
+  var sec=document.querySelector('.prof').closest('.sec'); sec.classList.toggle('edit-closed',v==='closed');
+  $('profNote').textContent=v==='closed'
+    ?'접힌 원에서 도는 모핑 값을 고치는 중 (✕로 접어 둔 원 · 처음 펼침을 "로고 다시 나올 때"로 둔 경우). 따로 정하지 않은 값은 펼친 상태 값을 따라감 — 점 표시 = 따로 정한 값, ↺ = 펼친 상태 값으로'
+    :'펼친 캡슐에서 도는 모핑 값을 고치는 중 (루틴 · 처음 펼치며 도는 모핑)';
+  $('profReset').hidden=v!=='closed';
+  $('profView').textContent=v==='closed'?'접힌 원으로 보기':'펼친 캡슐로 보기';
+  refreshMorphRows();
+  if(scrubTau!=null) scrubTo(scrubTau);
+}
+function refreshMorphRows(){ MKEYS.forEach(function(k){ if(rowUpd[k]) rowUpd[k]() }); drawTimeline(); countChanged() }
+
+/* ---- 모핑 타임라인: 장면별 길이 + 누르거나 끌면 그 순간에 멈춰 봄 (고칠 모핑 값 기준) ---- */
 var tlBar, tlSum, scrubTau=null;
 function buildTimeline(){
   var w=document.createElement('div'); w.className='tl';
@@ -1159,7 +1224,7 @@ function buildTimeline(){
     '<div class="tl-hint">막대를 누르거나 끌면 그 순간에 멈춰서 봄 · 멈춘 뒤 ← → 로 10ms씩(Shift 50ms) · ▶ 누르면 거기서부터 이어서 재생</div>';
   tlSum=w.querySelector('.tl-top span'); tlBar=w.querySelector('.tl-bar');
   var drag=false;
-  function at(e){ var r=tlBar.getBoundingClientRect(); scrubTo((e.clientX-r.left)/r.width*mt().t7) }
+  function at(e){ var r=tlBar.getBoundingClientRect(); scrubTo((e.clientX-r.left)/r.width*withProf(editProf==='closed',mt).t7) }
   tlBar.addEventListener('pointerdown',function(e){ drag=true; tlBar.setPointerCapture(e.pointerId); at(e) });
   tlBar.addEventListener('pointermove',function(e){ if(drag) at(e) });
   tlBar.addEventListener('pointerup',function(){ drag=false });
@@ -1168,10 +1233,10 @@ function buildTimeline(){
 }
 function drawTimeline(){
   if(!tlBar) return;
-  var T=mt(), segs=[['응축',T.t1],['육각형 형성',T.t2-T.t1],['육각형 회전',T.t3-T.t2],['→ 별',T.t4-T.t3],['별 회전',T.t5-T.t4],['→ 로고',T.t6-T.t5],['로고 등장',T.t7-T.t6]];
+  var T=withProf(editProf==='closed',mt), segs=[['응축',T.t1],['육각형 형성',T.t2-T.t1],['육각형 회전',T.t3-T.t2],['→ 별',T.t4-T.t3],['별 회전',T.t5-T.t4],['→ 로고',T.t6-T.t5],['로고 등장',T.t7-T.t6]];
   tlBar.innerHTML=segs.map(function(s){ return '<span style="flex:'+Math.max(1,s[1])+' 1 0" title="'+s[0]+' · '+Math.round(s[1])+'ms"><i>'+s[0]+'</i></span>' }).join('')+'<em></em>';
   tlHead=tlBar.querySelector('em');
-  tlSum.textContent='총 '+(T.t7/1000).toFixed(2)+'초';
+  tlSum.textContent=(editProf==='closed'?'접힌 상태 · ':'펼친 상태 · ')+'총 '+(T.t7/1000).toFixed(2)+'초';
   nameTotal();
 }
 // 전체 흐름을 시간으로 보여 줌: 접힌 로고 → 펼침·문구 → 머묾 → 루틴(모핑 → 질문 전 → 질문 셋 → 이름으로) → 머묾 → 루틴 …
@@ -1179,19 +1244,21 @@ function nameTotal(){
   var el=$('nameTotal'); if(!el) return;
   var s=function(ms){ return (+(ms/1000).toFixed(1))+'초' };
   var n=questions().length, m=mt().end, ask=n?n*P.qHold+(+P.dGather)+popTail():0, routine=m+(n?+P.gapMs:0)+ask;
-  var open=!P.introMorph?' → 펼침·"AI 튜터 iLearn"':P.introUnfold==='pop'?' → 접힌 채 모핑 '+s(mt().t6)+' → 펼침·"AI 튜터 iLearn"':' → 펼침·"AI 튜터 iLearn"과 동시에 모핑 '+s(m);
+  var open=!P.introMorph?' → 펼침·"AI 튜터 iLearn"':P.introUnfold==='pop'?' → 접힌 채 모핑 '+s(withProf(true,mt).t6)+' → 펼침·"AI 튜터 iLearn"':' → 펼침·"AI 튜터 iLearn"과 동시에 모핑 '+s(m);
   // 처음 모핑을 하면 첫 루틴은 모핑 없이 바로 질문
   var firstAsk=P.introMorph&&n?' → 바로 질문 '+n+'개와 이름으로 돌아옴 '+s(ask)+' → '+s(P.loopHoldMs)+' 머묾':'';
+  var mc=withProf(true,function(){ return mt().end });
   el.textContent='흐름: 접힌 로고 '+s(P.startMs)+open+' → '+s(P.restMs)+' 머묾'+firstAsk+' → 루틴 '+s(routine)+
     ' (모핑 '+s(m)+(n?' · 질문 전 '+s(P.gapMs)+' · 질문 '+n+'개와 이름으로 돌아옴 '+s(ask):'')+') → '+s(P.loopHoldMs)+' 머묾 → 루틴 반복'+
+    ' · ✕로 접은 원: 모핑 '+s(mc)+' → '+s(P.closedHoldMs)+' 머묾 반복'+
     (P.speed!==1?' · 속도 1배 기준 (지금 '+(+P.speed)+'배)':' · 속도 1배 기준');
 }
 function scrubTo(tau){
-  var T=mt(); tau=Math.max(0,Math.min(T.t7,tau));
+  var T=withProf(editProf==='closed',mt); tau=Math.max(0,Math.min(T.t7,tau));
   scrubTau=tau; gen++;
   if(!paused) setPaused(true);
   S.relayT=null; S.dots.o=0;
-  morphAt(tau);
+  withProf(editProf==='closed',function(){ morphAt(tau) });
   if(tlBar) tlBar.setAttribute('aria-valuetext',Math.round(tau)+'ms · '+S.label);
 }
 
@@ -1311,7 +1378,7 @@ $('resetAll').addEventListener('click',function(){
 /* =====================================================================
    시작
    ===================================================================== */
-buildPanel(); buildMenu(); drawTimeline(); countChanged();
+buildPanel(); buildMenu(); setEditProf('open'); countChanged();
 P.view='open'; setCollapsedNow(true);                  // 처음은 무조건 접힌 원(iLearn 로고만)
 setMock(mockOn(),true); setSpeed(P.speed); syncSegs();
 textNow(null);
