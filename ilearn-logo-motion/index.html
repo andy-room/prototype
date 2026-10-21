@@ -154,7 +154,7 @@
     transition:transform var(--press-ms,250ms) cubic-bezier(.3,.7,.3,1),gap .55s cubic-bezier(.3,.7,.2,1),padding .55s cubic-bezier(.3,.7,.2,1)}
   .v2-cap:hover{transform:translateY(var(--lift))}
   /* 누름: 살짝 작아짐 (--press = 1 - 작아지는 정도, 조정판) · .pressing 은 조정판 '누름 미리 보기' */
-  .v2-cap:active,.v2-cap.pressing{transform:translateY(var(--lift)) scale(var(--press,.97))}
+  .v2-cap:active,.v2-cap.pressing{transform:translateY(var(--lift)) scale(var(--press,.94))}
   .v2-cap:focus-visible{outline:2px solid #7749F4;outline-offset:3px}
   .v2-cap>:not(.v2-sheen){position:relative;z-index:1}
   /* 호버로 떠오른 만큼 아래를 메워 둠 → 가장자리에 마우스가 있어도 올림/내림이 깜빡이지 않음 */
@@ -459,7 +459,7 @@ var SCHEMA=[
     {k:'shContact',l:'바닥 닿는 그림자 진하기',t:'range',min:0,max:.3,step:.01,d:.08},
     {h:'호버·누름 반응'},
     {k:'lift',l:'호버 때 떠오름',t:'range',min:0,max:6,step:.5,d:2,u:'px',note:'버튼만 뜨고 그림자 값은 그대로'},
-    {k:'pressScale',l:'누를 때 작아지는 정도',t:'range',min:0,max:10,step:.5,d:3,u:'%',presets:[0,2,3,4,6,8],note:'기존 3% · 0이면 작아지지 않음'},
+    {k:'pressScale',l:'누를 때 작아지는 정도',t:'range',min:0,max:10,step:.5,d:6,u:'%',presets:[0,2,3,4,6,8],note:'기본 6% (기존 3%) · 0이면 작아지지 않음'},
     {k:'pressMs',l:'누름·호버 반응 시간',t:'range',min:50,max:600,step:10,d:250,u:'ms',note:'작아지고 돌아오는 데 걸리는 시간 (호버 때 떠오름도 같은 시간)'},
     {act:'pressPreview',l:'누름 미리 보기'}
   ]},
