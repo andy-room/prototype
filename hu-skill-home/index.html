@@ -422,9 +422,9 @@ const CONFIG = {
 
   /* nodes (원 안 평면 배치) */
   baseRadius: 496,      // 기준 원 반지름(px, 1440×800 화면). 원이 커지거나 작아지면 간격·노드 크기도 같은 비율로 → 노드 수 유지
-  spacing: 107,        // 기준 화면에서 노드 간 평균 간격(px) — 작을수록 촘촘
+  spacing: 83,        // 기준 화면에서 노드 간 평균 간격(px) — 작을수록 촘촘
   nodeMin: 5,           // 작은 화면에서 노드가 너무 작아지지 않도록 최소 크기(px)
-  nodeMaxScale: 1.30,    // 아주 넓은 화면에서 노드가 과하게 커지지 않도록 최대 배율
+  nodeMaxScale: 1.10,    // 아주 넓은 화면에서 노드가 과하게 커지지 않도록 최대 배율
   nodeSize: 9.3,         // 노드 크기(px, 고정) — 원 지름/사각·육각 외접 지름 기준 절반
   shapes: ['circle','square','hex'],               // 사용할 쉐입
   palette: ['#00be3c','#0066ff','#ff9200'], // 노드 컬러 (Skills 그린 / Contents 블루 / Careers 오렌지)
@@ -434,16 +434,16 @@ const CONFIG = {
 
   /* mesh (상시 보이는 얇은 연결선) */
   meshEnabled: true,
-  meshNeighbors: 5,     // 각 노드가 잇는 가까운 이웃 수
-  meshAlpha: 0.15,
-  meshWidth: 0.6,
+  meshNeighbors: 6,     // 각 노드가 잇는 가까운 이웃 수
+  meshAlpha: 0.27,
+  meshWidth: 0.7,
   meshColor: '#bdbdc4',
 
   /* node links (원본과 동일한 확장 로직) */
   linkEnabled: true,
-  linkRate: 1.10,        // 초당 체인 생성 확률
-  linkBurst: 4,         // 쉬기 전까지 진행하는 자동 연결 횟수 (0 = 쉬지 않고 계속)
-  linkRest: 1.5,        // 연결이 모두 꺼진 뒤 다음 연결까지 쉬는 시간(초)
+  linkRate: 3.00,        // 초당 체인 생성 확률
+  linkBurst: 0,         // 쉬기 전까지 진행하는 자동 연결 횟수 (0 = 쉬지 않고 계속)
+  linkRest: 0.0,        // 연결이 모두 꺼진 뒤 다음 연결까지 쉬는 시간(초)
   linkMaxChains: 2,     // 화면에 동시에 보이는 체인 최대 수 (복잡도 제한)
   linkRadius: 1.65,      // 탐색 반경 (spacing 배수)
   linkNeighbors: 4,
@@ -475,12 +475,12 @@ const CONFIG = {
   clickExpand: 1,       // 원 안 클릭 시 가장 가까운 노드에서 확장 (1 = 켜기, 0 = 끄기)
   clickHops: 2,         // 클릭 확장 단계 수
   clickMaxChains: 4,    // 클릭으로 만든 확장 동시 최대 수 (넘치면 오래된 것부터 제거)
-  hoverScale: 1.6,      // 마우스 가까운 노드가 커지는 배율 (1 = 반응 없음)
-  hoverRadius: 1.2,     // 마우스 반응 범위 (노드 간격 배수)
+  hoverScale: 1.60,      // 마우스 가까운 노드가 커지는 배율 (1 = 반응 없음)
+  hoverRadius: 1.20,     // 마우스 반응 범위 (노드 간격 배수)
 
   /* performance (부하 조절) */
   maxFps: 60,           // 초당 프레임 상한 (30으로 낮추면 부하 절반 가까이 감소)
-  maxDpr: 1.5,          // 해상도 배율 상한 (레티나 2배 → 1.5배로 그릴 픽셀 약 44% 감소)
+  maxDpr: 1.50,          // 해상도 배율 상한 (레티나 2배 → 1.5배로 그릴 픽셀 약 44% 감소)
 
   /* background (멀리 있는 별) */
   bgStars: 560,
