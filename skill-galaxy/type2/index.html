@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU 스킬 갤럭시 · Type 2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  /* HDS — Hunet Design System (colors_and_type.css 기준, 라이트 고정) */
+  :root{
+    --font-sans:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    --font-display:"SUIT","Pretendard Variable","Pretendard",system-ui,sans-serif;
+    --fg-100:#171719; --fg-80:rgba(23,23,25,.80); --fg-60:rgba(23,23,25,.60); --fg-45:rgba(23,23,25,.45);
+    --bg-primary:#FFFFFF; --bg-alternative:#F7F7F8; --bg-theme-300:#EAEBEC; --bg-theme-400:#E1E2E4;
+    --line-layout:#EAEBEC; --line-outline:#E1E2E4; --line-strong:#C2C4C8; --line-bold:#171719;
+    --brand-company-primary:#0066FF; --interaction-button-subtle:#F4F4F5; --interaction-selected-outline:#99C2FF;
+    --role-hover:rgba(0,0,0,.05);
+    --sp-2:4px; --sp-3:6px; --sp-4:8px; --sp-6:12px; --sp-8:16px; --sp-10:20px; --sp-12:24px; --sp-16:32px; --sp-24:48px; --sp-32:64px;
+    --radius-xs:4px; --radius-sm:8px; --radius-md:12px;
+    --shadow-sm:0 1px 4px 0 rgba(0,0,0,.05),0 4px 8px 0 rgba(0,0,0,.05);
+    --tracking-tight:-0.7px; --tracking-normal:-0.5px; --lh-tight:1.4; --lh-body:1.6;
+    /* 스킬 계열 (HU 스킬 팔레트, 흰 배경 4.5:1 이상) */
+    --fam-0:#171719; --fam-1:#0066FF; --fam-2:#BE185D; --fam-3:#6541F2; --fam-4:#0F766E; --fam-5:#B45309; --fam-6:#4D7C0F;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg-primary);color:var(--fg-100);font-family:var(--font-sans);letter-spacing:var(--tracking-normal);-webkit-font-smoothing:antialiased;word-break:keep-all}
+  button,select{font:inherit;color:inherit;letter-spacing:inherit}
+  .num{font-family:var(--font-display);font-variant-numeric:tabular-nums}
+
+  .gnb{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-12);padding:0 var(--sp-16);background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-layout)}
+  .logo{display:flex;align-items:center;gap:var(--sp-4);font-weight:700;font-size:18px;color:var(--fg-100);text-decoration:none}
+  .logo b{display:grid;place-items:center;width:32px;height:32px;border-radius:var(--radius-sm);background:var(--brand-company-primary);color:#fff;font-size:14px}
+  .gnb nav{display:flex;gap:var(--sp-2)}
+  .gnb nav a{height:36px;display:inline-flex;align-items:center;padding:0 var(--sp-6);border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--fg-60);text-decoration:none}
+  .gnb nav a:hover{background:var(--role-hover);color:var(--fg-100)}
+
+  .article{max-width:760px;margin:0 auto;padding:var(--sp-24) var(--sp-8) var(--sp-32)}
+  .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--brand-company-primary)}
+  h1{margin:var(--sp-4) 0 0;font-size:40px;font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight)}
+  h2{margin:0;font-size:28px;font-weight:700;line-height:var(--lh-tight)}
+  .lead{margin:var(--sp-8) 0 0;font-size:18px;line-height:var(--lh-body);color:var(--fg-80)}
+  p{font-size:16px;line-height:1.75;color:var(--fg-80)}
+  .sec{margin-top:var(--sp-32);scroll-margin-top:88px}
+  .sec>p{margin:var(--sp-8) 0 0}
+
+  /* 기준 분야 (중앙 요소) */
+  .center-card{display:flex;align-items:center;gap:var(--sp-8);margin-top:var(--sp-16);padding:var(--sp-8) var(--sp-12);border:1px solid var(--line-outline);border-radius:var(--radius-md);background:var(--bg-primary);box-shadow:var(--shadow-sm)}
+  .center-card .dot{flex:none;width:14px;height:14px;border-radius:50%;background:var(--c,#171719);box-shadow:0 0 0 4px var(--bg-theme-300)}
+  .center-card label{font-size:12px;font-weight:600;color:var(--fg-45)}
+  .center-card .sel{flex:1;min-width:0}
+  .center-card select{display:block;width:100%;height:40px;margin-top:var(--sp-2);padding:0 36px 0 var(--sp-6);border:1px solid var(--line-outline);border-radius:var(--radius-sm);background:var(--bg-primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23171719' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center;appearance:none;font-size:16px;font-weight:600;cursor:pointer}
+  .center-card select:focus{outline:none;border-color:var(--interaction-selected-outline)}
+  .center-card .meta{font-size:13px;color:var(--fg-60);text-align:right;white-space:nowrap}
+  .center-card .meta b{display:block;font-size:20px;color:var(--fg-100)}
+
+  /* 계열 칩 (USGS 문장 속 토글 칩) */
+  .fam{display:inline-flex;align-items:center;height:26px;margin:2px 1px;padding:0 var(--sp-4);border:0;border-radius:var(--radius-xs);background:var(--c);color:#fff;font-size:15px;font-weight:600;line-height:1;cursor:pointer;vertical-align:baseline;transition:background .15s,color .15s,box-shadow .15s}
+  .fam[aria-pressed=false]{background:var(--bg-primary);color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c)}
+  .fam:focus-visible,.seg button:focus-visible{outline:2px solid var(--interaction-selected-outline);outline-offset:2px}
+
+  .readout{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-4);min-height:104px;margin-top:var(--sp-12);padding:var(--sp-8) var(--sp-12);border-radius:var(--radius-sm);background:var(--bg-alternative);text-align:center;font-size:14px;color:var(--fg-80)}
+  .readout b{color:var(--fg-100)}
+  .rel-meter{display:flex;align-items:center;justify-content:center;gap:var(--sp-6);font-size:13px;color:var(--fg-60)}
+  .rel-meter .track{position:relative;width:200px;height:8px;border-radius:4px;background:var(--bg-theme-300);overflow:hidden}
+  .rel-meter .track i{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--c)}
+  .rel-meter b{font-size:16px;color:var(--fg-100)}
+  .stack{display:flex;width:100%;max-width:360px;height:14px;margin:0 auto;border:1px solid var(--line-bold);border-radius:var(--radius-xs);overflow:hidden}
+  .stack i{display:block;height:100%}
+  .s-direct{background:var(--line-bold)}
+  .s-partial{background:var(--bg-primary)}
+  .s-none{background:repeating-linear-gradient(-45deg,var(--line-bold) 0 1.5px,var(--bg-primary) 1.5px 5px)}
+  .stack i+i{border-left:1px solid var(--line-bold)}
+  .keys{display:flex;justify-content:center;flex-wrap:wrap;gap:var(--sp-4) var(--sp-12);font-size:12px;color:var(--fg-60)}
+  .keys span{display:inline-flex;align-items:center;gap:var(--sp-3)}
+  .keys i{display:inline-block;width:20px;height:10px;border:1px solid var(--line-bold);border-radius:2px}
+  .legend-line{margin-top:var(--sp-8);font-size:14px;font-style:italic;color:var(--fg-60)}
+  .legend-line i{display:inline-block;width:22px;height:11px;margin:0 2px;vertical-align:-1px;border:1px solid var(--line-bold);border-radius:2px}
+
+  .toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp-8);margin-top:var(--sp-12)}
+  .toolbar small{font-size:12px;color:var(--fg-45)}
+  .toolbar .lbl{margin-right:var(--sp-4);font-size:13px;color:var(--fg-60)}
+  .seg{display:inline-flex;padding:var(--sp-2);border-radius:var(--radius-sm);background:var(--interaction-button-subtle)}
+  .seg button{height:32px;padding:0 var(--sp-8);border:0;border-radius:6px;background:none;font-size:14px;font-weight:500;color:var(--fg-60);cursor:pointer}
+  .seg button[aria-selected=true]{background:var(--bg-primary);color:var(--fg-100);font-weight:600;box-shadow:var(--shadow-sm)}
+
+  .chart{display:block;width:100%;height:auto;overflow:visible}
+  .axis text{font-size:12px;fill:var(--fg-80)}
+  .axis line,.axis path{stroke:var(--fg-100)}
+  .axis-cap{font-size:13px;font-weight:700;fill:var(--fg-100)}
+  .grid line{stroke:var(--line-layout)}
+  .bub{cursor:pointer;stroke:var(--bg-primary);stroke-width:1;transition:fill .2s,opacity .2s}
+  .bub.off{fill:var(--bg-theme-400)!important}
+  .bub.pin{stroke:var(--fg-100);stroke-width:2.5}
+  .bub:focus-visible{outline:none;stroke:var(--interaction-selected-outline);stroke-width:4}
+  .blabel{font-size:11px;font-weight:600;fill:#fff;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+  .caption{margin-top:var(--sp-8);font-size:14px;font-style:italic;line-height:var(--lh-body);color:var(--fg-60)}
+
+  /* 덴드로그램 */
+  .dendro text{font-size:13px;font-weight:500;dominant-baseline:central}
+  .dendro .root-lbl{font-size:16px;font-weight:700;fill:var(--fg-100)}
+  .dendro .root-sub{font-size:12px;font-weight:400;fill:var(--fg-60)}
+  .dendro .fam-lbl{font-size:14px;font-weight:700;cursor:pointer}
+  .dendro .famn:hover .fam-lbl{text-decoration:underline}
+  .dendro .leaf{cursor:pointer}
+  .dendro .leaf:hover text{text-decoration:underline}
+  .dendro .rel{font-weight:700}
+  .dendro path{fill:none}
+  .dendro .hint{font-size:12px;fill:var(--fg-45);font-weight:400}
+  .dendro :focus-visible{outline:none}
+  .dendro :focus-visible text{text-decoration:underline;text-decoration-thickness:2px}
+
+  .note{margin-top:var(--sp-24);padding:var(--sp-10) var(--sp-12);border-radius:var(--radius-sm);background:var(--bg-alternative);font-size:13px;line-height:var(--lh-body);color:var(--fg-60)}
+  .note b{color:var(--fg-80)}
+  .tip{position:fixed;z-index:40;pointer-events:none;max-width:260px;padding:var(--sp-4) var(--sp-6);border-radius:var(--radius-sm);background:var(--fg-100);color:#fff;font-size:12px;line-height:1.5;opacity:0;transition:opacity .12s}
+  .tip.show{opacity:1}
+  .tip b{display:block;font-size:14px;font-weight:600}
+  .tip span{color:rgba(255,255,255,.72)}
+
+  /* 경로(브레드크럼) */
+  .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-top:var(--sp-12);padding:var(--sp-6) var(--sp-8);border-radius:var(--radius-sm);background:var(--bg-alternative);font-size:14px}
+  .crumbs .lbl{margin-right:var(--sp-4);font-size:12px;font-weight:600;color:var(--fg-45)}
+  .crumbs button{height:28px;padding:0 var(--sp-4);border:0;border-radius:6px;background:none;font-weight:500;color:var(--fg-60);cursor:pointer}
+  .crumbs button:hover{background:var(--role-hover);color:var(--fg-100)}
+  .crumbs button[aria-current=true]{background:var(--bg-primary);color:var(--fg-100);font-weight:700;box-shadow:var(--shadow-sm);cursor:default}
+  .crumbs .sep{color:var(--fg-45)}
+  .crumbs button:focus-visible{outline:2px solid var(--interaction-selected-outline);outline-offset:1px}
+  /* 왼쪽 표시 범위 게이지 */
+  .plot{display:grid;grid-template-columns:72px 1fr;gap:var(--sp-4);margin-top:var(--sp-8)}
+  .gauge{display:flex;flex-direction:column;align-items:center;gap:var(--sp-4);padding-top:var(--sp-8);font-size:12px;color:var(--fg-60);text-align:center}
+  .gauge b{font-size:18px;color:var(--fg-100)}
+  .gauge .end{font-size:11px;line-height:1.3;color:var(--fg-45)}
+  .gauge input{writing-mode:vertical-lr;direction:rtl;width:28px;height:420px;margin:0;accent-color:var(--brand-company-primary);cursor:pointer}
+  .gauge input:focus-visible{outline:2px solid var(--interaction-selected-outline);outline-offset:4px}
+  .center-ring{fill:var(--bg-primary);stroke:var(--fg-100);stroke-width:2.5}
+  .center-lbl{font-size:12px;font-weight:700;fill:var(--fg-100);text-anchor:middle;pointer-events:none}
+  .center-sub{font-size:10px;fill:var(--fg-60);text-anchor:middle;pointer-events:none}
+  @media (max-width:640px){
+    .plot{grid-template-columns:52px 1fr}
+    .gauge input{height:300px}
+    .gnb{padding:0 var(--sp-8)} .gnb nav a{padding:0 var(--sp-4);font-size:13px} .logo span{display:none}
+    .article{padding:var(--sp-16) var(--sp-8)}
+    h1{font-size:30px} .lead{font-size:16px}
+    .center-card .meta{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="gnb">
+  <a class="logo" href="#top"><b>HU</b><span>스킬 갤럭시 · Type 2</span></a>
+  <nav><a href="#swarm-sec">연관도 버블</a><a href="#meta">연관 트리</a></nav>
+</header>
+
+<main class="article" id="top">
+  <p class="eyebrow">스킬 갤럭시</p>
+  <h1>선택한 스킬과 가까운 스킬, 그중 아직 비어 있는 스킬</h1>
+  <p class="lead">휴넷 스킬DB의 <b class="num" id="totalN"></b>개 스킬을 446개 그룹으로 나눠 봅니다. 기준을 하나 고르면 모든 버블이 그 기준과의 연관도로 다시 계산됩니다. 원이 클수록 가깝고, 아래쪽에 있을수록 휴넷 콘텐츠가 비어 있는 스킬 갭입니다.</p>
+
+  <div class="center-card">
+    <span class="dot" id="centerDot"></span>
+    <div class="sel"><label for="center">출발 분야</label><select id="center"></select></div>
+    <div class="meta" id="centerMeta"></div>
+  </div>
+
+  <section class="sec" id="swarm-sec">
+    <h2>연관도 버블 차트</h2>
+    <p id="famSentence"></p>
+    <nav class="crumbs" id="crumbs" aria-label="선택 경로"></nav>
+    <div class="readout" id="readout" aria-live="polite"></div>
+    <p class="legend-line">휴넷 콘텐츠와 스킬 이름이 그대로 일치하면 직접 매칭 <i class="s-direct"></i>, 이름의 단어가 모두 한 콘텐츠에 들어 있으면 부분 매칭 <i class="s-partial"></i>, 둘 다 아니면 콘텐츠가 없는 스킬 갭 <i class="s-none"></i>입니다.</p>
+    <div class="plot">
+      <div class="gauge">
+        <span>표시 범위</span>
+        <span class="end">많이<br>(연관 낮은 그룹까지)</span>
+        <input type="range" id="gauge" min="8" max="160" step="1" value="40" aria-label="표시할 그룹 수 (올리면 연관도가 낮은 그룹까지 표시)">
+        <span class="end">적게<br>(연관 높은 그룹만)</span>
+        <b class="num" id="gaugeN"></b>
+        <span id="gaugeMin"></span>
+      </div>
+      <svg class="chart" id="swarm" viewBox="0 0 700 700" role="img" aria-label="기준과의 연관도 버블 차트"></svg>
+    </div>
+    <p class="caption">원 크기는 기준과의 연관도입니다. 클수록 기준 스킬과 가깝습니다. 세로축은 휴넷 콘텐츠 커버리지로, 위쪽은 지금 배울 수 있는 그룹이고 아래쪽은 콘텐츠가 비어 있는 스킬 갭입니다. 버블을 누르면 그 그룹이 새 기준이 되고, 지나온 경로는 위에 쌓입니다. 왼쪽 게이지를 올리면 연관도가 낮은 그룹까지 더 나오고, 내리면 가장 가까운 그룹만 남습니다.</p>
+  </section>
+
+  <section class="sec" id="meta">
+    <h2>연관 트리</h2>
+    <p>현재 기준에서 일곱 계열로, 계열에서 연관 스킬 그룹으로 가지가 뻗습니다. 선이 굵고 끝 원이 클수록 기준과 연관도가 높으며, 괄호 안 숫자가 연관도입니다. 계열 줄기의 굵기는 그 계열 연관도의 합입니다. 계열 이름을 누르면 접고 펼 수 있고, 스킬 그룹을 누르면 그 그룹이 새 기준이 됩니다.</p>
+    <svg class="chart dendro" id="dendro" viewBox="0 0 760 900" role="tree" aria-label="기준 연관 트리"></svg>
+  </section>
+
+  <p class="note"><b>데이터와 계산 방법</b><br>스킬과 분류는 휴넷 스킬DB v1.0(Lightcast·Mercer·Hunet 기반)을 썼고, 41개 분야를 일곱 계열로 묶은 것은 이 시안을 위한 임시 분류입니다. 연관도는 DB에 정의되어 있지 않아, 스킬 이름(국문·영문)에 함께 쓰인 단어의 유사도로 계산한 뒤 기준마다 가장 가까운 그룹이 100이 되도록 맞췄습니다. 실제 상관도 데이터가 생기면 data.js의 연관도 행렬만 바꾸면 됩니다. 커버리지는 휴넷 마이크로러닝·PMC 영상과 아티클·리더십 라이브러리의 제목과 태그를 스킬 이름과 대조해 계산했고, 표현이 다른 같은 뜻의 콘텐츠는 잡히지 않으므로 실제 스킬 갭은 이보다 작을 수 있습니다.</p>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

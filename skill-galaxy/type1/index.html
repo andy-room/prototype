@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU 스킬 갤럭시</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style id="hds-critical-tokens">
+  /* HDS — Hunet Design System (colors_and_type.css 기준, 라이트 고정) */
+  :root{
+    --font-sans:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    --font-display:"SUIT","Pretendard Variable","Pretendard",system-ui,sans-serif;
+    --fg-100:#171719; --fg-80:rgba(23,23,25,.80); --fg-60:rgba(23,23,25,.60); --fg-45:rgba(23,23,25,.45); --fg-disable:#AEB0B6;
+    --bg-primary:#FFFFFF; --bg-alternative:#F7F7F8; --bg-dim:rgba(0,0,0,.45);
+    --bg-theme-200:#F7F7F8; --bg-theme-300:#EAEBEC; --bg-theme-400:#E1E2E4;
+    --line-layout:#EAEBEC; --line-outline:#E1E2E4; --line-strong:#C2C4C8; --line-bold:#171719;
+    --brand-company-primary:#0066FF; --brand-company-strong:#0052CC; --brand-company-muted:#99C2FF; --brand-company-faint:#CCE0FF; --brand-company-ghost:#EBF3FF;
+    --interaction-button-subtle:#F4F4F5; --interaction-selected:#0066FF; --interaction-selected-bg:#EBF3FF; --interaction-selected-outline:#99C2FF;
+    --role-hover:rgba(0,0,0,.05); --role-pressed:rgba(0,0,0,.10);
+    --sp-1:2px; --sp-2:4px; --sp-3:6px; --sp-4:8px; --sp-6:12px; --sp-8:16px; --sp-10:20px; --sp-12:24px; --sp-16:32px; --sp-20:40px;
+    --radius-xs:4px; --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px; --radius-full:900px;
+    --shadow-sm:0 1px 4px 0 rgba(0,0,0,.05),0 4px 8px 0 rgba(0,0,0,.05);
+    --shadow-xl:0 2px 8px 0 rgba(0,0,0,.05),0 16px 32px 0 rgba(0,0,0,.10);
+    --tracking-tight:-0.7px; --tracking-normal:-0.5px; --lh-tight:1.4; --lh-body:1.6;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg-alternative);color:var(--fg-100);font-family:var(--font-sans);letter-spacing:var(--tracking-normal);-webkit-font-smoothing:antialiased;word-break:keep-all}
+  button,input{font:inherit;color:inherit;letter-spacing:inherit}
+  .num{font-family:var(--font-display);font-variant-numeric:tabular-nums}
+  .ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .ico.s16{width:16px;height:16px}
+
+  /* ===== GNB ===== */
+  .gnb{position:sticky;top:0;z-index:30;height:64px;display:flex;align-items:center;gap:var(--sp-12);padding:0 var(--sp-16);background:var(--bg-primary);border-bottom:1px solid var(--line-layout)}
+  .logo{display:flex;align-items:center;gap:var(--sp-4);font-weight:700;font-size:18px;text-decoration:none;color:var(--fg-100)}
+  .logo b{display:grid;place-items:center;width:32px;height:32px;border-radius:var(--radius-sm);background:var(--brand-company-primary);color:#fff;font-size:14px}
+  .search{position:relative;flex:1;max-width:480px;margin:0 auto}
+  .search input{width:100%;height:40px;padding:0 var(--sp-8) 0 40px;border:1px solid var(--line-outline);border-radius:var(--radius-sm);background:var(--bg-alternative);font-size:14px;outline:none;transition:border-color .15s,background .15s}
+  .search input:focus{border-color:var(--interaction-selected-outline);background:var(--bg-primary)}
+  .search>.ico{position:absolute;left:12px;top:10px;color:var(--fg-45)}
+  .suggest{position:absolute;top:44px;left:0;right:0;max-height:360px;overflow:auto;margin:0;padding:var(--sp-4);list-style:none;background:var(--bg-primary);border:1px solid var(--line-outline);border-radius:var(--radius-sm);box-shadow:var(--shadow-xl)}
+  .suggest[hidden]{display:none}
+  .suggest li{display:flex;justify-content:space-between;gap:var(--sp-6);padding:var(--sp-4) var(--sp-6);border-radius:var(--radius-xs);font-size:14px;cursor:pointer}
+  .suggest li[aria-selected=true],.suggest li:hover{background:var(--role-hover)}
+  .suggest li small{color:var(--fg-45);font-size:12px;white-space:nowrap}
+  .suggest .empty{color:var(--fg-45);cursor:default}
+  .gnb .stat{font-size:14px;color:var(--fg-60);white-space:nowrap}
+  .gnb .stat b{color:var(--fg-100);font-weight:700}
+
+  /* ===== Layout ===== */
+  .main{display:grid;grid-template-columns:minmax(0,1fr) 480px;min-height:calc(100vh - 64px);transition:grid-template-columns .2s var(--ease)}
+  .main.no-panel{grid-template-columns:minmax(0,1fr) 0}
+  .stage{position:relative;display:flex;flex-direction:column;padding:var(--sp-12) var(--sp-16);min-width:0}
+  .stage-top,.stage-bot{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-8)}
+  .ghost{display:inline-flex;align-items:center;gap:var(--sp-2);height:32px;padding:0 var(--sp-4);border:0;border-radius:var(--radius-sm);background:none;font-size:14px;font-weight:500;color:var(--fg-80);cursor:pointer}
+  .ghost:hover{background:var(--role-hover)} .ghost:active{background:var(--role-pressed)}
+  .ghost:focus-visible,.seg button:focus-visible,.row:focus-visible,.chip:focus-visible{outline:2px solid var(--interaction-selected-outline);outline-offset:2px}
+  .menu-wrap{position:relative}
+  .menu{position:absolute;z-index:20;top:36px;min-width:260px;max-height:60vh;overflow:auto;margin:0;padding:var(--sp-4);list-style:none;background:var(--bg-primary);border:1px solid var(--line-outline);border-radius:var(--radius-sm);box-shadow:var(--shadow-xl)}
+  .menu[hidden]{display:none}
+  .menu.r{right:0} .menu.l{left:0}
+  .menu .grp{padding:var(--sp-6) var(--sp-6) var(--sp-2);font-size:12px;font-weight:600;color:var(--fg-45)}
+  .menu button{display:flex;justify-content:space-between;gap:var(--sp-6);width:100%;padding:var(--sp-4) var(--sp-6);border:0;border-radius:var(--radius-xs);background:none;text-align:left;font-size:14px;cursor:pointer}
+  .menu button:hover{background:var(--role-hover)}
+  .menu button[aria-current=true]{color:var(--interaction-selected);font-weight:600}
+  .menu button small{color:var(--fg-45);font-size:12px}
+  .menu .empty{padding:var(--sp-6);font-size:14px;color:var(--fg-45)}
+
+  .map-box{position:relative;flex:1;display:grid;place-items:center;min-height:560px}
+  #map{width:100%;height:100%;max-height:calc(100vh - 64px - 120px);aspect-ratio:1;overflow:visible;transition:opacity .16s ease,transform .16s ease}
+  #map.out{opacity:0;transform:scale(.97)}
+  #map.pre{opacity:0;transform:scale(1.03);transition:none}
+
+  /* SVG */
+  .ring-out{fill:none;stroke:var(--line-strong);stroke-width:1.5}
+  .ring-in{fill:none;stroke:var(--brand-company-primary);stroke-width:2.5}
+  .core{fill:var(--bg-primary)}
+  .dot{fill:var(--fg-100);opacity:.14;transition:fill .2s,opacity .2s}
+  .dot.on{fill:var(--brand-company-primary);opacity:.9}
+  .link{fill:none;stroke:var(--fg-100);stroke-opacity:.12;stroke-width:var(--w,1.2);stroke-linecap:round;transition:stroke-opacity .2s}
+  .link.hot{stroke-opacity:.35}
+  .link.on{stroke-opacity:.85}
+  .link.dim{stroke-opacity:.05}
+  .node{cursor:pointer;outline:none}
+  .node circle{fill:var(--bg-theme-300);stroke:var(--line-bold);stroke-width:1.5;transition:fill .15s}
+  .n-out circle{fill:var(--f,var(--bg-theme-300))}
+  .n-out.on circle{fill:var(--f);stroke-width:3}
+  .n-out.dim circle{opacity:.3}
+  .n-out:hover circle,.n-out:focus-visible circle{fill:var(--line-bold);opacity:1}
+  .n-out .rel{font-weight:700;fill:var(--brand-company-strong,#0052CC)}
+  .lg-rel{display:inline-flex;align-items:center;gap:3px}
+  .lg-rel i{border-radius:50%;border:1.5px solid var(--line-bold)}
+  .lg-w{display:inline-flex;align-items:center;gap:3px}
+  .lg-w i{width:14px;border-radius:2px;background:var(--fg-60)}
+  .node:hover circle,.node:focus-visible circle,.node.on circle{fill:var(--line-bold)}
+  .node:focus-visible circle{stroke:var(--brand-company-primary);stroke-width:3}
+  .node text{fill:var(--fg-100);transition:fill .2s,font-weight .2s}
+  .n-out text{font-size:12.5px;font-weight:400}
+  .n-out.on text{font-weight:700}
+  .n-out.dim text{fill:var(--fg-45)}
+  .n-in text{font-size:18px;font-weight:700;letter-spacing:var(--tracking-tight)}
+  .n-in.dim text{fill:var(--fg-60)}
+  .center-btn{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+  .center-btn .hit{fill:transparent;stroke:none}
+  .center-btn:focus-visible .hit{stroke:var(--interaction-selected-outline);stroke-width:4}
+  .node{-webkit-tap-highlight-color:transparent}
+  .center-fo div{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:0 var(--sp-2)}
+  .center-fo .eb{font-size:13px;font-weight:500;color:var(--fg-60)}
+  .center-fo .nm{margin-top:var(--sp-2);font-size:26px;font-weight:700;line-height:1.25;letter-spacing:var(--tracking-tight)}
+  .center-fo .ct{margin-top:var(--sp-4);font-size:13px;color:var(--fg-60)}
+  .center-fo .ct b{color:var(--brand-company-primary);font-weight:700}
+
+  /* tooltip (HDS tooltip) */
+  .tip{position:fixed;z-index:40;pointer-events:none;max-width:260px;padding:var(--sp-4) var(--sp-6);border-radius:var(--radius-sm);background:var(--fg-100);color:#fff;font-size:12px;line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+  .tip.show{opacity:1;transform:none}
+  .tip b{display:block;font-size:14px;font-weight:600}
+  .tip span{color:rgba(255,255,255,.7)}
+
+  .legend{display:flex;gap:var(--sp-10);font-size:12px;color:var(--fg-60)}
+  .legend span{display:inline-flex;align-items:center;gap:var(--sp-3)}
+  .legend i{display:inline-block}
+  .lg-in{width:14px;height:0;border-top:2.5px solid var(--brand-company-primary);border-radius:2px}
+  .lg-out{width:14px;height:0;border-top:1.5px solid var(--line-strong)}
+  .lg-dot{width:6px;height:6px;border-radius:50%;background:var(--brand-company-primary)}
+
+  /* ===== Panel ===== */
+  .panel{position:relative;overflow:hidden;border-left:1px solid var(--line-layout);background:var(--bg-primary)}
+  .panel-in{position:sticky;top:64px;width:480px;height:calc(100vh - 64px);overflow:auto;padding:var(--sp-12)}
+  .fx{transition:opacity .16s ease,transform .16s ease}
+  .fx.out{opacity:0;transform:translateY(-4px)}
+  .fx.pre{opacity:0;transform:translateY(8px);transition:none}
+  .crumb{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin:0;font-size:12px;font-weight:500;color:var(--fg-45)}
+  .crumb button{border:0;padding:0;background:none;color:var(--interaction-selected);cursor:pointer;font-size:12px;font-weight:500}
+  .p-title{margin:var(--sp-4) 0 0;font-size:24px;font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-normal)}
+  .p-title small{display:block;font-size:14px;font-weight:500;color:var(--fg-60)}
+  .p-desc{margin:var(--sp-6) 0 0;font-size:14px;line-height:var(--lh-body);color:var(--fg-80)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4);margin-top:var(--sp-12)}
+  .kpi{padding:var(--sp-8);border-radius:var(--radius-md);background:var(--bg-alternative)}
+  .kpi small{display:block;font-size:12px;color:var(--fg-60)}
+  .kpi b{display:block;margin-top:var(--sp-2);font-size:24px;font-weight:800;letter-spacing:var(--tracking-tight)}
+  .seg{display:flex;margin-top:var(--sp-16);padding:var(--sp-2);border-radius:var(--radius-sm);background:var(--interaction-button-subtle)}
+  .seg button{flex:1;height:36px;border:0;border-radius:6px;background:none;font-size:14px;font-weight:500;color:var(--fg-60);cursor:pointer;transition:background .15s,color .15s}
+  .seg button[aria-selected=true]{background:var(--bg-primary);color:var(--fg-100);font-weight:600;box-shadow:var(--shadow-sm)}
+  .tab-body{margin-top:var(--sp-8)}
+  .sub{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 var(--sp-4);font-size:12px;color:var(--fg-45)}
+  .row{display:flex;align-items:center;gap:var(--sp-6);width:100%;padding:var(--sp-6) var(--sp-4);border:0;border-bottom:1px solid var(--line-layout);background:none;text-align:left;cursor:pointer;transition:background .15s}
+  .row:hover{background:var(--role-hover)}
+  .row[aria-current=true]{background:var(--interaction-selected-bg)}
+  .row .tx{flex:1;min-width:0}
+  .row .tx b{display:block;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .tx small{display:block;margin-top:var(--sp-1);font-size:12px;color:var(--fg-60);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .rt{font-size:14px;font-weight:700;white-space:nowrap}
+  .row .rt small{font-weight:400;color:var(--fg-45);font-size:12px}
+  .bar{position:relative;height:4px;margin-top:var(--sp-3);border-radius:var(--radius-full);background:var(--bg-theme-300);overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--brand-company-primary)}
+  .row .ico{color:var(--fg-45)}
+  .row.static{cursor:default}
+  .row.static:hover{background:none}
+  .chips{display:flex;flex-wrap:wrap;gap:var(--sp-4)}
+  .chip{display:inline-flex;align-items:center;height:32px;padding:0 var(--sp-6);border:1px solid var(--line-outline);border-radius:var(--radius-full);background:var(--bg-primary);font-size:14px;color:var(--fg-80)}
+  .chip.more{border-style:dashed;color:var(--fg-45)}
+  .badge{display:inline-flex;align-items:center;height:20px;padding:0 var(--sp-3);border-radius:var(--radius-xs);background:var(--interaction-selected-bg);color:var(--brand-company-strong);font-size:12px;font-weight:600}
+  .badge.gray{background:var(--interaction-button-subtle);color:var(--fg-60)}
+  .note{margin-top:var(--sp-12);padding:var(--sp-8);border-radius:var(--radius-sm);background:var(--bg-alternative);font-size:12px;line-height:var(--lh-body);color:var(--fg-60)}
+  .empty-st{padding:var(--sp-16) 0;text-align:center;font-size:14px;color:var(--fg-45)}
+
+  @media (max-width:1100px){
+    .main,.main.no-panel{grid-template-columns:1fr}
+    .panel{border-left:0;border-top:1px solid var(--line-layout)}
+    .panel-in{position:static;width:auto;height:auto}
+    .main.no-panel .panel{display:none}
+    #map{max-height:none}
+    .gnb .stat{display:none}
+  }
+  @media (max-width:640px){
+    .gnb{padding:0 var(--sp-8);gap:var(--sp-6)}
+    .logo span{display:none}
+    .stage{padding:var(--sp-8)}
+    .map-box{min-height:0}
+    .legend{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5m7 7-7-7 7-7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></symbol>
+</svg>
+
+<header class="gnb">
+  <a class="logo" href="#" id="home"><b>HU</b><span>스킬 갤럭시</span></a>
+  <div class="search" role="combobox" aria-expanded="false" aria-owns="suggest">
+    <svg class="ico"><use href="#i-search"/></svg>
+    <input id="q" type="search" placeholder="분야, 스킬 그룹, 스킬 이름으로 찾기" autocomplete="off" aria-label="스킬 검색" aria-controls="suggest">
+    <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+  </div>
+  <span class="stat">전체 <b class="num" id="totalN"></b>개 스킬 · <b class="num" id="catN"></b>개 분야</span>
+</header>
+
+<main class="main" id="main">
+  <section class="stage" aria-label="스킬 맵">
+    <div class="stage-top">
+      <div class="menu-wrap">
+        <button class="ghost" id="allBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-grid"/></svg>전체 분야<svg class="ico s16"><use href="#i-down"/></svg></button>
+        <div class="menu l" id="allMenu" role="menu" hidden></div>
+      </div>
+      <div class="menu-wrap">
+        <button class="ghost" id="histBtn" aria-haspopup="true" aria-expanded="false">탐색 내역<svg class="ico s16"><use href="#i-down"/></svg></button>
+        <div class="menu r" id="histMenu" role="menu" hidden></div>
+      </div>
+    </div>
+    <div class="map-box">
+      <svg id="map" viewBox="-560 -560 1120 1120" role="group" aria-label="스킬 연결 지도"></svg>
+    </div>
+    <div class="stage-bot">
+      <div class="legend" aria-hidden="true">
+        <span><i class="lg-in"></i>분야의 스킬 그룹</span>
+        <span class="lg-rel">연관도 낮음<i style="width:8px;height:8px;background:#CCE0FF"></i><i style="width:11px;height:11px;background:#99C2FF"></i><i style="width:14px;height:14px;background:#66A3FF"></i><i style="width:17px;height:17px;background:#3385FF"></i><i style="width:20px;height:20px;background:#0066FF"></i>높음</span>
+        <span class="lg-w">선 두께 = 그룹 간 연관도 <i style="height:1px"></i><i style="height:3px"></i><i style="height:5px"></i></span>
+      </div>
+      <button class="ghost" id="panelBtn"><span>패널 숨기기</span><svg class="ico s16"><use href="#i-right"/></svg></button>
+    </div>
+  </section>
+  <aside class="panel" aria-label="상세 정보">
+    <div class="panel-in"><div class="fx" id="panel"></div></div>
+  </aside>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const D = window.GALAXY;
+const CAT = Object.fromEntries(D.cats.map(c => [c.id, c]));
+const G = D.groups;
+const GORD = Object.fromEntries(D.gorder.map((g, i) => [g, i]));
+// 중앙 분야와의 연관도 (0–100, Type 2와 같은 값)
+const relTo = (cat, gid) => D.rel[cat].charCodeAt(GORD[gid]) - 48;
+// 연관도 5단계 → HDS 브랜드 블루 농도
+const relFill = r => r >= 85 ? '#0066FF' : r >= 70 ? '#3385FF' : r >= 55 ? '#66A3FF' : r >= 40 ? '#99C2FF' : '#CCE0FF';
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const fmt = n => n.toLocaleString('ko-KR');
+const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const josa = (w, a, b) => { const c = w.trim().charCodeAt(w.trim().length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? a : b; };
+const catLabel = c => c.mid === '직무' || c.mid === '산업특화' ? `${c.name}` : c.mid === c.name ? c.name : `${c.mid} · ${c.name}`;
+const catPath = c => [c.big, c.mid].filter((x, i, a) => a.indexOf(x) === i).join(' › ');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// 지오메트리 (WEF 맵 비율: 바깥 링 389 / 안쪽 링 173 / 중심 141)
+const R_OUT = 400, R_IN = 178, R_CORE = 146, MAX_INNER = 8, OUT_TARGET = 30;
+
+let state = { cat: null, group: null, tab: 'list' };
+let view = null; // 현재 렌더된 맵 구성
+const trail = [];
+
+$('#totalN').textContent = fmt(D.total);
+$('#catN').textContent = D.cats.length;
+
+/* ---------- 맵 구성 계산 ---------- */
+function compose(catId, focus) {
+  const cat = CAT[catId];
+  let inner = cat.groups.slice(0, MAX_INNER);
+  if (focus && !inner.includes(focus)) inner = [...inner.slice(0, MAX_INNER - 1), focus];
+  const k = Math.max(3, Math.min(10, Math.ceil(OUT_TARGET / inner.length)));
+  const inAng = inner.map((_, i) => -Math.PI / 2 + (i + 0.5) * (2 * Math.PI / inner.length) - Math.PI / inner.length / 2 * (inner.length % 2 ? 0 : 0));
+  const outMap = new Map(); // outer gid -> [{i, w}]
+  inner.forEach((gid, i) => {
+    G[gid].links.slice(0, k).forEach(([o, w]) => {
+      if (G[o].cat === catId) return;
+      if (!outMap.has(o)) outMap.set(o, []);
+      outMap.get(o).push({ i, w });
+    });
+  });
+  // 바깥 노드 순서: 연결된 안쪽 노드 각도의 가중 원형 평균 → 선 교차 최소화
+  const outer = [...outMap.entries()].map(([gid, ls]) => {
+    let x = 0, y = 0; ls.forEach(l => { x += Math.cos(inAng[l.i]) * l.w; y += Math.sin(inAng[l.i]) * l.w; });
+    return { gid, ls, a: Math.atan2(y, x) };
+  }).sort((p, q) => p.a - q.a);
+  // 균등 분포하되, 시작점을 첫 노드 평균 각도에 맞춰 회전
+  const n = outer.length, step = 2 * Math.PI / Math.max(n, 1);
+  let best = 0, bestErr = Infinity;
+  for (let s = 0; s < 36; s++) {
+    const off = outer.length ? outer[0].a + (s - 18) * step / 6 : 0;
+    let err = 0; outer.forEach((o, j) => { const d = Math.atan2(Math.sin(off + j * step - o.a), Math.cos(off + j * step - o.a)); err += d * d; });
+    if (err < bestErr) { bestErr = err; best = off; }
+  }
+  outer.forEach((o, j) => o.ang = best + j * step);
+  outer.forEach(o => o.rel = relTo(catId, o.gid));
+  const wMax = Math.max(...outer.flatMap(o => o.ls.map(l => l.w)), .001);
+  outer.forEach(o => o.ls.forEach(l => l.s = l.w / wMax));
+  const relLo = Math.min(...outer.map(o => o.rel), 100);
+  return { cat, inner, inAng, outer, k, relLo };
+}
+
+const pol = (a, r) => [Math.cos(a) * r, Math.sin(a) * r];
+function curve(a1, a2) {
+  // WEF 방식: 시작점(안쪽 링) → c1(중간 각도, 0.75R) → c2(도착 각도, 0.69R) → 도착점(바깥 링)
+  let d = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1));
+  const [x0, y0] = pol(a1, R_IN), [x1, y1] = pol(a1 + d / 2, R_OUT * .75), [x2, y2] = pol(a2, R_OUT * .69), [x3, y3] = pol(a2, R_OUT);
+  return `M${x0.toFixed(1)},${y0.toFixed(1)} C${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${x3.toFixed(1)},${y3.toFixed(1)}`;
+}
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function rng(seed) { let s = 0; for (const ch of seed) s = (s * 31 + ch.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+function wrap(text, max) {
+  if (text.length <= max) return [text];
+  const words = text.split(' '); const lines = [''];
+  words.forEach(w => { const cur = lines[lines.length - 1]; if ((cur + ' ' + w).trim().length > max && cur) lines.push(w); else lines[lines.length - 1] = (cur + ' ' + w).trim(); });
+  return lines.length > 2 ? [lines[0], lines.slice(1).join(' ').slice(0, max - 1) + '…'] : lines;
+}
+
+/* ---------- 맵 렌더 ---------- */
+function drawMap() {
+  const svg = $('#map');
+  svg.innerHTML = '';
+  view = compose(state.cat, state.group);
+  const { cat, inner, inAng, outer } = view;
+
+  el('circle', { class: 'ring-out', r: R_OUT }, svg);
+  const gLinks = el('g', {}, svg);
+  el('circle', { class: 'core', r: R_CORE }, svg);
+
+  // 중심: 스킬 하나하나를 점으로 — 그룹별로 안쪽 노드 방향의 부채꼴에 배치
+  const gDots = el('g', { class: 'center-btn', role: 'button', tabindex: 0, 'aria-label': `${cat.name} 개요 보기` }, svg);
+  el('circle', { class: 'hit', r: R_CORE }, gDots);
+  const span = 2 * Math.PI / inner.length;
+  const counts = inner.map(g => G[g].n), maxC = Math.max(...counts);
+  inner.forEach((gid, i) => {
+    const n = Math.max(6, Math.round(Math.sqrt(G[gid].n / maxC) * 90));
+    const r = rng(gid);
+    for (let j = 0; j < n; j++) {
+      const a = inAng[i] + (r() - .5) * span * .86, rr = Math.sqrt(100 ** 2 + r() * (136 ** 2 - 100 ** 2));
+      const [x, y] = pol(a, rr);
+      el('circle', { class: 'dot', 'data-i': i, cx: x.toFixed(1), cy: y.toFixed(1), r: (1.3 + r() * 1.5).toFixed(2) }, gDots);
+    }
+  });
+  const fo = el('foreignObject', { class: 'center-fo', x: -96, y: -80, width: 192, height: 160 }, gDots);
+  fo.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml"><span class="eb">${esc(catPath(cat))}</span><span class="nm">${esc(cat.name)}</span><span class="ct">스킬 <b class="num">${fmt(cat.n)}</b>개</span></div>`;
+  gDots.addEventListener('click', () => select(null));
+  gDots.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(null); } });
+
+  el('circle', { class: 'ring-in', r: R_IN }, svg);
+
+  // 링크
+  view.links = [];
+  outer.forEach((o, j) => o.ls.forEach(l => {
+    const p = el('path', { class: 'link', d: curve(inAng[l.i], o.ang), style: `--w:${(.6 + 4.6 * Math.pow(l.s, 1.6)).toFixed(2)}px` }, gLinks);
+    view.links.push({ el: p, i: l.i, j });
+  }));
+
+  // 바깥 노드 (다른 분야의 연관 그룹) — 방사형 라벨
+  view.outEls = outer.map((o, j) => {
+    const g = G[o.gid], c = CAT[g.cat];
+    const [x, y] = pol(o.ang, R_OUT);
+    const node = el('g', { class: 'node n-out', role: 'button', tabindex: 0, 'aria-label': `${g.name} (${c.name}) 으로 이동` }, svg);
+    const t01 = Math.max(0, (o.rel - view.relLo + 4) / Math.max(1, 100 - view.relLo + 4));
+    const r = 5 + 12 * Math.pow(t01, 1.2);
+    node.style.setProperty('--f', relFill(o.rel));
+    el('circle', { cx: x, cy: y, r: r.toFixed(1) }, node);
+    let deg = o.ang * 180 / Math.PI; const left = Math.cos(o.ang) < 0;
+    const [tx, ty] = pol(o.ang, R_OUT + r + 9);
+    const t = el('text', { x: tx, y: ty, 'dominant-baseline': 'central', 'text-anchor': left ? 'end' : 'start', transform: `rotate(${left ? deg + 180 : deg} ${tx} ${ty})` }, node);
+    const nm = g.name.length > 15 ? g.name.slice(0, 14) + '…' : g.name;
+    const a1 = el('tspan', {}, t), a2 = el('tspan', { class: 'rel', dx: 4 }, t);
+    if (left) { a2.textContent = o.rel; a2.setAttribute('dx', 0); a1.textContent = nm; t.insertBefore(a2, a1); a1.setAttribute('dx', 4); } else { a1.textContent = nm; a2.textContent = o.rel; }
+    node.addEventListener('click', () => go(g.cat, o.gid));
+    node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(g.cat, o.gid); } });
+    hoverTip(node, `<b>${esc(g.name)}</b><span>${esc(c.name)} · 스킬 ${fmt(g.n)}개<br>${esc(cat.name)}${josa(cat.name, '과', '와')} 연관도 <b style="display:inline">${o.rel}</b></span>`);
+    node.addEventListener('mouseenter', () => hot({ j }));
+    node.addEventListener('mouseleave', () => hot(null));
+    return node;
+  });
+
+  // 안쪽 노드 (이 분야의 스킬 그룹) — 가로 라벨
+  view.inEls = inner.map((gid, i) => {
+    const g = G[gid], a = inAng[i];
+    const [x, y] = pol(a, R_IN);
+    const node = el('g', { class: 'node n-in', role: 'button', tabindex: 0, 'aria-label': `${g.name} 그룹 선택` }, svg);
+    const ri = 10 + 9 * Math.sqrt(g.n / G[inner[0]].n);
+    el('circle', { cx: x, cy: y, r: ri.toFixed(1) }, node);
+    const c = Math.cos(a), s = Math.sin(a);
+    const anchor = c > .3 ? 'start' : c < -.3 ? 'end' : 'middle';
+    const lines = wrap(g.name, 9);
+    const lx = x + (anchor === 'start' ? ri + 8 : anchor === 'end' ? -ri - 8 : 0);
+    const ly0 = anchor === 'middle' ? y + (s < 0 ? -26 - (lines.length - 1) * 22 : 34) : y - (lines.length - 1) * 11;
+    const t = el('text', { 'text-anchor': anchor, 'dominant-baseline': 'central' }, node);
+    lines.forEach((ln, k) => { const ts = el('tspan', { x: lx, y: ly0 + k * 22 }, t); ts.textContent = ln; });
+    node.addEventListener('click', () => select(state.group === gid ? null : gid));
+    node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(state.group === gid ? null : gid); } });
+    hoverTip(node, `<b>${esc(g.name)}</b><span>스킬 ${fmt(g.n)}개 · 연결 ${view.links.filter(l => l.i === i).length}개 그룹</span>`);
+    node.addEventListener('mouseenter', () => hot({ i }));
+    node.addEventListener('mouseleave', () => hot(null));
+    return node;
+  });
+  paintSelection();
+}
+
+function hot(h) {
+  if (!view) return;
+  view.links.forEach(l => l.el.classList.toggle('hot', !!h && (h.i === l.i || h.j === l.j)));
+  const di = h && h.i != null ? h.i : null;
+  document.querySelectorAll('#map .dot').forEach(d => d.classList.toggle('on', (di != null && +d.dataset.i === di) || (+d.dataset.i === selIdx())));
+}
+const selIdx = () => view && state.group ? view.inner.indexOf(state.group) : -1;
+
+function paintSelection() {
+  const si = selIdx();
+  const linkedOut = new Set(view.links.filter(l => l.i === si).map(l => l.j));
+  view.inEls.forEach((n, i) => { n.classList.toggle('on', i === si); n.classList.toggle('dim', si >= 0 && i !== si); n.setAttribute('aria-pressed', i === si); });
+  view.outEls.forEach((n, j) => { n.classList.toggle('on', linkedOut.has(j)); n.classList.toggle('dim', si >= 0 && !linkedOut.has(j)); });
+  view.links.forEach(l => { l.el.classList.toggle('on', l.i === si); l.el.classList.toggle('dim', si >= 0 && l.i !== si); if (l.i === si) l.el.parentNode.appendChild(l.el); });
+  document.querySelectorAll('#map .dot').forEach(d => d.classList.toggle('on', +d.dataset.i === si));
+}
+
+/* ---------- 툴팁 ---------- */
+const tip = $('#tip');
+function hoverTip(node, html) {
+  node.addEventListener('mouseenter', e => { tip.innerHTML = html; tip.classList.add('show'); moveTip(e); });
+  node.addEventListener('mousemove', moveTip);
+  node.addEventListener('mouseleave', () => tip.classList.remove('show'));
+}
+function moveTip(e) { tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; }
+
+/* ---------- 패널 ---------- */
+function panelHTML() {
+  const cat = CAT[state.cat], gid = state.group, g = gid && G[gid];
+  const tabs = [['list', g ? '스킬' : '스킬 그룹'], ['links', '연결 그룹'], ['contents', '추천 콘텐츠']];
+  let head, body;
+  if (!g) {
+    const outerN = view.outer.length, top = G[cat.groups[0]];
+    head = `<p class="crumb">${esc(catPath(cat))}</p>
+      <h1 class="p-title">${esc(cat.name)}</h1>
+      <p class="p-desc">${esc(cat.name)} 분야에는 ${fmt(cat.n)}개의 스킬이 ${cat.groups.length}개 그룹으로 정리되어 있습니다. 가장 큰 그룹은 ‘${esc(top.name)}’${josa(top.name, '이며', '이며')}, 스킬 이름이 비슷한 다른 분야의 ${outerN}개 그룹과 연결됩니다.</p>
+      <div class="kpis"><div class="kpi"><small>스킬</small><b class="num">${fmt(cat.n)}</b></div><div class="kpi"><small>스킬 그룹</small><b class="num">${cat.groups.length}</b></div><div class="kpi"><small>연결 그룹</small><b class="num">${outerN}</b></div></div>`;
+    if (state.tab === 'list') {
+      const max = G[cat.groups[0]].n;
+      body = `<p class="sub"><span>스킬 수 순 · 맵에는 상위 ${Math.min(MAX_INNER, cat.groups.length)}개 표시, 나머지는 선택하면 맵에 들어갑니다</span><span>스킬</span></p>` + cat.groups.map((id, k) => {
+        const x = G[id];
+        return `<button class="row" data-sel="${esc(id)}"><span class="tx"><b>${esc(x.name)}</b><span class="bar"><i style="width:${(x.n / max * 100).toFixed(1)}%"></i></span></span><span class="rt num">${fmt(x.n)}</span></button>`;
+      }).join('');
+    } else if (state.tab === 'links') {
+      body = linkRows([...view.outer].sort((a, b) => b.rel - a.rel).map(o => [o.gid, o.rel]), `${esc(cat.name)}${josa(cat.name, '과', '와')}의 연관도 순 · 클릭하면 그 분야로 이동합니다`, true);
+    } else {
+      const seen = new Set(), list = [];
+      view.inner.forEach(id => G[id].contents.slice(0, 2).forEach(c => { if (!seen.has(c[0])) { seen.add(c[0]); list.push([...c, G[id].name]); } }));
+      body = contentRows(list);
+    }
+  } else {
+    const c = CAT[g.cat], links = g.links.filter(([o]) => G[o].cat !== g.cat).slice(0, view.k);
+    head = `<p class="crumb">${esc(catPath(c))} › <button data-sel="">${esc(c.name)}</button></p>
+      <h1 class="p-title">${esc(g.name)}</h1>
+      <p class="p-desc">${esc(g.name)}${josa(g.name, '은', '는')} ${esc(c.name)} 분야의 스킬 그룹으로 ${fmt(g.n)}개 스킬을 담고 있습니다.${links[0] ? ` 가장 가까운 그룹은 ${esc(CAT[G[links[0][0]].cat].name)} 분야의 ‘${esc(G[links[0][0]].name)}’입니다.` : ''}</p>
+      <div class="kpis"><div class="kpi"><small>스킬</small><b class="num">${fmt(g.n)}</b></div><div class="kpi"><small>연결 그룹</small><b class="num">${links.length}</b></div><div class="kpi"><small>추천 콘텐츠</small><b class="num">${g.contents.length}</b></div></div>`;
+    if (state.tab === 'list') {
+      const shown = g.skills.slice(0, 40), rest = g.n - shown.length;
+      body = `<p class="sub"><span>이 그룹의 스킬</span><span class="num">${fmt(g.n)}개</span></p><div class="chips">${shown.map(s => `<span class="chip">${esc(s)}</span>`).join('')}${rest > 0 ? `<span class="chip more">외 ${fmt(rest)}개</span>` : ''}</div>`;
+    } else if (state.tab === 'links') {
+      body = linkRows(links, '스킬 이름이 비슷한 다른 분야의 그룹 · 클릭하면 그 분야로 이동합니다');
+    } else {
+      body = contentRows(g.contents);
+    }
+  }
+  return head + `<div class="seg" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div><div class="tab-body" role="tabpanel">${body}</div>
+    <p class="note">스킬과 분류는 휴넷 스킬DB v1.0(Lightcast·Mercer·Hunet 기반)에서 가져왔습니다. 그룹 간 연결은 DB에 따로 정의되어 있지 않아, 스킬 이름(국문·영문)에 함께 쓰인 단어의 유사도로 계산했습니다. 추천 콘텐츠는 휴넷 마이크로러닝 목록에서 제목과 태그로 매칭했습니다.</p>`;
+}
+function linkRows(list, label, abs) {
+  if (!list.length) return `<p class="empty-st">연결된 그룹이 없습니다.</p>`;
+  const max = abs ? 100 : Math.max(...list.map(x => x[1]));
+  return `<p class="sub"><span>${label}</span></p>` + list.map(([id, w]) => {
+    const x = G[id], c = CAT[x.cat];
+    return `<button class="row" data-go="${esc(id)}"><span class="tx"><b>${esc(x.name)}</b><small>${esc(c.mid)} · ${esc(c.name)} · 스킬 ${fmt(x.n)}개</small><span class="bar"><i style="width:${(w / max * 100).toFixed(1)}%"></i></span></span><span class="rt num">${abs ? w : Math.round(w / max * 100)}<small> 연관</small></span></button>`;
+  }).join('');
+}
+function contentRows(list) {
+  if (!list.length) return `<p class="empty-st">매칭된 콘텐츠가 없습니다.</p>`;
+  return `<p class="sub"><span>휴넷 마이크로러닝</span></p>` + list.map(([t, time, who, path, from]) => `<div class="row static"><svg class="ico"><use href="#i-play"/></svg><span class="tx"><b>${esc(t)}</b><small>${[who, time].filter(Boolean).map(esc).join(' · ')}${from ? ` · <span class="badge gray">${esc(from)}</span>` : ''}</small></span></div>`).join('');
+}
+function renderPanel(animate) {
+  const p = $('#panel');
+  const put = () => { p.innerHTML = panelHTML(); };
+  if (!animate || reduce) return put();
+  p.classList.add('out');
+  setTimeout(() => { put(); p.classList.remove('out'); p.classList.add('pre'); p.offsetWidth; p.classList.remove('pre'); }, 140);
+}
+$('#panel').addEventListener('click', e => {
+  const t = e.target.closest('[data-tab],[data-sel],[data-go]');
+  if (!t) return;
+  if (t.dataset.tab) { state.tab = t.dataset.tab; renderPanel(false); }
+  else if (t.dataset.sel != null) select(t.dataset.sel || null);
+  else if (t.dataset.go) go(G[t.dataset.go].cat, t.dataset.go);
+});
+
+/* ---------- 상태 전환 ---------- */
+function select(gid) {
+  if (gid && !view.inner.includes(gid)) return go(state.cat, gid);
+  state.group = gid; state.tab = 'list';
+  paintSelection(); renderPanel(true); saveHash(); pushHistory();
+}
+function go(catId, gid = null, opts = {}) {
+  const same = catId === state.cat && (!gid || view.inner.includes(gid));
+  state.cat = catId; state.group = gid; state.tab = 'list';
+  if (same) { paintSelection(); renderPanel(true); }
+  else {
+    const svg = $('#map');
+    const swap = () => {
+      drawMap();
+      renderPanel(!opts.instant);
+    };
+    if (reduce || opts.instant) swap();
+    else { svg.classList.add('out'); setTimeout(() => { swap(); svg.classList.remove('out'); svg.classList.add('pre'); svg.getBoundingClientRect(); svg.classList.remove('pre'); }, 160); }
+  }
+  if (!opts.noHash) saveHash();
+  pushHistory();
+  tip.classList.remove('show');
+}
+function saveHash() {
+  const h = '#c=' + encodeURIComponent(state.cat) + (state.group ? '&g=' + encodeURIComponent(state.group) : '');
+  if (location.hash !== h) window.history.replaceState(null, "", h);
+}
+function pushHistory() {
+  const key = state.cat + '§' + (state.group || '');
+  if (trail[0] && trail[0].key === key) return;
+  trail.unshift({ key, cat: state.cat, group: state.group });
+  trail.length = Math.min(trail.length, 12);
+}
+
+/* ---------- 메뉴: 전체 분야 / 탐색 내역 ---------- */
+function toggleMenu(btn, menu, build) {
+  const open = menu.hidden;
+  document.querySelectorAll('.menu').forEach(m => m.hidden = true);
+  document.querySelectorAll('[aria-haspopup]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  if (open) { menu.innerHTML = build(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+}
+$('#allBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#allMenu'), () => {
+  const by = {}; D.cats.forEach(c => (by[c.big + ' › ' + c.mid] ||= []).push(c));
+  return Object.entries(by).map(([k, cs]) => `<div class="grp">${esc(k)}</div>` + cs.sort((a, b) => b.n - a.n).map(c => `<button role="menuitem" data-cat="${esc(c.id)}" aria-current="${c.id === state.cat}"><span>${esc(c.name)}</span><small class="num">${fmt(c.n)}</small></button>`).join('')).join('');
+}); });
+$('#histBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#histMenu'), () => trail.length < 2 ? '<p class="empty">아직 탐색 내역이 없습니다.</p>' :
+  trail.slice(1).map(h => `<button role="menuitem" data-cat="${esc(h.cat)}" data-g="${esc(h.group || '')}"><span>${esc(h.group ? G[h.group].name : CAT[h.cat].name)}</span><small>${esc(h.group ? CAT[h.cat].name : '분야')}</small></button>`).join('')); });
+document.addEventListener('click', e => {
+  const b = e.target.closest('.menu button[data-cat]');
+  document.querySelectorAll('.menu').forEach(m => m.hidden = true);
+  document.querySelectorAll('[aria-haspopup]').forEach(x => x.setAttribute('aria-expanded', 'false'));
+  if (b) go(b.dataset.cat, b.dataset.g || null);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.querySelectorAll('.menu').forEach(m => m.hidden = true); hideSuggest(); } });
+
+$('#panelBtn').addEventListener('click', e => {
+  const m = $('#main'); m.classList.toggle('no-panel');
+  const hidden = m.classList.contains('no-panel');
+  e.currentTarget.querySelector('span').textContent = hidden ? '패널 보기' : '패널 숨기기';
+  e.currentTarget.querySelector('use').setAttribute('href', hidden ? '#i-left' : '#i-right');
+});
+$('#home').addEventListener('click', e => { e.preventDefault(); go(DEFAULT); });
+
+/* ---------- 검색 ---------- */
+const index = [];
+D.cats.forEach(c => index.push({ t: c.name, k: c.name.toLowerCase(), sub: `분야 · ${c.mid}`, cat: c.id, g: null, w: 3 }));
+Object.entries(G).forEach(([id, g]) => {
+  index.push({ t: g.name, k: g.name.toLowerCase(), sub: `그룹 · ${CAT[g.cat].name}`, cat: g.cat, g: id, w: 2 });
+  g.skills.forEach(s => index.push({ t: s, k: s.toLowerCase(), sub: `스킬 · ${g.name}`, cat: g.cat, g: id, w: 1 }));
+});
+const q = $('#q'), sg = $('#suggest'); let hits = [], cur = -1;
+function hideSuggest() { sg.hidden = true; q.parentElement.setAttribute('aria-expanded', 'false'); }
+q.addEventListener('input', () => {
+  const v = q.value.trim().toLowerCase();
+  if (!v) return hideSuggest();
+  hits = index.filter(x => x.k.includes(v)).sort((a, b) => (b.k.startsWith(v) - a.k.startsWith(v)) || b.w - a.w || a.t.length - b.t.length).slice(0, 12);
+  cur = -1;
+  sg.innerHTML = hits.length ? hits.map((h, i) => `<li role="option" data-i="${i}" aria-selected="false"><span>${esc(h.t)}</span><small>${esc(h.sub)}</small></li>`).join('') : '<li class="empty">일치하는 결과가 없습니다.</li>';
+  sg.hidden = false; q.parentElement.setAttribute('aria-expanded', 'true');
+});
+q.addEventListener('keydown', e => {
+  if (sg.hidden || !hits.length) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); cur = (cur + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; sg.querySelectorAll('li').forEach((li, i) => li.setAttribute('aria-selected', i === cur)); }
+  if (e.key === 'Enter') { e.preventDefault(); pick(hits[Math.max(cur, 0)]); }
+});
+sg.addEventListener('mousedown', e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); pick(hits[+li.dataset.i]); } });
+q.addEventListener('blur', () => setTimeout(hideSuggest, 100));
+function pick(h) {
+  hideSuggest(); q.value = ''; q.blur();
+  go(h.cat, h.g);
+}
+
+/* ---------- 시작 ---------- */
+const DEFAULT = '직무|비즈니스';
+function fromHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  const c = p.get('c'), g = p.get('g');
+  return { c: CAT[c] ? c : DEFAULT, g: g && G[g] && G[g].cat === c ? g : null };
+}
+const init = fromHash();
+go(init.c, init.g, { instant: true });
+addEventListener('hashchange', () => { const h = fromHash(); if (h.c !== state.cat || h.g !== state.group) go(h.c, h.g, { noHash: true }); });
+})();
+</script>
+</body>
+</html>

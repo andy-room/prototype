@@ -10,4 +10,6 @@
 | [ilearn-logo-motion](ilearn-logo-motion/) | 아이런 실행 버튼 로고 모션 — 수정안 + 조정판(가속도·장면 길이·문구·말줄임표·그림자·배경 빛), 기존 모션과 나란히 비교 | https://andy-room.github.io/prototype/ilearn-logo-motion/ |
 | [hu-next-skill](hu-next-skill/) | HU 홈 '5. 다음 스킬' 섹션 시안 비교 — A 스킬 탐색 씬(프로필 → 스킬 → 강의) / B 스킬 패널(스킬·콘텐츠·커리어 탭) — 상단 탭 또는 키보드 1·2, ←→로 스킬 이동 | https://andy-room.github.io/prototype/hu-next-skill/ |
 | [hu-skill-home](hu-skill-home/) | HU 스킬 홈 — Figma [E03-01] PC/홈 기준 랜딩 + 노드 네트워크 히어로 (좌상단 로고 클릭 시 히어로 컨트롤러, 원 안 클릭 시 확장) | https://andy-room.github.io/prototype/hu-skill-home/ |
+| [skill-galaxy/type1](skill-galaxy/type1/) | 스킬 갤럭시 Type 1 — WEF Strategic Intelligence 방식 방사형 맵. 중심 분야 · 스킬 그룹(안쪽 링) · 타 분야 연관 그룹(바깥 링). 연관도는 바깥 노드 크기·블루 농도·선 두께로 표현, 바깥 노드 클릭 시 재중심 | https://andy-room.github.io/prototype/skill-galaxy/type1/ |
+| [skill-galaxy/type2](skill-galaxy/type2/) | 스킬 갤럭시 Type 2 — USGS 'Unequal access to water' 방식. 연관도 버블(원 크기=기준과의 연관도, 세로축=콘텐츠 커버리지/스킬 갭, 클릭 시 기준 이동 + 경로 브레드크럼, 왼쪽 게이지로 표시 범위 조절) + 연관 트리(선 두께·끝 원=연관도) | https://andy-room.github.io/prototype/skill-galaxy/type2/ |
 | [petals-motion-style](petals-motion-style/) | Jitter 템플릿 모션 스타일 스펙 — petals (Gradients: Petals), blur-bubbles-carousel (Blur: Bubbles & Carousel). README + motion-style.json 쌍 | — (문서/JSON, 페이지 없음) |
