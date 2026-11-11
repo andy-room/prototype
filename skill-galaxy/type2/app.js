@@ -233,7 +233,8 @@ function dLayout() {
   return { N, L, H, rootY, pos };
 }
 function drawDendro(reset) {
-  if (reset) { gL.selectAll('*').remove(); gN.selectAll('*').remove(); }
+  // 중심(루트)은 지우지 않고 그 자리에서 내용만 바꿈 → 왼쪽 위에서 날아오지 않음
+  if (reset) { gL.selectAll('*').remove(); gN.selectAll('g.n').remove(); }
   const { N, L, H, rootY, pos } = dLayout();
   const T = reduce ? 0 : 550;
   dsvg.transition().duration(T).attr('viewBox', `0 0 760 ${Math.max(H, 240)}`);
@@ -241,7 +242,7 @@ function drawDendro(reset) {
   const c = nodeOf(cur());
   let root = gN.select('g.root');
   if (root.empty()) {
-    root = gN.append('g').attr('class', 'root');
+    root = gN.append('g').attr('class', 'root').attr('transform', `translate(${X_ROOT},${rootY})`);
     root.append('circle').attr('r', 14);
     root.append('text').attr('class', 'root-lbl').attr('x', -22).attr('y', -9).attr('text-anchor', 'end');
     root.append('text').attr('class', 'root-sub').attr('x', -22).attr('y', 11).attr('text-anchor', 'end');
