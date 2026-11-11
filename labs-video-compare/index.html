@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>화상 개선안 비교</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root {
+    --bg: #F7F7F8;
+    --card: #FFFFFF;
+    --black: #171719;
+    --black60: rgba(23, 23, 25, .6);
+    --black45: rgba(23, 23, 25, .45);
+    --line: #EAEBEC;
+    --line-strong: #E1E2E4;
+    --primary: #0066FF;
+    --new: #0066FF;
+    --old: #70737C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--black); font-family: Pretendard, -apple-system, sans-serif; letter-spacing: -0.3px; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; letter-spacing: inherit; background: none; border: 0; cursor: pointer; }
+
+  .page { display: flex; height: 100vh; min-width: 1100px; }
+
+  /* 단계 목록 */
+  .nav { width: 232px; flex-shrink: 0; padding: 24px 12px; overflow-y: auto; background: var(--card); border-right: 1px solid var(--line); }
+  .nav h1 { padding: 0 12px 4px; font-size: 18px; font-weight: 700; }
+  .nav p { padding: 0 12px 20px; font-size: 13px; line-height: 150%; color: var(--black60); }
+  /* 묶음마다 구분선 + 여백 */
+  .nav h2 { margin: 12px 12px 0; padding: 16px 0 6px; border-top: 1px solid var(--line); font-size: 12px; font-weight: 600; color: var(--black45); }
+  .nav p + h2 { margin-top: 0; padding-top: 4px; border-top: 0; }
+  .nav button { width: 100%; height: 36px; padding: 0 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; text-align: left; }
+  .nav button:hover { background: rgba(0, 0, 0, .04); }
+  .nav button.on { background: rgba(0, 102, 255, .08); color: var(--primary); font-weight: 600; }
+  .nav button span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .step-nav { display: flex; gap: 4px; }
+  .step-nav button { height: 36px; padding: 0 12px; border-radius: 8px; background: #fff; border: 1px solid var(--line-strong); font-size: 13px; font-weight: 500; }
+  .step-nav button:hover { background: #FAFAFB; }
+  .step-nav button:disabled { color: var(--black45); cursor: default; background: #fff; }
+  .step-nav { margin-right: auto; }
+
+  /* 비교 본문 */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .head { flex-shrink: 0; padding: 20px 24px 12px; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px 16px; }
+  .head-text { flex: 1 1 360px; min-width: 260px; }
+  .head h3 { font-size: 22px; font-weight: 700; }
+  .head .note { margin-top: 4px; font-size: 14px; line-height: 150%; color: var(--black60); }
+  .layout { display: flex; padding: 3px; border-radius: 8px; background: rgba(0, 0, 0, .05); }
+  .layout button { height: 30px; padding: 0 12px; border-radius: 6px; font-size: 13px; color: var(--black60); }
+  .layout button.on { background: #fff; color: var(--black); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+
+  .cols { flex: 1; min-height: 0; padding: 0 24px 24px; display: flex; gap: 16px; }
+  .col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .cols.only-new .col.old, .cols.only-old .col.new { display: none; }
+  .col-head { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+  .label { height: 24px; padding: 0 10px; border-radius: 900px; font-size: 12px; font-weight: 600; line-height: 24px; color: #fff; }
+  .col.new .label { background: var(--new); }
+  .col.old .label { background: var(--old); }
+  .col-head small { font-size: 13px; color: var(--black45); }
+
+  /* 칸 자체는 비워 두고, 프로토타입 화면 크기만큼만 흰 판(::before)을 깐다 — 좁은 크기(모바일 등)에서 큰 흰 여백이 생기지 않게 */
+  .frame { position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .frame::before { content: ""; position: absolute; left: var(--sx, 0); top: var(--sy, 0); width: var(--sw, 100%); height: var(--sh, 100%); border-radius: 12px; background: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, .06); }
+  .frame:has(#noLegacy:not([hidden]))::before { background: rgba(0, 0, 0, .02); box-shadow: inset 0 0 0 1px var(--line); }
+  .no-legacy { position: relative; padding: 24px; text-align: center; font-size: 14px; line-height: 160%; color: var(--black45); }
+  .no-legacy b { display: block; margin-bottom: 4px; font-size: 15px; color: var(--black60); }
+  .frame iframe { position: absolute; left: 0; top: 0; z-index: 1; border: 0; transform-origin: 0 0; background: #F7F7F8; }
+
+  /* 좁은 창: 개선안·기존안을 위아래로 쌓고 화면 비율을 지킨다 */
+  @media (max-width: 1300px) {
+    .page { min-width: 720px; }
+    .nav { width: 188px; }
+    .head { flex-wrap: wrap; }
+    .cols { flex-direction: column; overflow-y: auto; }
+    .col { flex: none; }
+    .frame { flex: none; width: 100%; aspect-ratio: 2500 / 1280; }
+  }
+
+  /* 크게 보기(발표용): 단계 목록·머리글을 숨기고 화면을 가득 채운다. 아래 작은 막대로 단계 이동 */
+  .btn-present { height: 36px; padding: 0 14px; border-radius: 8px; display: flex; align-items: center; gap: 6px; background: var(--primary); color: #fff; font-size: 13px; font-weight: 600; }
+  .btn-present:hover { background: #005EEB; }
+  body.present .page { min-width: 0; }
+  body.present .nav, body.present .head, body.present .col-head { display: none; }
+  body.present .cols { padding: 0; gap: 2px; flex-direction: row; overflow: hidden; background: #171719; }
+  body.present .col { flex: 1; padding: 0 !important; border: 0 !important; }
+  body.present .frame { flex: 1; aspect-ratio: auto; width: auto; border: 0; border-radius: 0; background: #171719; }
+  .pbar { position: fixed; left: 50%; bottom: 20px; z-index: 10; height: 48px; padding: 0 6px 0 8px; border-radius: 900px; display: none; align-items: center; gap: 4px; transform: translateX(-50%); background: rgba(23, 23, 25, .88); color: #fff; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); backdrop-filter: blur(8px); transition: opacity .3s ease, transform .3s ease; }
+  body.present .pbar { display: flex; }
+  body.present.idle .pbar { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+  .pbar button { height: 36px; min-width: 36px; padding: 0 10px; border-radius: 900px; font-size: 13px; color: rgba(255, 255, 255, .75); }
+  .pbar button:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+  .pbar button.on { background: #fff; color: var(--black); font-weight: 600; }
+  .pbar .pt { min-width: 200px; padding: 0 12px; text-align: center; font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .pbar .pt small { margin-right: 8px; font-weight: 400; color: rgba(255, 255, 255, .5); }
+  .pbar i { width: 1px; height: 20px; margin: 0 4px; background: rgba(255, 255, 255, .2); }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav" id="nav">
+    <h1>화상 개선안 비교</h1>
+    <p>단계를 누르면 개선안·기존안 화면이 함께 바뀝니다.</p>
+  </nav>
+
+  <main class="main">
+    <div class="head">
+      <div class="head-text" hidden><span id="title"></span><span id="note"></span></div>
+      <div class="layout" id="sizes" aria-label="화면 크기">
+        <button class="on" data-w="2500" data-h="1280">2500</button><button data-w="1440" data-h="1280">1440</button><button data-w="1024" data-h="1270">1024</button><button data-w="768" data-h="1200">768</button><button data-w="375" data-h="812">모바일</button>
+      </div>
+      <div class="step-nav"><button id="btnPrev">‹ 이전</button><button id="btnNext">다음 ›</button></div>
+      <button class="btn-present" id="btnPresent" title="발표용으로 화면을 가득 채웁니다 (← → 로 단계 이동, Esc 로 나가기)">크게 보기</button>
+      <div class="layout" id="layout">
+        <button class="on" data-l="both">나란히</button><button data-l="only-new">개선안만</button><button data-l="only-old">기존안만</button>
+      </div>
+    </div>
+    <div class="cols" id="cols">
+      <section class="col new">
+        <div class="col-head"><span class="label">개선안</span><small>눌러서 동작 확인</small></div>
+        <div class="frame" id="newFrame"><iframe id="proto" title="개선안 프로토타입"></iframe></div>
+      </section>
+      <section class="col old">
+        <div class="col-head"><span class="label">기존안</span><small>눌러서 동작 확인</small></div>
+        <div class="frame" id="oldFrame"><iframe id="legacy" title="기존안 프로토타입"></iframe><div class="no-legacy" id="noLegacy" hidden><b>기존안 없음</b>이 단계는 새 개선안에만 있습니다.</div></div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="pbar" id="pbar">
+  <button data-p="prev" title="이전 단계 (←)">‹</button>
+  <span class="pt" id="pTitle"></span>
+  <button data-p="next" title="다음 단계 (→)">›</button><i></i>
+  <button data-l="only-new">개선안</button><button data-l="only-old">기존안</button><button data-l="both">나란히</button><i></i>
+  <button data-p="exit" title="Esc">작게 보기</button>
+</div>
+<!-- build.py 가 여기에 글꼴·그림·프로토타입을 한 파일로 넣는다 (나눠 둔 파일로 열 때는 비어 있음) -->
+<script>
+  // 개선안: 피그마 10038:50067(대기) · 10038:50617(진행 중)
+  // 기존안: 같은 프로토타입을 ?legacy=1 로 띄운다 (원본 10061:81402는 지워져 받아 둔 그림 기준)
+  const STAGES = [
+    { group: '처음 화면' },
+    { id: 'board', title: '채널 화면', scene: 'board', note: '화상 버튼(카메라 아이콘)을 누르기 전 처음 화면입니다.' },
+    { id: 'b-post', title: '게시물 상세', scene: 'post', note: '보드에서 글을 누르면 열립니다. 위쪽 \'← 돌아가기\' 줄은 대기실과 같은 모양입니다.' },
+    { id: 'b-more', title: '채널 더보기', scene: 'board-more', note: '' },
+    { id: 'b-chat', title: '채널 채팅', scene: 'board-chat', note: '채널 머리글의 채팅 아이콘을 누르면 오른쪽 끝 패널에 채팅이 열립니다.' },
+    { group: '대기실' },
+    { id: 'w-none', title: '화상 없음 · 시작', scene: 'wait-none', note: '기존안에는 나가기 버튼이 없고, 채널 탭을 누르면 보드로 돌아갑니다.' },
+    { id: 'w-live', title: '진행 중 · 참여 전', scene: 'wait-live' },
+    { id: 'w-full', title: '진행 중 · 가득 참', scene: 'wait-full' },
+    { group: '진행 중' },
+    { id: 'c-base', title: '기본 화면', scene: 'call', note: '개선안은 진행 중에 채널 목록이 사라지고 화상 카드가 넓어집니다. 기존안은 채널 머리글·탭 아래에 화상이 들어갑니다.' },
+    { id: 'c-camoff', title: '카메라 꺼짐', scene: 'call-camoff', note: '카메라를 끄면 큰 화면에 내 미리보기(MY PREVIEW)와 프로필이 나옵니다. 컨트롤바의 카메라 버튼으로 직접 켜고 끌 수 있습니다.' },
+    { id: 'c-chat', title: '채팅', scene: 'call-chat', note: '개선안은 채팅이 화면 오른쪽 끝 패널로 열리고, 기존안은 화상 카드 안 오른쪽에 열립니다.' },
+    { id: 'c-people', title: '참여자', scene: 'call-people', noLegacy: true, note: '컨트롤바의 참여자 버튼으로 엽니다. 사람별 마이크·카메라 버튼과 아래 전체 끄기 버튼이 동작합니다.' },
+    { id: 'c-host', title: '호스트 메뉴', scene: 'call-host' },
+    { id: 'c-mys', title: '내 화면 구성', scene: 'call-mys' },
+    { id: 'c-full', title: '전체 화면', scene: 'call-full' },
+    { id: 'c-fullchat', title: '전체 화면 · 채팅', scene: 'call-full-chat' },
+    { group: '나가기 · 종료' },
+    { id: 'x-guest', title: '나가기 확인 (일반 참여자)', scene: 'leave-guest', note: '컨트롤바의 빨간 나가기 버튼을 누르면 뜹니다. 나가면 대기실로 돌아갑니다.' },
+    { id: 'x-host', title: '종료 확인 (호스트)', scene: 'leave-host', note: '호스트는 전체 종료하거나 새로운 호스트를 골라 권한을 넘기고 나갈 수 있습니다.' },
+    { id: 'x-pick', title: '새로운 호스트 선택', scene: 'leave-pick', note: '한 명을 고르면 아래 버튼이 \'○○에게 권한 넘기고 나가기\'로 바뀝니다.' },
+    { id: 'x-left', title: '나간 뒤 대기실', scene: 'end-left', note: '화상이 계속 진행 중이면 다시 참여할 수 있습니다.' },
+    { id: 'x-host-end', title: '전체 종료 뒤 대기실', scene: 'end-host' },
+    { id: 'x-empty', title: '참여자 0명 종료 뒤 대기실', scene: 'end-empty' },
+    { group: '라이브' },
+    { id: 'l-view', title: '라이브 시청', scene: 'live', noLegacy: true, note: '시청 화면에는 참여자 줄이 없고, 컨트롤바에는 참여자 수·전체 화면·나가기만 있습니다.' },
+    { id: 'l-chat', title: '라이브 · 채팅', scene: 'live-chat', noLegacy: true },
+    { id: 'l-leave', title: '라이브 나가기 확인', scene: 'leave-live', noLegacy: true },
+    { id: 'l-left', title: '라이브 나간 뒤', scene: 'end-liveleft', noLegacy: true },
+  ];
+
+  const nav = document.getElementById('nav');
+  STAGES.forEach(s => {
+    if (s.group) { nav.insertAdjacentHTML('beforeend', `<h2>${s.group}</h2>`); return; }
+    nav.insertAdjacentHTML('beforeend', `<button data-id="${s.id}"><span>${s.title}</span></button>`);
+  });
+
+  // 두 쪽 모두 시안 프레임과 같은 크기로 띄워 칸에 맞춰 줄인다 (좁게 띄우면 좌우 구성이 달라 보인다)
+  // 크기는 피그마 시안 프레임: 2500×1280 · large 1440×1280 · medium 1024×1270 · small 768×1200 · xsmall 375×812
+  let BASE_W = 2500, BASE_H = 1280;
+  const FRAMES = [
+    { box: document.getElementById('newFrame'), el: document.getElementById('proto'), legacy: false },
+    { box: document.getElementById('oldFrame'), el: document.getElementById('legacy'), legacy: true },
+  ];
+  function fit() {
+    FRAMES.forEach(({ box, el }) => {
+      const r = box.getBoundingClientRect();
+      const s = Math.min(r.width / BASE_W, r.height / BASE_H);
+      el.style.width = BASE_W + 'px'; el.style.height = BASE_H + 'px';
+      // 화면은 칸 위쪽에 붙여 이름표(개선안·기존안) 바로 아래 오게 한다. 크게 보기에서는 가운데
+      const x = (r.width - BASE_W * s) / 2, y = document.body.classList.contains('present') ? (r.height - BASE_H * s) / 2 : 0;
+      el.style.transform = `translate(${x}px, ${y}px) scale(${s})`;
+      el.style.clipPath = `inset(0 round ${12 / s}px)`;
+      box.style.setProperty('--sx', x + 'px'); box.style.setProperty('--sy', y + 'px');
+      box.style.setProperty('--sw', BASE_W * s + 'px'); box.style.setProperty('--sh', BASE_H * s + 'px');
+    });
+  }
+  FRAMES.forEach(f => new ResizeObserver(fit).observe(f.box));
+
+  // 주소의 # 뒤만 바꾸면 다시 불러오지 않고 장면만 바뀐다
+  // 공유용 한 파일(build.py 로 묶은 것): 프로토타입을 srcdoc 으로 띄우고, 다 뜨면 장면을 연다
+  // 나눠 둔 파일로 열면 proto.html 을 그대로 띄운다 (기존안은 ?legacy=1)
+  let pendingScene = 'board';
+  function load(f) {
+    f.ready = false;
+    f.el.onload = () => { f.ready = true; f.el.contentWindow.goScene(pendingScene); };
+    if (!window.PROTO_HTML) { f.el.src = f.legacy ? 'proto.html?legacy=1' : 'proto.html'; return; }
+    f.el.srcdoc = f.legacy ? PROTO_HTML.replace('<head>', '<head><script>window.LEGACY_MODE = true<\/script>') : PROTO_HTML;
+  }
+  function show(scene) {
+    pendingScene = scene;
+    FRAMES.forEach(f => { if (f.ready) f.el.contentWindow.goScene(scene); else if (!f.el.srcdoc && !f.el.src) load(f); });
+  }
+
+  function select(id, keep) {
+    const s = STAGES.find(x => x.id === id) || STAGES[1];
+    nav.querySelectorAll('[data-id]').forEach(b => b.classList.toggle('on', b.dataset.id === s.id));
+    document.getElementById('title').textContent = s.title;
+    document.getElementById('note').textContent = s.note || '';
+    const all = STAGES.filter(x => x.id), at = all.indexOf(s);
+    document.getElementById('btnPrev').disabled = at <= 0;
+    document.getElementById('btnNext').disabled = at >= all.length - 1;
+    nav.querySelector('.on')?.scrollIntoView({ block: 'nearest' });
+    const n = STAGES.filter(x => x.id).findIndex(x => x.id === s.id) + 1;
+    document.getElementById('pTitle').innerHTML = `<small>${n} / ${STAGES.filter(x => x.id).length}</small>${s.title}`;
+    document.getElementById('noLegacy').hidden = !s.noLegacy;
+    document.getElementById('legacy').style.visibility = s.noLegacy ? 'hidden' : '';
+    fit(); if (!keep) show(s.scene);
+    history.replaceState(null, '', '#' + s.id);
+  }
+  nav.addEventListener('click', e => { const b = e.target.closest('[data-id]'); if (b) select(b.dataset.id); });
+
+  let curLayout = 'both';
+  function setLayout(l) {
+    curLayout = l;
+    document.querySelectorAll('[data-l]').forEach(x => x.classList.toggle('on', x.dataset.l === l));
+    const cols = document.getElementById('cols');
+    cols.classList.remove('only-new', 'only-old');
+    if (l !== 'both') cols.classList.add(l);
+    fit(); setTimeout(fit, 60);
+  }
+  document.getElementById('layout').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (!b) return; setLayout(b.dataset.l); try { localStorage.setItem('cmpLayout', b.dataset.l); } catch (_) {} });
+
+  // ── 크게 보기 (발표용)
+  const STEPS = STAGES.filter(x => x.id);
+  let idleT;
+  function wake() { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 2500); }
+  function presentOn() {
+    document.body.classList.add('present');
+    if (curLayout === 'both') setLayout('only-new');
+    document.documentElement.requestFullscreen?.().catch(() => {});
+    fit(); setTimeout(fit, 120); wake();
+  }
+  function presentOff() {
+    document.body.classList.remove('present', 'idle');
+    if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+    fit(); setTimeout(fit, 120);
+  }
+  function step(d) {
+    const i = STEPS.findIndex(x => x.id === location.hash.slice(1));
+    select(STEPS[Math.max(0, Math.min(STEPS.length - 1, (i < 0 ? 0 : i) + d))].id);
+  }
+  document.getElementById('btnPresent').addEventListener('click', presentOn);
+  document.getElementById('btnPrev').addEventListener('click', () => step(-1));
+  document.getElementById('btnNext').addEventListener('click', () => step(1));
+
+  document.getElementById('pbar').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.l) setLayout(b.dataset.l);
+    if (b.dataset.p === 'prev') step(-1);
+    if (b.dataset.p === 'next') step(1);
+    if (b.dataset.p === 'exit') presentOff();
+  });
+  // 전체 화면을 Esc 로 빠져나오면 크게 보기도 함께 끝낸다
+  document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) presentOff(); });
+  function onMove() { if (document.body.classList.contains('present')) wake(); }
+  function onKey(e) {
+    if (e.target.closest?.('input, textarea, [contenteditable]')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { step(1); wake(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { step(-1); wake(); }
+    if (e.key === 'Escape' && document.body.classList.contains('present')) presentOff();
+  }
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('keydown', onKey);
+  // 프로토타입 안을 누른 뒤에도 화살표·마우스 움직임이 먹도록 안쪽 창에도 단다
+  FRAMES.forEach(f => f.el.addEventListener('load', () => {
+    try { f.el.contentWindow.addEventListener('keydown', onKey); f.el.contentWindow.addEventListener('mousemove', onMove); } catch (_) {}
+  }));
+
+  document.getElementById('sizes').addEventListener('click', e => {
+    const b = e.target.closest('[data-w]'); if (!b) return;
+    document.querySelectorAll('#sizes button').forEach(x => x.classList.toggle('on', x === b));
+    BASE_W = +b.dataset.w; BASE_H = +b.dataset.h;
+    // 보고 있던 화면 그대로 크기만 바꾼다 (다시 불러오지 않음)
+    fit();
+    try { localStorage.setItem('cmpSize', b.dataset.w); } catch (_) {}
+  });
+  // 새로고침해도 고른 화면 크기·보기 방식 유지 (이 브라우저에만 기억)
+  try {
+    const w = localStorage.getItem('cmpSize'), b = w && document.querySelector(`#sizes [data-w="${w}"]`);
+    if (b) { document.querySelectorAll('#sizes button').forEach(x => x.classList.toggle('on', x === b)); BASE_W = +b.dataset.w; BASE_H = +b.dataset.h; }
+    const l = localStorage.getItem('cmpLayout'); if (l && l !== 'both') setLayout(l);
+  } catch (_) {}
+
+  // 프로토타입 안을 눌러 화면이 바뀌면 왼쪽 목록도 해당 단계로 따라간다.
+  // 누른 쪽은 그대로 두고, 반대쪽(개선안↔기존안)만 같은 단계로 맞춘다
+  window.addEventListener('message', e => {
+    const sc = e.data && e.data.protoScene; if (!sc) return;
+    const st = STAGES.find(x => x.scene === sc);
+    // 목록에 없는 장면(아이런 패널 등)도 반대쪽 화면은 같이 맞춘다
+    if (st && st.id !== location.hash.slice(1)) select(st.id, true);
+    const from = FRAMES.find(f => f.el.contentWindow === e.source);
+    FRAMES.forEach(f => { if (f !== from && !(st && st.noLegacy && f.el.id === 'legacy')) { try { f.el.contentWindow.goScene(sc); } catch (_) {} } });
+  });
+
+  select(location.hash.slice(1));
+</script>
+</body>
+</html>
