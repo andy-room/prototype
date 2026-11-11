@@ -249,7 +249,6 @@
         <button class="ghost" id="jobBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-brief"/></svg>직무 선택<svg class="ico s16"><use href="#i-down"/></svg></button>
         <div class="menu l jobs" id="jobMenu" role="menu" hidden></div>
       </div>
-      <nav class="path" id="path" aria-label="현재 경로"></nav>
       <div class="menu-wrap">
         <button class="ghost" id="histBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-hist"/></svg>탐색 히스토리<svg class="ico s16"><use href="#i-down"/></svg></button>
         <div class="menu r hist" id="histMenu" role="menu" hidden></div>
@@ -565,7 +564,7 @@ function go(key, opts = {}) {
 function show(p, animate) {
   path = p; tab = 0; record(p);
   const svg = $('#map');
-  const swap = () => { drawMap(); renderPanel(animate); renderPath(); };
+  const swap = () => { drawMap(); renderPanel(animate); };
   if (!animate || reduce) swap();
   else { svg.classList.add('out'); setTimeout(() => { swap(); svg.classList.remove('out'); svg.classList.add('pre'); svg.getBoundingClientRect(); svg.classList.remove('pre'); }, 160); }
   tip.classList.remove('show');
@@ -577,17 +576,6 @@ addEventListener('keydown', e => {
   if (e.key !== 'Backspace' || e.metaKey || e.ctrlKey || e.altKey) return;
   const tg = e.target; if (tg.closest && tg.closest('input,textarea,select,[contenteditable]')) return;
   e.preventDefault(); history.back();
-});
-
-function renderPath() {
-  const nav = $('#path');
-  nav.innerHTML = `<button class="back" id="backBtn" title="뒤로 (Backspace)" ${history.state && path.length > 0 && history.length > 1 ? '' : ''}><svg class="ico s16"><use href="#i-left"/></svg></button>` +
-    path.map((k, i) => (i ? '<span class="sep" aria-hidden="true">›</span>' : '') + `<button data-pi="${i}" ${i === path.length - 1 ? 'aria-current="true"' : ''} title="${esc(TYPE_LABEL[typeOf(k)])}">${esc(info(k).name)}</button>`).join('');
-}
-$('#path').addEventListener('click', e => {
-  if (e.target.closest('#backBtn')) return history.back();
-  const b = e.target.closest('button[data-pi]'); if (!b || b.hasAttribute('aria-current')) return;
-  go(path[+b.dataset.pi]);
 });
 
 function histHTML() {
