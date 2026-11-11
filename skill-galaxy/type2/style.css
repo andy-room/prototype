@@ -50,8 +50,12 @@
   .fam[aria-pressed=false]{background:var(--bg-primary);color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c)}
   .fam:focus-visible,.seg button:focus-visible{outline:2px solid var(--interaction-selected-outline);outline-offset:2px}
 
-  .readout{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-4);min-height:104px;margin-top:var(--sp-12);padding:var(--sp-8) var(--sp-12);border-radius:var(--radius-sm);background:var(--bg-alternative);text-align:center;font-size:14px;color:var(--fg-80)}
+  .readout{display:flex;flex-direction:column;justify-content:center;gap:var(--sp-4);height:132px;overflow:hidden;margin-top:var(--sp-12);padding:var(--sp-8) var(--sp-12);border-radius:var(--radius-sm);background:var(--bg-alternative);text-align:center;font-size:14px;color:var(--fg-80)}
   .readout b{color:var(--fg-100)}
+  /* 마우스 오버로 내용이 바뀌어도 높이가 변하지 않도록 고정 · 이름은 한 줄 */
+  .readout>div:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .readout .keys{flex-wrap:nowrap;white-space:nowrap}
+  @media (max-width:640px){.readout{height:168px;padding:var(--sp-6) var(--sp-8)}.readout .keys{flex-wrap:wrap}.readout>div:first-child{white-space:normal}}
   .rel-meter{display:flex;align-items:center;justify-content:center;gap:var(--sp-6);font-size:13px;color:var(--fg-60)}
   .rel-meter .track{position:relative;width:200px;height:8px;border-radius:4px;background:var(--bg-theme-300);overflow:hidden}
   .rel-meter .track i{position:absolute;inset:0 auto 0 0;border-radius:inherit;background:var(--c)}
