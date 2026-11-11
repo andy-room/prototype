@@ -11,7 +11,10 @@ const CATS = Object.fromEntries(D.cats.map(c => [c.id, c]));
 const GIDX = Object.fromEntries(D.groups.map((g, i) => [g.id, i]));
 const catName = c => (c.mid === '직무' || c.mid === '산업특화') ? `${c.name} · ${c.mid}` : c.name;
 const on = new Set(FAMS);
-document.getElementById('totalN').textContent = fmt(D.total);
+// 페이지마다 있는 요소만 그림 (버블 페이지 / 트리 페이지)
+function $id(id) { return document.getElementById(id) || document.createElement('div'); }
+const HAS_SWARM = !!document.getElementById('swarm'), HAS_TREE = !!document.getElementById('dendro');
+$id('totalN').textContent = fmt(D.total);
 
 /* ---------- 기준(중앙 요소)과 경로 ---------- */
 // 기준: {t:'cat'|'grp', id}. 경로(trail)는 브레드크럼으로 표시
@@ -34,36 +37,70 @@ function related() {
   return relCache.get(key);
 }
 
-const sel = document.getElementById('center');
+const sel = $id('center');
 sel.innerHTML = FAMS.map(f => `<optgroup label="${esc(f)}">` + D.cats.filter(c => c.fam === f).sort((a, b) => b.n - a.n).map(c => `<option value="${esc(c.id)}">${esc(catName(c))}</option>`).join('') + '</optgroup>').join('');
-sel.addEventListener('change', () => { trail = [{ t: 'cat', id: sel.value }]; update(); });
+sel.addEventListener('change', () => goTrail([{ t: 'cat', id: sel.value }]));
 
+const enc = tr => '#' + tr.map(x => x.t + '=' + encodeURIComponent(x.id)).join('&');
 function go(c) {
   const i = trail.findIndex(x => x.t === c.t && x.id === c.id);
-  if (i >= 0) trail = trail.slice(0, i + 1); else trail.push(c);
+  if (i >= 0) trail = trail.slice(0, i + 1); else trail = [...trail, c];
+  history.pushState({ tr: trail }, '', enc(trail));
   update();
 }
+function goTrail(tr) { trail = tr; history.pushState({ tr: trail }, '', enc(trail)); update(); }
+addEventListener('popstate', e => { const tr = (e.state && e.state.tr) || parseHash(); if (tr) { trail = tr; update(); } });
+// Backspace = 뒤로 (입력 중 제외), 마우스 뒤로 버튼은 브라우저가 처리
+addEventListener('keydown', e => {
+  if (e.key !== 'Backspace' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
+  e.preventDefault(); history.back();
+});
+/* ---------- 중심 히스토리 (뎁스 트리) ---------- */
+const hRoots = []; let hSeq = 0;
+const kOf = c => c.t + ':' + c.id;
+function recordHist() {
+  let level = hRoots;
+  trail.forEach(c => { let n = level.find(x => x.k === kOf(c)); if (!n) { n = { k: kOf(c), c, kids: [] }; level.push(n); hSeq++; } level = n.kids; });
+}
+function renderHist() {
+  const box = document.getElementById('histTree'); if (!box) return;
+  const curK = trail.map(kOf).join('>');
+  const li = (n, pre) => {
+    const pk = [...pre, n.k].join('>'), isCur = pk === curK, onPath = (curK + '>').startsWith(pk + '>');
+    const nd = nodeOf(n.c);
+    return `<li><button data-hp="${esc(pk)}" class="${onPath ? 'on-path' : ''}" ${isCur ? 'aria-current="true"' : ''}><span class="tbadge ${n.c.t === 'cat' ? 'tb-cat' : 'tb-grp'}">${n.c.t === 'cat' ? '분야' : '그룹'}</span><span class="nm">${esc(nd.name)}</span></button>${n.kids.length ? `<ul class="tree">${n.kids.map(k => li(k, [...pre, n.k])).join('')}</ul>` : ''}</li>`;
+  };
+  box.innerHTML = `<ul class="tree">${hRoots.map(r => li(r, [])).join('')}</ul>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('#histTree button[data-hp]'); if (!b || b.hasAttribute('aria-current')) return;
+  const tr = b.dataset.hp.split('>').map(k => ({ t: k.slice(0, k.indexOf(':')), id: k.slice(k.indexOf(':') + 1) }));
+  goTrail(tr);
+});
 function update() {
   pinned = null;
   const root = trail[0], c = cur(), n = nodeOf(c);
   sel.value = root.id;
   const rc = CATS[root.id];
-  document.getElementById('centerDot').style.setProperty('--c', COLOR[rc.fam]);
-  document.getElementById('centerMeta').innerHTML = `<b class="num">${fmt(rc.n)}</b>개 스킬 · ${esc(rc.fam)}`;
-  location.replace('#' + trail.map(x => x.t + '=' + encodeURIComponent(x.id)).join('&'));
-  renderCrumbs(); setReadout(null); drawSwarm(); drawDendro(true);
+  $id('centerDot').style.setProperty('--c', COLOR[rc.fam]);
+  $id('centerMeta').innerHTML = `<b class="num">${fmt(rc.n)}</b>개 스킬 · ${esc(rc.fam)}`;
+  history.replaceState({ tr: trail }, '', enc(trail));
+  renderCrumbs(); recordHist(); renderHist();
+  if (HAS_SWARM) { setReadout(null); drawSwarm(); }
+  if (HAS_TREE) drawDendro(true);
 }
-const crumbs = document.getElementById('crumbs');
+const crumbs = $id('crumbs');
 function renderCrumbs() {
   crumbs.innerHTML = '<span class="lbl">선택 경로</span>' + trail.map((c, i) => {
     const n = nodeOf(c), last = i === trail.length - 1;
     return (i ? '<span class="sep" aria-hidden="true">›</span>' : '') + `<button data-i="${i}" ${last ? 'aria-current="true"' : ''} title="${esc(n.sub)}">${esc(n.name)}</button>`;
   }).join('');
 }
-crumbs.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b && !b.hasAttribute('aria-current')) { trail = trail.slice(0, +b.dataset.i + 1); update(); } });
+crumbs.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b && !b.hasAttribute('aria-current')) goTrail(trail.slice(0, +b.dataset.i + 1)); });
 
 /* ---------- 계열 칩 ---------- */
-const sent = document.getElementById('famSentence');
+const sent = $id('famSentence');
 sent.innerHTML = '버블 색은 ' + FAMS.map(f => `<button class="fam" style="--c:${COLOR[f]}" data-fam="${esc(f)}" aria-pressed="true">${esc(f)}</button>`).join(', ') + ' 일곱 계열입니다. 칩을 눌러 계열을 끄고 켤 수 있습니다.';
 sent.addEventListener('click', e => {
   const b = e.target.closest('.fam'); if (!b) return;
@@ -74,7 +111,7 @@ sent.addEventListener('click', e => {
 });
 
 /* ---------- 툴팁 ---------- */
-const tip = document.getElementById('tip');
+const tip = $id('tip');
 const showTip = (e, html) => { tip.innerHTML = html; tip.classList.add('show'); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; };
 const hideTip = () => tip.classList.remove('show');
 
@@ -90,8 +127,8 @@ const gB = svg.append('g'), gC = svg.append('g');
 // 원 크기 = 연관도 (제곱 스케일로 차이를 키움)
 let rr = rel => 5 + 25 * rel / 100;
 let nodes = [];
-const readout = document.getElementById('readout');
-const gauge = document.getElementById('gauge');
+const readout = $id('readout');
+const gauge = $id('gauge');
 gauge.addEventListener('input', () => drawSwarm());
 
 function drawSwarm() {
@@ -100,8 +137,8 @@ function drawSwarm() {
   // 원 크기 = 연관도: 지금 보이는 범위(최저~100)를 5–32px로 펼쳐 차이를 키움
   const lo = data.length ? Math.max(0, data[data.length - 1].rel - 4) : 0;
   rr = rel => 5 + 27 * Math.pow(Math.max(0, rel - lo) / Math.max(1, 100 - lo), 1.3);
-  document.getElementById('gaugeN').textContent = N + '개';
-  document.getElementById('gaugeMin').textContent = `연관도 ${data.length ? data[data.length - 1].rel : 0} 이상`;
+  $id('gaugeN').textContent = N + '개';
+  $id('gaugeMin').textContent = `연관도 ${data.length ? data[data.length - 1].rel : 0} 이상`;
   const c = nodeOf(cur());
   const cx = (W + M.l) / 2, cy = y(c.cov);
   const prev = new Map(nodes.map(n => [n.id, n]));
@@ -176,9 +213,9 @@ function dLayout() {
   // 보이는 값 범위에 맞춰 두께를 늘림 → 차이가 확실히 보이도록 (제곱 스케일)
   const shown = fams.flatMap(o => o.items.map(d => d.rel));
   const lo = d3.min(shown), hi = d3.max(shown);
-  const lw = d3.scalePow().exponent(2).domain([lo, hi]).range([.6, 14]).clamp(true);
-  const lr = d3.scalePow().exponent(2).domain([lo, hi]).range([2, 10]).clamp(true);
-  const fw = d3.scalePow().exponent(1.5).domain([d3.min(fams, o => o.sum), d3.max(fams, o => o.sum)]).range([1.5, 18]);
+  const lw = d3.scalePow().exponent(2).domain([lo, hi]).range([.5, 6]).clamp(true);
+  const lr = d3.scalePow().exponent(2).domain([lo, hi]).range([2, 8]).clamp(true);
+  const fw = d3.scalePow().exponent(1.5).domain([d3.min(fams, o => o.sum), d3.max(fams, o => o.sum)]).range([1, 6]);
   const N = [], L = [];
   let yy = 10;
   fams.forEach(o => {
@@ -251,12 +288,15 @@ function drawDendro(reset) {
 function toggleFam(f) { famOpen.has(f) ? famOpen.delete(f) : famOpen.add(f); revealed = true; drawDendro(); }
 
 /* ---------- 시작: 주소의 경로 복원 ---------- */
-const fromHash = location.hash.slice(1).split('&').map(p => p.split('=')).filter(([t, v]) => v && (t === 'cat' ? CATS[decodeURIComponent(v)] : t === 'grp' ? GIDX[decodeURIComponent(v)] != null : false))
+function parseHash() {
+  const fromHash = location.hash.slice(1).split('&').map(p => p.split('=')).filter(([t, v]) => v && (t === 'cat' ? CATS[decodeURIComponent(v)] : t === 'grp' ? GIDX[decodeURIComponent(v)] != null : false))
   .map(([t, v]) => ({ t, id: decodeURIComponent(v) }));
-trail = fromHash.length && fromHash[0].t === 'cat' ? fromHash : [{ t: 'cat', id: '직무|비즈니스' }];
+  return fromHash.length && fromHash[0].t === 'cat' ? fromHash : null;
+}
+trail = parseHash() || [{ t: 'cat', id: '직무|비즈니스' }];
 update();
 const io = new IntersectionObserver(es => {
   if (es.some(e => e.isIntersecting)) { FAMS.forEach(f => famOpen.add(f)); revealed = true; drawDendro(); io.disconnect(); }
 }, { threshold: .2 });
-io.observe(document.getElementById('dendro'));
+if (HAS_TREE) io.observe(document.getElementById('dendro'));
 })();

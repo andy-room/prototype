@@ -182,6 +182,44 @@
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<style>
+  /* ===== Type 1 v2: 직무 중심 · 재중심 · 히스토리 ===== */
+  .stage-top{gap:var(--sp-6)}
+  .path{display:flex;align-items:center;flex-wrap:wrap;gap:var(--sp-1);flex:1;min-width:0;justify-content:center;font-size:13px}
+  .path button{max-width:180px;height:28px;padding:0 var(--sp-4);border:0;border-radius:6px;background:none;color:var(--fg-60);font-weight:500;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .path button:hover{background:var(--role-hover);color:var(--fg-100)}
+  .path button[aria-current=true]{color:var(--fg-100);font-weight:700;cursor:default;background:var(--bg-primary);box-shadow:var(--shadow-sm)}
+  .path .sep{color:var(--fg-45)}
+  .path .back{display:inline-flex;align-items:center;gap:2px;color:var(--fg-80)}
+  .path .back[disabled]{opacity:.35;cursor:default}
+  .menu .filter{position:sticky;top:-8px;margin:-8px -8px 4px;padding:8px;background:var(--bg-primary);border-bottom:1px solid var(--line-layout)}
+  .menu .filter input{width:100%;height:36px;padding:0 var(--sp-6);border:1px solid var(--line-outline);border-radius:var(--radius-sm);font-size:14px;outline:none}
+  .menu .filter input:focus{border-color:var(--interaction-selected-outline)}
+  .menu.jobs{min-width:320px}
+  .menu .grp b{color:var(--fg-80)}
+  /* 탐색 히스토리 (뎁스 트리) */
+  .menu.hist{min-width:340px;max-width:420px;padding:var(--sp-6) var(--sp-4)}
+  .hist-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 var(--sp-6) var(--sp-4);font-size:12px;color:var(--fg-45)}
+  .hist-head b{font-size:14px;color:var(--fg-100)}
+  .tree{list-style:none;margin:0;padding:0}
+  .tree .tree{margin-left:14px;padding-left:10px;border-left:1px dashed var(--line-strong)}
+  .tree li{position:relative}
+  .tree .tree>li::before{content:"";position:absolute;left:-10px;top:17px;width:8px;border-top:1px dashed var(--line-strong)}
+  .tree button{display:flex;align-items:center;gap:var(--sp-4);width:100%;padding:var(--sp-3) var(--sp-4);border:0;border-radius:var(--radius-xs);background:none;text-align:left;font-size:14px;cursor:pointer}
+  .tree button:hover{background:var(--role-hover)}
+  .tree button[aria-current=true]{background:var(--interaction-selected-bg);font-weight:700}
+  .tree button .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tree button.on-path .nm{font-weight:600}
+  .tbadge{flex:none;display:inline-flex;align-items:center;height:18px;padding:0 5px;border-radius:4px;font-size:11px;font-weight:600}
+  .tb-job{background:#FFF1E5;color:#B45309}
+  .tb-kw{background:var(--interaction-selected-bg);color:var(--brand-company-strong,#0052CC)}
+  .tb-grp{background:var(--interaction-button-subtle);color:var(--fg-60)}
+  .hist-foot{margin-top:var(--sp-4);padding:var(--sp-4) var(--sp-6) 0;border-top:1px solid var(--line-layout);font-size:12px;color:var(--fg-45)}
+  .hist-foot kbd{display:inline-block;padding:0 4px;border:1px solid var(--line-outline);border-radius:3px;font:11px var(--font-sans);color:var(--fg-60)}
+  .n-out.t-job circle{stroke:#B45309;stroke-width:2}
+  .n-out.t-job text{fill:#B45309}
+  .row .tb{margin-right:2px}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -189,31 +227,32 @@
   <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5m7 7-7-7 7-7"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3z"/></symbol>
-  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></symbol>
+  <symbol id="i-hist" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></symbol>
 </svg>
 
 <header class="gnb">
   <a class="logo" href="#" id="home"><b>HU</b><span>스킬 갤럭시</span></a>
   <div class="search" role="combobox" aria-expanded="false" aria-owns="suggest">
     <svg class="ico"><use href="#i-search"/></svg>
-    <input id="q" type="search" placeholder="분야, 스킬 그룹, 스킬 이름으로 찾기" autocomplete="off" aria-label="스킬 검색" aria-controls="suggest">
+    <input id="q" type="search" placeholder="직무, 스킬, 스킬 그룹으로 찾기" autocomplete="off" aria-label="검색" aria-controls="suggest">
     <ul class="suggest" id="suggest" role="listbox" hidden></ul>
   </div>
-  <span class="stat">전체 <b class="num" id="totalN"></b>개 스킬 · <b class="num" id="catN"></b>개 분야</span>
+  <span class="stat">직무 <b class="num" id="jobN"></b>개 · 스킬 <b class="num" id="totalN"></b>개</span>
 </header>
 
 <main class="main" id="main">
   <section class="stage" aria-label="스킬 맵">
     <div class="stage-top">
       <div class="menu-wrap">
-        <button class="ghost" id="allBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-grid"/></svg>전체 분야<svg class="ico s16"><use href="#i-down"/></svg></button>
-        <div class="menu l" id="allMenu" role="menu" hidden></div>
+        <button class="ghost" id="jobBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-brief"/></svg>직무 선택<svg class="ico s16"><use href="#i-down"/></svg></button>
+        <div class="menu l jobs" id="jobMenu" role="menu" hidden></div>
       </div>
+      <nav class="path" id="path" aria-label="현재 경로"></nav>
       <div class="menu-wrap">
-        <button class="ghost" id="histBtn" aria-haspopup="true" aria-expanded="false">탐색 내역<svg class="ico s16"><use href="#i-down"/></svg></button>
-        <div class="menu r" id="histMenu" role="menu" hidden></div>
+        <button class="ghost" id="histBtn" aria-haspopup="true" aria-expanded="false"><svg class="ico s16"><use href="#i-hist"/></svg>탐색 히스토리<svg class="ico s16"><use href="#i-down"/></svg></button>
+        <div class="menu r hist" id="histMenu" role="menu" hidden></div>
       </div>
     </div>
     <div class="map-box">
@@ -221,9 +260,9 @@
     </div>
     <div class="stage-bot">
       <div class="legend" aria-hidden="true">
-        <span><i class="lg-in"></i>분야의 스킬 그룹</span>
         <span class="lg-rel">연관도 낮음<i style="width:8px;height:8px;background:#CCE0FF"></i><i style="width:11px;height:11px;background:#99C2FF"></i><i style="width:14px;height:14px;background:#66A3FF"></i><i style="width:17px;height:17px;background:#3385FF"></i><i style="width:20px;height:20px;background:#0066FF"></i>높음</span>
-        <span class="lg-w">선 두께 = 그룹 간 연관도 <i style="height:1px"></i><i style="height:3px"></i><i style="height:5px"></i></span>
+        <span class="lg-w">선 두께 = 연관도 <i style="height:1px"></i><i style="height:3px"></i><i style="height:5px"></i></span>
+        <span><i style="display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid #B45309"></i>&nbsp;직무</span>
       </div>
       <button class="ghost" id="panelBtn"><span>패널 숨기기</span><svg class="ico s16"><use href="#i-right"/></svg></button>
     </div>
@@ -235,375 +274,392 @@
 <div class="tip" id="tip" role="tooltip"></div>
 
 <script src="data.js"></script>
+<script src="jobs.js"></script>
 <script>
 (() => {
-const D = window.GALAXY;
+const D = window.GALAXY, J = window.JOBS;
 const CAT = Object.fromEntries(D.cats.map(c => [c.id, c]));
 const G = D.groups;
-const GORD = Object.fromEntries(D.gorder.map((g, i) => [g, i]));
-// 중앙 분야와의 연관도 (0–100, Type 2와 같은 값)
-const relTo = (cat, gid) => D.rel[cat].charCodeAt(GORD[gid]) - 48;
-// 연관도 5단계 → HDS 브랜드 블루 농도
-const relFill = r => r >= 85 ? '#0066FF' : r >= 70 ? '#3385FF' : r >= 55 ? '#66A3FF' : r >= 40 ? '#99C2FF' : '#CCE0FF';
+const JOB = Object.fromEntries(J.jobs.map(j => [j.id, j]));
+const KW = J.kw;
+const JOBS_BY_KW = {};
+J.jobs.forEach(j => j.kw.forEach(k => (JOBS_BY_KW[k] ||= []).push(j.id)));
 const $ = s => document.querySelector(s);
 const NS = 'http://www.w3.org/2000/svg';
 const fmt = n => n.toLocaleString('ko-KR');
 const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const josa = (w, a, b) => { const c = w.trim().charCodeAt(w.trim().length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? a : b; };
-const catLabel = c => c.mid === '직무' || c.mid === '산업특화' ? `${c.name}` : c.mid === c.name ? c.name : `${c.mid} · ${c.name}`;
-const catPath = c => [c.big, c.mid].filter((x, i, a) => a.indexOf(x) === i).join(' › ');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-// 지오메트리 (WEF 맵 비율: 바깥 링 389 / 안쪽 링 173 / 중심 141)
-const R_OUT = 400, R_IN = 178, R_CORE = 146, MAX_INNER = 8, OUT_TARGET = 30;
-
-let state = { cat: null, group: null, tab: 'list' };
-let view = null; // 현재 렌더된 맵 구성
-const trail = [];
-
+const R_OUT = 400, R_IN = 178, R_CORE = 146, MAX_INNER = 8, OUT_TARGET = 28;
+const relFill = r => r >= 85 ? '#0066FF' : r >= 70 ? '#3385FF' : r >= 55 ? '#66A3FF' : r >= 40 ? '#99C2FF' : '#CCE0FF';
 $('#totalN').textContent = fmt(D.total);
-$('#catN').textContent = D.cats.length;
+$('#jobN').textContent = J.jobs.length;
 
-/* ---------- 맵 구성 계산 ---------- */
-function compose(catId, focus) {
-  const cat = CAT[catId];
-  let inner = cat.groups.slice(0, MAX_INNER);
-  if (focus && !inner.includes(focus)) inner = [...inner.slice(0, MAX_INNER - 1), focus];
-  const k = Math.max(3, Math.min(10, Math.ceil(OUT_TARGET / inner.length)));
-  const inAng = inner.map((_, i) => -Math.PI / 2 + (i + 0.5) * (2 * Math.PI / inner.length) - Math.PI / inner.length / 2 * (inner.length % 2 ? 0 : 0));
-  const outMap = new Map(); // outer gid -> [{i, w}]
-  inner.forEach((gid, i) => {
-    G[gid].links.slice(0, k).forEach(([o, w]) => {
-      if (G[o].cat === catId) return;
-      if (!outMap.has(o)) outMap.set(o, []);
-      outMap.get(o).push({ i, w });
-    });
-  });
-  // 바깥 노드 순서: 연결된 안쪽 노드 각도의 가중 원형 평균 → 선 교차 최소화
-  const outer = [...outMap.entries()].map(([gid, ls]) => {
-    let x = 0, y = 0; ls.forEach(l => { x += Math.cos(inAng[l.i]) * l.w; y += Math.sin(inAng[l.i]) * l.w; });
-    return { gid, ls, a: Math.atan2(y, x) };
-  }).sort((p, q) => p.a - q.a);
-  // 균등 분포하되, 시작점을 첫 노드 평균 각도에 맞춰 회전
-  const n = outer.length, step = 2 * Math.PI / Math.max(n, 1);
-  let best = 0, bestErr = Infinity;
-  for (let s = 0; s < 36; s++) {
-    const off = outer.length ? outer[0].a + (s - 18) * step / 6 : 0;
-    let err = 0; outer.forEach((o, j) => { const d = Math.atan2(Math.sin(off + j * step - o.a), Math.cos(off + j * step - o.a)); err += d * d; });
-    if (err < bestErr) { bestErr = err; best = off; }
+/* ---------- 노드 모델: job:<id> · kw:<스킬> · grp:<그룹> ---------- */
+const typeOf = key => key.slice(0, key.indexOf(':'));
+const idOf = key => key.slice(key.indexOf(':') + 1);
+const TYPE_LABEL = { job: '직무', kw: '스킬', grp: '스킬 그룹' };
+function info(key) {
+  const t = typeOf(key), id = idOf(key);
+  if (t === 'job') { const j = JOB[id]; return { t, name: j.ko, eyebrow: `직무 · ${j.fam}`, sub: `${j.sub}` }; }
+  if (t === 'kw') { const k = KW[id]; return { t, name: id, eyebrow: '스킬', sub: `필요 직무 ${k ? k.n : 0}개` }; }
+  const g = G[id], c = CAT[g.cat]; return { t, name: g.name, eyebrow: `스킬 그룹 · ${c.name}`, sub: `스킬 ${fmt(g.n)}개` };
+}
+// 안쪽 링: 중심의 하위 요소와 중심과의 연관도(0–100)
+function children(key) {
+  const t = typeOf(key), id = idOf(key);
+  let list = [];
+  if (t === 'job') {
+    // 직무의 주요 스킬. 연관도 = 그 직무에 얼마나 고유한 스킬인가(특이도)
+    list = JOB[id].kw.map(k => ({ key: 'kw:' + k, v: KW[k] ? KW[k].spec + .6 : .6 }));
+  } else if (t === 'kw') {
+    list = (KW[id]?.groups || []).map(([g, r]) => ({ key: 'grp:' + g, v: r }));
+  } else {
+    list = G[id].links.filter(([o]) => G[o].cat !== G[id].cat).map(([o, w]) => ({ key: 'grp:' + o, v: w }));
   }
-  outer.forEach((o, j) => o.ang = best + j * step);
-  outer.forEach(o => o.rel = relTo(catId, o.gid));
-  const wMax = Math.max(...outer.flatMap(o => o.ls.map(l => l.w)), .001);
-  outer.forEach(o => o.ls.forEach(l => l.s = l.w / wMax));
-  const relLo = Math.min(...outer.map(o => o.rel), 100);
-  return { cat, inner, inAng, outer, k, relLo };
+  list.sort((a, b) => b.v - a.v);
+  list = list.slice(0, MAX_INNER);
+  const mx = Math.max(...list.map(x => x.v), 1e-9);
+  return list.map(x => ({ key: x.key, rel: Math.round(x.v / mx * 100) }));
+}
+// 바깥 링: 안쪽 요소에서 한 단계 더 이어지는 요소 (s = 0–1 연결 강도)
+function neighbors(key, centerKey) {
+  const t = typeOf(key), id = idOf(key);
+  if (t === 'kw') {
+    const center = typeOf(centerKey) === 'job' ? JOB[idOf(centerKey)] : null;
+    const cset = new Set(center ? center.kw : []);
+    const jobs = (JOBS_BY_KW[id] || []).filter(j => 'job:' + j !== centerKey)
+      .map(j => ({ key: 'job:' + j, s: center ? JOB[j].kw.filter(k => cset.has(k)).length / cset.size : .5 }))
+      .sort((a, b) => b.s - a.s).slice(0, 2);
+    const grps = (KW[id]?.groups || []).slice(0, 3).map(([g, r]) => ({ key: 'grp:' + g, s: r / 100 }));
+    return [...grps, ...jobs];
+  }
+  if (t === 'grp') {
+    const ls = G[id].links.filter(([o]) => G[o].cat !== G[id].cat);
+    const mx = ls[0] ? ls[0][1] : 1;
+    return ls.map(([o, w]) => ({ key: 'grp:' + o, s: w / mx }));
+  }
+  return [];
 }
 
+/* ---------- 지오메트리 ---------- */
 const pol = (a, r) => [Math.cos(a) * r, Math.sin(a) * r];
 function curve(a1, a2) {
-  // WEF 방식: 시작점(안쪽 링) → c1(중간 각도, 0.75R) → c2(도착 각도, 0.69R) → 도착점(바깥 링)
-  let d = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1));
+  const d = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1));
   const [x0, y0] = pol(a1, R_IN), [x1, y1] = pol(a1 + d / 2, R_OUT * .75), [x2, y2] = pol(a2, R_OUT * .69), [x3, y3] = pol(a2, R_OUT);
   return `M${x0.toFixed(1)},${y0.toFixed(1)} C${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${x3.toFixed(1)},${y3.toFixed(1)}`;
 }
-function el(tag, attrs = {}, parent) {
-  const e = document.createElementNS(NS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]);
-  if (parent) parent.appendChild(e);
-  return e;
-}
+function el(tag, attrs = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
 function rng(seed) { let s = 0; for (const ch of seed) s = (s * 31 + ch.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 function wrap(text, max) {
   if (text.length <= max) return [text];
-  const words = text.split(' '); const lines = [''];
+  const words = text.split(' '), lines = [''];
   words.forEach(w => { const cur = lines[lines.length - 1]; if ((cur + ' ' + w).trim().length > max && cur) lines.push(w); else lines[lines.length - 1] = (cur + ' ' + w).trim(); });
   return lines.length > 2 ? [lines[0], lines.slice(1).join(' ').slice(0, max - 1) + '…'] : lines;
 }
 
-/* ---------- 맵 렌더 ---------- */
-function drawMap() {
-  const svg = $('#map');
-  svg.innerHTML = '';
-  view = compose(state.cat, state.group);
-  const { cat, inner, inAng, outer } = view;
+/* ---------- 맵 구성 ---------- */
+function compose(centerKey) {
+  const inner = children(centerKey);
+  const n = Math.max(inner.length, 1);
+  const inAng = inner.map((_, i) => -Math.PI / 2 + (i + .5) * (2 * Math.PI / n));
+  const k = Math.max(2, Math.min(6, Math.ceil(OUT_TARGET / n)));
+  const taken = new Set([centerKey, ...inner.map(x => x.key)]);
+  const outMap = new Map();
+  inner.forEach((c, i) => {
+    let added = 0;
+    for (const nb of neighbors(c.key, centerKey)) {
+      if (taken.has(nb.key)) continue;
+      if (!outMap.has(nb.key)) outMap.set(nb.key, []);
+      outMap.get(nb.key).push({ i, s: nb.s });
+      if (++added >= k) break;
+    }
+  });
+  const outer = [...outMap.entries()].map(([key, ls]) => {
+    let x = 0, y = 0; ls.forEach(l => { x += Math.cos(inAng[l.i]) * l.s; y += Math.sin(inAng[l.i]) * l.s; });
+    const raw = Math.max(...ls.map(l => inner[l.i].rel / 100 * l.s));
+    return { key, ls, a: Math.atan2(y, x), raw };
+  }).sort((p, q) => p.a - q.a);
+  const mx = Math.max(...outer.map(o => o.raw), 1e-9);
+  outer.forEach(o => o.rel = Math.max(1, Math.round(o.raw / mx * 100)));
+  const m = outer.length, step = 2 * Math.PI / Math.max(m, 1);
+  let best = 0, bestErr = Infinity;
+  for (let s = 0; s < 36; s++) {
+    const off = m ? outer[0].a + (s - 18) * step / 6 : 0;
+    let err = 0; outer.forEach((o, j) => { const d = Math.atan2(Math.sin(off + j * step - o.a), Math.cos(off + j * step - o.a)); err += d * d; });
+    if (err < bestErr) { bestErr = err; best = off; }
+  }
+  outer.forEach((o, j) => o.ang = best + j * step);
+  const relLo = Math.min(...outer.map(o => o.rel), 100);
+  return { centerKey, inner, inAng, outer, relLo };
+}
 
+/* ---------- 맵 렌더 ---------- */
+let view = null;
+function drawMap() {
+  const svg = $('#map'); svg.innerHTML = '';
+  view = compose(cur());
+  const { centerKey, inner, inAng, outer } = view, ci = info(centerKey);
   el('circle', { class: 'ring-out', r: R_OUT }, svg);
   const gLinks = el('g', {}, svg);
   el('circle', { class: 'core', r: R_CORE }, svg);
 
-  // 중심: 스킬 하나하나를 점으로 — 그룹별로 안쪽 노드 방향의 부채꼴에 배치
-  const gDots = el('g', { class: 'center-btn', role: 'button', tabindex: 0, 'aria-label': `${cat.name} 개요 보기` }, svg);
+  // 중심: 하위 요소마다 부채꼴로 점 (연관도가 높을수록 많이)
+  const gDots = el('g', { class: 'center-btn', role: 'img', 'aria-label': `${ci.name}` }, svg);
   el('circle', { class: 'hit', r: R_CORE }, gDots);
-  const span = 2 * Math.PI / inner.length;
-  const counts = inner.map(g => G[g].n), maxC = Math.max(...counts);
-  inner.forEach((gid, i) => {
-    const n = Math.max(6, Math.round(Math.sqrt(G[gid].n / maxC) * 90));
-    const r = rng(gid);
+  const span = 2 * Math.PI / Math.max(inner.length, 1);
+  inner.forEach((c, i) => {
+    const ct = typeOf(c.key);
+    const size = ct === 'grp' ? Math.sqrt(G[idOf(c.key)].n) * 4 : ct === 'kw' ? Math.sqrt(KW[idOf(c.key)]?.n || 1) * 10 : 20;
+    const n = Math.round(Math.max(8, Math.min(90, size * (.4 + c.rel / 100 * .6))));
+    const r = rng(c.key);
     for (let j = 0; j < n; j++) {
       const a = inAng[i] + (r() - .5) * span * .86, rr = Math.sqrt(100 ** 2 + r() * (136 ** 2 - 100 ** 2));
       const [x, y] = pol(a, rr);
       el('circle', { class: 'dot', 'data-i': i, cx: x.toFixed(1), cy: y.toFixed(1), r: (1.3 + r() * 1.5).toFixed(2) }, gDots);
     }
   });
-  const fo = el('foreignObject', { class: 'center-fo', x: -96, y: -80, width: 192, height: 160 }, gDots);
-  fo.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml"><span class="eb">${esc(catPath(cat))}</span><span class="nm">${esc(cat.name)}</span><span class="ct">스킬 <b class="num">${fmt(cat.n)}</b>개</span></div>`;
-  gDots.addEventListener('click', () => select(null));
-  gDots.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(null); } });
-
+  const fo = el('foreignObject', { class: 'center-fo', x: -100, y: -82, width: 200, height: 164 }, gDots);
+  fo.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml"><span class="eb">${esc(ci.eyebrow)}</span><span class="nm">${esc(ci.name)}</span><span class="ct">${esc(ci.sub)}</span></div>`;
   el('circle', { class: 'ring-in', r: R_IN }, svg);
 
-  // 링크
+  // 링크 (선 두께 = 연결 강도)
   view.links = [];
   outer.forEach((o, j) => o.ls.forEach(l => {
-    const p = el('path', { class: 'link', d: curve(inAng[l.i], o.ang), style: `--w:${(.6 + 4.6 * Math.pow(l.s, 1.6)).toFixed(2)}px` }, gLinks);
+    const p = el('path', { class: 'link', d: curve(inAng[l.i], o.ang), style: `--w:${(.6 + 4.4 * Math.pow(l.s, 1.6)).toFixed(2)}px` }, gLinks);
     view.links.push({ el: p, i: l.i, j });
   }));
 
-  // 바깥 노드 (다른 분야의 연관 그룹) — 방사형 라벨
+  // 바깥 노드: 크기·색 농도 = 중심과의 연관도
   view.outEls = outer.map((o, j) => {
-    const g = G[o.gid], c = CAT[g.cat];
+    const oi = info(o.key), t = typeOf(o.key);
     const [x, y] = pol(o.ang, R_OUT);
-    const node = el('g', { class: 'node n-out', role: 'button', tabindex: 0, 'aria-label': `${g.name} (${c.name}) 으로 이동` }, svg);
+    const node = el('g', { class: `node n-out t-${t}`, role: 'button', tabindex: 0, 'aria-label': `${oi.name} (${TYPE_LABEL[t]}, 연관도 ${o.rel})를 중심으로 보기` }, svg);
     const t01 = Math.max(0, (o.rel - view.relLo + 4) / Math.max(1, 100 - view.relLo + 4));
     const r = 5 + 12 * Math.pow(t01, 1.2);
     node.style.setProperty('--f', relFill(o.rel));
     el('circle', { cx: x, cy: y, r: r.toFixed(1) }, node);
-    let deg = o.ang * 180 / Math.PI; const left = Math.cos(o.ang) < 0;
+    const deg = o.ang * 180 / Math.PI, left = Math.cos(o.ang) < 0;
     const [tx, ty] = pol(o.ang, R_OUT + r + 9);
-    const t = el('text', { x: tx, y: ty, 'dominant-baseline': 'central', 'text-anchor': left ? 'end' : 'start', transform: `rotate(${left ? deg + 180 : deg} ${tx} ${ty})` }, node);
-    const nm = g.name.length > 15 ? g.name.slice(0, 14) + '…' : g.name;
-    const a1 = el('tspan', {}, t), a2 = el('tspan', { class: 'rel', dx: 4 }, t);
-    if (left) { a2.textContent = o.rel; a2.setAttribute('dx', 0); a1.textContent = nm; t.insertBefore(a2, a1); a1.setAttribute('dx', 4); } else { a1.textContent = nm; a2.textContent = o.rel; }
-    node.addEventListener('click', () => go(g.cat, o.gid));
-    node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(g.cat, o.gid); } });
-    hoverTip(node, `<b>${esc(g.name)}</b><span>${esc(c.name)} · 스킬 ${fmt(g.n)}개<br>${esc(cat.name)}${josa(cat.name, '과', '와')} 연관도 <b style="display:inline">${o.rel}</b></span>`);
-    node.addEventListener('mouseenter', () => hot({ j }));
-    node.addEventListener('mouseleave', () => hot(null));
+    const tt = el('text', { x: tx, y: ty, 'dominant-baseline': 'central', 'text-anchor': left ? 'end' : 'start', transform: `rotate(${left ? deg + 180 : deg} ${tx} ${ty})` }, node);
+    const nm = oi.name.length > 15 ? oi.name.slice(0, 14) + '…' : oi.name;
+    const a1 = el('tspan', {}, tt), a2 = el('tspan', { class: 'rel' }, tt);
+    if (left) { a2.textContent = o.rel + ' '; a1.textContent = nm; tt.insertBefore(a2, a1); } else { a1.textContent = nm + ' '; a2.textContent = o.rel; }
+    bind(node, o.key, `<b>${esc(oi.name)}</b><span>${esc(TYPE_LABEL[t])} · ${esc(oi.sub)}<br>${esc(ci.name)}${josa(ci.name, '과', '와')} 연관도 <b style="display:inline">${o.rel}</b> · 누르면 중심으로 이동</span>`, { j });
     return node;
   });
 
-  // 안쪽 노드 (이 분야의 스킬 그룹) — 가로 라벨
-  view.inEls = inner.map((gid, i) => {
-    const g = G[gid], a = inAng[i];
+  // 안쪽 노드: 크기 = 중심과의 연관도
+  view.inEls = inner.map((c, i) => {
+    const ii = info(c.key), a = inAng[i];
     const [x, y] = pol(a, R_IN);
-    const node = el('g', { class: 'node n-in', role: 'button', tabindex: 0, 'aria-label': `${g.name} 그룹 선택` }, svg);
-    const ri = 10 + 9 * Math.sqrt(g.n / G[inner[0]].n);
+    const node = el('g', { class: 'node n-in', role: 'button', tabindex: 0, 'aria-label': `${ii.name} (연관도 ${c.rel})를 중심으로 보기` }, svg);
+    const ri = 9 + 9 * Math.pow(c.rel / 100, 1.3);
     el('circle', { cx: x, cy: y, r: ri.toFixed(1) }, node);
-    const c = Math.cos(a), s = Math.sin(a);
-    const anchor = c > .3 ? 'start' : c < -.3 ? 'end' : 'middle';
-    const lines = wrap(g.name, 9);
+    const cs = Math.cos(a), sn = Math.sin(a);
+    const anchor = cs > .3 ? 'start' : cs < -.3 ? 'end' : 'middle';
+    const lines = wrap(ii.name, 9);
     const lx = x + (anchor === 'start' ? ri + 8 : anchor === 'end' ? -ri - 8 : 0);
-    const ly0 = anchor === 'middle' ? y + (s < 0 ? -26 - (lines.length - 1) * 22 : 34) : y - (lines.length - 1) * 11;
+    const ly0 = anchor === 'middle' ? y + (sn < 0 ? -ri - 14 - (lines.length - 1) * 22 : ri + 20) : y - (lines.length - 1) * 11;
     const t = el('text', { 'text-anchor': anchor, 'dominant-baseline': 'central' }, node);
     lines.forEach((ln, k) => { const ts = el('tspan', { x: lx, y: ly0 + k * 22 }, t); ts.textContent = ln; });
-    node.addEventListener('click', () => select(state.group === gid ? null : gid));
-    node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(state.group === gid ? null : gid); } });
-    hoverTip(node, `<b>${esc(g.name)}</b><span>스킬 ${fmt(g.n)}개 · 연결 ${view.links.filter(l => l.i === i).length}개 그룹</span>`);
-    node.addEventListener('mouseenter', () => hot({ i }));
-    node.addEventListener('mouseleave', () => hot(null));
+    bind(node, c.key, `<b>${esc(ii.name)}</b><span>${esc(TYPE_LABEL[typeOf(c.key)])} · ${esc(ii.sub)}<br>${esc(ci.name)}${josa(ci.name, '과', '와')} 연관도 <b style="display:inline">${c.rel}</b> · 누르면 중심으로 이동</span>`, { i });
     return node;
   });
-  paintSelection();
 }
-
+function bind(node, key, tipHTML, h) {
+  node.addEventListener('click', () => go(key));
+  node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(key); } });
+  node.addEventListener('mouseenter', e => { tip.innerHTML = tipHTML; tip.classList.add('show'); moveTip(e); hot(h); });
+  node.addEventListener('mousemove', moveTip);
+  node.addEventListener('mouseleave', () => { tip.classList.remove('show'); hot(null); });
+}
 function hot(h) {
   if (!view) return;
-  view.links.forEach(l => l.el.classList.toggle('hot', !!h && (h.i === l.i || h.j === l.j)));
-  const di = h && h.i != null ? h.i : null;
-  document.querySelectorAll('#map .dot').forEach(d => d.classList.toggle('on', (di != null && +d.dataset.i === di) || (+d.dataset.i === selIdx())));
+  const li = new Set();
+  view.links.forEach(l => { const on = !!h && (h.i === l.i || h.j === l.j); l.el.classList.toggle('on', on); l.el.classList.toggle('dim', !!h && !on); if (on) li.add(l.j); });
+  view.outEls.forEach((n, j) => { n.classList.toggle('on', !!h && li.has(j) && h.i != null); n.classList.toggle('dim', !!h && h.i != null && !li.has(j)); });
+  view.inEls.forEach((n, i) => n.classList.toggle('dim', !!h && h.i != null && h.i !== i));
+  document.querySelectorAll('#map .dot').forEach(d => d.classList.toggle('on', !!h && h.i != null && +d.dataset.i === h.i));
 }
-const selIdx = () => view && state.group ? view.inner.indexOf(state.group) : -1;
-
-function paintSelection() {
-  const si = selIdx();
-  const linkedOut = new Set(view.links.filter(l => l.i === si).map(l => l.j));
-  view.inEls.forEach((n, i) => { n.classList.toggle('on', i === si); n.classList.toggle('dim', si >= 0 && i !== si); n.setAttribute('aria-pressed', i === si); });
-  view.outEls.forEach((n, j) => { n.classList.toggle('on', linkedOut.has(j)); n.classList.toggle('dim', si >= 0 && !linkedOut.has(j)); });
-  view.links.forEach(l => { l.el.classList.toggle('on', l.i === si); l.el.classList.toggle('dim', si >= 0 && l.i !== si); if (l.i === si) l.el.parentNode.appendChild(l.el); });
-  document.querySelectorAll('#map .dot').forEach(d => d.classList.toggle('on', +d.dataset.i === si));
-}
-
-/* ---------- 툴팁 ---------- */
 const tip = $('#tip');
-function hoverTip(node, html) {
-  node.addEventListener('mouseenter', e => { tip.innerHTML = html; tip.classList.add('show'); moveTip(e); });
-  node.addEventListener('mousemove', moveTip);
-  node.addEventListener('mouseleave', () => tip.classList.remove('show'));
-}
 function moveTip(e) { tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.clientX + 14) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; }
 
 /* ---------- 패널 ---------- */
+let tab = 0;
 function panelHTML() {
-  const cat = CAT[state.cat], gid = state.group, g = gid && G[gid];
-  const tabs = [['list', g ? '스킬' : '스킬 그룹'], ['links', '연결 그룹'], ['contents', '추천 콘텐츠']];
-  let head, body;
-  if (!g) {
-    const outerN = view.outer.length, top = G[cat.groups[0]];
-    head = `<p class="crumb">${esc(catPath(cat))}</p>
-      <h1 class="p-title">${esc(cat.name)}</h1>
-      <p class="p-desc">${esc(cat.name)} 분야에는 ${fmt(cat.n)}개의 스킬이 ${cat.groups.length}개 그룹으로 정리되어 있습니다. 가장 큰 그룹은 ‘${esc(top.name)}’${josa(top.name, '이며', '이며')}, 스킬 이름이 비슷한 다른 분야의 ${outerN}개 그룹과 연결됩니다.</p>
-      <div class="kpis"><div class="kpi"><small>스킬</small><b class="num">${fmt(cat.n)}</b></div><div class="kpi"><small>스킬 그룹</small><b class="num">${cat.groups.length}</b></div><div class="kpi"><small>연결 그룹</small><b class="num">${outerN}</b></div></div>`;
-    if (state.tab === 'list') {
-      const max = G[cat.groups[0]].n;
-      body = `<p class="sub"><span>스킬 수 순 · 맵에는 상위 ${Math.min(MAX_INNER, cat.groups.length)}개 표시, 나머지는 선택하면 맵에 들어갑니다</span><span>스킬</span></p>` + cat.groups.map((id, k) => {
-        const x = G[id];
-        return `<button class="row" data-sel="${esc(id)}"><span class="tx"><b>${esc(x.name)}</b><span class="bar"><i style="width:${(x.n / max * 100).toFixed(1)}%"></i></span></span><span class="rt num">${fmt(x.n)}</span></button>`;
-      }).join('');
-    } else if (state.tab === 'links') {
-      body = linkRows([...view.outer].sort((a, b) => b.rel - a.rel).map(o => [o.gid, o.rel]), `${esc(cat.name)}${josa(cat.name, '과', '와')}의 연관도 순 · 클릭하면 그 분야로 이동합니다`, true);
-    } else {
-      const seen = new Set(), list = [];
-      view.inner.forEach(id => G[id].contents.slice(0, 2).forEach(c => { if (!seen.has(c[0])) { seen.add(c[0]); list.push([...c, G[id].name]); } }));
-      body = contentRows(list);
-    }
-  } else {
-    const c = CAT[g.cat], links = g.links.filter(([o]) => G[o].cat !== g.cat).slice(0, view.k);
-    head = `<p class="crumb">${esc(catPath(c))} › <button data-sel="">${esc(c.name)}</button></p>
-      <h1 class="p-title">${esc(g.name)}</h1>
-      <p class="p-desc">${esc(g.name)}${josa(g.name, '은', '는')} ${esc(c.name)} 분야의 스킬 그룹으로 ${fmt(g.n)}개 스킬을 담고 있습니다.${links[0] ? ` 가장 가까운 그룹은 ${esc(CAT[G[links[0][0]].cat].name)} 분야의 ‘${esc(G[links[0][0]].name)}’입니다.` : ''}</p>
-      <div class="kpis"><div class="kpi"><small>스킬</small><b class="num">${fmt(g.n)}</b></div><div class="kpi"><small>연결 그룹</small><b class="num">${links.length}</b></div><div class="kpi"><small>추천 콘텐츠</small><b class="num">${g.contents.length}</b></div></div>`;
-    if (state.tab === 'list') {
-      const shown = g.skills.slice(0, 40), rest = g.n - shown.length;
-      body = `<p class="sub"><span>이 그룹의 스킬</span><span class="num">${fmt(g.n)}개</span></p><div class="chips">${shown.map(s => `<span class="chip">${esc(s)}</span>`).join('')}${rest > 0 ? `<span class="chip more">외 ${fmt(rest)}개</span>` : ''}</div>`;
-    } else if (state.tab === 'links') {
-      body = linkRows(links, '스킬 이름이 비슷한 다른 분야의 그룹 · 클릭하면 그 분야로 이동합니다');
-    } else {
-      body = contentRows(g.contents);
-    }
-  }
-  return head + `<div class="seg" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-tab="${k}" aria-selected="${state.tab === k}">${l}</button>`).join('')}</div><div class="tab-body" role="tabpanel">${body}</div>
-    <p class="note">스킬과 분류는 휴넷 스킬DB v1.0(Lightcast·Mercer·Hunet 기반)에서 가져왔습니다. 그룹 간 연결은 DB에 따로 정의되어 있지 않아, 스킬 이름(국문·영문)에 함께 쓰인 단어의 유사도로 계산했습니다. 추천 콘텐츠는 휴넷 마이크로러닝 목록에서 제목과 태그로 매칭했습니다.</p>`;
-}
-function linkRows(list, label, abs) {
-  if (!list.length) return `<p class="empty-st">연결된 그룹이 없습니다.</p>`;
-  const max = abs ? 100 : Math.max(...list.map(x => x[1]));
-  return `<p class="sub"><span>${label}</span></p>` + list.map(([id, w]) => {
-    const x = G[id], c = CAT[x.cat];
-    return `<button class="row" data-go="${esc(id)}"><span class="tx"><b>${esc(x.name)}</b><small>${esc(c.mid)} · ${esc(c.name)} · 스킬 ${fmt(x.n)}개</small><span class="bar"><i style="width:${(w / max * 100).toFixed(1)}%"></i></span></span><span class="rt num">${abs ? w : Math.round(w / max * 100)}<small> 연관</small></span></button>`;
+  const key = cur(), t = typeOf(key), id = idOf(key), ci = info(key);
+  const kids = view.inner;
+  let head, tabs, bodies;
+  const kidRows = (label) => `<p class="sub"><span>${label}</span><span>연관도</span></p>` + kids.map(c => {
+    const x = info(c.key);
+    return `<button class="row" data-go="${esc(c.key)}"><span class="tx"><b>${esc(x.name)}</b><small>${esc(x.sub)}</small><span class="bar"><i style="width:${c.rel}%"></i></span></span><span class="rt num">${c.rel}</span></button>`;
   }).join('');
-}
-function contentRows(list) {
-  if (!list.length) return `<p class="empty-st">매칭된 콘텐츠가 없습니다.</p>`;
-  return `<p class="sub"><span>휴넷 마이크로러닝</span></p>` + list.map(([t, time, who, path, from]) => `<div class="row static"><svg class="ico"><use href="#i-play"/></svg><span class="tx"><b>${esc(t)}</b><small>${[who, time].filter(Boolean).map(esc).join(' · ')}${from ? ` · <span class="badge gray">${esc(from)}</span>` : ''}</small></span></div>`).join('');
+  const jobRows = (ids, label, score) => !ids.length ? '<p class="empty-st">연관된 직무가 없습니다.</p>' : `<p class="sub"><span>${label}</span></p>` + ids.map(([jid, s]) => {
+    const j = JOB[jid];
+    return `<button class="row" data-go="job:${esc(jid)}"><span class="tx"><b>${esc(j.ko)}</b><small>${esc(j.fam)} › ${esc(j.sub)}</small></span>${s != null ? `<span class="rt num">${s}<small> ${score}</small></span>` : ''}</button>`;
+  }).join('');
+  const contentRows = list => !list.length ? '<p class="empty-st">매칭된 콘텐츠가 없습니다.</p>' : `<p class="sub"><span>휴넷 마이크로러닝</span></p>` + list.map(([tt, time, who, , from]) => `<div class="row static"><svg class="ico"><use href="#i-play"/></svg><span class="tx"><b>${esc(tt)}</b><small>${[who, time].filter(Boolean).map(esc).join(' · ')}${from ? ` · <span class="badge gray">${esc(from)}</span>` : ''}</small></span></div>`).join('');
+  const contentsOf = gids => { const seen = new Set(), out = []; gids.forEach(g => (G[g]?.contents || []).slice(0, 2).forEach(c => { if (!seen.has(c[0])) { seen.add(c[0]); out.push([...c, G[g].name]); } })); return out.slice(0, 8); };
+  if (t === 'job') {
+    const j = JOB[id], kset = new Set(j.kw);
+    const rel = J.jobs.filter(x => x.id !== id).map(x => [x.id, x.kw.filter(k => kset.has(k)).length]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 12);
+    const gids = kids.flatMap(c => (KW[idOf(c.key)]?.groups || []).slice(0, 1).map(g => g[0]));
+    head = `<p class="crumb">직무 › ${esc(j.fam)} › ${esc(j.sub)}</p><h1 class="p-title">${esc(j.ko)}<small>${esc(j.en || '')}</small></h1><p class="p-desc">${esc(j.def)}</p>
+      <div class="kpis"><div class="kpi"><small>주요 스킬</small><b class="num">${j.kw.length}</b></div><div class="kpi"><small>연관 직무</small><b class="num">${rel.length}</b></div><div class="kpi"><small>연결 스킬 그룹</small><b class="num">${new Set(gids).size}</b></div></div>`;
+    tabs = ['주요 스킬', '연관 직무', '추천 콘텐츠'];
+    bodies = [kidRows('연관도 = 이 직무에 얼마나 고유한 스킬인가'), jobRows(rel, '주요 스킬이 겹치는 직무', '개 겹침'), contentRows(contentsOf(gids))];
+  } else if (t === 'kw') {
+    const jobs = (JOBS_BY_KW[id] || []).map(x => [x, null]);
+    head = `<p class="crumb">스킬</p><h1 class="p-title">${esc(id)}</h1><p class="p-desc">${esc(id)}${josa(id, '은', '는')} 직무 ${jobs.length}개가 주요 스킬로 꼽습니다. 휴넷 스킬DB에서 이름이 가장 가까운 스킬 그룹 ${kids.length}개와 이어집니다.</p>
+      <div class="kpis"><div class="kpi"><small>필요 직무</small><b class="num">${jobs.length}</b></div><div class="kpi"><small>스킬 그룹</small><b class="num">${kids.length}</b></div><div class="kpi"><small>고유도</small><b class="num">${KW[id] ? Math.round(KW[id].spec / Math.log(J.jobs.length) * 100) : 0}</b></div></div>`;
+    tabs = ['스킬 그룹', '필요 직무', '추천 콘텐츠'];
+    bodies = [kidRows('이름이 가까운 스킬DB 그룹'), jobRows(jobs, '이 스킬을 주요 스킬로 꼽는 직무'), contentRows(contentsOf(kids.map(c => idOf(c.key))))];
+  } else {
+    const g = G[id], c = CAT[g.cat];
+    const shown = g.skills.slice(0, 40), rest = g.n - shown.length;
+    head = `<p class="crumb">스킬 그룹 › ${esc(c.mid)} › ${esc(c.name)}</p><h1 class="p-title">${esc(g.name)}</h1><p class="p-desc">${esc(g.name)}${josa(g.name, '은', '는')} ${esc(c.name)} 분야의 스킬 그룹으로 ${fmt(g.n)}개 스킬을 담고 있습니다.</p>
+      <div class="kpis"><div class="kpi"><small>스킬</small><b class="num">${fmt(g.n)}</b></div><div class="kpi"><small>연결 그룹</small><b class="num">${kids.length}</b></div><div class="kpi"><small>추천 콘텐츠</small><b class="num">${g.contents.length}</b></div></div>`;
+    tabs = ['스킬', '연결 그룹', '추천 콘텐츠'];
+    bodies = [`<p class="sub"><span>이 그룹의 스킬</span><span class="num">${fmt(g.n)}개</span></p><div class="chips">${shown.map(s => `<span class="chip">${esc(s)}</span>`).join('')}${rest > 0 ? `<span class="chip more">외 ${fmt(rest)}개</span>` : ''}</div>`, kidRows('스킬 이름이 비슷한 다른 분야의 그룹'), contentRows(g.contents)];
+  }
+  return head + `<div class="seg" role="tablist">${tabs.map((l, k) => `<button role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div><div class="tab-body" role="tabpanel">${bodies[tab]}</div>
+    <p class="note">직무와 주요 스킬은 휴넷 커리어 데이터(250개 직무), 스킬 그룹은 휴넷 스킬DB v1.0에서 가져왔습니다. 연관도는 따로 정의된 값이 없어 직무 안 스킬의 고유도와 스킬 이름의 유사도로 계산한 대체값이며, 실제 상관도 데이터로 바꿀 수 있습니다.</p>`;
 }
 function renderPanel(animate) {
-  const p = $('#panel');
-  const put = () => { p.innerHTML = panelHTML(); };
+  const p = $('#panel'), put = () => { p.innerHTML = panelHTML(); };
   if (!animate || reduce) return put();
   p.classList.add('out');
   setTimeout(() => { put(); p.classList.remove('out'); p.classList.add('pre'); p.offsetWidth; p.classList.remove('pre'); }, 140);
 }
 $('#panel').addEventListener('click', e => {
-  const t = e.target.closest('[data-tab],[data-sel],[data-go]');
-  if (!t) return;
-  if (t.dataset.tab) { state.tab = t.dataset.tab; renderPanel(false); }
-  else if (t.dataset.sel != null) select(t.dataset.sel || null);
-  else if (t.dataset.go) go(G[t.dataset.go].cat, t.dataset.go);
+  const t = e.target.closest('[data-tab],[data-go]'); if (!t) return;
+  if (t.dataset.tab) { tab = +t.dataset.tab; renderPanel(false); } else go(t.dataset.go);
 });
 
-/* ---------- 상태 전환 ---------- */
-function select(gid) {
-  if (gid && !view.inner.includes(gid)) return go(state.cat, gid);
-  state.group = gid; state.tab = 'list';
-  paintSelection(); renderPanel(true); saveHash(); pushHistory();
+/* ---------- 경로 · 브라우저 히스토리 · 탐색 히스토리 트리 ---------- */
+let path = [];                      // 현재 경로 (루트 직무 → … → 현재 중심)
+const cur = () => path[path.length - 1];
+const enc = p => '#p=' + p.map(encodeURIComponent).join('~');
+const dec = h => { const m = h.match(/#p=(.*)$/); if (!m) return null; const p = m[1].split('~').map(decodeURIComponent).filter(valid); return p.length ? p : null; };
+function valid(k) { const t = typeOf(k), id = idOf(k); return t === 'job' ? !!JOB[id] : t === 'kw' ? !!KW[id] : t === 'grp' ? !!G[id] : false; }
+// 탐색 트리: 같은 경로는 한 번만 기록, 갈래가 생기면 형제로 쌓임
+const treeRoots = []; let treeSeq = 0;
+function record(p) {
+  let level = treeRoots, node = null;
+  p.forEach(k => {
+    node = level.find(n => n.key === k);
+    if (!node) { node = { key: k, kids: [], seq: ++treeSeq }; level.push(node); }
+    node.last = ++treeSeq;
+    level = node.kids;
+  });
 }
-function go(catId, gid = null, opts = {}) {
-  const same = catId === state.cat && (!gid || view.inner.includes(gid));
-  state.cat = catId; state.group = gid; state.tab = 'list';
-  if (same) { paintSelection(); renderPanel(true); }
-  else {
-    const svg = $('#map');
-    const swap = () => {
-      drawMap();
-      renderPanel(!opts.instant);
-    };
-    if (reduce || opts.instant) swap();
-    else { svg.classList.add('out'); setTimeout(() => { swap(); svg.classList.remove('out'); svg.classList.add('pre'); svg.getBoundingClientRect(); svg.classList.remove('pre'); }, 160); }
-  }
-  if (!opts.noHash) saveHash();
-  pushHistory();
+function go(key, opts = {}) {
+  if (!valid(key) || key === cur()) return;
+  // 이미 지나온 요소면 그 지점으로 경로를 되돌리고, 아니면 한 단계 더 들어감
+  const at = path.indexOf(key);
+  const next = opts.root ? [key] : at >= 0 ? path.slice(0, at + 1) : [...path, key];
+  history.pushState({ p: next }, '', enc(next));
+  show(next, true);
+}
+function show(p, animate) {
+  path = p; tab = 0; record(p);
+  const svg = $('#map');
+  const swap = () => { drawMap(); renderPanel(animate); renderPath(); };
+  if (!animate || reduce) swap();
+  else { svg.classList.add('out'); setTimeout(() => { swap(); svg.classList.remove('out'); svg.classList.add('pre'); svg.getBoundingClientRect(); svg.classList.remove('pre'); }, 160); }
   tip.classList.remove('show');
+  closeMenus();
 }
-function saveHash() {
-  const h = '#c=' + encodeURIComponent(state.cat) + (state.group ? '&g=' + encodeURIComponent(state.group) : '');
-  if (location.hash !== h) window.history.replaceState(null, "", h);
-}
-function pushHistory() {
-  const key = state.cat + '§' + (state.group || '');
-  if (trail[0] && trail[0].key === key) return;
-  trail.unshift({ key, cat: state.cat, group: state.group });
-  trail.length = Math.min(trail.length, 12);
-}
-
-/* ---------- 메뉴: 전체 분야 / 탐색 내역 ---------- */
-function toggleMenu(btn, menu, build) {
-  const open = menu.hidden;
-  document.querySelectorAll('.menu').forEach(m => m.hidden = true);
-  document.querySelectorAll('[aria-haspopup]').forEach(b => b.setAttribute('aria-expanded', 'false'));
-  if (open) { menu.innerHTML = build(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
-}
-$('#allBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#allMenu'), () => {
-  const by = {}; D.cats.forEach(c => (by[c.big + ' › ' + c.mid] ||= []).push(c));
-  return Object.entries(by).map(([k, cs]) => `<div class="grp">${esc(k)}</div>` + cs.sort((a, b) => b.n - a.n).map(c => `<button role="menuitem" data-cat="${esc(c.id)}" aria-current="${c.id === state.cat}"><span>${esc(c.name)}</span><small class="num">${fmt(c.n)}</small></button>`).join('')).join('');
-}); });
-$('#histBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#histMenu'), () => trail.length < 2 ? '<p class="empty">아직 탐색 내역이 없습니다.</p>' :
-  trail.slice(1).map(h => `<button role="menuitem" data-cat="${esc(h.cat)}" data-g="${esc(h.group || '')}"><span>${esc(h.group ? G[h.group].name : CAT[h.cat].name)}</span><small>${esc(h.group ? CAT[h.cat].name : '분야')}</small></button>`).join('')); });
-document.addEventListener('click', e => {
-  const b = e.target.closest('.menu button[data-cat]');
-  document.querySelectorAll('.menu').forEach(m => m.hidden = true);
-  document.querySelectorAll('[aria-haspopup]').forEach(x => x.setAttribute('aria-expanded', 'false'));
-  if (b) go(b.dataset.cat, b.dataset.g || null);
+addEventListener('popstate', e => { const p = (e.state && e.state.p) || dec(location.hash); if (p) show(p, true); });
+// Backspace = 뒤로 (입력 중일 때 제외). 마우스 뒤로 버튼·Alt+← 는 브라우저가 popstate로 처리
+addEventListener('keydown', e => {
+  if (e.key !== 'Backspace' || e.metaKey || e.ctrlKey || e.altKey) return;
+  const tg = e.target; if (tg.closest && tg.closest('input,textarea,select,[contenteditable]')) return;
+  e.preventDefault(); history.back();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.querySelectorAll('.menu').forEach(m => m.hidden = true); hideSuggest(); } });
 
+function renderPath() {
+  const nav = $('#path');
+  nav.innerHTML = `<button class="back" id="backBtn" title="뒤로 (Backspace)" ${history.state && path.length > 0 && history.length > 1 ? '' : ''}><svg class="ico s16"><use href="#i-left"/></svg></button>` +
+    path.map((k, i) => (i ? '<span class="sep" aria-hidden="true">›</span>' : '') + `<button data-pi="${i}" ${i === path.length - 1 ? 'aria-current="true"' : ''} title="${esc(TYPE_LABEL[typeOf(k)])}">${esc(info(k).name)}</button>`).join('');
+}
+$('#path').addEventListener('click', e => {
+  if (e.target.closest('#backBtn')) return history.back();
+  const b = e.target.closest('button[data-pi]'); if (!b || b.hasAttribute('aria-current')) return;
+  go(path[+b.dataset.pi]);
+});
+
+function histHTML() {
+  const curKey = path.join('~');
+  const li = (n, prefix) => {
+    const p = [...prefix, n.key], pk = p.join('~'), onPath = curKey.startsWith(pk), isCur = pk === curKey;
+    const t = typeOf(n.key);
+    return `<li><button data-path="${esc(pk)}" class="${onPath ? 'on-path' : ''}" ${isCur ? 'aria-current="true"' : ''}><span class="tbadge tb-${t}">${TYPE_LABEL[t]}</span><span class="nm">${esc(info(n.key).name)}</span></button>${n.kids.length ? `<ul class="tree">${n.kids.map(c => li(c, p)).join('')}</ul>` : ''}</li>`;
+  };
+  return `<div class="hist-head"><b>탐색 히스토리</b><span>${treeSeq ? '지나온 경로를 단계별로 보여 줍니다' : ''}</span></div><ul class="tree">${treeRoots.map(r => li(r, [])).join('')}</ul>
+    <p class="hist-foot">항목을 누르면 그 지점으로 이동합니다. 뒤로 가기: 마우스 뒤로 버튼, <kbd>Backspace</kbd>, <kbd>Alt</kbd>+<kbd>←</kbd></p>`;
+}
+
+/* ---------- 메뉴: 직무 선택 / 탐색 히스토리 ---------- */
+function closeMenus() { document.querySelectorAll('.menu').forEach(m => m.hidden = true); document.querySelectorAll('[aria-haspopup]').forEach(b => b.setAttribute('aria-expanded', 'false')); }
+function toggleMenu(btn, menu, build) {
+  const open = menu.hidden; closeMenus();
+  if (open) { menu.innerHTML = build(); menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); menu.querySelector('input')?.focus(); }
+}
+function jobList(q) {
+  q = (q || '').trim().toLowerCase();
+  const fams = [...new Set(J.jobs.map(j => j.fam))];
+  return fams.map(f => {
+    const js = J.jobs.filter(j => j.fam === f && (!q || (j.ko + ' ' + j.en + ' ' + j.sub).toLowerCase().includes(q)));
+    if (!js.length) return '';
+    return `<div class="grp"><b>${esc(f)}</b> · ${js.length}</div>` + js.map(j => `<button role="menuitem" data-key="job:${esc(j.id)}" aria-current="${path[0] === 'job:' + j.id}"><span>${esc(j.ko)}</span><small>${esc(j.sub)}</small></button>`).join('');
+  }).join('') || '<p class="empty">일치하는 직무가 없습니다.</p>';
+}
+$('#jobBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#jobMenu'), () => `<div class="filter"><input type="search" id="jobQ" placeholder="직무 이름으로 거르기" aria-label="직무 거르기"></div><div id="jobList">${jobList('')}</div>`); });
+$('#jobMenu').addEventListener('input', e => { if (e.target.id === 'jobQ') $('#jobList').innerHTML = jobList(e.target.value); });
+$('#jobMenu').addEventListener('click', e => { e.stopPropagation(); const b = e.target.closest('button[data-key]'); if (b) go(b.dataset.key, { root: true }); });
+$('#histBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(e.currentTarget, $('#histMenu'), histHTML); });
+$('#histMenu').addEventListener('click', e => {
+  e.stopPropagation(); const b = e.target.closest('button[data-path]'); if (!b || b.hasAttribute('aria-current')) return;
+  const p = b.dataset.path.split('~'); history.pushState({ p }, '', enc(p)); show(p, true);
+});
+document.addEventListener('click', closeMenus);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); hideSuggest(); } });
 $('#panelBtn').addEventListener('click', e => {
-  const m = $('#main'); m.classList.toggle('no-panel');
-  const hidden = m.classList.contains('no-panel');
+  const m = $('#main'); m.classList.toggle('no-panel'); const hidden = m.classList.contains('no-panel');
   e.currentTarget.querySelector('span').textContent = hidden ? '패널 보기' : '패널 숨기기';
   e.currentTarget.querySelector('use').setAttribute('href', hidden ? '#i-left' : '#i-right');
 });
-$('#home').addEventListener('click', e => { e.preventDefault(); go(DEFAULT); });
+$('#home').addEventListener('click', e => { e.preventDefault(); go(DEFAULT, { root: true }); });
 
 /* ---------- 검색 ---------- */
 const index = [];
-D.cats.forEach(c => index.push({ t: c.name, k: c.name.toLowerCase(), sub: `분야 · ${c.mid}`, cat: c.id, g: null, w: 3 }));
-Object.entries(G).forEach(([id, g]) => {
-  index.push({ t: g.name, k: g.name.toLowerCase(), sub: `그룹 · ${CAT[g.cat].name}`, cat: g.cat, g: id, w: 2 });
-  g.skills.forEach(s => index.push({ t: s, k: s.toLowerCase(), sub: `스킬 · ${g.name}`, cat: g.cat, g: id, w: 1 }));
-});
-const q = $('#q'), sg = $('#suggest'); let hits = [], cur = -1;
+J.jobs.forEach(j => index.push({ t: j.ko, k: (j.ko + ' ' + j.en).toLowerCase(), sub: `직무 · ${j.fam}`, key: 'job:' + j.id, w: 3 }));
+Object.keys(KW).forEach(k => index.push({ t: k, k: k.toLowerCase(), sub: `스킬 · 직무 ${KW[k].n}개`, key: 'kw:' + k, w: 2 }));
+Object.entries(G).forEach(([id, g]) => index.push({ t: g.name, k: g.name.toLowerCase(), sub: `스킬 그룹 · ${CAT[g.cat].name}`, key: 'grp:' + id, w: 1 }));
+const q = $('#q'), sg = $('#suggest'); let hits = [], hi = -1;
 function hideSuggest() { sg.hidden = true; q.parentElement.setAttribute('aria-expanded', 'false'); }
 q.addEventListener('input', () => {
-  const v = q.value.trim().toLowerCase();
-  if (!v) return hideSuggest();
-  hits = index.filter(x => x.k.includes(v)).sort((a, b) => (b.k.startsWith(v) - a.k.startsWith(v)) || b.w - a.w || a.t.length - b.t.length).slice(0, 12);
-  cur = -1;
+  const v = q.value.trim().toLowerCase(); if (!v) return hideSuggest();
+  hits = index.filter(x => x.k.includes(v)).sort((a, b) => (b.k.startsWith(v) - a.k.startsWith(v)) || b.w - a.w || a.t.length - b.t.length).slice(0, 12); hi = -1;
   sg.innerHTML = hits.length ? hits.map((h, i) => `<li role="option" data-i="${i}" aria-selected="false"><span>${esc(h.t)}</span><small>${esc(h.sub)}</small></li>`).join('') : '<li class="empty">일치하는 결과가 없습니다.</li>';
   sg.hidden = false; q.parentElement.setAttribute('aria-expanded', 'true');
 });
 q.addEventListener('keydown', e => {
   if (sg.hidden || !hits.length) return;
-  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); cur = (cur + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; sg.querySelectorAll('li').forEach((li, i) => li.setAttribute('aria-selected', i === cur)); }
-  if (e.key === 'Enter') { e.preventDefault(); pick(hits[Math.max(cur, 0)]); }
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = (hi + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; sg.querySelectorAll('li').forEach((li, i) => li.setAttribute('aria-selected', i === hi)); }
+  if (e.key === 'Enter') { e.preventDefault(); pick(hits[Math.max(hi, 0)]); }
 });
 sg.addEventListener('mousedown', e => { const li = e.target.closest('li[data-i]'); if (li) { e.preventDefault(); pick(hits[+li.dataset.i]); } });
 q.addEventListener('blur', () => setTimeout(hideSuggest, 100));
-function pick(h) {
-  hideSuggest(); q.value = ''; q.blur();
-  go(h.cat, h.g);
-}
+function pick(h) { hideSuggest(); q.value = ''; q.blur(); go(h.key, { root: typeOf(h.key) === 'job' }); }
 
 /* ---------- 시작 ---------- */
-const DEFAULT = '직무|비즈니스';
-function fromHash() {
-  const p = new URLSearchParams(location.hash.slice(1));
-  const c = p.get('c'), g = p.get('g');
-  return { c: CAT[c] ? c : DEFAULT, g: g && G[g] && G[g].cat === c ? g : null };
-}
-const init = fromHash();
-go(init.c, init.g, { instant: true });
-addEventListener('hashchange', () => { const h = fromHash(); if (h.c !== state.cat || h.g !== state.group) go(h.c, h.g, { noHash: true }); });
+const DEFAULT = 'job:' + (J.jobs.find(j => j.ko === '경영 전략') || J.jobs[0]).id;
+const start = dec(location.hash) || [DEFAULT];
+history.replaceState({ p: start }, '', enc(start));
+show(start, false);
 })();
 </script>
 </body>

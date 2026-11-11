@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HU 스킬 갤럭시 · 연관 트리</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="gnb">
+  <a class="logo" href="../"><b>HU</b><span>스킬 갤럭시 · Type 2</span></a>
+  <nav><a href="../bubble/" >연관도 버블</a><a href="../tree/" aria-current="page">연관 트리</a></nav>
+</header>
+<div class="layout">
+  <aside class="side" aria-label="중심 히스토리">
+    <div class="center-card">
+      <div style="display:flex;align-items:center;gap:8px"><span class="dot" id="centerDot"></span><label for="center">출발 분야</label></div>
+      <select id="center"></select>
+      <div class="meta" id="centerMeta"></div>
+    </div>
+    <div class="hist-box">
+      <h3>중심 히스토리</h3>
+      <p class="hint2">스킬 그룹을 누를 때마다 중심이 바뀌고, 지나온 중심이 단계별로 쌓입니다. 항목을 누르면 그 중심으로 돌아갑니다.</p>
+      <div id="histTree"></div>
+      <p class="hist-foot">뒤로 가기: 마우스 뒤로 버튼, <kbd>Backspace</kbd>, <kbd>Alt</kbd>+<kbd>←</kbd></p>
+    </div>
+  </aside>
+  <main class="tree-main" id="top">
+    <p class="eyebrow">스킬 갤럭시 · Type 2</p>
+    <h1>연관 트리</h1>
+    <p class="lead">현재 중심에서 일곱 계열로, 계열에서 연관 스킬 그룹으로 가지가 뻗습니다. 선이 굵고 끝 원이 클수록 중심과 연관도가 높으며, 괄호 안 숫자가 연관도입니다. 계열 줄기의 굵기는 그 계열 연관도의 합입니다. 계열 이름을 누르면 접고 펼 수 있고, 스킬 그룹을 누르면 그 그룹이 새 중심이 됩니다.</p>
+    <svg class="chart dendro" id="dendro" viewBox="0 0 760 900" role="tree" aria-label="중심 연관 트리"></svg>
+    <p class="note"><b>데이터와 계산 방법</b><br>스킬과 분류는 휴넷 스킬DB v1.0(Lightcast·Mercer·Hunet 기반)을 썼고, 41개 분야를 일곱 계열로 묶은 것은 이 시안을 위한 임시 분류입니다. 연관도는 DB에 정의되어 있지 않아, 스킬 이름(국문·영문)에 함께 쓰인 단어의 유사도로 계산한 뒤 기준마다 가장 가까운 그룹이 100이 되도록 맞췄습니다. 실제 상관도 데이터가 생기면 data.js의 연관도 행렬만 바꾸면 됩니다. 커버리지는 휴넷 마이크로러닝·PMC 영상과 아티클·리더십 라이브러리의 제목과 태그를 스킬 이름과 대조해 계산했고, 표현이 다른 같은 뜻의 콘텐츠는 잡히지 않으므로 실제 스킬 갭은 이보다 작을 수 있습니다.</p>
+  </main>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>
