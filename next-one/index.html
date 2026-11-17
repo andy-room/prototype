@@ -38,7 +38,7 @@
 
   /* 폰 */
   .phone { position: relative; width: 390px; height: 800px; background: var(--white); border-radius: 48px; border: 1px solid var(--g3); overflow: hidden; }
-  .status { position: absolute; top: 22px; left: 32px; font: 12px var(--mono); color: var(--g2); z-index: 5; }
+  .status { position: absolute; top: 0; left: 0; right: 0; height: 56px; padding: 22px 32px 0; font: 12px var(--mono); color: var(--g2); z-index: 6; background: linear-gradient(#fff 70%, rgba(255,255,255,0)); }
   .screen {
     position: absolute; inset: 0; padding: 84px 28px 32px; display: flex; flex-direction: column;
     opacity: 0; transform: translateX(24px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease);
@@ -112,8 +112,40 @@
   .owned { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .owned span { font-size: 12px; padding: 5px 9px; border-radius: 7px; background: var(--ink); color: #fff; }
   .owned span.new { background: var(--blue); }
-  .legend { display: flex; gap: 14px; margin-top: 10px; font-size: 11px; color: var(--g2); }
-  .legend i { display: inline-block; width: 12px; height: 6px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+  /* 홈: 스크롤 + 하단 고정 */
+  #s-route { padding: 0; }
+  #s-route .scroll { flex: 1; overflow-y: auto; padding: 84px 28px 24px; scrollbar-width: none; }
+  #s-route .scroll::-webkit-scrollbar { display: none; }
+  #s-route .dock { padding: 10px 28px 28px; background: linear-gradient(rgba(255,255,255,0), #fff 28%); margin-top: -28px; position: relative; }
+  /* 스킬 한 목록: 필터 + 스킬마다 바로 들을 강의 */
+  .filters { display: flex; gap: 6px; margin-top: 12px; }
+  .filters button { font-size: 13px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--g3); color: var(--g1); }
+  .filters button b { font: 500 11px var(--mono); margin-left: 4px; color: var(--g2); }
+  .filters button.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .filters button.on b { color: rgba(255,255,255,.6); }
+  .ref { margin-top: 12px; font-size: 11px; color: var(--g2); display: flex; align-items: center; gap: 6px; }
+  .ref i { width: 2px; height: 10px; background: var(--g2); border-radius: 1px; }
+  .sk { padding: 14px 0 12px; border-bottom: 1px solid var(--g4); }
+  .sk-head { width: 100%; display: grid; grid-template-columns: 1fr 104px 16px; gap: 12px; align-items: center; text-align: left; }
+  .sk-head .nm { font-size: 15px; font-weight: 600; }
+  .sk-head .nm em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--blue); margin-left: 6px; }
+  .sk-head .bar { position: relative; height: 6px; background: var(--g4); border-radius: 3px; }
+  .sk-head .bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); border-radius: 3px; transition: width .9s var(--ease); }
+  .sk.rec .sk-head .bar i { background: var(--blue); }
+  .sk-head .bar b { position: absolute; top: -3px; width: 2px; height: 12px; margin-left: -1px; background: var(--g2); border-radius: 1px; }
+  .sk-head svg { transition: transform .25s var(--ease); }
+  .sk.open .sk-head svg { transform: rotate(180deg); }
+  .cl { width: 100%; display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; text-align: left; margin-top: 10px; padding: 9px 12px; border-radius: 12px; background: var(--g5); }
+  .cl:active { transform: scale(.99); background: var(--g4); }
+  .cl .pi { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
+  .sk.rec > .cl .pi { background: var(--blue); }
+  .cl .t { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cl .m { font: 11px var(--mono); color: var(--g1); }
+  .sk .more { display: none; }
+  .sk.open .more { display: block; }
+  .sk .more .cl { background: none; padding: 7px 12px; margin-top: 2px; }
+  .sk .more .cl .pi { background: none; box-shadow: inset 0 0 0 1.5px var(--g3); }
+  .sk .more .cl .pi path { stroke: var(--g1); fill: none; }
   .up-btn {
     margin-top: auto; width: 100%; border-radius: 20px; background: var(--blue); color: #fff; padding: 14px 16px 14px 20px;
     display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; text-align: left; transition: transform .15s var(--ease), background .15s;
@@ -221,21 +253,24 @@
 
     <!-- 03 남은 거리 (홈) -->
     <section class="screen" id="s-route">
+      <div class="scroll" id="routeScroll">
       <div class="ends"><span>지금 · 마케터</span><span>데이터 PM</span></div>
       <div class="line"><div class="base"></div><div class="done" id="lineDone"></div><div class="start"></div><div class="flag"></div><div class="me" id="lineMe"></div></div>
       <div class="pct-row">
         <div class="pct"><span id="pct">0</span><small>%</small></div>
         <div class="remain" id="remain"></div>
       </div>
-      <div class="sec"><span>채워야 할 스킬</span><em>가까운 순</em></div>
-      <div id="rows"></div>
-      <div class="legend"><span><i style="background:#15171B"></i>지금 수준</span><span><i style="box-shadow:inset 0 0 0 1.5px #0066FF"></i>채워야 할 칸</span></div>
-      <div class="sec" style="margin-top:16px"><span>이미 가진 스킬</span><em id="ownedN"></em></div>
-      <div class="owned" id="owned"></div>
+      <div class="sec" style="margin-top:28px"><span>데이터 PM에 쓰이는 스킬</span><em>강의 하나 = 한 칸</em></div>
+      <div class="filters" id="filters"></div>
+      <div class="ref"><i></i>데이터 PM에서 보통 쓰는 수준</div>
+      <div id="skills"></div>
+      </div>
+      <div class="dock">
       <button class="up-btn" id="upBtn">
         <div><div class="a">스킬 올리기</div><div class="b" id="upSub"></div></div>
         <div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </button>
+      </div>
     </section>
 
     <!-- 04 콘텐츠 -->
@@ -275,7 +310,7 @@
 
   <aside class="side">
     <span class="mono">STORY</span>
-    <p>경력에서 찾은 스킬로 시작해, 가고 싶은 직무를 고르고, 그 사이의 거리를 스킬 단위로 봐요. 그다음부터는 <b>스킬 올리기</b>만 누르면 가장 가까운 것부터 채워져요.</p>
+    <p>경력에서 찾은 스킬로 시작해, 가고 싶은 직무를 고르고, 그 사이의 거리를 스킬 단위로 봐요. 스킬마다 바로 들을 강의가 붙어 있어서, 강의 하나를 누르면 그 스킬이 한 칸 올라가요. 고민되면 <b>스킬 올리기</b>만 누르면 돼요.</p>
     <button class="restart" id="restart">처음부터 다시 보기</button>
   </aside>
 
@@ -290,20 +325,28 @@ const DESTS = [
 ];
 // req = 그 직무에 필요한 수준(칸), lv = 지금 수준
 const SKILLS = [
-  { n: '커뮤니케이션', req: 4, lv: 4 }, { n: '시장 분석', req: 4, lv: 4 }, { n: '엑셀', req: 3, lv: 3 },
-  { n: '프로젝트 관리', req: 4, lv: 4 }, { n: '마케팅 전략', req: 3, lv: 3 },
+  { n: '커뮤니케이션', req: 4, lv: 4, why: '데이터로 설득하는 힘을 더해요', related: ['프레젠테이션'],
+    titles: ['데이터로 설득하는 커뮤니케이션', '회의를 짧게 끝내는 법'], mins: [6, 5] },
+  { n: '시장 분석', req: 4, lv: 4, why: '지표 설계와 이어져요', related: ['지표 설계'],
+    titles: ['경쟁사 지표 비교하기', '시장 규모 빠르게 추정하기'], mins: [7, 8] },
+  { n: '엑셀', req: 3, lv: 3, why: '데이터 분석과 이어져요', related: ['데이터 분석'],
+    titles: ['함수 조합으로 반복 줄이기', '엑셀에서 SQL처럼 생각하기'], mins: [5, 6] },
+  { n: '프로젝트 관리', req: 4, lv: 4, why: '데이터 프로젝트에 바로 써요', related: ['커뮤니케이션'],
+    titles: ['데이터 프로젝트 일정 잡기', '우선순위 정하는 법'], mins: [6, 5] },
+  { n: '마케팅 전략', req: 3, lv: 3, why: '지표 설계와 이어져요', related: ['지표 설계'],
+    titles: ['지표로 마케팅 전략 다시 보기', '세그먼트별 전략 세우기'], mins: [7, 6] },
   { n: '데이터 분석', req: 4, lv: 3, min: 7, why: '엑셀 스킬과 가장 가까워요', related: ['엑셀', '데이터 시각화'],
-    titles: ['피벗 테이블로 보고서 만들기'] },
+    titles: ['피벗 테이블로 보고서 만들기', '엑셀 차트로 한눈에 보여 주기', '데이터 정리 기본기', '숫자로 말하는 보고서 쓰기', '데이터 시각화 원칙', '상관과 인과 구분하기'], mins: [7, 6, 5, 9, 8, 6] },
   { n: 'SQL 기초', req: 3, lv: 0, min: 6, why: '방금 채운 데이터 분석과 이어져요', related: ['데이터 분석', '데이터베이스'],
-    titles: ['SELECT로 원하는 데이터 꺼내기', 'JOIN으로 표 합치기', 'GROUP BY로 집계하기'] },
+    titles: ['SELECT로 원하는 데이터 꺼내기', 'WHERE로 조건 걸기', 'JOIN으로 표 합치기', 'GROUP BY로 집계하기', '서브쿼리 맛보기'], mins: [6, 5, 8, 7, 9] },
   { n: '지표 설계', req: 4, lv: 1, min: 8, why: '마케팅 전략 경험이 도움이 돼요', related: ['마케팅 전략', '비즈니스 분석'],
-    titles: ['우리 서비스의 북극성 지표 정하기', '퍼널 지표 쪼개기', '대시보드에 둘 지표 고르기'] },
+    titles: ['우리 서비스의 북극성 지표 정하기', '퍼널 지표 쪼개기', '리텐션 지표 읽기', '대시보드에 둘 지표 고르기', '지표의 함정 피하기'], mins: [8, 7, 6, 7, 5] },
   { n: '실험 설계', req: 3, lv: 0, min: 5, why: '지표 설계와 함께 쓰는 스킬이에요', related: ['지표 설계', '통계 기초'],
-    titles: ['A/B 테스트 처음 설계하기', '표본 크기 정하기', '실험 결과 해석하기'] },
+    titles: ['A/B 테스트 처음 설계하기', '가설 세우는 법', '표본 크기 정하기', '실험 결과 해석하기', '실험하는 팀 문화 만들기'], mins: [5, 6, 7, 8, 6] },
 ];
 const MAXC = 5;
 let S;
-const reset = () => { S = { skills: SKILLS.map(s => ({ ...s, start: s.lv })), cur: null, shown: 0 }; };
+const reset = () => { S = { skills: SKILLS.map(s => ({ ...s, start: s.lv })), cur: null, shown: 0, filter: 'all', open: null }; };
 
 const $ = id => document.getElementById(id);
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -361,20 +404,38 @@ const pctOf = sk => Math.round(sk.reduce((a, s) => a + Math.min(s.lv, s.req), 0)
 const gaps = () => S.skills.filter(s => s.lv < s.req).sort((a, b) => (a.req - a.lv) - (b.req - b.lv) || ORDER(a.n) - ORDER(b.n));
 const cellsHTML = (s, fresh = -1) => Array.from({ length: MAXC }, (_, k) =>
   `<i class="${k === fresh ? 'fresh' : k < s.lv ? 'have' : k < s.req ? 'need' : 'over'}"></i>`).join('');
+// 스킬마다 다음에 들을 강의 = 아직 안 들은 것 중 첫 번째
+const nextIdx = s => (s.lv - s.start) % s.titles.length;
+const FILTERS = [['all', '전체'], ['grow', '키워 볼 스킬'], ['solid', '탄탄한 스킬']];
+const PLAY = c => `<svg width="9" height="10" viewBox="0 0 22 26"><path d="M3 2 L20 13 L3 24 Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg>`;
+const clHTML = (s, i) => `<button class="cl" data-n="${s.n}" data-i="${i}"><span class="pi">${PLAY()}</span><span class="t">${s.titles[i]}</span><span class="m">${s.mins[i]}분</span></button>`;
 function renderRoute(fx = {}) {
-  const g = gaps(), owned = S.skills.filter(s => s.lv >= s.req), nx = g[0];
-  $('rows').innerHTML = g.map((s, k) => `
-    <div class="row">
-      <div class="nm">${s.n}${k === 0 ? '<span class="tag">다음</span>' : ''}</div>
-      <div class="gap">${s.req - s.lv}칸 남음</div>
-      <div class="cells">${cellsHTML(s, fx.n === s.n ? fx.k : -1)}</div>
-    </div>`).join('') || '<div class="row"><div class="nm">필요한 스킬을 모두 채웠어요</div></div>';
-  $('owned').innerHTML = owned.map(s => `<span class="${fx.closed === s.n ? 'new' : ''}">${s.n}</span>`).join('');
-  $('ownedN').textContent = `${owned.length} / ${S.skills.length}`;
+  const g = gaps(), solid = S.skills.filter(s => s.lv >= s.req), nx = g[0];
+  const all = [...g, ...solid];
+  const cnt = { all: all.length, grow: g.length, solid: solid.length };
+  $('filters').innerHTML = FILTERS.map(([k, t]) => `<button class="${S.filter === k ? 'on' : ''}" data-f="${k}">${t}<b>${cnt[k]}</b></button>`).join('');
+  document.querySelectorAll('#filters button').forEach(b => b.onclick = () => { S.filter = b.dataset.f; renderRoute(); });
+  const list = S.filter === 'grow' ? g : S.filter === 'solid' ? solid : all;
+  $('skills').innerHTML = list.map(s => {
+    const i = nextIdx(s), rest = s.titles.map((_, k) => k).filter(k => k !== i);
+    const w = (fx.n === s.n ? s.lv - 1 : s.lv) / MAXC * 100;
+    return `
+    <div class="sk ${s === nx ? 'rec' : ''} ${S.open === s.n ? 'open' : ''}">
+      <button class="sk-head" data-n="${s.n}">
+        <span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}</span>
+        <span class="bar"><i data-to="${s.lv / MAXC * 100}" style="width:${w}%"></i><b style="left:${s.req / MAXC * 100}%"></b></span>
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="#A9ABB0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      ${s.lv < MAXC ? clHTML(s, i) : '<div class="cl"><span></span><span class="t">가장 높은 수준이에요</span></div>'}
+      <div class="more">${rest.map(k => clHTML(s, k)).join('')}</div>
+    </div>`; }).join('');
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('#skills .bar i').forEach(i => i.style.width = i.dataset.to + '%')));
+  document.querySelectorAll('.sk-head').forEach(b => b.onclick = () => { S.open = S.open === b.dataset.n ? null : b.dataset.n; b.parentElement.classList.toggle('open', S.open === b.dataset.n); document.querySelectorAll('.sk').forEach(x => x !== b.parentElement && x.classList.remove('open')); });
+  document.querySelectorAll('.cl[data-n]').forEach(b => b.onclick = () => sceneContent(b.dataset.n, +b.dataset.i));
   const left = g.reduce((a, s) => a + s.req - s.lv, 0);
-  $('remain').innerHTML = left ? `남은 거리<br><b>스킬 ${g.length}개 · ${left}칸</b>` : '<b>도착했어요</b>';
-  $('upBtn').style.visibility = nx ? 'visible' : 'hidden';
-  if (nx) $('upSub').textContent = `${nx.n} · ${nx.min}분 · ${nx.why}`;
+  $('remain').innerHTML = left ? `데이터 PM 수준까지<br><b>강의 ${left}개</b>` : '<b>도착했어요</b>';
+  const r = nx || solid[0];
+  $('upSub').textContent = `${r.n} · ${r.titles[nextIdx(r)]} · ${r.mins[nextIdx(r)]}분`;
 }
 const setPos = p => { $('lineMe').style.left = p + '%'; $('lineDone').style.width = p + '%'; };
 async function sceneRoute(first) {
@@ -382,7 +443,8 @@ async function sceneRoute(first) {
   show('s-route', 2);
   if (!first) return;
   setPos(0); $('pct').textContent = 0;
-  const items = document.querySelectorAll('#rows .row, #owned span');
+  $('routeScroll').scrollTop = 0;
+  const items = document.querySelectorAll('#skills .sk');
   items.forEach(el => el.classList.add('fade'));
   await wait(350);
   const p = pctOf(S.skills);
@@ -395,11 +457,13 @@ $('upBtn').onclick = () => sceneContent();
 
 /* ── 04 스킬 올리기: 짧은 콘텐츠 ───────────────────────── */
 document.querySelector('.wave').innerHTML = Array.from({ length: 28 }, (_, k) => `<i style="animation-delay:${(k * 97 % 700) / 1000}s"></i>`).join('');
-function sceneContent() {
-  const s = gaps()[0]; S.cur = s;
+function sceneContent(name, idx) {
+  const s = name ? S.skills.find(x => x.n === name) : (gaps()[0] || S.skills.find(x => x.lv < MAXC)); S.cur = s;
+  const i = idx ?? nextIdx(s);
+  s.curMin = s.mins[i];
   $('cSkill').textContent = `${s.n} · ${s.lv}칸 → ${s.lv + 1}칸`;
-  $('cTitle').textContent = s.titles[(s.lv - s.start) % s.titles.length];
-  $('tEnd').textContent = mmss(s.min * 60); $('tNow').textContent = '00:00';
+  $('cTitle').textContent = s.titles[i];
+  $('tEnd').textContent = mmss(s.curMin * 60); $('tNow').textContent = '00:00';
   $('tl').style.width = 0; $('media').classList.remove('playing');
   $('done').classList.remove('show'); $('phint').style.visibility = 'visible';
   $('sheet').classList.remove('on'); $('scrim').classList.remove('on');
@@ -411,7 +475,7 @@ $('playBtn').onclick = async () => {
   const s = S.cur;
   $('playBtn').disabled = true;
   $('media').classList.add('playing'); $('phint').style.visibility = 'hidden';
-  await tween(3200, p => { $('tl').style.width = p * 100 + '%'; $('tNow').textContent = mmss(p * s.min * 60); });
+  await tween(3200, p => { $('tl').style.width = p * 100 + '%'; $('tNow').textContent = mmss(p * s.curMin * 60); });
   $('media').classList.remove('playing'); $('done').classList.add('show');
   await wait(900);
   openSheet();
@@ -445,15 +509,17 @@ $('laterBtn').onclick = () => { $('sheet').classList.remove('on'); $('scrim').cl
 
 /* ── 다시 남은 거리로: 작은 업데이트가 큰 거리를 줄인다 ──── */
 async function applyUpdate() {
-  const s = S.cur, from = S.shown, k = s.lv;
+  const s = S.cur, from = S.shown, wasSolid = s.lv >= s.req;
   s.lv += 1;
-  const to = pctOf(S.skills), closed = s.lv >= s.req ? s.n : null;
-  renderRoute({ n: s.n, k, closed });
+  const to = pctOf(S.skills);
+  renderRoute({ n: s.n });
   show('s-route', 2);
   await wait(500);
   setPos(to);
   tween(1200, q => $('pct').textContent = Math.round(from + (to - from) * easeOut(q)));
-  toast(closed ? `<b>${s.n}</b> 다 채웠어요 · 데이터 PM까지 <b>+${to - from}%</b>` : `<b>${s.n}</b> ${s.lv}칸 · 데이터 PM까지 <b>+${to - from}%</b>`);
+  toast(wasSolid ? `<b>${s.n}</b> ${s.lv}칸 · 한층 더 탄탄해졌어요`
+    : s.lv >= s.req ? `<b>${s.n}</b> 데이터 PM 수준이 됐어요 · <b>+${to - from}%</b>`
+    : `<b>${s.n}</b> ${s.lv}칸 · 데이터 PM까지 <b>+${to - from}%</b>`);
   S.shown = to;
 }
 
