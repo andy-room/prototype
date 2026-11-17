@@ -13,4 +13,5 @@
 | [skill-galaxy/type1](skill-galaxy/type1/) | 스킬 갤럭시 Type 1 — WEF 방사형 맵, 직무(커리어 250개) 중심. 노드를 누르면 그 노드가 중심으로 이동(직무 → 스킬 → 스킬 그룹 → 연관 그룹), 연관도 = 노드 크기·블루 농도·선 두께. 마우스 뒤로/Backspace로 뒤로 가기, 우상단 탐색 히스토리(뎁스 트리) | https://andy-room.github.io/prototype/skill-galaxy/type1/ |
 | [skill-galaxy/type2/bubble](skill-galaxy/type2/bubble/) | 스킬 갤럭시 Type 2 · 연관도 버블 — USGS Consensus 차트 방식. 원 크기 = 중심과의 연관도, 세로축 = 콘텐츠 커버리지(스킬 갭), 클릭 시 중심 이동 + 경로, 왼쪽 게이지로 표시 범위 | https://andy-room.github.io/prototype/skill-galaxy/type2/bubble/ |
 | [skill-galaxy/type2/tree](skill-galaxy/type2/tree/) | 스킬 갤럭시 Type 2 · 연관 트리 — USGS 덴드로그램 방식. 선 두께·끝 원 = 연관도, 클릭 시 중심 이동, 왼쪽 중심 히스토리(뎁스 트리) | https://andy-room.github.io/prototype/skill-galaxy/type2/tree/ |
+| [next-one](next-one/) | 스킬 기반 학습 서비스 핵심 흐름 — 지금의 나(경력에서 찾은 스킬 34개) → 가고 싶은 곳(내 스킬이 이어지는 직무) → 남은 거리(직무까지 스킬별 칸) → 스킬 올리기(짧은 콘텐츠) → 업데이트(손맛) → 거리 줄어듦. next-one.png는 초기 정적 시안(Single Gesture) | https://andy-room.github.io/prototype/next-one/ |
 | [petals-motion-style](petals-motion-style/) | Jitter 템플릿 모션 스타일 스펙 — petals (Gradients: Petals), blur-bubbles-carousel (Blur: Bubbles & Carousel). README + motion-style.json 쌍 | — (문서/JSON, 페이지 없음) |
