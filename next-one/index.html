@@ -243,11 +243,16 @@
   .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--g3); margin: 0 auto 22px; }
   .card { margin-top: 18px; background: var(--g5); border: 1px solid var(--g4); border-radius: 16px; padding: 18px; }
   .card .name { font-size: 18px; font-weight: 600; }
-  .ver { margin-top: 8px; font-size: 14px; color: var(--g2); display: flex; gap: 10px; align-items: center; }
-  .ver .f { color: var(--ink); transition: color .4s; }
-  .ver .t { color: var(--g2); display: inline-block; transition: color .4s, transform .4s var(--ease); }
-  .ver.done .f { color: var(--g2); }
-  .ver.done .t { color: var(--blue); font-weight: 600; transform: scale(1.1); }
+  /* 업데이트 시트: 포인트가 올라가는 순간을 크게 */
+  .ver { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .vnum { display: inline-flex; align-items: baseline; gap: 4px; transform-origin: left center; }
+  .vnum b { font-size: 52px; font-weight: 200; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
+  .vnum small { font-size: 20px; font-weight: 400; }
+  .ver.done .vnum b { color: var(--blue); }
+  .ver.done .vnum { animation: bump .5s cubic-bezier(.3,1.6,.5,1); }
+  .vgain { font: 600 15px var(--mono); padding: 7px 11px; border-radius: 999px; background: var(--g4); color: var(--g1); transition: background .3s, color .3s; }
+  .ver.done .vgain { background: var(--blue); color: #fff; animation: bump .5s .1s cubic-bezier(.3,1.6,.5,1) both; }
+  .vnote { margin-top: 8px; font-size: 12px; color: var(--g1); }
   .card .cells { margin-top: 14px; }
   .related { margin-top: 12px; font-size: 12px; color: var(--g1); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .related em { font-style: normal; padding: 3px 8px; border-radius: 6px; background: #fff; border: 1px solid var(--g4); transition: .4s; }
@@ -289,6 +294,15 @@
   .later { display: block; margin: 0 auto; font-size: 13px; color: var(--g2); padding: 6px; }
 
   /* 보기 옵션: 도달점 있음 / 없음 */
+  /* 데스크톱 시연용: 모바일 접속 QR (보이기/숨기기) */
+  .qrbox { position: fixed; top: 52px; left: 14px; z-index: 50; }
+  .qrbtn { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--g3); color: var(--ink); }
+  .qrbtn i { font-style: normal; color: var(--g2); }
+  .qrcard { margin-top: 8px; width: 176px; padding: 12px 12px 10px; background: #fff; border: 1px solid var(--g3); border-radius: 16px; display: none; text-align: center; }
+  .qrbox.open .qrcard { display: block; }
+  .qrcard img { width: 150px; height: 150px; display: block; margin: 0 auto; image-rendering: pixelated; }
+  .qrcard p { margin: 8px 0 2px; font-size: 12px; color: var(--ink); line-height: 1.45; }
+  .qrcard small { font: 9px var(--mono); color: var(--g2); }
   .mode { position: fixed; top: 14px; left: 14px; z-index: 50; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: #fff; border: 1px solid var(--g3); }
   .mode button { font-size: 11px; padding: 4px 9px; border-radius: 999px; color: var(--g1); }
   .mode button.on { background: var(--ink); color: #fff; }
@@ -408,7 +422,7 @@
 
   @media (max-width: 1000px) {
     body { grid-template-columns: 1fr; padding: 0; }
-    .steps, .side, .mode { display: none; }
+    .steps, .side, .mode, .qrbox { display: none; }
     .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; justify-self: center; max-width: 480px; }
     /* 모바일: 위아래 꽉 채우기 (가짜 상태바 대신 실제 안전 영역만큼만 띄움) */
     html, body { background: #fff; }
@@ -424,6 +438,10 @@
 </style>
 </head>
 <body>
+  <div class="qrbox" id="qrbox">
+    <button class="qrbtn" id="qrBtn" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M1.5 1.5h4v4h-4zM8.5 1.5h4v4h-4zM1.5 8.5h4v4h-4zM8.5 8.5h1.5v1.5H8.5zM11 11h1.5v1.5H11zM11 8.5h1.5M8.5 11v1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span>모바일로 보기</span><i>보이기</i></button>
+    <div class="qrcard" id="qrCard"><img src="qr.png" alt="모바일 접속 QR"><p>휴대폰 카메라로 찍으면<br>바로 열려요</p></div>
+  </div>
   <div class="mode" id="mode" aria-label="보기 옵션"><button data-m="goal" class="on">도달점 있음</button><button data-m="point">도달점 없음 · 포인트</button></div>
   <nav class="steps" aria-label="스토리 단계">
     <h1>스킬 올리기</h1>
@@ -544,8 +562,8 @@
         <h2 class="h" style="margin:0">업데이트할 수 있는<br>스킬이 있어요</h2>
         <div class="card">
           <div class="name" id="uSkill"></div>
-          <div class="ver" id="ver"><span class="f" id="vFrom"></span><span>→</span><span class="t" id="vTo"></span></div>
-          <div class="cells" id="uCells" hidden></div>
+          <div class="ver" id="ver"><span class="vnum"><b id="vNum">0</b><small>P</small></span><span class="vgain" id="vGain">+0P</span></div>
+          <div class="vnote" id="vNote"></div>
           <div class="related" id="related"></div>
         </div>
         <div class="upd-wrap">
@@ -1008,7 +1026,7 @@ function openChoice() {
   $('cGainSub').textContent = `${s.n}에 모였어요`;
   $('cNext').classList.toggle('lock', !free);
   $('cNextSub').textContent = free ? `${s.titles[ni]} · ${s.mins[ni]}분` : `${FREE_STREAK}개 연속 완주! 멤버십으로 계속 들을 수 있어요`;
-  $('cNext').onclick = () => { $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => sceneContent(s.n, ni, true), 250); };
+  $('cNext').onclick = () => { $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => { sceneContent(s.n, ni, true); setTimeout(() => $('playBtn').click(), 520); }, 250); }; // 이어서 → 바로 재생 (무료 한도면 멤버십 안내로)
   $('cStop').onclick = () => { $('cSheet').classList.remove('on'); setTimeout(openSheet, 200); };
   $('cSheet').classList.add('on');
 }
@@ -1018,8 +1036,8 @@ function openSheet() {
   const s = S.cur;
   $('uSkill').textContent = s.n;
   const P = S.pend;
-  $('vFrom').textContent = `${fmt(s.pts)}P`; $('vTo').textContent = `${fmt(s.pts + P.gain)}P`; $('ver').classList.remove('done');
-  $('uCells').innerHTML = cellsHTML(s);
+  $('vNum').textContent = fmt(s.pts); $('vGain').textContent = `+${P.gain}P`; $('ver').classList.remove('done');
+  $('vNote').textContent = `업데이트하면 ${fmt(s.pts + P.gain)}P가 돼요`;
   $('related').innerHTML = '함께 가까워져요 ' + s.related.map(r => `<em>${r}</em>`).join('');
   $('updLabel').innerHTML = '업데이트<small>꾹 눌러 주세요</small>'; $('orbit').style.strokeDashoffset = 534; $('updBtn').classList.remove('busy', 'pop', 'press');
   $('scrim').classList.add('on'); $('sheet').classList.add('on');
@@ -1061,8 +1079,11 @@ async function finishUpdate() {
   $('orbit').style.strokeDashoffset = 0;
   navigator.vibrate?.([10, 40, 18]);
   ['r1', 'r2'].forEach((id, k) => { const r = $(id); r.classList.remove('go'); void r.offsetWidth; setTimeout(() => r.classList.add('go'), k * 160); });
-  $('updLabel').innerHTML = '완료'; $('ver').classList.add('done');
-  for (let k = 0; k < S.pend.n; k++) if ($('uCells').children[s.lv + k]) $('uCells').children[s.lv + k].className = 'fresh';
+  $('updLabel').innerHTML = '완료';
+  // 포인트가 크게 올라가요: 숫자가 차오르고, +P 배지가 파랗게 튀어요
+  const from = s.pts, to = s.pts + S.pend.gain;
+  $('ver').classList.add('done'); $('vNote').textContent = `${s.n}에 포인트가 쌓였어요`;
+  tween(900, q => $('vNum').textContent = fmt(Math.round(from + (to - from) * easeOut(q))));
   document.querySelectorAll('#related em').forEach((e, k) => setTimeout(() => e.classList.add('up'), 200 + k * 160));
   await wait(1200);
   applyUpdate();
@@ -1132,6 +1153,14 @@ function addSkill(n) {
   if ($('s-detail').classList.contains('on')) renderDetail(); else renderRoute();
 }
 
+// 모바일 QR: 누를 때마다 보이기/숨기기 (이 브라우저에만 기억)
+(function () {
+  const box = $('qrbox'), btn = $('qrBtn');
+  const set = open => { box.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); btn.querySelector('i').textContent = open ? '숨기기' : '보이기'; try { localStorage.setItem('qrOpen', open ? '1' : '0'); } catch (e) {} };
+  let saved = null; try { saved = localStorage.getItem('qrOpen'); } catch (e) {}
+  set(saved === '1');
+  btn.onclick = () => set(!box.classList.contains('open'));
+})();
 const touch = $('touch'), phone = document.querySelector('.phone');
 phone.addEventListener('pointermove', e => { touch.style.left = e.clientX + 'px'; touch.style.top = e.clientY + 'px'; touch.classList.add('on'); });
 phone.addEventListener('pointerleave', () => touch.classList.remove('on'));
