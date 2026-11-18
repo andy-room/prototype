@@ -561,6 +561,18 @@
   body.desk .maxbtn { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--g1); border: 1px solid var(--g3); margin-left: 8px; flex: none; }
   body.desk .maxbtn:hover { color: var(--ink); background: var(--g5); }
   body.desk .maxbtn .c { display: none; }
+  .profpop { position: absolute; z-index: 20; width: 260px; padding: 8px; border-radius: 16px; background: #fff; box-shadow: 0 12px 40px rgba(21,23,27,.16), 0 0 0 1px var(--g4); animation: htIn .25s var(--ease); }
+  .profpop.onrail { position: fixed; z-index: 70; }
+  .profpop .pl { font: 500 10px var(--mono); letter-spacing: .14em; color: var(--g2); padding: 6px 10px 8px; }
+  .profpop button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; text-align: left; }
+  .profpop button:hover { background: var(--g5); }
+  .profpop button img, .profpop .ad { width: 34px; height: 34px; border-radius: 50%; background: #ECECEC; flex: none; }
+  .profpop .ad { display: grid; place-items: center; background: none; border: 1.5px dashed var(--g3); color: var(--g2); font-size: 18px; }
+  .profpop button.on img { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--blue); }
+  .profpop b { display: block; font-size: 14px; font-weight: 600; }
+  .profpop small { display: block; font-size: 11px; color: var(--g1); margin-top: 1px; }
+  .profpop .all { justify-content: center; font-size: 12px; color: var(--g1); border-top: 1px solid var(--g4); border-radius: 0 0 10px 10px; margin-top: 4px; padding-top: 10px; }
+  .sc .scroll { position: relative; }
   .tabhead { display: flex; align-items: center; justify-content: space-between; min-height: 34px; }
   .tabhead .maxbtn { margin-left: auto; }
   body.desk.pmax .maxbtn .o { display: none; }
@@ -591,6 +603,9 @@
   body.desk .rail { display: flex; flex-direction: column; align-items: center; gap: 6px; position: fixed; left: 0; top: 0; bottom: 0; width: 88px; z-index: 6; padding: 22px 0; background: #fff; border-right: 1px solid var(--g4); color: var(--g1); transition: opacity .4s; }
   body.desk.pre .rail > :not(.rlogo) { opacity: 0; pointer-events: none; }
   .nitems .ni:nth-child(4) { transition-delay: 0s; }
+  .rail .rlogo { cursor: pointer; transition: transform .15s var(--ease), box-shadow .2s; }
+  .rail .rlogo:hover { transform: scale(1.05); }
+  .rail .rlogo.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
   .rail .rlogo { width: 40px; height: 40px; border-radius: 12px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 600 13px var(--mono); letter-spacing: .04em; margin-bottom: 10px; }
   .rail .rlab { font: 500 9px var(--mono); letter-spacing: .16em; color: var(--g2); margin: 8px 0 2px; }
   .rail .rp { position: relative; width: 64px; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 0; font-size: 10px; line-height: 1.25; text-align: center; color: var(--g1); border-radius: 14px; transition: background .2s, color .2s; }
@@ -602,6 +617,8 @@
   .rail .rp .im.add { background: transparent; border: 1.5px dashed var(--g3); }
   .rail .rp .lk { color: var(--blue); }
   .rail hr { width: 40px; border: 0; border-top: 1px solid var(--g4); margin: 10px 0; }
+  .rail .rsw { display: inline-flex; align-items: center; gap: 3px; margin: -2px 0 2px; padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; color: var(--g1); border: 1px solid var(--g3); background: #fff; }
+  .rail .rsw:hover { color: var(--ink); border-color: var(--ink); }
   .rail .ri { width: 64px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0 9px; border-radius: 14px; font-size: 11px; font-weight: 500; color: var(--g1); transition: background .2s, color .2s; }
   .rail .ri:hover { color: var(--ink); }
   .rail .ri:hover .ic { background: var(--g4); }
@@ -1177,7 +1194,7 @@ function sceneProfile() {
   });
   show('s-profile', 1);
 }
-$('meAv').onclick = $('meSw').onclick = () => sceneProfile();
+$('meAv').onclick = $('meSw').onclick = e => isDesk() ? profPop($('meSw')) : sceneProfile();
 
 /* ── 01-1 새 방향의 나: 아바타 고르기 (무료는 1개 추가까지) ─── */
 const FREE_PROFILES = 2; // 기본 1 + 추가 1
@@ -1956,17 +1973,42 @@ $('restart').onclick = () => {
 /* ── 데스크탑 왼쪽 메뉴: 프로필 바로 전환 + 내 프로필·콘텐츠·스킬 ── */
 function renderRail() {
   if (!isDesk() || !S) return;
-  const cur = S.pid, now = tabNow();
-  const profs = [...S.profiles].sort((a, b) => (b.id === cur) - (a.id === cur)).map(p => `<button class="rp ${p.id === cur ? 'on' : ''}" data-p="${p.id}" title="${ro(p.target)} 달리는 나"><span class="im"><img src="avatars/a${p.av}.png" alt=""></span>${p.target}</button>`).join('')
-    + `<button class="rp" data-p="add"><span class="im add"><svg width="16" height="16" viewBox="0 0 18 18"><path d="M9 3v12M3 9h12" stroke="#A9ABB0" stroke-width="1.8" stroke-linecap="round"/></svg></span>${canAdd() ? '새 방향' : '<span class="lk">멤버십</span>'}</button>`;
-  const items = [['main', '홈'], ['home', '내 프로필'], ['catalog', '콘텐츠'], ['skills', '스킬']].map(([k, t]) => `<button class="ri ${now === k ? 'on' : ''}" data-tab="${k}"><span class="ic">${k === 'home' && S.entered ? meFace() : NAV_IC[k]}</span>${t}</button>`).join('');
-  $('rail').innerHTML = `<div class="rlogo">HU</div><div class="rlab">프로필</div>${profs}<hr><div class="rlab">메뉴</div>${items}`;
-  $('rail').querySelectorAll('.rp').forEach(b => b.onclick = () => {
+  const now = tabNow(), me = profOf(S.pid);
+  // HU 로고 = 홈 · 지금 프로필 하나 = 대시보드(거기서 프로필 전환) · 콘텐츠 · 스킬
+  const prof = S.entered && me
+    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>${me.target}</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
+    : `<button class="rp" data-tab="home"><span class="im add">${NAV_IC.home}</span>프로필 고르기</button>`;
+  const items = [['catalog', '콘텐츠'], ['skills', '스킬']].map(([k, t]) => `<button class="ri ${now === k ? 'on' : ''}" data-tab="${k}"><span class="ic">${NAV_IC[k]}</span>${t}</button>`).join('');
+  $('rail').innerHTML = `<button class="rlogo ${now === 'main' ? 'on' : ''}" data-tab="main" title="홈">HU</button>${prof}<hr>${items}`;
+  $('rail').querySelectorAll('[data-tab]').forEach(b => b.onclick = () => (S.entered || b.dataset.tab === 'main') ? openTab(b.dataset.tab) : homeGo(b.dataset.tab));
+  if ($('railSw')) $('railSw').onclick = e => { e.stopPropagation(); profPop($('railSw')); };
+}
+
+/* 데스크탑 대시보드: '프로필 바꾸기'를 누르면 그 자리에서 바로 전환 */
+function profPop(anchor) {
+  let pop = $('profPop');
+  if (pop) { pop.remove(); return; }
+  const cur = S.pid;
+  pop = document.createElement('div'); pop.id = 'profPop'; pop.className = 'profpop';
+  pop.innerHTML = `<div class="pl">프로필 바꾸기</div>` + S.profiles.map(p => `<button class="${p.id === cur ? 'on' : ''}" data-p="${p.id}"><img src="avatars/a${p.av}.png" alt=""><span><b>${p.target}</b><small>${p.id === cur ? '지금 보고 있어요' : p.w}</small></span></button>`).join('')
+    + `<button data-p="add"><span class="ad">+</span><span><b>새 방향 추가</b><small>${canAdd() ? `무료로 ${FREE_PROFILES - S.profiles.length}개 더` : '멤버십으로 더 만들 수 있어요'}</small></span></button>`
+    + `<button data-p="all" class="all">전체 프로필 화면</button>`;
+  const box = anchor.closest('.scroll'), r = anchor.getBoundingClientRect();
+  if (box) {
+    box.appendChild(pop); const pr = box.getBoundingClientRect();
+    pop.style.left = (r.left - pr.left) + 'px'; pop.style.top = (r.bottom - pr.top + box.scrollTop + 8) + 'px';
+  } else { // 왼쪽 메뉴: 메뉴 오른쪽에 고정
+    document.body.appendChild(pop); pop.classList.add('onrail');
+    pop.style.left = ($('rail').getBoundingClientRect().right + 10) + 'px'; pop.style.top = Math.max(12, r.top - 70) + 'px';
+  }
+  pop.querySelectorAll('button').forEach(b => b.onclick = e => {
+    e.stopPropagation(); pop.remove();
     const id = b.dataset.p;
+    if (id === 'all') return sceneProfile();
     if (id === 'add') return canAdd() ? sceneAvatar() : locked('profile');
-    switchProfile(id);
+    if (id !== cur) switchProfile(id);
   });
-  $('rail').querySelectorAll('.ri').forEach(b => b.onclick = () => (S.entered || b.dataset.tab === 'main') ? openTab(b.dataset.tab) : homeGo(b.dataset.tab));
+  setTimeout(() => document.addEventListener('click', function off(e) { if (!e.target.closest('#profPop')) { pop.remove(); document.removeEventListener('click', off); } }), 0);
 }
 
 /* ── 데스크탑 패널: 넓게 보기 / 오른쪽 끝을 끌어서 폭 조절 ── */
