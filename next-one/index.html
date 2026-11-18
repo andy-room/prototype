@@ -394,8 +394,18 @@
 
   @media (max-width: 1000px) {
     body { grid-template-columns: 1fr; padding: 0; }
-    .steps, .side { display: none; }
+    .steps, .side, .mode { display: none; }
     .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; justify-self: center; max-width: 480px; }
+    /* 모바일: 위아래 꽉 채우기 (가짜 상태바 대신 실제 안전 영역만큼만 띄움) */
+    html, body { background: #fff; }
+    body { min-height: 100dvh; align-items: stretch; }
+    .status { height: calc(env(safe-area-inset-top) + 12px); padding: 0; font-size: 0; }
+    .screen { padding-top: calc(env(safe-area-inset-top) + 28px); padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
+    .sc .scroll { padding-top: calc(env(safe-area-inset-top) + 28px); }
+    .sc .dock { padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
+    .toast { top: calc(env(safe-area-inset-top) + 12px); }
+    .back, .back2 { margin-top: 0; }
+    .touch { display: none; }
   }
 </style>
 </head>
@@ -1077,7 +1087,7 @@ $('restart').onclick = () => {
   document.querySelectorAll('.scroll').forEach(el => el.scrollTop = 0);
   reset(); setMode(S.mode); sceneLogin();
 };
-reset(); sceneLogin();
+reset(); if (matchMedia('(max-width: 1000px)').matches) setMode('point'); sceneLogin();
 </script>
 </body>
 </html>
