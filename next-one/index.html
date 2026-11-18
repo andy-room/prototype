@@ -741,7 +741,7 @@
   <div class="ghud" id="ghud">
     <div class="gseg" id="gTilt"><button data-tilt="0" class="on">평면으로 보기</button><button data-tilt="1">기울여 거리 보기</button></div>
     <div class="gseg"><button id="gOut" aria-label="축소">−</button><button id="gReset">처음 위치</button><button id="gIn" aria-label="확대">+</button></div>
-    <div class="leg"><b>SKILL GALAXY</b><span style="color:#2ED3A0">●</span> 탄탄한 스킬 · <span style="color:#2F7BFF">●</span> 키워 볼 스킬 · ○ 아직 0P<br>원 크기 = 쌓인 포인트<br>기울이면 깊이 = 목표까지 남은 거리<br>끌어서 돌리고, 스크롤로 확대해요</div>
+    <div class="leg"><b>SKILL GALAXY</b><span style="color:#2F7BFF">●</span> 탄탄한 스킬 · ● 키워 볼 스킬 · ○ 아직 0P<br>원 크기 = 쌓인 포인트<br>기울이면 깊이 = 목표까지 남은 거리<br>끌어서 돌리고, 스크롤로 확대해요</div>
   </div>
   <div class="gtip" id="gtip"></div>
   <div class="qrbox" id="qrbox">
@@ -2070,7 +2070,7 @@ const Galaxy = (() => {
         ctx.fillStyle = 'rgba(255,255,255,.05)'; ctx.fill();
         ctx.strokeStyle = `rgba(255,255,255,${hov ? .6 : .28})`; ctx.lineWidth = 1.2; ctx.stroke();
       } else {
-        ctx.fillStyle = nd.solid ? '#2ED3A0' : nd.gap ? '#2F7BFF' : '#F1F4F9'; ctx.fill();
+        ctx.fillStyle = nd.solid ? '#2F7BFF' : '#F1F4F9'; ctx.fill();
         if (hov) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, r + 4, 0, 7); ctx.stroke(); }
       }
       // 스킬 이름은 원 가운데, 포인트는 마우스를 올렸을 때만
@@ -2082,7 +2082,7 @@ const Galaxy = (() => {
       while (fs > 10 && ctx.measureText(nd.s.n).width > r * 2 - 10) ctx.font = fnt(--fs);
       const tw = ctx.measureText(nd.s.n).width, fits = !nd.dim && tw <= r * 2 - 10;
       if (fits) { // 원 안에 쏙
-        ctx.fillStyle = nd.gap ? '#fff' : nd.solid ? '#06352A' : '#15171B';
+        ctx.fillStyle = nd.solid ? '#fff' : '#15171B';
         ctx.fillText(nd.s.n, p.x, p.y + fs * .36);
       } else { // 넘치면 상자 없이 원 바로 아래에
         ctx.font = fnt(12);
@@ -2093,8 +2093,8 @@ const Galaxy = (() => {
         const t = nd.dim ? '0P' : `${fmt(nd.s.pts)}P`;
         ctx.font = '600 13px "Geist Mono", monospace';
         const tw2 = ctx.measureText(t).width + 16, by = p.y - r - 22;
-        ctx.fillStyle = nd.solid ? '#2ED3A0' : nd.gap ? '#2F7BFF' : '#fff'; ctx.beginPath(); ctx.roundRect(p.x - tw2 / 2, by - 11, tw2, 22, 11); ctx.fill();
-        ctx.fillStyle = nd.gap ? '#fff' : nd.solid ? '#06352A' : '#15171B'; ctx.fillText(t, p.x, by + 4.5);
+        ctx.fillStyle = nd.solid ? '#2F7BFF' : '#fff'; ctx.beginPath(); ctx.roundRect(p.x - tw2 / 2, by - 11, tw2, 22, 11); ctx.fill();
+        ctx.fillStyle = nd.solid ? '#fff' : '#15171B'; ctx.fillText(t, p.x, by + 4.5);
       }
     });
     ctx.globalAlpha = reveal;
