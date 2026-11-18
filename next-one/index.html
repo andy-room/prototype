@@ -44,6 +44,7 @@
     opacity: 0; transform: translateX(24px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease);
   }
   .screen.on { opacity: 1; transform: none; pointer-events: auto; }
+  .screen:not(.on) * { pointer-events: none !important; }
   .screen.out { opacity: 0; transform: translateX(-24px); }
   .eyebrow { font: 500 11px var(--mono); letter-spacing: .18em; color: var(--g1); }
   .h { font-size: 26px; font-weight: 600; line-height: 1.38; letter-spacing: -0.03em; margin: 12px 0 0; }
@@ -244,7 +245,7 @@
   .ring { position: absolute; width: 136px; height: 136px; border-radius: 50%; border: 1.5px solid var(--blue); opacity: 0; pointer-events: none; }
   .ring.go { animation: ring 1.1s var(--ease) forwards; }
   @keyframes ring { from { transform: scale(1); opacity: .5; } to { transform: scale(2.2); opacity: 0; } }
-  .upd-btn { position: relative; width: 136px; height: 136px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 19px; font-weight: 600; transition: transform .35s cubic-bezier(.3,1.6,.5,1), background .2s; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .upd-btn { position: relative; width: 136px; height: 136px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 19px; font-weight: 600; transition: transform .35s cubic-bezier(.3,1.6,.5,1), background .2s; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .upd-btn.press { transform: scale(.9); background: var(--blue-press); transition: transform .12s ease-out, background .12s; }
   .upd-btn.pop { animation: pop .5s cubic-bezier(.3,1.6,.5,1); }
   @keyframes pop { 0% { transform: scale(.9); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
@@ -261,11 +262,10 @@
   .csheet.on { transform: none; }
   .csheet .tag { font: 500 11px var(--mono); letter-spacing: .14em; color: var(--blue); }
   .csheet .big { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
-  .csheet .big b { font-size: 34px; font-weight: 300; letter-spacing: -0.03em; }
+  .csheet .big b { font-size: 34px; font-weight: 300; letter-spacing: -0.03em; color: var(--blue); font-variant-numeric: tabular-nums; display: inline-block; transform-origin: left bottom; }
+  .csheet .big b.bump { animation: bump .45s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes bump { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
   .csheet .big span { font-size: 15px; color: var(--g1); }
-  .pips { display: flex; gap: 6px; margin-top: 14px; }
-  .pips i { width: 28px; height: 6px; border-radius: 3px; background: var(--g4); }
-  .pips i.on { background: var(--blue); }
   .cnext { width: 100%; margin-top: 20px; border-radius: 16px; background: var(--ink); color: #fff; padding: 14px 18px; text-align: left; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
   .cnext .a { font-size: 16px; font-weight: 600; } .cnext .b { font-size: 12px; opacity: .7; margin-top: 3px; }
   .cnext.lock { background: var(--g5); color: var(--g1); }
@@ -285,10 +285,13 @@
   body.mode-point .goal-only { display: none !important; }
   .sk .ptv { font: 500 13px var(--mono); color: var(--ink); text-align: right; }
   body.mode-point .sk { grid-template-columns: 1fr auto 12px; }
+  .sk { grid-template-columns: 1fr 84px 52px 12px; }
   .pt-hero .n { font-size: 64px; font-weight: 150; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
   .pt-hero .n small { font-size: 26px; font-weight: 300; margin-left: 4px; }
   .pt-hero .w { margin-top: 10px; font-size: 13px; color: var(--g1); line-height: 1.6; }
   .pt-hero .w b { color: var(--blue); font-weight: 600; }
+  .pt-hero .rank { display: inline-block; padding: 1px 7px; border-radius: 6px; background: var(--blue-soft); font-variant-numeric: tabular-nums; transform-origin: center; }
+  .pt-hero .rank.bump { animation: bump .45s cubic-bezier(.3,1.6,.5,1); }
   .pt-hero .chips2 { display: flex; gap: 6px; margin-top: 14px; }
   .pt-hero .chips2 span { font: 500 12px var(--mono); padding: 5px 9px; border-radius: 8px; background: var(--g5); color: var(--g1); }
   .pt-hero .chips2 span b { color: var(--blue); font-weight: 600; }
@@ -476,7 +479,7 @@
       <div class="scroll" id="routeScroll">
       <div class="me-row"><img class="av photo" src="avatars/a1.png" alt="프로필 바꾸기" id="meAv"><div><div class="nm">데이터 PM으로 달리는 나</div><button class="sw" id="meSw">프로필 바꾸기 ›</button></div><button class="plan" id="plan">무료</button></div>
       <div class="pt-hero pt-only" style="margin-top:36px"><div class="n"><span id="ptTotal">0</span><small>P</small></div>
-        <div class="w">데이터 PM 방향으로 쌓은 포인트예요.<br>끝이 정해져 있지 않아요. 쌓을수록 <b>가까워져요</b>.</div>
+        <div class="w">데이터 PM으로 달리는 사람 중 <b class="rank" id="ptRank">상위 0%</b>예요.<br>끝이 정해져 있지 않아요. 쌓을수록 가까워져요.</div>
         <div class="chips2"><span>이번 주 <b id="ptWeek">+0P</b></span><span id="ptCnt">스킬 0개</span></div></div>
       <div class="line goal-only"><div class="base"></div><div class="done" id="lineDone"></div><div class="start"></div><div class="flag"></div><div class="me" id="lineMe"><span class="pt" id="pts">0P</span></div></div>
       <div class="ends goal-only"><span>출발</span><span>목표 · 데이터 PM</span></div>
@@ -522,7 +525,6 @@
       <div class="csheet" id="cSheet">
         <div class="tag" id="cTag">강의 하나 끝</div>
         <div class="big"><b id="cGain"></b><span id="cGainSub"></span></div>
-        <div class="pips" id="pips"></div>
         <button class="cnext" id="cNext"><div><div class="a">이어서 다음 강의</div><div class="b" id="cNextSub"></div></div><svg width="16" height="16" viewBox="0 0 16 16"><path d="M5.5 3 10.5 8l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="cstop" id="cStop">여기까지 하고 스킬 올리기</button>
       </div>
@@ -532,7 +534,7 @@
         <div class="card">
           <div class="name" id="uSkill"></div>
           <div class="ver" id="ver"><span class="f" id="vFrom"></span><span>→</span><span class="t" id="vTo"></span></div>
-          <div class="cells goal-only" id="uCells"></div>
+          <div class="cells" id="uCells" hidden></div>
           <div class="related" id="related"></div>
         </div>
         <div class="upd-wrap">
@@ -741,8 +743,10 @@ $('destBack').onclick = () => sceneAvatar();
 
 /* ── 03 남은 거리: 나와 직무 사이를 스킬로 ──────────────── */
 const ORDER = n => SKILLS.findIndex(x => x.n === n);
-const pctOf = sk => Math.round(sk.reduce((a, s) => a + Math.min(s.lv, s.req), 0) / sk.reduce((a, s) => a + s.req, 0) * 100);
-const gaps = () => S.skills.filter(s => s.lv < s.req).sort((a, b) => (a.req - a.lv) - (b.req - b.lv) || ORDER(a.n) - ORDER(b.n));
+const reqP = s => s.req * 100;   // 데이터 PM에서 쓰는 수준을 포인트로 (도달점 있음 보기)
+const SCALE = 520;               // 막대 길이 기준
+const pctOf = sk => Math.round(sk.reduce((a, s) => a + Math.min(s.pts, reqP(s)), 0) / sk.reduce((a, s) => a + reqP(s), 0) * 100);
+const gaps = () => S.skills.filter(s => s.pts < reqP(s)).sort((a, b) => (reqP(a) - a.pts) - (reqP(b) - b.pts) || ORDER(a.n) - ORDER(b.n));
 const cellsHTML = (s, fresh = -1) => Array.from({ length: MAXC }, (_, k) =>
   `<i class="${k === fresh ? 'fresh' : k < s.lv ? 'have' : k < s.req ? 'need' : 'over'}"></i>`).join('');
 // 스킬마다 다음에 들을 강의 = 아직 안 들은 것 중 첫 번째
@@ -754,20 +758,22 @@ const isMine = s => !s.extra || S.added.includes(s.n);
 const gainOf = (s, i = nextIdx(s)) => s.mins[i] * 5;           // 강의 하나로 쌓이는 포인트
 const points = () => [...S.skills, ...S.extra].reduce((a, s) => a + s.pts, 0);
 const fmt = n => n.toLocaleString();
+// 같은 방향(데이터 PM)으로 달리는 사람 중 내 위치 (예시: 포인트가 쌓일수록 상위 %가 작아져요)
+const rankOf = p => Math.max(1, Math.min(99, Math.round(99 - 98 / (1 + Math.exp(-(p - 2150) / 380)))));
 const pplPts = (p, n) => p.skills[n] * 100 + hsh(n + p.id) % 60;
 const pctNow = () => Math.min(100, pctOf(S.skills) + S.bonus);
 const FILTERS = [['all', '전체'], ['solid', '탄탄한 스킬'], ['grow', '키워 볼 스킬']];
 const CHEV = '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="#A9ABB0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PLAY = '<svg width="9" height="10" viewBox="0 0 22 26"><path d="M3 2 L20 13 L3 24 Z" stroke-width="3" stroke-linejoin="round"/></svg>';
-const barHTML = (s, w = s.lv) => `<span class="bar goal-only"><i data-to="${Math.min(1, s.lv / MAXC) * 100}" style="width:${Math.min(1, w / MAXC) * 100}%"></i></span>`;
+const barHTML = (s, w = s.pts) => `<span class="bar goal-only"><i data-to="${Math.min(1, s.pts / SCALE) * 100}" style="width:${Math.min(1, w / SCALE) * 100}%"></i></span>`;
 const fill = () => requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.bar i[data-to]').forEach(i => i.style.width = i.dataset.to + '%')));
 // 많이 쌓인 순: 직무 수준 대비 채운 비율 → 칸 수
-const ratio = s => s.req ? s.lv / s.req : s.lv / MAXC;
-const byFull = (a, b) => ratio(b) - ratio(a) || b.lv - a.lv || ORDER(a.n) - ORDER(b.n);
+const ratio = s => s.req ? s.pts / reqP(s) : s.pts / SCALE;
+const byFull = (a, b) => ratio(b) - ratio(a) || b.pts - a.pts || ORDER(a.n) - ORDER(b.n);
 
 function renderRoute(fx = {}) {
   const g = gaps(), nx = g[0];
-  const solid = S.skills.filter(s => s.lv >= s.req).sort(byFull), grow = [...g].sort(byFull);
+  const solid = S.skills.filter(s => s.pts >= reqP(s)).sort(byFull), grow = [...g].sort(byFull);
   const all = [...[...S.skills].sort(byFull), ...S.added.map(find)];
   const cnt = { all: all.length, grow: grow.length, solid: solid.length };
   $('filters').innerHTML = FILTERS.map(([k, t]) => `<button class="${S.filter === k ? 'on' : ''}" data-f="${k}">${t}<b>${cnt[k]}</b></button>`).join('');
@@ -776,15 +782,15 @@ function renderRoute(fx = {}) {
   $('skills').innerHTML = list.map(s => `
     <button class="sk ${s === nx ? 'rec' : ''}" data-n="${s.n}">
       <span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}${s.extra ? '<small class="add">내가 추가</small>' : ''}</span>
-      ${barHTML(s, fx.n === s.n ? s.lv - 1 : s.lv)}
-      <span class="lv goal-only">${s.lv}칸</span><span class="ptv pt-only">${fmt(s.pts)}P</span>${CHEV}
+      ${barHTML(s, fx.n === s.n ? fx.from : s.pts)}
+      <span class="ptv">${fmt(s.pts)}P</span>${CHEV}
     </button>`).join('');
   fill();
   document.querySelectorAll('#skills .sk').forEach(b => b.onclick = () => { S.nav = []; go({ t: 'skill', n: b.dataset.n }); });
-  const left = g.reduce((a, s) => a + s.req - s.lv, 0);
-  $('remain').innerHTML = left ? `데이터 PM 수준까지<br><b>강의 ${left}개</b>` : '<b>도착했어요</b>';
+  const left = g.reduce((a, s) => a + reqP(s) - s.pts, 0);
+  $('remain').innerHTML = left ? `데이터 PM 수준까지<br><b>${fmt(left)}P</b>` : '<b>도착했어요</b>';
   $('pts').textContent = fmt(points()) + 'P';
-  $('ptTotal').textContent = fmt(points()); $('ptWeek').textContent = '+' + S.week + 'P';
+  $('ptTotal').textContent = fmt(points()); $('ptRank').textContent = `상위 ${rankOf(points())}%`; $('ptWeek').textContent = '+' + S.week + 'P';
   $('ptCnt').textContent = `스킬 ${S.skills.filter(s => s.pts).length + S.added.length}개`;
   $('plan').textContent = S.member ? '멤버십' : '무료'; $('plan').classList.toggle('member', S.member);
   const r = nx || solid[0];
@@ -818,7 +824,7 @@ function renderDetail() {
   $('dDock').innerHTML = !s ? '' : !isMine(s) ? `
     <button class="up-btn add" id="dAdd">
       <div><div class="a">내 스킬에 추가</div><div class="b">${S.mode === 'point' ? '추가하면 이 스킬로도 포인트를 쌓아요' : '추가하면 이 스킬로도 거리를 좁혀요'}</div></div>${PLUS}
-    </button>` : (S.mode === 'point' || s.lv < MAXC) ? `
+    </button>` : true ? `
     <button class="up-btn" id="dUp">
       <div><div class="a">${s.lv === s.start && s.pts === s.pts0 ? '이 스킬 올리기 시작' : '이어서 스킬 올리기'}</div><div class="b">추천 강의 · ${s.titles[nextIdx(s)]} · ${s.mins[nextIdx(s)]}분</div></div>${ARROW}
     </button>` : '';
@@ -834,14 +840,14 @@ const learners = n => {
   return ppl.sort((a, b) => b.skills[n] - a.skills[n]);
 };
 const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
-const clRow = (s, i, next) => `<button class="cl ${next ? 'next' : ''}" data-n="${s.n}" ${isMine(s) ? `data-i="${i}"` : `data-lock="add"`}><span class="pi">${PLAY}</span><span class="t">${s.titles[i]}</span><span class="m">${s.mins[i]}분<span class="pt-only"> · +${gainOf(s, i)}P</span></span></button>`;
+const clRow = (s, i, next) => `<button class="cl ${next ? 'next' : ''}" data-n="${s.n}" ${isMine(s) ? `data-i="${i}"` : `data-lock="add"`}><span class="pi">${PLAY}</span><span class="t">${s.titles[i]}</span><span class="m">${s.mins[i]}분 · +${gainOf(s, i)}P</span></button>`;
 function coursesHTML(n) {
   const s = find(n), nf = nCourses(s), ni = nextIdx(s);
   const order = Array.from({ length: nf }, (_, k) => (ni + k) % nf);
   return `
     <div class="eyebrow">${s.n}</div>
     <h2 class="h">올릴 수 있는 강의</h2>
-    <div class="note">${nf}개 강의가 있어요. 하나를 들을 때마다 ${S.mode === 'point' ? '포인트가 쌓여요' : '한 칸씩 올라가요'}.</div>
+    <div class="note">${nf}개 강의가 있어요. 하나를 들을 때마다 포인트가 쌓여요.</div>
     <div style="margin-top:16px;border-top:1px solid var(--g4)">${order.map((i, k) => clRow(s, i, k === 0)).join('')}</div>`;
 }
 function skillHTML(s) {
@@ -851,7 +857,7 @@ function skillHTML(s) {
     : `데이터 PM으로 가는 길에<br>쓰이는 스킬이에요`;
   const rel = s.related.map(find).map(x => {
     const w = x.extra ? (x.lv ? '더하면 데이터 PM과 가까워져요' : '새로 더하면 거리가 좁혀져요')
-      : x.lv >= x.req ? '이미 탄탄해요' : `데이터 PM 수준까지 강의 ${x.req - x.lv}개`;
+      : x.pts >= reqP(x) ? '이미 탄탄해요' : `데이터 PM 수준까지 ${fmt(reqP(x) - x.pts)}P`;
     const right = (x.extra ? (S.added.includes(x.n) ? '<span class="add done">추가됨</span>' : `<span class="add" data-lock="add" data-n="${x.n}">+ 추가</span>`) : barHTML(x))
       + (isMine(x) ? `<span class="ptv pt-only">${fmt(x.pts)}P</span>` : '');
     return `<button class="rel" data-go-skill="${x.n}"><span class="nm">${x.n}<span class="w">${w}</span></span>${right}${CHEV}</button>`;
@@ -860,13 +866,13 @@ function skillHTML(s) {
   return `
     <div class="eyebrow">${s.extra ? '함께 키우면 좋은 스킬' : '데이터 PM에 쓰이는 스킬'}</div>
     <h2 class="h">${s.n}</h2>
-    <div class="d-lv goal-only"><span class="n">${s.lv}</span><span class="u">칸</span><span class="r">${r}</span></div>
+    <div class="d-lv goal-only"><span class="n">${fmt(s.pts)}</span><span class="u">P</span><span class="r">${s.extra ? r : s.pts >= reqP(s) ? `데이터 PM 수준(${fmt(reqP(s))}P)을<br>넘었어요` : `데이터 PM 수준(${fmt(reqP(s))}P)까지<br><b>${fmt(reqP(s) - s.pts)}P</b> 남았어요`}</span></div>
     <div class="d-lv pt-only"><span class="n">${fmt(s.pts)}</span><span class="u">P</span><span class="r">${isMine(s) ? '이 스킬에 쌓인 포인트예요<br>끝은 없어요, 계속 쌓여요' : '아직 내 스킬이 아니에요<br>추가하면 포인트를 쌓아요'}</span></div>
-    <div class="bar d-bar goal-only ${s.lv < s.req ? 'blue' : ''}"><i data-to="${s.lv / MAXC * 100}" style="width:0"></i></div>
+    <div class="bar d-bar goal-only ${s.pts < reqP(s) ? 'blue' : ''}"><i data-to="${Math.min(1, s.pts / SCALE) * 100}" style="width:0"></i></div>
     ${ppl.length ? `<button class="stack" data-go-people="${s.n}" style="margin-top:32px;border-top:1px solid var(--g4)">
       <span class="avs">${ppl.slice(0, 4).map(avHTML).join('')}</span>
       <span class="tx"><b>${ppl[0].name} 님 외 ${total}명</b>이<br>이 스킬을 함께 키우고 있어요</span>${CHEV}</button>` : ''}
-    <div class="sec" style="margin-top:48px"><span>올릴 수 있는 강의</span><em class="goal-only">강의 하나 = 한 칸</em><em class="pt-only">강의 하나 = +포인트</em></div>
+    <div class="sec" style="margin-top:48px"><span>올릴 수 있는 강의</span><em>강의 하나 = +포인트</em></div>
     ${free.map((i, k) => clRow(s, i, k === 0)).join('')}
     ${nf > 5 ? `<button class="all" data-go-courses="${s.n}">강의 전체 보기 <b>${nf}개</b>${CHEV}</button>` : ''}
     <div class="sec" style="margin-top:48px"><span>함께 키우면 좋은 스킬</span><em>거리를 좁혀요</em></div>
@@ -876,7 +882,7 @@ function peopleHTML(n) {
   const ppl = learners(n), total = learnerN(n);
   const shown = S.member ? ppl : ppl.slice(0, 5);
   const row = p => `<button class="ppl" data-go-person="${p.id}">${avHTML(p)}
-      <span><div class="nm">${p.name}</div><div class="w"><b>${ro(p.to)}</b> 달리는 중 · ${n} ${S.mode === 'point' ? fmt(pplPts(p, n)) + 'P' : p.skills[n] + '칸'}</div></span>${CHEV}</button>`;
+      <span><div class="nm">${p.name}</div><div class="w"><b>${ro(p.to)}</b> 달리는 중 · ${n} ${fmt(pplPts(p, n))}P</div></span>${CHEV}</button>`;
   const ghost = ['c2', 'c4', 'c1'].map(c => `<div class="ppl locked"><span class="av ${c}">·</span><span><div class="nm">○○○</div><div class="w">○○○으로 달리는 중</div></span><span></span></div>`).join('');
   return `
     <div class="eyebrow">${n}</div>
@@ -895,7 +901,7 @@ function personHTML(p) {
     <div class="sec" style="margin-top:48px"><span>${p.name} 님이 보고 있는 스킬</span><em>${p.name} · 나</em></div>
     ${names.map(n => { const me = find(n); return `
       <button class="rel" data-go-skill="${n}"><span class="nm">${n}<span class="w">${me.extra ? '함께 키우면 좋은 스킬' : '데이터 PM에 쓰이는 스킬'}</span></span>
-        <span class="cmp">${S.mode === 'point' ? `${fmt(pplPts(p, n))}P<br><span>나 ${fmt(me.pts)}P</span>` : `${p.skills[n]}칸<br><span>나 ${me.lv}칸</span>`}</span>${CHEV}</button>`; }).join('')}`;
+        <span class="cmp">${fmt(pplPts(p, n))}P<br><span>나 ${fmt(me.pts)}P</span></span>${CHEV}</button>`; }).join('')}`;
 }
 const setPos = p => { $('lineMe').style.left = p + '%'; $('lineDone').style.width = p + '%'; };
 async function sceneRoute(first) {
@@ -924,7 +930,7 @@ function sceneContent(name, idx, keep) {
   const i = idx ?? nextIdx(s);
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
-  $('cSkill').textContent = S.mode === 'point' ? `${s.n} · +${s.curGain}P` : `${s.n} · ${s.lv + S.pend.n}칸 → ${s.lv + S.pend.n + 1}칸`;
+  $('cSkill').textContent = `${s.n} · +${s.curGain}P`;
   $('cTitle').textContent = s.titles[i];
   $('tEnd').textContent = mmss(s.curMin * 60); $('tNow').textContent = '00:00';
   $('tl').style.width = 0; $('media').classList.remove('playing');
@@ -948,9 +954,13 @@ $('playBtn').onclick = async () => {
 function openChoice() {
   const s = S.cur, n = S.pend.n, ni = (nextIdx(s) + n) % s.titles.length, free = S.member || n < FREE_STREAK;
   $('cTag').textContent = n === 1 ? '강의 하나 끝' : `강의 ${n}개 연속`;
-  $('cGain').textContent = S.mode === 'point' ? `+${S.pend.gain}P` : `+${n}칸`;
+  // 모인 포인트가 올라가는 인터랙션: 이전 값 → 새 값으로 숫자가 차오르고 톡 튀어요
+  const g = $('cGain'), toV = S.pend.gain, fromV = S.pend.gain - s.curGain, unit = 'P';
+  g.textContent = `+${fromV}${unit}`; g.classList.remove('bump');
+  setTimeout(() => {
+    tween(900, q => g.textContent = `+${Math.round(fromV + (toV - fromV) * easeOut(q))}${unit}`).then(() => { void g.offsetWidth; g.classList.add('bump'); navigator.vibrate?.(10); });
+  }, 380);
   $('cGainSub').textContent = `${s.n}에 모였어요`;
-  $('pips').innerHTML = Array.from({ length: Math.max(FREE_STREAK, n) }, (_, k) => `<i class="${k < n ? 'on' : ''}"></i>`).join('');
   $('cNext').classList.toggle('lock', !free);
   $('cNextSub').textContent = free ? `${s.titles[ni]} · ${s.mins[ni]}분` : `${FREE_STREAK}개 연속 완주! 멤버십으로 계속 들을 수 있어요`;
   $('cNext').onclick = () => { $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => sceneContent(s.n, ni, true), 250); };
@@ -963,8 +973,7 @@ function openSheet() {
   const s = S.cur;
   $('uSkill').textContent = s.n;
   const P = S.pend;
-  if (S.mode === 'point') { $('vFrom').textContent = `${fmt(s.pts)}P`; $('vTo').textContent = `${fmt(s.pts + P.gain)}P`; }
-  else { $('vFrom').textContent = `${s.lv}칸`; $('vTo').textContent = `${s.lv + P.n}칸`; } $('ver').classList.remove('done');
+  $('vFrom').textContent = `${fmt(s.pts)}P`; $('vTo').textContent = `${fmt(s.pts + P.gain)}P`; $('ver').classList.remove('done');
   $('uCells').innerHTML = cellsHTML(s);
   $('related').innerHTML = '함께 가까워져요 ' + s.related.map(r => `<em>${r}</em>`).join('');
   $('updLabel').innerHTML = '업데이트<small>꾹 눌러 주세요</small>'; $('orbit').style.strokeDashoffset = 534; $('updBtn').classList.remove('busy', 'pop', 'press');
@@ -987,13 +996,19 @@ function holdStart(e) {
 }
 function holdEnd() {
   if (!holding || $('updBtn').classList.contains('busy')) return;
-  holding = false; cancelAnimationFrame(holdRaf);
+  holding = false;
+  // 짧게 톡 누르면 멈추지 않고 원이 끝까지 돌아 업데이트돼요 (모바일에서 길게 누르기가 끊겨도 막히지 않게)
+  if (performance.now() - holdT0 < 350) { $('updBtn').classList.remove('press'); return; }
+  cancelAnimationFrame(holdRaf);
   $('updBtn').classList.remove('press'); $('updLabel').innerHTML = '업데이트<small>꾹 눌러 주세요</small>';
   $('orbit').style.transition = 'stroke-dashoffset .4s var(--ease)'; $('orbit').style.strokeDashoffset = 534;
   setTimeout(() => $('orbit').style.transition = '', 420);
 }
 $('updBtn').addEventListener('pointerdown', holdStart);
-['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => $('updBtn').addEventListener(ev, holdEnd));
+['pointerup', 'pointerleave'].forEach(ev => $('updBtn').addEventListener(ev, holdEnd));
+// 터치가 시스템에 의해 끊기면(길게 누르기 메뉴 등) 되감지 않고 끝까지 돌려요
+$('updBtn').addEventListener('pointercancel', () => { holding = false; $('updBtn').classList.remove('press'); });
+$('updBtn').addEventListener('contextmenu', e => e.preventDefault());
 $('updBtn').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); finishUpdate(); } });
 async function finishUpdate() {
   const s = S.cur; holding = false;
@@ -1011,24 +1026,29 @@ $('laterBtn').onclick = () => { $('sheet').classList.remove('on'); $('scrim').cl
 
 /* ── 다시 남은 거리로: 작은 업데이트가 큰 거리를 줄인다 ──── */
 async function applyUpdate() {
-  const s = S.cur, from = S.shown, wasSolid = !s.extra && s.lv >= s.req;
+  const s = S.cur, from = S.shown, wasSolid = !s.extra && s.pts >= reqP(s), ptsBefore = s.pts;
   const pFrom = points();
   const P = S.pend; s.lv += P.n; s.pts += P.gain; S.week += P.gain;
   if (s.extra) S.bonus += P.n; // 함께 키우는 스킬도 거리를 조금 좁혀요
   S.nav = [];
+  ['sheet', 'scrim', 'cSheet'].forEach(id => $(id).classList.remove('on'));
+  $('routeScroll').scrollTop = 0;
   const to = pctNow();
-  renderRoute({ n: s.n });
-  $('pts').textContent = fmt(pFrom) + 'P'; $('ptTotal').textContent = fmt(pFrom);
+  renderRoute({ n: s.n, from: ptsBefore });
+  $('pts').textContent = fmt(pFrom) + 'P'; $('ptTotal').textContent = fmt(pFrom); $('ptRank').textContent = `상위 ${rankOf(pFrom)}%`;
   show('s-route', 3);
   await wait(500);
   setPos(to);
   tween(1200, q => $('pct').textContent = Math.round(from + (to - from) * easeOut(q)));
   const pTo = points();
-  tween(1200, q => { const v = fmt(Math.round(pFrom + (pTo - pFrom) * easeOut(q))); $('pts').textContent = v + 'P'; $('ptTotal').textContent = v; });
+  tween(1200, q => { const v = fmt(Math.round(pFrom + (pTo - pFrom) * easeOut(q))); $('pts').textContent = v + 'P'; $('ptTotal').textContent = v; }).then(() => {
+    const r = $('ptRank'), before = r.textContent; r.textContent = `상위 ${rankOf(pTo)}%`;
+    if (before !== r.textContent) { r.classList.remove('bump'); void r.offsetWidth; r.classList.add('bump'); }
+  });
   if (S.mode === 'point') { toast(`<b>${s.n}</b> +${P.gain}P · 지금 ${fmt(s.pts)}P`); S.shown = to; return; }
-  toast(s.extra ? `<b>${s.n}</b> ${s.lv}칸 · 데이터 PM까지 <b>+${to - from}%</b>` : wasSolid ? `<b>${s.n}</b> ${s.lv}칸 · 한층 더 탄탄해졌어요`
-    : s.lv >= s.req ? `<b>${s.n}</b> 데이터 PM 수준이 됐어요 · <b>+${to - from}%</b>`
-    : `<b>${s.n}</b> ${s.lv}칸 · 데이터 PM까지 <b>+${to - from}%</b>`);
+  toast(s.extra ? `<b>${s.n}</b> +${P.gain}P · 데이터 PM까지 <b>+${to - from}%</b>` : wasSolid ? `<b>${s.n}</b> +${P.gain}P · 한층 더 탄탄해졌어요`
+    : s.pts >= reqP(s) ? `<b>${s.n}</b> 데이터 PM 수준이 됐어요 · <b>+${to - from}%</b>`
+    : `<b>${s.n}</b> +${P.gain}P · 데이터 PM까지 <b>+${to - from}%</b>`);
   S.shown = to;
 }
 
