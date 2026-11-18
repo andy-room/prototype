@@ -176,6 +176,16 @@
   .av.c1 { background: #E8F0FF; color: #0052CC; } .av.c2 { background: #ECEAE5; } .av.c3 { background: #E6F2EC; color: #1F6B48; } .av.c4 { background: #F6EDE4; color: #8A4B14; }
   .ppl { width: 100%; display: grid; grid-template-columns: 40px 1fr 12px; gap: 12px; align-items: center; text-align: left; padding: 11px 0; border-bottom: 1px solid var(--g4); }
   .ppl:active { opacity: .6; }
+  .prow { display: grid; grid-template-columns: 1fr 40px; align-items: center; border-bottom: 1px solid var(--g4); }
+  .prow .ppl { border-bottom: 0; grid-template-columns: 40px 1fr; }
+  .pin { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: var(--g3); transition: color .2s, background .2s, transform .2s var(--ease); }
+  .pin:active { transform: scale(.88); }
+  .pin.on { color: var(--blue); background: var(--blue-soft); }
+  .ftag { font: normal 500 10px var(--mono); color: var(--blue); border: 1px solid var(--blue); border-radius: 4px; padding: 1px 4px; margin-left: 6px; vertical-align: 2px; }
+  .fadd { display: flex; gap: 8px; margin-top: 18px; }
+  .fadd input { flex: 1; min-width: 0; height: 46px; border-radius: 12px; background: var(--g5); border: 1.5px solid var(--g4); padding: 0 14px; font: inherit; font-size: 14px; outline: none; color: var(--ink); }
+  .fadd input:focus { border-color: var(--ink); background: #fff; }
+  .fadd button { height: 46px; padding: 0 18px; border-radius: 12px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 600; }
   .ppl .nm { font-size: 14px; font-weight: 600; }
   .ppl .w { font-size: 12px; color: var(--g1); margin-top: 3px; }
   .ppl .w b { color: var(--ink); font-weight: 500; }
@@ -624,7 +634,9 @@ const PEOPLE = [
   { id: 'p12', name: '현우', c: 'c4', to: '데이터 PM', month: 6, skills: { '커뮤니케이션': 3, '프레젠테이션': 3, '지표 설계': 1 } },
 ];
 // 프로필 아바타 (Notion Faces로 만든 얼굴)
-const avHTML = p => `<span class="av ${p.c}"><img src="avatars/${p.id}.png" alt="">${p.name[0]}</span>`;
+const avHTML = p => `<span class="av ${p.c}"><img src="avatars/${p.img || p.id}.png" alt="">${p.name[0]}</span>`;
+// 사람 찾기: 기본 인물 + ID로 추가한 친구
+const personOf = id => PEOPLE.find(p => p.id === id) || S.friends.find(p => p.id === id);
 const MAXC = 5;
 let S;
 // 스킬마다 강의를 8개 이상으로 (예시 제목)
@@ -649,7 +661,7 @@ const reset = () => {
   const mk = s => ({ ...s, start: s.lv, related: REL[s.n] || [], pts: s.lv ? s.lv * 100 + hsh(s.n) % 60 : 0 });
   // 처음 포인트 기억 (아직 들은 적 있는지 판단)
   const mk2 = s => { const o = mk(s); o.pts0 = o.pts; return o; };
-  S = { skills: SKILLS.map(mk2), extra: EXTRA.map(mk2), cur: null, shown: 0, bonus: 0, profiles: [{ id: 'growth', target: '그로스 마케터', w: '3일 전에 달렸어요', av: 3 }], newAv: 1, filter: 'all', nav: [], week: 0, mode: S?.mode || 'goal', member: false, added: [] };
+  S = { skills: SKILLS.map(mk2), extra: EXTRA.map(mk2), cur: null, shown: 0, bonus: 0, profiles: [{ id: 'growth', target: '그로스 마케터', w: '3일 전에 달렸어요', av: 3 }], newAv: 1, filter: 'all', nav: [], friends: [], pinned: [], week: 0, mode: S?.mode || 'goal', member: false, added: [] };
 };
 const find = n => S.skills.find(x => x.n === n) || S.extra.find(x => x.n === n);
 
@@ -798,16 +810,16 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : PEOPLE.find(p => p.id === e.id).name;
+const label = e => e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
 function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
-function renderDetail() {
+function renderDetail(keep) {
   const e = S.nav.at(-1), prev = S.nav.length > 1 ? label(S.nav.at(-2)) : '남은 거리';
-  const html = e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : personHTML(PEOPLE.find(p => p.id === e.id));
+  const html = e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : personHTML(personOf(e.id));
   $('dBody').innerHTML = `<button class="back2" id="dBack">← ${prev}</button>` + html;
-  $('dScroll').scrollTop = 0;
-  if ($('s-detail').classList.contains('on')) { $('dBody').classList.remove('swap'); void $('dBody').offsetWidth; $('dBody').classList.add('swap'); }
+  if (!keep) $('dScroll').scrollTop = 0;
+  if (!keep && $('s-detail').classList.contains('on')) { $('dBody').classList.remove('swap'); void $('dBody').offsetWidth; $('dBody').classList.add('swap'); }
   show('s-detail', 3);
   fill();
   $('dBack').onclick = back;
@@ -815,6 +827,9 @@ function renderDetail() {
   document.querySelectorAll('#dBody [data-go-person]').forEach(b => b.onclick = () => go({ t: 'person', id: b.dataset.goPerson }));
   document.querySelectorAll('#dBody .cl[data-i]').forEach(b => b.onclick = () => sceneContent(b.dataset.n, +b.dataset.i));
   document.querySelectorAll('#dBody [data-go-courses]').forEach(b => b.onclick = () => go({ t: 'courses', n: b.dataset.goCourses }));
+  // 친구·고정
+  document.querySelectorAll('#dBody [data-pin]').forEach(b => b.onclick = ev => { ev.stopPropagation(); togglePin(b.dataset.pin); });
+  if ($('faddForm')) $('faddForm').onsubmit = ev => { ev.preventDefault(); addFriend($('fid').value, e.n); };
   document.querySelectorAll('#dBody [data-go-people]').forEach(b => b.onclick = () => go({ t: 'people', n: b.dataset.goPeople }));
   document.querySelectorAll('#dBody [data-lock]').forEach(b => b.onclick = ev => { ev.stopPropagation(); locked(b.dataset.lock, b.dataset.n); });
   // 하단: 이 스킬 올리기 (스킬 화면에서만)
@@ -837,7 +852,9 @@ const learners = n => {
     const p = PEOPLE[(n.charCodeAt(0) + k * 5) % PEOPLE.length];
     if (p.skills[n] == null) { p.skills[n] = 1 + (n.length + k) % 3; ppl.push(p); }
   }
-  return ppl.sort((a, b) => b.skills[n] - a.skills[n]);
+  ppl.sort((a, b) => b.skills[n] - a.skills[n]);
+  const pinned = (S.pinned || []).map(personOf).filter(p => p && p.skills[n] != null && !ppl.includes(p));
+  return [...pinned, ...ppl].sort((a, b) => isPinned(b.id) - isPinned(a.id));
 };
 const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const clRow = (s, i, next) => `<button class="cl ${next ? 'next' : ''}" data-n="${s.n}" ${isMine(s) ? `data-i="${i}"` : `data-lock="add"`}><span class="pi">${PLAY}</span><span class="t">${s.titles[i]}</span><span class="m">${s.mins[i]}분 · +${gainOf(s, i)}P</span></button>`;
@@ -871,24 +888,50 @@ function skillHTML(s) {
     <div class="bar d-bar goal-only ${s.pts < reqP(s) ? 'blue' : ''}"><i data-to="${Math.min(1, s.pts / SCALE) * 100}" style="width:0"></i></div>
     ${ppl.length ? `<button class="stack" data-go-people="${s.n}" style="margin-top:32px;border-top:1px solid var(--g4)">
       <span class="avs">${ppl.slice(0, 4).map(avHTML).join('')}</span>
-      <span class="tx"><b>${ppl[0].name} 님 외 ${total}명</b>이<br>이 스킬을 함께 키우고 있어요</span>${CHEV}</button>` : ''}
+      <span class="tx"><b>${ppl[0].friend ? '@' + ppl[0].handle : ppl[0].name} 님 외 ${total}명</b>이<br>이 스킬을 함께 키우고 있어요</span>${CHEV}</button>` : ''}
     <div class="sec" style="margin-top:48px"><span>올릴 수 있는 강의</span><em>강의 하나 = +포인트</em></div>
     ${free.map((i, k) => clRow(s, i, k === 0)).join('')}
     ${nf > 5 ? `<button class="all" data-go-courses="${s.n}">강의 전체 보기 <b>${nf}개</b>${CHEV}</button>` : ''}
     <div class="sec" style="margin-top:48px"><span>함께 키우면 좋은 스킬</span><em>거리를 좁혀요</em></div>
     ${rel}`;
 }
+const PIN = '<svg width="16" height="16" viewBox="0 0 16 16"><path d="M10.2 1.8 14.2 5.8 12.4 6.6 9.9 9.1 10.2 12.2 8.9 13.5 6.3 10.9 2.6 14.6 1.4 13.4 5.1 9.7 2.5 7.1 3.8 5.8 6.9 6.1 9.4 3.6Z" fill="currentColor"/></svg>';
+const isPinned = id => S.pinned.includes(id);
+function togglePin(id) {
+  const p = personOf(id);
+  if (isPinned(id)) { S.pinned = S.pinned.filter(x => x !== id); toast(`<b>${p.name}</b> 님 고정을 풀었어요`); }
+  else { S.pinned.unshift(id); toast(`<b>${p.name}</b> 님을 위에 고정했어요`); }
+  renderDetail(true);
+}
+function addFriend(raw, n) {
+  const id = raw.trim().replace(/^@/, '');
+  if (!id) return toast('친구 ID를 입력해 주세요');
+  if (S.friends.find(f => f.handle === id)) return toast(`<b>@${id}</b> 님은 이미 친구예요`);
+  const k = hsh(id) % 12 + 1;
+  const f = { id: 'f_' + id, handle: id, name: id, img: 'p' + k, c: 'c2', to: '데이터 PM', month: 1 + hsh(id) % 9, friend: true, skills: { [n]: 1 + hsh(id) % 3 } };
+  S.friends.unshift(f); S.pinned.unshift(f.id);
+  toast(`<b>@${id}</b> 님을 친구로 추가했어요`);
+  renderDetail(true);
+}
+function pRow(p, n) {
+  const has = p.skills[n] != null;
+  return `<div class="prow"><button class="ppl" data-go-person="${p.id}">${avHTML(p)}
+      <span><div class="nm">${p.friend ? '@' + p.handle : p.name}${p.friend ? '<i class="ftag">친구</i>' : ''}</div><div class="w"><b>${ro(p.to)}</b> 달리는 중 · ${has ? `${n} ${fmt(pplPts(p, n))}P` : '이 스킬은 아직이에요'}</div></span></button>
+      <button class="pin ${isPinned(p.id) ? 'on' : ''}" data-pin="${p.id}" aria-label="${isPinned(p.id) ? '고정 풀기' : '위로 고정'}">${PIN}</button></div>`;
+}
 function peopleHTML(n) {
-  const ppl = learners(n), total = learnerN(n);
+  const ppl = learners(n).filter(p => !isPinned(p.id)), total = learnerN(n);
+  const top = S.pinned.map(personOf).filter(Boolean);
   const shown = S.member ? ppl : ppl.slice(0, 5);
-  const row = p => `<button class="ppl" data-go-person="${p.id}">${avHTML(p)}
-      <span><div class="nm">${p.name}</div><div class="w"><b>${ro(p.to)}</b> 달리는 중 · ${n} ${fmt(pplPts(p, n))}P</div></span>${CHEV}</button>`;
   const ghost = ['c2', 'c4', 'c1'].map(c => `<div class="ppl locked"><span class="av ${c}">·</span><span><div class="nm">○○○</div><div class="w">○○○으로 달리는 중</div></span><span></span></div>`).join('');
   return `
     <div class="eyebrow">${n}</div>
     <h2 class="h">함께 키우는 사람들</h2>
-    <div class="note">${total}명이 이 스킬을 키우고 있어요. 누르면 그 사람이 보고 있는 스킬을 볼 수 있어요.</div>
-    <div style="margin-top:16px;border-top:1px solid var(--g4)">${shown.map(row).join('')}</div>
+    <div class="note">${total}명이 이 스킬을 키우고 있어요. 친구를 추가하거나 고정하면 맨 위에서 볼 수 있어요.</div>
+    <form class="fadd" id="faddForm" autocomplete="off"><input id="fid" placeholder="친구 ID로 추가 (예: hu_jiyun)" aria-label="친구 ID"><button type="submit">추가</button></form>
+    ${top.length ? `<div class="sec" style="margin-top:32px"><span>친구 · 고정</span><em>${top.length}명</em></div><div>${top.map(p => pRow(p, n)).join('')}</div>` : ''}
+    <div class="sec" style="margin-top:${top.length ? 40 : 28}px"><span>이 스킬을 키우는 사람</span><em>핀을 누르면 위로 고정돼요</em></div>
+    <div>${shown.map(p => pRow(p, n)).join('')}</div>
     ${S.member ? '' : ghost + `<button class="lock" data-lock="people" data-n="${n}">${LOCK} ${total}명 더 보기</button>`}`;
 }
 function personHTML(p) {
@@ -896,7 +939,8 @@ function personHTML(p) {
   const overlap = names.filter(n => find(n)?.lv > 0).length;
   return `
     <div class="p-top">${avHTML(p)}
-      <div><div class="nm">${p.name}</div><div class="w">${ro(p.to)} 달리는 중</div></div></div>
+      <div style="flex:1"><div class="nm">${p.friend ? '@' + p.handle : p.name}</div><div class="w">${ro(p.to)} 달리는 중</div></div>
+      <button class="pin ${isPinned(p.id) ? 'on' : ''}" data-pin="${p.id}" aria-label="위로 고정">${PIN}</button></div>
     <div class="p-stat"><div>키우는 스킬<b>${names.length}</b></div><div>나와 겹치는 스킬<b>${overlap}</b></div><div>이번 달 강의<b>${p.month}</b></div></div>
     <div class="sec" style="margin-top:48px"><span>${p.name} 님이 보고 있는 스킬</span><em>${p.name} · 나</em></div>
     ${names.map(n => { const me = find(n); return `
