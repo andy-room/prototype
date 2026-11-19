@@ -184,6 +184,8 @@
   .media.pv { height: auto; aspect-ratio: 16 / 9; }
   .pvdone { display: none; margin-top: 28px; }
   .pvdone.on { display: block; animation: pvIn .45s var(--ease) both; }
+  #xp > .pvdone { display: block; position: absolute; left: 0; right: 0; bottom: 0; z-index: 9; margin: 0; background: #fff; border-radius: 20px 20px 0 0; padding: 22px 28px 26px; box-shadow: 0 -10px 30px rgba(21,23,27,.08); transform: translateY(105%); transition: transform .5s var(--ease); animation: none; }
+  #xp > .pvdone.on { transform: none; }
   @keyframes pvIn { from { opacity: 0; transform: translateY(12px); } }
   .pvdone .tag { font: 500 11px var(--mono); letter-spacing: .14em; color: var(--blue); }
   .pvdone .big { display: flex; align-items: baseline; gap: 8px; margin: 8px 0 18px; }
@@ -1543,6 +1545,7 @@ $('xClose').onclick = () => {
 };
 // 한 화면(e)을 정해진 칸(T)에 그려요. lv = 내비 깊이 (그 칸에서 누르면 그 아래로 이어져요)
 function paint(e, lv, T, keep, backLabel) {
+  if (T === XP) { document.querySelectorAll('#xp > .pvdone').forEach(x => x.remove()); if (!$('sheet').classList.contains('on')) placeSheet(null); }
   const $b = $(T.body), sel = q => document.querySelectorAll(`#${T.body} ${q}`);
   const goHere = x => { S.nav.length = lv + 1; go(x); };
   const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : e.t === 'gate' ? gateHTML(e) : e.t === 'gskills' ? gskillsHTML() : e.t === 'gskill' ? gskillHTML(e) : personHTML(personOf(e.id));
@@ -1638,23 +1641,22 @@ function bindPlay(e, T) {
   const run = async () => {
     $('pvPlay').disabled = true; $('pvMedia').classList.add('playing');
     await tween(1600, q => { $('pvTl').style.width = q * 100 + '%'; $('pvNow').textContent = mmss(q * s.mins[i] * 60); });
-    $('pvMedia').classList.remove('playing'); $('pvDone').classList.add('on');
-    $(T.scroll).scrollTo({ top: $(T.scroll).scrollHeight, behavior: 'smooth' });
+    $('pvMedia').classList.remove('playing'); dockDone();
   };
+  // PC: 강의 끝 버튼은 모바일처럼 패널 아래에서 올라오는 시트로
+  const dockDone = () => { const d = $('pvDone'); if (T === XP) { $('xp').appendChild(d); void d.offsetWidth; } d.classList.add('on'); if (T !== XP) $(T.scroll).scrollTo({ top: $(T.scroll).scrollHeight, behavior: 'smooth' }); };
   $('pvPlay').onclick = run;
-  if (e.done) { $('pvTl').style.width = '100%'; $('pvNow').textContent = mmss(s.mins[i] * 60); $('pvDone').classList.add('on'); }
+  if (e.done) { $('pvTl').style.width = '100%'; $('pvNow').textContent = mmss(s.mins[i] * 60); dockDone(); }
   else if (e.cnt) setTimeout(run, 450); // 첫 강의는 재생을 눌러야, '이어서 다음 강의'부터는 바로 재생
   const own = () => { e.done = true; needLogin(`<b>${s.n}</b> +${acc + gain}P · 로그인하면 내 스킬이 돼요`, ownTitle(s.n)); };
   $('pvNext').onclick = () => { if (guest()) return own(); if (!pvFree(e)) return locked('courses', null, T === XP ? $('xp') : null); const lvl = S.nav.length - 1; S.nav[lvl] = { t: 'play', n: s.n, i: (i + 1) % s.titles.length, acc: acc + gain, cnt: (e.cnt || 0) + 1 }; renderDetail(); };
-  $('pvUpd').onclick = async () => {
+  // 여기까지 하고 스킬 올리기 → 모바일과 같은 '꾹 눌러 업데이트' 시트 (이 패널 안에서)
+  $('pvUpd').onclick = () => {
     if (guest()) return own();
-    const tot = acc + gain, from = s.pts;
-    s.lv += (e.cnt || 0) + 1; s.pts += tot; S.week += tot; if (s.extra) S.bonus += (e.cnt || 0) + 1; S.cur = s;
-    navigator.vibrate?.([10, 40, 18]);
-    toast(`<b>${s.n}</b> ${fmt(from)}P → ${fmt(s.pts)}P`);
-    $('pvUpd').classList.add('pop'); $('pvUpd').textContent = '업데이트 완료';
-    await wait(700);
-    back();
+    e.done = true; S.cur = s; S.pend = { n: (e.cnt || 0) + 1, gain: acc + gain };
+    $('pvDone').classList.remove('on');
+    sheetSetup(); placeSheet(T === XP ? $('xp') : null); void $('sheet').offsetWidth;
+    setTimeout(() => { $('scrim').classList.add('on'); $('sheet').classList.add('on'); }, 180);
   };
 }
 // 그 자리 재생: 줄 아래로 진행 막대가 차오르고, 끝나면 포인트가 바로 쌓여요 (갤럭시엔 빅뱅)
@@ -2093,7 +2095,11 @@ function openChoice() {
 }
 
 /* ── 05 업데이트: 손맛 ─────────────────────────────────── */
-function openSheet() {
+function openSheet() { sheetSetup(); placeSheet(null); $('scrim').classList.add('on'); $('sheet').classList.add('on'); show('s-content', 5); }
+// 업데이트 시트 채우기 (모바일은 강의 화면, PC는 강의 패널 안에 띄워요)
+const sHome = { box: null };
+function placeSheet(host) { const sc = $('scrim'), sh = $('sheet'); if (!sHome.box) sHome.box = sh.parentNode; const to = host || sHome.box; if (sh.parentNode !== to) { to.appendChild(sc); to.appendChild(sh); } }
+function sheetSetup() {
   const s = S.cur;
   $('uSkill').textContent = s.n;
   const P = S.pend;
@@ -2101,8 +2107,6 @@ function openSheet() {
   $('vNote').textContent = `업데이트하면 ${fmt(s.pts + P.gain)}P가 돼요`;
   $('related').innerHTML = '함께 가까워져요 ' + s.related.map(r => `<em>${r}</em>`).join('');
   $('updLabel').innerHTML = '업데이트<small>꾹 눌러 주세요</small>'; $('orbit').style.strokeDashoffset = 534; $('updBtn').classList.remove('busy', 'pop', 'press');
-  $('scrim').classList.add('on'); $('sheet').classList.add('on');
-  show('s-content', 5);
 }
 // 꾹 누르면 버튼 둘레로 원이 한 바퀴 → 다 돌면 업데이트
 const HOLD = 900; let holdT0 = 0, holdRaf = 0, holding = false;
@@ -2163,7 +2167,7 @@ async function applyUpdate() {
   const P = S.pend; delete GX.boost[s.n]; s.lv += P.n; s.pts += P.gain; S.week += P.gain;
   if (s.extra) S.bonus += P.n; // 함께 키우는 스킬도 거리를 조금 좁혀요
   S.nav = [];
-  ['sheet', 'scrim', 'cSheet'].forEach(id => $(id).classList.remove('on'));
+  ['sheet', 'scrim', 'cSheet'].forEach(id => $(id).classList.remove('on')); placeSheet(null);
   $('routeScroll').scrollTop = 0;
   const to = pctNow();
   renderRoute({ n: s.n, from: ptsBefore });
