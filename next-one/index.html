@@ -2387,10 +2387,13 @@ const Galaxy = (() => {
   // 두 손가락: 벌리고 오므려서 확대·축소
   const touches = new Map(); let pinch = null;
   const pdist = () => { const [a, b] = [...touches.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
-  cv.addEventListener('pointerdown', e => { touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (touches.size === 2) { pinch = { d: pdist(), z: TG.zoom }; drag = null; cv.classList.remove('drag'); hideTip(); } }, true);
+  const pmidY = () => { const [a, b] = [...touches.values()]; return (a.y + b.y) / 2; };
+  cv.addEventListener('pointerdown', e => { touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (touches.size === 2) { pinch = { d: pdist(), z: TG.zoom, y: pmidY(), t: TG.tilt }; drag = null; cv.classList.remove('drag'); hideTip(); } }, true);
   cv.addEventListener('pointermove', e => {
     if (!touches.has(e.pointerId)) return; touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pinch && touches.size >= 2) { TG.zoom = Math.max(.55, Math.min(2.6, pinch.z * pdist() / Math.max(1, pinch.d))); idle = performance.now(); e.stopImmediatePropagation(); }
+    if (pinch && touches.size >= 2) { TG.zoom = Math.max(.55, Math.min(2.6, pinch.z * pdist() / Math.max(1, pinch.d)));
+      // 두 손가락을 함께 위아래로 끌면 기울기
+      TG.tilt = Math.max(0, Math.min(TILT, pinch.t + (pmidY() - pinch.y) * .006)); syncSeg(); idle = performance.now(); e.stopImmediatePropagation(); }
   }, true);
   const lift = e => { touches.delete(e.pointerId); if (touches.size < 2 && pinch) { pinch = null; drag = null; e.stopImmediatePropagation(); } };
   ['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, lift, true));
