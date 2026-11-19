@@ -1720,7 +1720,7 @@ $('playBtn').onclick = async () => {
   const s = S.cur;
   $('playBtn').disabled = true;
   $('media').classList.add('playing'); $('phint').style.visibility = 'hidden';
-  await tween(3200, p => { $('tl').style.width = p * 100 + '%'; $('tNow').textContent = mmss(p * s.curMin * 60); });
+  await tween(1600, p => { $('tl').style.width = p * 100 + '%'; $('tNow').textContent = mmss(p * s.curMin * 60); });
   $('media').classList.remove('playing'); $('done').classList.add('show');
   S.pend.n += 1; S.pend.gain += s.curGain;
   await wait(700);
