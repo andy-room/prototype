@@ -2211,7 +2211,7 @@ const Galaxy = (() => {
     });
     // 스킬 (먼 것부터) — 평면 원 하나, 포인트는 크게
     const order = nodes.map(nd => ({ nd, p: proj(nd.x, nd.y, nd.z) })).sort((a, b) => a.p.d - b.p.d);
-    order.forEach(({ nd, p }) => {
+    const drawNode = ({ nd, p }) => {
       const r = Math.max(3, nd.v.r * p.f), sel = lastSel === nd.s.n, hov = hover === nd || sel;
       nd.sx = p.x; nd.sy = p.y; nd.sr = r;
       ctx.globalAlpha = reveal * (lastSel && !sel && hover !== nd ? .35 : 1);
@@ -2254,14 +2254,16 @@ const Galaxy = (() => {
         ctx.fillStyle = nd.solid ? '#2F7BFF' : '#fff'; ctx.beginPath(); ctx.roundRect(p.x - tw2 / 2, by - 11, tw2, 22, 11); ctx.fill();
         ctx.fillStyle = nd.solid ? '#fff' : '#15171B'; ctx.fillText(t, p.x, by + 4.5);
       }
-    });
+    };
+    const P = G.who;
+    // 가운데: 목표 커리어 — 실제 깊이(0)에 맞춰 뒤쪽 스킬보다 앞, 앞쪽 스킬보다 뒤에 그려요
+    const drawCenter = () => {
     ctx.globalAlpha = reveal;
-    // 가운데: 목표 커리어
     const cr = 40 * c0.f;
     const cg = ctx.createRadialGradient(c0.x, c0.y, 0, c0.x, c0.y, cr * 3.2);
     cg.addColorStop(0, 'rgba(70,140,255,.55)'); cg.addColorStop(.4, 'rgba(40,100,255,.16)'); cg.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr * 3.2, 0, 7); ctx.fill();
-    const P = G.who, sw = Math.min(1, (performance.now() - swapT) / 700);
+    const sw = Math.min(1, (performance.now() - swapT) / 700);
     if (sw < 1) { ctx.strokeStyle = `rgba(120,175,255,${(1 - sw) * .8})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr + sw * 260, 0, 7); ctx.stroke(); }
     { // 가운데: 그 사람(또는 나)의 얼굴, 아래에 커리어
       const mine = profOf(S.pid), im = face(P ? `avatars/${P.img || P.id}.png` : `avatars/a${mine ? mine.av : 1}.png`);
@@ -2281,6 +2283,11 @@ const Galaxy = (() => {
     ctx.fillText(S.mode === 'point' ? `${fmt(tot)}P` : `${pct}%`, c0.x, c0.y + cr + 40);
     ctx.font = '500 9px "Geist Mono", monospace'; ctx.fillStyle = 'rgba(160,185,230,.6)';
     ctx.fillText('GOAL', c0.x, c0.y - cr - 14);
+    };
+    let cDone = false;
+    order.forEach(o => { if (!cDone && o.p.d > 0) { drawCenter(); cDone = true; } drawNode(o); });
+    if (!cDone) drawCenter();
+    ctx.globalAlpha = reveal;
     // 누구의 갤럭시인지 (왼쪽 위)
     ctx.textAlign = 'left';
     ctx.font = '500 10px "Geist Mono", monospace'; ctx.fillStyle = 'rgba(160,185,230,.7)';
