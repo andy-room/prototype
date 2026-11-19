@@ -2110,6 +2110,7 @@ const Galaxy = (() => {
   let W = 0, H = 0, dpr = 1, raf = 0, on = false, hover = null, nodes = [], drag = null, idle = 0, t0 = performance.now();
   const view = {}; // 스킬별로 부드럽게 바뀌는 값
   const G = { who: null };
+  let burstN = null;
   // 별: 둘레 공간에 흩어진 점 (돌리면 함께 움직여 공간감)
   const STARS = Array.from({ length: 520 }, (_, i) => {
     const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, r = 900 + Math.random() * 1700, q = Math.sqrt(1 - u * u);
@@ -2136,7 +2137,7 @@ const Galaxy = (() => {
   const face = src => { if (!faces[src]) { const im = new Image(); im.src = src; faces[src] = im; } return faces[src]; };
   function build() {
     const P = personNow(), key = P ? 'p:' + P.id : 'me:' + S.pid;
-    if (key !== lastKey) { if (lastKey) swapT = performance.now(); lastKey = key; }
+    if (key !== lastKey) { if (lastKey) { swapT = performance.now(); G.prevSrc = G.src; } lastKey = key; }
     G.who = P;
     const list = P ? personGalaxy(P) : [...S.skills, ...S.added.map(find)].filter(Boolean);
     const n = list.length, goal = S.mode !== 'point';
@@ -2147,7 +2148,8 @@ const Galaxy = (() => {
       const rT = s.pts ? Math.min(64, 9 + s.pts * .052) : 20, zT = -(1 - close) * DEPTH;
       const vk = key + '|' + s.n, fresh = performance.now() - swapT < 100;
       const v = view[vk] || (view[vk] = { r: fresh ? 0 : rT, z: fresh ? 0 : zT, pts: s.pts, pulse: 0 });
-      if (s.pts > v.pts) v.pulse = 1; v.pts = s.pts;
+      if (s.pts > v.pts) { v.pulse = 1; v.bt = performance.now(); v.r0 = v.r; burstN = s.n; v.sparks = Array.from({ length: 28 }, (_, k) => ({ a: k / 28 * Math.PI * 2 + Math.random() * .3, sp: .6 + Math.random() * .9, s: 1 + Math.random() * 1.8 })); }
+      v.pts = s.pts;
       return { s, x: Math.cos(a) * R, y: Math.sin(a) * R, zT, rT, v, left, dim: !s.pts, gap: !!reqP(s) && s.pts < reqP(s), solid: !!reqP(s) && s.pts >= reqP(s) };
     });
   }
@@ -2164,6 +2166,8 @@ const Galaxy = (() => {
     if (!C.cx) { C.cx = tx; C.cy = ty; }
     C.cx += (tx - C.cx) * .08; C.cy += (ty - C.cy) * .08;
     // 패널에서 연 스킬 → 갤럭시에서 선택: 그 스킬을 앞쪽으로 돌려 와요
+    // 스킬을 올리면: 그 스킬을 앞으로 돌려 와서 빅뱅을 보여 줘요
+    if (burstN) { const i = nodes.findIndex(nd => nd.s.n === burstN); if (i >= 0) { const a = i / nodes.length * Math.PI * 2 - Math.PI / 2; let t = Math.PI / 2 - a; t += Math.round((TG.spin - t) / (Math.PI * 2)) * Math.PI * 2; TG.spin = t; idle = performance.now() + 2500; } burstN = null; }
     const selN = [...(S?.nav || [])].reverse().find(e => e.t === 'skill' || e.t === 'courses' || e.t === 'people')?.n || null;
     if (selN !== lastSel && (!selN || nodes.some(nd => nd.s.n === selN))) {
       lastSel = selN; selT = now;
@@ -2212,9 +2216,28 @@ const Galaxy = (() => {
     // 스킬 (먼 것부터) — 평면 원 하나, 포인트는 크게
     const order = nodes.map(nd => ({ nd, p: proj(nd.x, nd.y, nd.z) })).sort((a, b) => a.p.d - b.p.d);
     const drawNode = ({ nd, p }) => {
-      const r = Math.max(3, nd.v.r * p.f), sel = lastSel === nd.s.n, hov = hover === nd || sel;
+      // 프로필이 바뀌면 동전이 다 뒤집힌 뒤, 스킬이 하나씩 톡톡 새로 자리 잡아요
+      const ai = (now - swapT - 420 - nodes.indexOf(nd) * 85) / 420, app = ai >= 1 ? 1 : ai <= 0 ? 0 : 1 + 2.4 * Math.pow(ai - 1, 3) + 1.4 * Math.pow(ai - 1, 2);
+      if (app <= 0) { nd.sx = null; return; }
+      const bt = nd.v.bt ? now - nd.v.bt : 1e9, bang = bt < 2200;
+      // 빅뱅: 먼저 살짝 움츠렸다가 크게 부풀고 → 실제 비율 크기로 돌아와요
+      const boom = bang ? (bt < 160 ? -.12 * Math.sin(bt / 160 * Math.PI) : Math.exp(-(bt - 160) / 380) * Math.sin((bt - 160) / 1000 * Math.PI * 3) * .55) : 0;
+      const r = Math.max(app < 1 ? .5 : 3, nd.v.r * p.f * (1 + boom) * app), sel = lastSel === nd.s.n, hov = hover === nd || sel;
+      if (bang) {
+        const R0 = Math.max(3, nd.v.r * p.f);
+        // 번쩍: 하얀 빛 → 파랑으로 번져요
+        const fl = Math.max(0, 1 - bt / 700);
+        if (fl > 0) { const gg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R0 * (2 + (1 - fl) * 4)); gg.addColorStop(0, `rgba(255,255,255,${.85 * fl})`); gg.addColorStop(.35, `rgba(90,160,255,${.55 * fl})`); gg.addColorStop(1, 'rgba(47,123,255,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(p.x, p.y, R0 * (2 + (1 - fl) * 4), 0, 7); ctx.fill(); }
+        // 파장: 세 겹 고리가 차례로 퍼져요 (기울기에 맞춰 납작하게)
+        [0, 220, 440].forEach((d, j) => { const q = (bt - 160 - d) / 1400; if (q <= 0 || q >= 1) return; const e = 1 - Math.pow(1 - q, 3), rr = R0 + e * (140 + j * 40) * p.f;
+          ctx.strokeStyle = `rgba(${j ? '120,175,255' : '220,235,255'},${(1 - q) * (j ? .55 : .9)})`; ctx.lineWidth = (j ? 1.5 : 2.5) * (1 - q) + .5;
+          ctx.beginPath(); ctx.ellipse(p.x, p.y, rr, rr * (1 - .75 * k), 0, 0, 7); ctx.stroke(); });
+        // 불꽃: 사방으로 튀었다 사라져요
+        const q = (bt - 120) / 1300;
+        if (q > 0 && q < 1 && nd.v.sparks) nd.v.sparks.forEach(sp => { const e = 1 - Math.pow(1 - q, 2.4), d = R0 + e * 120 * sp.sp * p.f; ctx.fillStyle = `rgba(200,225,255,${(1 - q) * .95})`; ctx.beginPath(); ctx.arc(p.x + Math.cos(sp.a) * d, p.y + Math.sin(sp.a) * d * (1 - .75 * k), sp.s * (1 - q * .6), 0, 7); ctx.fill(); });
+      }
       nd.sx = p.x; nd.sy = p.y; nd.sr = r;
-      ctx.globalAlpha = reveal * (lastSel && !sel && hover !== nd ? .35 : 1);
+      ctx.globalAlpha = reveal * Math.min(1, ai >= 1 ? 1 : Math.max(0, ai * 1.6)) * (lastSel && !sel && hover !== nd ? .35 : 1);
       if (sel) { // 선택: 퍼지는 빛 + 두 겹 고리
         const k2 = ((now - selT) % 1600) / 1600;
         const gg = ctx.createRadialGradient(p.x, p.y, r, p.x, p.y, r * 2.6); gg.addColorStop(0, 'rgba(70,140,255,.45)'); gg.addColorStop(1, 'rgba(70,140,255,0)');
@@ -2263,14 +2286,17 @@ const Galaxy = (() => {
     const cg = ctx.createRadialGradient(c0.x, c0.y, 0, c0.x, c0.y, cr * 3.2);
     cg.addColorStop(0, 'rgba(70,140,255,.55)'); cg.addColorStop(.4, 'rgba(40,100,255,.16)'); cg.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr * 3.2, 0, 7); ctx.fill();
-    const sw = Math.min(1, (performance.now() - swapT) / 700);
-    if (sw < 1) { ctx.strokeStyle = `rgba(120,175,255,${(1 - sw) * .8})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr + sw * 260, 0, 7); ctx.stroke(); }
     { // 가운데: 그 사람(또는 나)의 얼굴, 아래에 커리어
-      const mine = profOf(S.pid), im = face(P ? `avatars/${P.img || P.id}.png` : `avatars/a${mine ? mine.av : 1}.png`);
-      ctx.save(); ctx.beginPath(); ctx.arc(c0.x, c0.y, cr, 0, 7); ctx.fillStyle = '#ECECEC'; ctx.fill(); ctx.clip();
-      if (im.complete && im.naturalWidth) ctx.drawImage(im, c0.x - cr, c0.y - cr, cr * 2, cr * 2);
+      const mine = profOf(S.pid), src = P ? `avatars/${P.img || P.id}.png` : `avatars/a${mine ? mine.av : 1}.png`; G.src = src;
+      // 프로필이 바뀌면 동전처럼 한 바퀴 뒤집혀요: 앞 절반은 이전 얼굴, 뒤 절반은 새 얼굴
+      const ft = Math.min(1, (now - swapT) / 650), fe = ft < 1 ? .5 - .5 * Math.cos(ft * Math.PI) : 1;
+      const sx = ft < 1 ? Math.max(.04, Math.abs(Math.cos(fe * Math.PI))) : 1;
+      const im = face(ft < .5 && G.prevSrc ? G.prevSrc : src);
+      ctx.save(); ctx.translate(c0.x, c0.y); ctx.scale(sx, 1);
+      ctx.beginPath(); ctx.arc(0, 0, cr, 0, 7); ctx.fillStyle = sx < .3 ? '#C9D4E8' : '#ECECEC'; ctx.fill();
+      ctx.save(); ctx.clip(); if (im.complete && im.naturalWidth) ctx.drawImage(im, -cr, -cr, cr * 2, cr * 2); ctx.restore();
+      ctx.strokeStyle = '#2F7BFF'; ctx.lineWidth = 3 / Math.max(sx, .3); ctx.beginPath(); ctx.arc(0, 0, cr + 2, 0, 7); ctx.stroke();
       ctx.restore();
-      ctx.strokeStyle = '#2F7BFF'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr + 2, 0, 7); ctx.stroke();
     }
     ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(c0.x, c0.y, cr + 7, 0, 7); ctx.stroke();
     ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
