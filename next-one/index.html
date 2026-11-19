@@ -146,7 +146,7 @@
   .sk.rec .bar i, .bar.blue i { background: var(--blue); }
   .sk .lv { font: 12px var(--mono); color: var(--g1); text-align: right; }
   /* 강의 한 줄 */
-  .cl { width: 100%; display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; text-align: left; padding: 12px 0; border-bottom: 1px solid var(--g4); }
+  .cl { width: 100%; display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; text-align: left; padding: 12px 0; border-bottom: 1px solid var(--g4); }
   .cl:active { opacity: .6; }
   .csort { display: flex; align-items: center; gap: 12px; margin: 14px 0 4px; font-size: 12px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
   .csort::-webkit-scrollbar { display: none; }
@@ -155,6 +155,8 @@
   .csort button.on { color: var(--ink); font-weight: 700; }
   .ccard { width: 100%; display: grid; grid-template-columns: 112px 1fr; gap: 14px; text-align: left; padding: 14px 0; border-bottom: 1px solid var(--g4); align-items: start; }
   .ccard:active { opacity: .6; }
+  .ccard.sel .t { color: var(--blue); }
+  .ccard.sel .th, .ccard.sel > :first-child { box-shadow: 0 0 0 2px var(--blue); border-radius: 10px; }
   .cthumb { position: relative; height: 72px; border-radius: 12px; overflow: hidden; background: var(--g4) radial-gradient(circle, rgba(21,23,27,.13) 1px, transparent 1.4px) 0 0 / 5px 5px; display: grid; place-items: center; }
   .cthumb .ci { position: absolute; left: 10px; top: 4px; font-size: 34px; font-weight: 800; color: rgba(21,23,27,.12); letter-spacing: -0.04em; }
   .cthumb .cp { width: 30px; height: 30px; border-radius: 50%; background: rgba(21,23,27,.82); display: grid; place-items: center; padding-left: 2px; }
@@ -170,7 +172,8 @@
   .crel { margin-top: 6px; font-size: 11px; color: var(--g2); }
   .all { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 14px; height: 48px; border-radius: 14px; background: var(--g5); font-size: 14px; font-weight: 600; color: var(--ink); }
   .all b { font: 500 12px var(--mono); color: var(--g1); }
-  .cl .pi { width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--g3); display: grid; place-items: center; }
+  /* 강의 아이콘: 유튜브처럼 가로로 긴 둥근 사각형 + 재생 삼각형 */
+  .cl .pi { width: 34px; height: 24px; border-radius: 8px; background: var(--g5); box-shadow: inset 0 0 0 1.5px var(--g3); display: grid; place-items: center; }
   .cl .pi path { fill: var(--g1); stroke: var(--g1); }
   .cl.next .pi { background: var(--blue); box-shadow: none; }
   .cl.next .pi path { fill: #fff; stroke: #fff; }
@@ -182,12 +185,15 @@
   .pvdone { display: none; margin-top: 28px; }
   .pvdone.on { display: block; animation: pvIn .45s var(--ease) both; }
   @keyframes pvIn { from { opacity: 0; transform: translateY(12px); } }
+  .pvdone .tag { font: 500 11px var(--mono); letter-spacing: .14em; color: var(--blue); }
+  .pvdone .big { display: flex; align-items: baseline; gap: 8px; margin: 8px 0 18px; }
+  .pvdone .big b { font-size: 34px; font-weight: 300; letter-spacing: -0.03em; color: var(--blue); font-variant-numeric: tabular-nums; }
+  .pvdone .big span { font-size: 15px; color: var(--g1); }
   .pvg { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
   .pvg span { font: 500 11px var(--mono); letter-spacing: .12em; color: var(--g1); width: 100%; }
   .pvg b { font: 600 36px var(--mono); color: var(--blue); }
   .pvg small { font-size: 14px; color: var(--g1); }
   #pvUpd.pop { background: var(--ink); }
-  .pvdone .cstop { width: 100%; margin-top: 10px; background: var(--g5); color: var(--ink); border: 1px solid var(--g4); font-size: 14px; }
   .cl .prog { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--blue); border-radius: 2px; }
   .cl.playing .t, .cl.got .t { color: var(--blue); }
   .cl.playing .pi, .cl.got .pi { background: var(--blue); box-shadow: none; }
@@ -356,14 +362,14 @@
   .csheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 28px 28px 0 0; padding: 22px 28px 26px; transform: translateY(105%); transition: transform .5s var(--ease); z-index: 9; box-shadow: 0 -10px 30px rgba(21,23,27,.08); }
   .csheet.on { transform: none; }
   .csheet .tag { font: 500 11px var(--mono); letter-spacing: .14em; color: var(--blue); }
-  .csheet .big { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; }
+  .csheet .big { display: flex; align-items: baseline; gap: 8px; margin: 8px 0 18px; }
   .csheet .big b { font-size: 34px; font-weight: 300; letter-spacing: -0.03em; color: var(--blue); font-variant-numeric: tabular-nums; display: inline-block; transform-origin: left bottom; }
   .csheet .big b.bump { animation: bump .45s cubic-bezier(.3,1.6,.5,1); }
   @keyframes bump { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
   .csheet .big span { font-size: 15px; color: var(--g1); }
   .cnext { width: 100%; margin-top: 20px; border-radius: 16px; background: var(--ink); color: #fff; padding: 14px 18px; text-align: left; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
   .cnext .a { font-size: 16px; font-weight: 600; } .cnext .b { font-size: 12px; opacity: .7; margin-top: 3px; }
-  .cnext.lock { background: var(--g5); color: var(--g1); }
+  .cnext.cn-lock { background: var(--g5); color: var(--g1); }
   .cstop { width: 100%; height: 54px; margin-top: 10px; border-radius: 16px; background: var(--blue); color: #fff; font-size: 16px; font-weight: 600; }
   /* 모바일 프로토타입 커서: 반투명 원 */
   .phone, .phone * { cursor: none !important; }
@@ -414,6 +420,15 @@
   .terms { font-size: 11px; color: var(--g2); text-align: center; margin: 14px 0 0; }
   /* 01 프로필 선택 */
   .sub2 { margin: 10px 0 0; font-size: 13px; color: var(--g1); line-height: 1.6; }
+  /* 로그인 전(콜드 스타터): 메뉴별 로그인 페이지 = 로그인 화면과 같은 틀 */
+  [id$="Body"]:has(> .gate) { min-height: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
+  .gate { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; padding-bottom: 8px; }
+  .gate .logo { margin-top: 12px; }
+  .cnext.cn-own { background: var(--blue-soft); color: var(--blue); }
+  .cnext.cn-own .b { opacity: .8; }
+  .fsk.sel .n { color: var(--blue); }
+  .gbrowse { width: 100%; height: 50px; margin-top: 10px; border-radius: 16px; background: var(--g5); border: 1px solid var(--g4); color: var(--ink); font-size: 14px; font-weight: 600; }
+  .rp .im.gst { margin: 0; border: 1.5px dashed var(--g3); background: var(--g5); display: grid; place-items: center; }
   .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 16px; margin-top: 36px; }
   .ptile { text-align: left; display: grid; gap: 10px; }
   .ptile .img { aspect-ratio: 1; border-radius: 20px; overflow: hidden; position: relative; background: var(--g4); transition: transform .2s var(--ease), box-shadow .2s; }
@@ -474,6 +489,25 @@
   .line .me .pt { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 12px var(--mono); color: #fff; background: var(--blue); padding: 4px 8px; border-radius: 7px; }
   .line .me .pt::after { content: ''; position: absolute; left: 50%; top: 100%; margin-left: -4px; border: 4px solid transparent; border-top-color: var(--blue); }
   .sk .nm small.add { color: var(--blue); }
+  /* 대시보드 내 스킬: 편집(빼기) · 아직 추가하지 않은 스킬 */
+  .secr { display: flex; align-items: center; gap: 10px; }
+  .skedit { height: 26px; min-width: 26px; padding: 0 6px; border-radius: 8px; color: var(--g1); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+  .skedit:hover { background: var(--g5); }
+  .skedit.on { color: var(--blue); }
+  .skedit.del { color: #fff; background: #E5484D; }
+  .skedit.del:hover { background: #D13B40; }
+  #skills.editing .sk { grid-template-columns: 20px 1fr 84px 52px; }
+  body.mode-point #skills.editing .sk { grid-template-columns: 20px 1fr auto; }
+  .ckb { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--g3); display: grid; place-items: center; }
+  .ckb svg { opacity: 0; }
+  .sk.picked .ckb { background: var(--blue); border-color: var(--blue); }
+  .sk.picked .ckb svg { opacity: 1; }
+  .skw { position: relative; overflow: hidden; }
+  .skw .sk { position: relative; z-index: 1; background: #fff; touch-action: pan-y; }
+  .skdel { position: absolute; top: 0; right: 0; bottom: 1px; width: 84px; background: #E5484D; color: #fff; font-size: 14px; font-weight: 600; }
+  .sk.fresh, body.mode-point .sk.fresh { grid-template-columns: 1fr auto 12px; }
+  .sk.fresh .nm { color: var(--g1); }
+  .skadd { height: 28px; padding: 0 11px; border-radius: 14px; background: var(--blue); color: #fff; font-size: 12px; font-weight: 600; display: grid; place-items: center; }
   /* 함께 키우는 사람들: 겹친 프로필 */
   .stack { width: 100%; display: flex; align-items: center; gap: 14px; padding: 16px 0; text-align: left; border-bottom: 1px solid var(--g4); }
   .stack:active { opacity: .6; }
@@ -663,7 +697,6 @@
 
   /* 왼쪽 메뉴 */
   body.desk .rail { display: flex; flex-direction: column; align-items: center; gap: 6px; position: fixed; left: 0; top: 0; bottom: 0; width: 88px; z-index: 6; padding: 22px 0; background: #fff; border-right: 1px solid var(--g4); color: var(--g1); transition: opacity .4s; }
-  body.desk.pre .rail > :not(.rlogo) { opacity: 0; pointer-events: none; }
   .nitems .ni:nth-child(4) { transition-delay: 0s; }
   .rail .rlogo { cursor: pointer; transition: transform .15s var(--ease), box-shadow .2s; }
   .rail .rlogo:hover { transform: scale(1.05); }
@@ -825,7 +858,7 @@
   #s-auth { justify-content: space-between; }
   .hauth { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--ink); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--g3); display: inline-flex; align-items: center; gap: 7px; }
   .hauth img { width: 24px; height: 24px; border-radius: 50%; background: #ECECEC; margin-left: -6px; }
-  body:not(.authed) .mk-dock, body.desk .mk-dock { display: none !important; }
+  body.desk .mk-dock { display: none !important; }
   .hometabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
   /* 아이폰 탭 바처럼: 상자 없이 아이콘 + 작은 글자, 위에 얇은 선 */
   .mk-dock { padding: 6px 12px calc(env(safe-area-inset-bottom, 0px) + 16px) !important; background: rgba(255,255,255,.94) !important; backdrop-filter: blur(16px); border-top: .5px solid var(--g3) !important; }
@@ -934,7 +967,7 @@
       <div>
         <button class="back" id="authBack" style="margin-top:0">← 둘러보기</button>
         <div class="logo">HU</div>
-        <h2 class="h" style="margin-top:28px">가고 싶은 방향으로<br>거리를 좁혀 가요</h2>
+        <h2 class="h" id="authH" style="margin-top:28px">가고 싶은 방향으로<br>거리를 좁혀 가요</h2>
         <p class="sub2">지금 수준은 묻지 않아요.<br>목표를 정하면 스킬로 한 걸음씩 다가가요.</p>
       </div>
       <div>
@@ -988,7 +1021,7 @@
         <div class="pct"><span id="pct">0</span><small>%</small></div>
         <div class="remain" id="remain"></div>
       </div>
-      <div class="sec" style="margin-top:48px"><span class="goal-only"><span class="tn">데이터 PM</span>에 쓰이는 스킬</span><span class="pt-only">내 스킬</span><em class="goal-only">많이 쌓인 순</em><em class="pt-only">포인트 많은 순</em></div>
+      <div class="sec" style="margin-top:48px"><span class="goal-only"><span class="tn">데이터 PM</span>에 쓰이는 스킬</span><span class="pt-only">내 스킬</span><span class="secr"><em class="goal-only">많이 쌓인 순</em><em class="pt-only">포인트 많은 순</em><button class="skedit" id="skEdit" aria-label="내 스킬 편집"></button></span></div>
       <div class="filters" id="filters"></div>
       <div id="skills"></div>
       </div>
@@ -1247,7 +1280,7 @@ const reset = () => {
   S = { store: {}, pid: null, profiles: [{ id: 'svc', target: '서비스 기획자', w: '3일 전에 달렸어요', av: 3 }], newAv: 1, nav: [], friends: [], pinned: [], mode: S?.mode || 'point', member: false };
   usePack('dpm');
 };
-const find = n => S.skills.find(x => x.n === n) || S.extra.find(x => x.n === n);
+const find = n => S.skills.find(x => x.n === n) || S.extra.find(x => x.n === n) || GS[n];
 
 const $ = id => document.getElementById(id);
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -1368,6 +1401,32 @@ const rankOf = p => Math.max(1, Math.min(99, Math.round(99 - 98 / (1 + Math.exp(
 const pplPts = (p, n) => p.skills[n] * 100 + hsh(n + p.id) % 60;
 const pctNow = () => Math.min(100, pctOf(S.skills) + S.bonus);
 const FILTERS = [['all', '전체'], ['solid', '탄탄한 스킬'], ['grow', '키워 볼 스킬']];
+const TRASH = '<svg width="16" height="16" viewBox="0 0 16 16"><path d="M2.5 4.5h11M6.5 4.5V3h3v1.5M4 4.5l.7 8.5h6.6l.7-8.5M6.8 7v4M9.2 7v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHECK = '<svg width="11" height="9" viewBox="0 0 11 9"><path d="M1.2 4.6 4 7.3 9.8 1.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+// 모바일: 줄을 왼쪽으로 밀면 뒤의 '삭제'가 드러나요
+function swipeRow(w) {
+  const row = w.querySelector('.sk'), W = 84; let x0 = 0, y0 = 0, dx = 0, on = false, drag = false;
+  const set = (x, an) => { row.style.transition = an ? 'transform .25s var(--ease)' : 'none'; row.style.transform = x ? `translateX(${x}px)` : ''; };
+  row.addEventListener('pointerdown', e => { x0 = e.clientX; y0 = e.clientY; dx = 0; on = true; drag = false; });
+  row.addEventListener('pointermove', e => {
+    if (!on) return; const mx = e.clientX - x0, my = e.clientY - y0;
+    if (!drag && Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) { drag = true; document.querySelectorAll('#skills .skw.open').forEach(o => o !== w && (o.classList.remove('open'), o.querySelector('.sk').style.transform = '')); }
+    if (!drag) return; const base = w.classList.contains('open') ? -W : 0;
+    dx = Math.max(-W - 20, Math.min(0, base + mx)); set(dx);
+  });
+  const end = () => { if (!on) return; on = false; if (!drag) return; row.dataset.swiped = 1; const open = dx < -W / 2; w.classList.toggle('open', open); set(open ? -W : 0, true); };
+  row.addEventListener('pointerup', end); row.addEventListener('pointercancel', end);
+}
+const PENCIL = '<svg width="15" height="15" viewBox="0 0 16 16"><path d="M10.6 2.6a1.6 1.6 0 0 1 2.3 2.3L5.4 12.4l-3 .7.7-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+// 내 스킬 빼기: 직접 더한 스킬은 목록에서, 커리어 기본 스킬은 '아직 추가하지 않은 스킬'로 옮겨요 (포인트는 남아요)
+function removeSkill(n, quiet) {
+  const a = S.added.indexOf(n);
+  if (a >= 0) S.added.splice(a, 1);
+  else { const k = S.skills.findIndex(x => x.n === n); if (k < 0) return; const s = S.skills.splice(k, 1)[0]; s.extra = true; s.career = true; s.wasCore = true; S.extra.push(s); }
+  if (quiet) return;
+  toast(`<b>${n}</b> 내 스킬에서 뺐어요`);
+  renderRoute();
+}
 const CHEV = '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="#A9ABB0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PLAY = '<svg width="9" height="10" viewBox="0 0 22 26"><path d="M3 2 L20 13 L3 24 Z" stroke-width="3" stroke-linejoin="round"/></svg>';
 const barHTML = (s, w = s.pts) => `<span class="bar goal-only"><i data-to="${Math.min(1, s.pts / SCALE) * 100}" style="width:${Math.min(1, w / SCALE) * 100}%"></i></span>`;
@@ -1382,19 +1441,45 @@ function renderRoute(fx = {}) {
   const g = gaps(), nx = g[0];
   const solid = S.skills.filter(s => s.pts >= reqP(s)).sort(byFull), grow = [...g].sort(byFull);
   const all = [...[...S.skills].sort(byFull), ...S.added.map(find)];
-  const cnt = { all: all.length, grow: grow.length, solid: solid.length };
+  const fresh = careerPool().filter(s => !isMine(s));
+  const cnt = { all: all.length, grow: fresh.length, solid: solid.length }; // 키워 볼 스킬 = 추천 스킬(아직 추가하지 않은 스킬, 모두 + 등록)
+  if (!FILTERS.some(([k]) => k === S.filter)) S.filter = 'all';
+  // PC: 편집 → 체크박스, 하나라도 고르면 아이콘이 삭제로 / 모바일: 줄을 왼쪽으로 밀어서 삭제
+  const rec = S.filter === 'grow'; if (rec) S.skEdit = false;
+  const desk = isDesk(), ed = desk && S.skEdit, picked = S.skPick = ed ? (S.skPick || new Set()) : new Set();
+  $('skEdit').style.display = desk && !rec ? '' : 'none';
+  $('skEdit').innerHTML = ed && picked.size ? TRASH : PENCIL;
+  $('skEdit').className = 'skedit' + (ed ? ' on' : '') + (ed && picked.size ? ' del' : '');
+  $('skEdit').title = ed && picked.size ? `${picked.size}개 삭제` : ed ? '편집 끝내기' : '내 스킬 편집';
+  $('skEdit').onclick = () => {
+    if (ed && picked.size) { const ns = [...picked]; S.skEdit = false; S.skPick = null; ns.forEach(n => removeSkill(n, true)); toast(ns.length > 1 ? `스킬 <b>${ns.length}개</b>를 내 스킬에서 뺐어요` : `<b>${ns[0]}</b> 내 스킬에서 뺐어요`); return renderRoute(); }
+    S.skEdit = !S.skEdit; S.skPick = null; renderRoute();
+  };
+  $('skills').classList.toggle('editing', !!ed);
   $('filters').innerHTML = FILTERS.map(([k, t]) => `<button class="${S.filter === k ? 'on' : ''}" data-f="${k}">${t}<b>${cnt[k]}</b></button>`).join('');
   document.querySelectorAll('#filters button').forEach(b => b.onclick = () => { S.filter = b.dataset.f; renderRoute(); });
-  const base = S.filter === 'grow' ? grow : S.filter === 'solid' ? solid : all;
+  const base = S.filter === 'solid' ? solid : all;
   const list = S.mode === 'point' ? [...base].sort((a, b) => b.pts - a.pts) : base;
-  $('skills').innerHTML = list.map(s => `
-    <button class="sk ${s === nx ? 'rec' : ''} ${isDesk() && document.body.classList.contains('xp-on') && S.nav[0]?.t === 'skill' && S.nav[0].n === s.n ? 'sel' : ''}" data-n="${s.n}">
-      <span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}${s.extra ? `<small class="add">${s.career ? '새로 등록' : '내가 추가'}</small>` : ''}</span>
+  $('skills').innerHTML = rec ? (fresh.length ? fresh.map(s => `
+    <button class="sk fresh" data-fresh="1" data-n="${s.n}">
+      <span class="nm">${s.n}<small>강의 ${nCourses(s)}개 · ${learnerN(s.n)}명</small></span>
+      <span class="skadd" data-reg="${s.n}">+ 등록</span>${CHEV}
+    </button>`).join('') : `<div class="empty">${T()} 추천 스킬을 모두 추가했어요.</div>`) : list.map(s => `
+    <div class="skw"><button class="sk ${s === nx ? 'rec' : ''} ${picked.has(s.n) ? 'picked' : ''} ${desk && document.body.classList.contains('xp-on') && S.nav[0]?.t === 'skill' && S.nav[0].n === s.n ? 'sel' : ''}" data-n="${s.n}">
+      ${ed ? `<span class="ckb">${CHECK}</span>` : ''}<span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}${s.extra ? `<small class="add">${s.career ? '새로 등록' : '내가 추가'}</small>` : ''}</span>
       ${barHTML(s, fx.n === s.n ? fx.from : s.pts)}
-      <span class="ptv">${fmt(s.pts)}P</span>${CHEV}
-    </button>`).join('');
+      <span class="ptv">${fmt(s.pts)}P</span>${ed ? '' : CHEV}
+    </button>${desk ? '' : `<button class="skdel" data-rm="${s.n}">삭제</button>`}</div>`).join('');
   fill();
-  document.querySelectorAll('#skills .sk').forEach(b => b.onclick = () => { S.nav = []; go({ t: 'skill', n: b.dataset.n }); });
+  document.querySelectorAll('#skills .sk').forEach(b => b.onclick = () => {
+    if (b.dataset.swiped) { delete b.dataset.swiped; return; }
+    if (b.dataset.fresh) { S.nav = []; return go({ t: 'skill', n: b.dataset.n }); }
+    if (ed) { picked.has(b.dataset.n) ? picked.delete(b.dataset.n) : picked.add(b.dataset.n); return renderRoute(); }
+    S.nav = []; go({ t: 'skill', n: b.dataset.n });
+  });
+  document.querySelectorAll('#skills [data-rm]').forEach(b => b.onclick = ev => { ev.stopPropagation(); removeSkill(b.dataset.rm); });
+  if (!desk) document.querySelectorAll('#skills .skw').forEach(swipeRow);
+  document.querySelectorAll('#skills [data-reg]').forEach(b => b.onclick = ev => { ev.stopPropagation(); addSkill(b.dataset.reg); });
   const left = g.reduce((a, s) => a + reqP(s) - s.pts, 0);
   $('remain').innerHTML = left ? `${T()} 수준까지<br><b>${fmt(left)}P</b>` : '<b>도착했어요</b>';
   $('pts').textContent = fmt(points()) + 'P';
@@ -1406,11 +1491,11 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : personOf(e.id).name;
+const label = e => e.t === 'gate' ? { class: '마이클래스', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
 function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
-const ROOTS = ['catalog', 'skills'];
+const ROOTS = ['catalog', 'skills', 'gate', 'gskills'];
 const MAX_BTN = `<button class="maxbtn" data-max title="패널 넓게 보기" aria-label="패널 넓게 보기"><svg class="o" width="16" height="16" viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="c" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.3" transform="rotate(-24 9 9)"/><circle cx="14.6" cy="3.2" r=".9" fill="currentColor"/><circle cx="3" cy="14.4" r=".7" fill="currentColor"/></svg></button>`;
 const GX = { boost: {} };
 const isDesk = () => document.body.classList.contains('desk');
@@ -1444,7 +1529,7 @@ function renderDesk(keep) {
   if (!base) renderRoute(); // 열린 스킬 표시
 }
 function openXP() { document.body.classList.add('xp-on'); if (typeof renderRail === 'function') renderRail(); }
-function closeXP() { document.body.classList.remove('xp-on'); }
+function closeXP() { document.body.classList.remove('xp-on'); if ($('xp').contains($('mSheet'))) { $('mScrim').classList.remove('on'); $('mSheet').classList.remove('on'); } }
 $('xClose').onclick = () => {
   const base = S.nav[0] && ROOTS.includes(S.nav[0].t) ? 1 : 0;
   S.nav.length = base; closeXP();
@@ -1454,7 +1539,7 @@ $('xClose').onclick = () => {
 function paint(e, lv, T, keep, backLabel) {
   const $b = $(T.body), sel = q => document.querySelectorAll(`#${T.body} ${q}`);
   const goHere = x => { S.nav.length = lv + 1; go(x); };
-  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : personHTML(personOf(e.id));
+  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : e.t === 'gate' ? gateHTML(e) : e.t === 'gskills' ? gskillsHTML() : e.t === 'gskill' ? gskillHTML(e) : personHTML(personOf(e.id));
   $b.innerHTML = (backLabel ? `<button class="back2" id="${T.pre}Back">← ${backLabel}</button>` : '') + html;
   $b.dataset.k = JSON.stringify(e);
   if (!keep) $(T.scroll).scrollTop = 0;
@@ -1469,6 +1554,17 @@ function paint(e, lv, T, keep, backLabel) {
   // 데스크탑: 스킬 올리기 시작 → 이 칸이 영상 재생 화면으로 바뀌어요
   sel('[data-start]').forEach(b => b.onclick = () => { if (!isDesk()) return sceneContent(b.dataset.start); const sk = find(b.dataset.start); goHere({ t: 'play', n: sk.n, i: nextIdx(sk) }); });
   if (e.t === 'play') bindPlay(e, T);
+  // 로그인 전(콜드 스타터)
+  sel('[data-glogin]').forEach(b => b.onclick = doLogin);
+  sel('[data-browse]').forEach(b => b.onclick = () => { S.gb = S.gb || {}; S.gb[b.dataset.browse] = true; openTab(b.dataset.browse === 'content' ? 'catalog' : 'skills'); });
+  if (e.t === 'gskills') renderGS(goHere);
+  sel('[data-own]').forEach(b => b.onclick = () => needLogin(null, ownTitle(b.dataset.own)));
+  sel('[data-gi]').forEach(b => b.onclick = () => {
+    const s = gSkill(b.dataset.gn), i = +b.dataset.gi;
+    if (!freeLesson(s, i)) return needLogin(`<b>${s.titles[i]}</b> · 로그인하면 바로 들을 수 있어요`);
+    if (isDesk()) return goHere({ t: 'play', n: s.n, i });
+    sceneContent(s.n, i);
+  });
   if (e.t === 'catalog') bindCatalog();
   if (e.t === 'skills') bindFindSkills(lv);
   sel('[data-go-courses]').forEach(b => b.onclick = () => goHere({ t: 'courses', n: b.dataset.goCourses }));
@@ -1483,7 +1579,7 @@ function paint(e, lv, T, keep, backLabel) {
   const PLUS = '<div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>';
   const r0 = gaps()[0] || S.skills[0], P = T.pre;
   // 오른쪽 칸에서 스킬이 아닌 화면은 아래 버튼 없이 (폰 칸에 이미 있어요)
-  if (T === PH) { $(T.dock).className = 'dock mk-dock'; $(T.dock).innerHTML = '<div class="hometabs"></div>'; fillTabs($(T.dock).firstChild, S.nav[0] && ROOTS.includes(S.nav[0].t) ? S.nav[0].t : 'home'); }
+  if (T === PH) { $(T.dock).className = 'dock mk-dock'; $(T.dock).innerHTML = '<div class="hometabs"></div>'; fillTabs($(T.dock).firstChild, S.nav[0] && ROOTS.includes(S.nav[0].t) ? rootTab(S.nav[0]) : 'home'); }
   else $(T.dock).innerHTML = '';
   if (false) $(T.dock).innerHTML = (!s ? `
     <button class="up-btn" id="${P}Next">
@@ -1516,17 +1612,21 @@ const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" 
 function playHTML(e) {
   const s = find(e.n), i = e.i, gain = gainOf(s, i), acc = e.acc || 0, base = s.pts + acc;
   return `
-    <div class="cgain"><div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${gain}P</em><span>${fmt(base)} → <b>${fmt(base + gain)}P</b></span></div></div>
+    <div class="cgain"><div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${gain}P</em><span>${guest() ? '로그인하면 내 스킬에 쌓여요' : `${fmt(base)} → <b>${fmt(base + gain)}P</b>`}</span></div></div>
     <h2 class="h" style="margin-top:22px">${s.titles[i]}</h2>
     <div class="media pv" id="pvMedia"><button class="play" id="pvPlay" aria-label="재생"><svg width="22" height="26" viewBox="0 0 22 26"><path d="M1.5 1.8 L20 13 L1.5 24.2 Z" fill="none" stroke="#15171B" stroke-width="1.6" stroke-linejoin="round"/></svg></button><div class="wave" aria-hidden="true">${Array.from({ length: 28 }, (_, k) => `<i style="animation-delay:${(k * 97 % 700) / 1000}s"></i>`).join('')}</div></div>
     <div class="timeline"><i id="pvTl"></i></div>
     <div class="times"><span id="pvNow">00:00</span><span>${mmss(s.mins[i] * 60)}</span></div>
     <div class="pvdone" id="pvDone">
-      <div class="pvg"><span>${acc ? `강의 ${(e.cnt || 0) + 1}개 연속` : '강의 하나 끝'}</span><b id="pvGain">+${acc + gain}P</b><small>${s.n}에 모였어요</small></div>
-      <button class="up-btn" id="pvUpd"><div><div class="a">스킬 업데이트</div><div class="b">${fmt(s.pts)}P → ${fmt(s.pts + acc + gain)}P</div></div><div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
-      <button class="cstop" id="pvNext">이어서 다음 강의 · ${s.titles[(i + 1) % s.titles.length]}</button>
+      <div class="tag">${acc ? `강의 ${(e.cnt || 0) + 1}개 연속` : '강의 하나 끝'}</div>
+      <div class="big"><b id="pvGain">+${acc + gain}P</b><span>${s.n}에 모였어요</span></div>
+      <button class="cnext ${guest() ? 'cn-own' : pvFree(e) ? '' : 'cn-lock'}" id="pvNext"><div><div class="a">${guest() ? `${s.n}, 아직 주인이 없어요` : '이어서 다음 강의'}</div><div class="b">${guest() ? `로그인하면 이 스킬과 +${acc + gain}P가 내 것이 돼요` : nextSub(pvFree(e), s, (i + 1) % s.titles.length)}</div></div><svg width="16" height="16" viewBox="0 0 16 16"><path d="M5.5 3 10.5 8l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="cstop" id="pvUpd">${guest() ? '로그인하고 내 스킬로 만들기' : '여기까지 하고 스킬 올리기'}</button>
     </div>`;
 }
+// 강의 끝 '이어서 다음 강의' 카드 (모바일·데스크탑 같은 모양) · 무료는 연속 FREE_STREAK개까지
+const pvFree = e => S.member || ((e.cnt || 0) + 1) < FREE_STREAK;
+const nextSub = (free, s, ni) => free ? `${s.titles[ni]} · ${s.mins[ni]}분` : `${FREE_STREAK}개 연속 완주! 멤버십으로 계속 들을 수 있어요`;
 function bindPlay(e, T) {
   const s = find(e.n), i = e.i, gain = gainOf(s, i), acc = e.acc || 0;
   const run = async () => {
@@ -1536,14 +1636,17 @@ function bindPlay(e, T) {
     $(T.scroll).scrollTo({ top: $(T.scroll).scrollHeight, behavior: 'smooth' });
   };
   $('pvPlay').onclick = run;
-  setTimeout(run, 450); // 바로 재생
-  $('pvNext').onclick = () => { const lvl = S.nav.length - 1; S.nav[lvl] = { t: 'play', n: s.n, i: (i + 1) % s.titles.length, acc: acc + gain, cnt: (e.cnt || 0) + 1 }; renderDetail(); };
+  if (e.done) { $('pvTl').style.width = '100%'; $('pvNow').textContent = mmss(s.mins[i] * 60); $('pvDone').classList.add('on'); }
+  else if (e.cnt) setTimeout(run, 450); // 첫 강의는 재생을 눌러야, '이어서 다음 강의'부터는 바로 재생
+  const own = () => { e.done = true; needLogin(`<b>${s.n}</b> +${acc + gain}P · 로그인하면 내 스킬이 돼요`, ownTitle(s.n)); };
+  $('pvNext').onclick = () => { if (guest()) return own(); if (!pvFree(e)) return locked('courses', null, T === XP ? $('xp') : null); const lvl = S.nav.length - 1; S.nav[lvl] = { t: 'play', n: s.n, i: (i + 1) % s.titles.length, acc: acc + gain, cnt: (e.cnt || 0) + 1 }; renderDetail(); };
   $('pvUpd').onclick = async () => {
+    if (guest()) return own();
     const tot = acc + gain, from = s.pts;
     s.lv += (e.cnt || 0) + 1; s.pts += tot; S.week += tot; if (s.extra) S.bonus += (e.cnt || 0) + 1; S.cur = s;
     navigator.vibrate?.([10, 40, 18]);
     toast(`<b>${s.n}</b> ${fmt(from)}P → ${fmt(s.pts)}P`);
-    $('pvUpd').classList.add('pop'); $('pvUpd').querySelector('.a').textContent = '업데이트 완료';
+    $('pvUpd').classList.add('pop'); $('pvUpd').textContent = '업데이트 완료';
     await wait(700);
     back();
   };
@@ -1600,6 +1703,7 @@ function renderCatalog() {
   if (c.f === 'short') list = list.filter(x => x.m <= 6);
   const recRank = x => (gapSet.has(x.s) ? 0 : isMine(x.s) ? 1 : 2) * 100 + ((x.i - nextIdx(x.s)) % x.s.titles.length + x.s.titles.length) % x.s.titles.length;
   list.sort(c.sort === 'pts' ? (a, b) => b.g - a.g : c.sort === 'short' ? (a, b) => a.m - b.m : c.sort === 'long' ? (a, b) => b.m - a.m : (a, b) => recRank(a) - recRank(b));
+  $('catF').style.display = guest() ? 'none' : '';
   $('catF').innerHTML = CAT_F.map(([k, n]) => `<button class="${c.f === k ? 'on' : ''}" data-cf="${k}">${n}</button>`).join('');
   $('catS').innerHTML = `<span>강의 ${list.length}개</span>` + CAT_S.map(([k, n]) => `<button class="${c.sort === k ? 'on' : ''}" data-cs="${k}">${n}</button>`).join('');
   $('catList').innerHTML = list.length ? list.slice(0, 40).map(x => {
@@ -1607,15 +1711,20 @@ function renderCatalog() {
     return `<button class="ccard" data-cn="${x.s.n}" data-ci="${x.i}">
       ${thumbHTML(x.s, x.i)}
       <div class="ctx"><div class="t">${markQ(x.t, q)}</div><div class="m">${x.m}분</div>
-        <div class="cfor"><span class="sp ${mine ? '' : 'new'}">${markQ(x.s.n, q)} <b>+${x.g}P</b></span>${mine ? '' : '<em>내게 없는 스킬</em>'}</div>
+        <div class="cfor"><span class="sp ${mine || guest() ? '' : 'new'}">${markQ(x.s.n, q)} <b>+${x.g}P</b></span>${mine || guest() ? '' : '<em>내게 없는 스킬</em>'}</div>
         ${rel.length ? `<div class="crel">함께 가까워져요 · ${rel.map(r => r.n).join(', ')}</div>` : ''}
       </div></button>`;
   }).join('') : `<div class="empty">'${esc(q)}'에 맞는 강의가 없어요. 다른 말로 찾아보세요.</div>`;
   $('catList').querySelectorAll('.ccard').forEach(b => b.onclick = () => {
-    const s = find(b.dataset.cn);
-    if (!isMine(s)) return wantAdd(s.n);
+    const s = find(b.dataset.cn), ci = +b.dataset.ci;
+    if (guest() && !freeLesson(s, ci)) return needLogin(`<b>${s.titles[ci]}</b> · 로그인하면 바로 들을 수 있어요`);
+    if (!guest() && !isMine(s)) return wantAdd(s.n);
+    // 데스크탑: 스킬처럼 목록은 그대로 두고 두 번째 패널(넓게 볼 때는 오른쪽 패널)에서 강의가 열려요
+    if (isDesk()) { S.nav.length = 1; return go({ t: 'play', n: s.n, i: +b.dataset.ci }); }
     sceneContent(s.n, +b.dataset.ci);
   });
+  const op = S.nav[1];
+  $('catList').querySelectorAll('.ccard').forEach(b => b.classList.toggle('sel', isDesk() && !!op && op.t === 'play' && op.n === b.dataset.cn && op.i === +b.dataset.ci));
   $('catF').querySelectorAll('button').forEach(b => b.onclick = () => { c.f = b.dataset.cf; renderCatalog(); });
   $('catS').querySelectorAll('button').forEach(b => b.onclick = () => { c.sort = b.dataset.cs; renderCatalog(); });
 }
@@ -1668,7 +1777,7 @@ const NAV_IC = {
   catalog: '<svg width="20" height="20" viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 7.4v4.2l3.6-2.1z" fill="currentColor"/></svg>',
   skills: '<svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.8l2.1 4.3 4.7.7-3.4 3.3.8 4.7L10 13.6l-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
 };
-const tabNow = () => $('s-login').classList.contains('on') ? 'main' : $('s-route').classList.contains('on') ? 'home' : $('s-detail').classList.contains('on') && S.nav[0] && (S.nav[0].t === 'catalog' || S.nav[0].t === 'skills') ? S.nav[0].t : 'home';
+const tabNow = () => $('s-login').classList.contains('on') ? 'main' : $('s-route').classList.contains('on') ? 'home' : $('s-detail').classList.contains('on') && S.nav[0] && ROOTS.includes(S.nav[0].t) ? rootTab(S.nav[0]) : 'home';
 function renderMenu() {
   const nCourse = [...S.skills, ...S.extra].reduce((a, s) => a + nCourses(s), 0);
   const nNew = careerPool().filter(s => !isMine(s)).length;
@@ -1692,7 +1801,94 @@ function renderMenu() {
     setTimeout(() => switchProfile(id), 260);
   });
 }
+// 로그인 전(콜드 스타터): 메뉴는 다 보여요. 콘텐츠는 둘러보고 일부 강의는 바로 들어요. 마이클래스·스킬은 빈 화면
+const guest = () => !(S && S.loggedIn);
+const freeLesson = (s, i) => i === 0; // 각 스킬의 첫 강의는 로그인 없이 (화면에 '무료' 표시는 안 해요)
+// 로그인 화면으로: 무엇 때문에 왔는지 제목으로 말하고, '← 둘러보기'로 하던 자리에 돌아가요
+function needLogin(msg, title, ret) {
+  if (msg) toast(msg);
+  S.authRet = ret || ($('s-content').classList.contains('on') ? () => show('s-content', 4) : S.nav.length ? () => renderDetail() : null);
+  setTimeout(() => { $('authH').innerHTML = title || AUTH_H; show('s-auth', 0); }, msg ? 650 : 0);
+}
+const GUEST_ICON = '<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="8" r="3.6" fill="none" stroke="#A9ABB0" stroke-width="1.6"/><path d="M4 18.5c1.3-3.2 4-4.8 7-4.8s5.7 1.6 7 4.8" fill="none" stroke="#A9ABB0" stroke-width="1.6" stroke-linecap="round"/></svg>';
+// 메뉴별 로그인 페이지: 로그인 화면과 같은 틀, 제목만 메뉴에 맞게 (마이클래스는 둘러보기 없음)
+const GATE = {
+  class: { h: '내가 달려갈 커리어와<br>쌓아 온 스킬이 여기 모여요', b: null },
+  content: { h: '오늘 듣는 강의가<br>내 스킬로 쌓여요', b: '로그인 없이 강의 둘러보기' },
+  skills: { h: '가고 싶은 커리어에<br>쓰이는 스킬을 찾아요', b: '로그인 없이 스킬 둘러보기' },
+};
+const gateHTML = e => { const g = GATE[e.k]; return `
+    <div class="gate">
+      <div><div class="logo">HU</div><h2 class="h" style="margin-top:28px">${g.h}</h2><p class="sub2">지금 수준은 묻지 않아요.<br>목표를 정하면 스킬로 한 걸음씩 다가가요.</p></div>
+      <div>
+        <div class="lbtns"><button class="lbtn main" data-glogin>카카오로 시작하기</button><button class="lbtn" data-glogin>Apple로 계속하기</button><button class="lbtn" data-glogin>이메일로 로그인</button></div>
+        ${g.b ? `<button class="gbrowse" data-browse="${e.k}">${g.b}</button>` : ''}
+        <p class="terms">시안에서는 누르면 바로 로그인돼요</p>
+      </div>
+    </div>`; };
+// 스킬 둘러보기: 키워드로 커리어 찾기(프로필 만들 때와 같은 검색) → 그 커리어의 스킬 → 스킬 메인
+const GS = {};
+function gSkill(n) {
+  if (GS[n]) return GS[n];
+  const raw = [SKILLS, EXTRA, SVC_SKILLS, SVC_EXTRA].flat().find(x => x.n === n);
+  return GS[n] = { n, titles: raw ? [...raw.titles] : [`${n} 첫걸음`, `일하며 쓰는 ${n}`, `사례로 보는 ${n}`], mins: raw ? [...raw.mins] : [6, 7, 8], pts: 0, pts0: 0, lv: 0, start: 0, related: [], extra: true, career: true, guest: true };
+}
+const careerSkills = j => j.ko === TARGET.ko ? SKILLS.map(x => x.n) : j.ko === PACKS.svc.name ? SVC_SKILLS.map(x => x.n) : j.kw;
+const jobHits = q => JOB_LIST.map(j => ({ j, s: (j.ko.includes(q) ? 3 : 0) + (j.kw.some(k => k.includes(q)) ? 2 : 0) + (j.fam.includes(q) ? 1 : 0) + (j.built ? .5 : 0) }))
+  .filter(x => x.s >= 1).sort((a, b) => b.s - a.s).slice(0, 12).map(x => x.j);
+function gskillsHTML() {
+  S.gs = S.gs || { q: '', job: null };
+  return `
+    <div class="tabhead"><div class="eyebrow">스킬 둘러보기</div>${MAX_BTN}</div>
+    <h2 class="h">어떤 커리어에 쓰이는<br>스킬이 궁금해요?</h2>
+    <div class="note">키워드로 커리어를 찾아 고르면<br>그 커리어에 쓰이는 스킬을 보여 드려요.</div>
+    <label class="search" style="margin-top:20px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="gsQ" placeholder="관심 있는 말로 찾아보세요" autocomplete="off"></label>
+    <div class="kws" id="gsK"></div>
+    <div class="results" id="gsR"></div>
+    <div id="gsList"></div>`;
+}
+function renderGS(goHere) {
+  const c = S.gs, q = c.q.trim();
+  $('gsQ').value = c.q;
+  $('gsK').innerHTML = KWS.map(k => `<button class="${k === q ? 'on' : ''}">${k}</button>`).join('');
+  const hit = q ? jobHits(q) : [];
+  const shown = c.job ? [c.job] : hit;
+  $('gsR').innerHTML = !q && !c.job ? `<div class="empty">직무 ${JOB_LIST.length.toLocaleString()}개 중에서 찾아요.<br>위 키워드를 눌러 봐도 좋아요.</div>`
+    : shown.length ? (c.job ? '' : `<div class="cnt">${hit.length >= 12 ? '12개 이상' : hit.length + '개'} 찾았어요</div>`) + shown.map((j, k) => {
+      const kw = [...j.kw].sort((a, b) => b.includes(q) - a.includes(q)).slice(0, 4);
+      return `<button class="job ${c.job === j ? 'sel' : ''}" data-k="${k}"><span class="t">${markQ(j.ko, q)}<small>${esc(j.fam)}</small></span><span class="k">${kw.map(x => markQ(x, q)).join(' · ')}</span></button>`;
+    }).join('') : `<div class="empty">'${esc(q)}'로는 찾지 못했어요. 다른 키워드로 찾아보세요.</div>`;
+  const sk = c.job ? careerSkills(c.job).map(gSkill) : [];
+  const open = S.nav[1] && S.nav[1].t === 'gskill' ? S.nav[1].n : null;
+  $('gsList').innerHTML = sk.length ? `<div class="fsec"><span>${esc(c.job.ko)}에 쓰이는 스킬</span><em>${sk.length}개</em></div>` + sk.map(s => `<button class="fsk ${open === s.n ? 'sel' : ''}" data-gs="${s.n}"><span class="ini">${s.n[0]}</span>
+      <span class="tx"><div class="n">${esc(s.n)}</div><div class="w">강의 ${s.titles.length}개 · ${learnerN(s.n)}명이 키우는 중</div></span>${CHEV}</button>`).join('') : '';
+  $('gsQ').oninput = ev => { c.q = ev.target.value; c.job = null; renderGS(goHere); };
+  $('gsK').querySelectorAll('button').forEach(b => b.onclick = () => { c.q = b.textContent; c.job = null; renderGS(goHere); });
+  $('gsR').querySelectorAll('.job').forEach(b => b.onclick = () => { c.job = c.job ? null : shown[+b.dataset.k]; renderGS(goHere); });
+  $('gsList').querySelectorAll('.fsk').forEach(b => b.onclick = () => goHere({ t: 'gskill', n: b.dataset.gs, job: c.job.ko }));
+}
+// 로그인 전 스킬 메인: 스킬 화면과 같은 틀. 포인트는 0, '로그인하면 내 스킬이 돼요'
+function gskillHTML(e) {
+  const s = gSkill(e.n), ppl = learners(s.n), total = learnerN(s.n);
+  return `
+    <div class="eyebrow">${e.job ? `${esc(e.job)}에 쓰이는 스킬` : '스킬'}</div>
+    <h2 class="h">${s.n}</h2>
+    <div class="d-lv"><span class="n">0</span><span class="u">P</span><span class="r">아직 주인이 없는 스킬이에요<br>로그인하면 내 스킬이 돼요</span></div>
+    <button class="addnow" data-own="${s.n}"><span class="pl">+</span><span><b>로그인하고 내 스킬로 만들기</b><small>강의를 들을 때마다 이 스킬에 포인트가 쌓여요</small></span></button>
+    ${ppl.length ? `<button class="stack" data-own="${s.n}" style="margin-top:32px;border-top:1px solid var(--g4)">
+      <span class="avs">${ppl.slice(0, 4).map(avHTML).join('')}</span>
+      <span class="tx"><b>${ppl[0].name} 님 외 ${total}명</b>이<br>이 스킬을 함께 키우고 있어요</span>${CHEV}</button>` : ''}
+    <div class="sec" style="margin-top:48px"><span>올릴 수 있는 강의</span><em>강의 하나 = +포인트</em></div>
+    ${s.titles.map((t, i) => `<button class="cl ${freeLesson(s, i) ? 'next' : ''}" data-gn="${s.n}" data-gi="${i}"><span class="pi">${PLAY}</span><span class="t">${t}</span><span class="m">${s.mins[i]}분 · +${gainOf(s, i)}P</span></button>`).join('')}`;
+}
+const ownTitle = n => `${n}${eul(n)}<br>내 스킬로 만들어요`;
+const rootTab = e => !e ? 'home' : e.t === 'gate' ? { class: 'home', content: 'catalog', skills: 'skills' }[e.k] : e.t === 'gskills' ? 'skills' : e.t;
 function openTab(k) {
+  if (guest() && k !== 'main') {
+    closeMenu(); closeXP(); S.gb = S.gb || {};
+    S.nav = [k === 'catalog' ? (S.gb.content ? { t: 'catalog' } : { t: 'gate', k: 'content' }) : k === 'skills' ? (S.gb.skills ? { t: 'gskills' } : { t: 'gate', k: 'skills' }) : { t: 'gate', k: 'class' }];
+    return renderDetail();
+  }
   closeMenu();
   if (k === 'main') { S.nav = []; closeXP(); return sceneHome(); }
   if (k === 'home') { S.nav = []; closeXP(); return $('s-route').classList.contains('on') ? ($('routeScroll').scrollTo({ top: 0, behavior: 'smooth' })) : sceneRoute(false); }
@@ -1840,7 +2036,7 @@ function sceneContent(name, idx, keep) {
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
   const base = s.pts + (S.pend.gain || 0);
-  $('cSkill').innerHTML = `<div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${s.curGain}P</em><span>${fmt(base)} → <b>${fmt(base + s.curGain)}P</b></span></div>`;
+  $('cSkill').innerHTML = `<div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${s.curGain}P</em><span>${guest() ? '로그인하면 내 스킬에 쌓여요' : `${fmt(base)} → <b>${fmt(base + s.curGain)}P</b>`}</span></div>`;
   $('cTitle').textContent = s.titles[i];
   $('tEnd').textContent = mmss(s.curMin * 60); $('tNow').textContent = '00:00';
   $('tl').style.width = 0; $('media').classList.remove('playing');
@@ -1871,10 +2067,16 @@ function openChoice() {
     tween(900, q => g.textContent = `+${Math.round(fromV + (toV - fromV) * easeOut(q))}${unit}`).then(() => { void g.offsetWidth; g.classList.add('bump'); navigator.vibrate?.(10); });
   }, 380);
   $('cGainSub').textContent = `${s.n}에 모였어요`;
-  $('cNext').classList.toggle('lock', !free);
-  $('cNextSub').textContent = free ? `${s.titles[ni]} · ${s.mins[ni]}분` : `${FREE_STREAK}개 연속 완주! 멤버십으로 계속 들을 수 있어요`;
-  $('cNext').onclick = () => { $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => { sceneContent(s.n, ni, true); setTimeout(() => $('playBtn').click(), 520); }, 250); }; // 이어서 → 바로 재생 (무료 한도면 멤버십 안내로)
-  $('cStop').onclick = () => { $('cSheet').classList.remove('on'); setTimeout(openSheet, 200); };
+  $('cNext').classList.toggle('cn-lock', !free);
+  $('cNextSub').textContent = nextSub(free, s, ni);
+  // 로그인 전: 이 강의로 스킬이 올라가는 것까지 보여 주고, '로그인하면 이 스킬이 내 것이 돼요'로 이어요
+  const gu = guest(), own = () => { $('cSheet').classList.remove('on'); needLogin(`<b>${s.n}</b> +${S.pend.gain}P · 로그인하면 내 스킬이 돼요`, ownTitle(s.n), () => { show('s-content', 4); setTimeout(openChoice, 380); }); };
+  $('cNext').classList.toggle('cn-own', gu); if (gu) $('cNext').classList.remove('cn-lock');
+  $('cNext').querySelector('.a').textContent = gu ? `${s.n}, 아직 주인이 없어요` : '이어서 다음 강의';
+  if (gu) $('cNextSub').textContent = `로그인하면 이 스킬과 +${S.pend.gain}P가 내 것이 돼요`;
+  $('cStop').textContent = gu ? '로그인하고 내 스킬로 만들기' : '여기까지 하고 스킬 올리기';
+  $('cNext').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => { sceneContent(s.n, ni, true); setTimeout(() => $('playBtn').click(), 520); }, 250); }; // 이어서 → 바로 재생 (무료 한도면 멤버십 안내로)
+  $('cStop').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); setTimeout(openSheet, 200); };
   $('cSheet').classList.add('on');
 }
 
@@ -1978,8 +2180,17 @@ const BENEFITS = [
   ['courses', '강의를 쉬지 않고 계속 이어 듣기', '<svg width="10" height="12" viewBox="0 0 22 26"><path d="M3 2 L20 13 L3 24 Z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>'],
 ];
 const M_TITLE = { add: '연관 스킬을 더해<br>거리를 더 좁혀 보세요', people: '같은 스킬을 키우는<br>사람들을 모두 만나 보세요', courses: '흐름이 좋아요<br>멈추지 말고 계속 들어 보세요', plan: '멤버십으로<br>더 빠르게 달려 보세요', profile: '다른 방향의 나도<br>함께 키워 보세요' };
-function locked(kind, n) {
+// host: 데스크탑에서 강의 패널(오른쪽)에서 막혔을 때는 그 패널 안에 띄워요
+const mHome = { box: null };
+function mPlace(host) {
+  const sc = $('mScrim'), sh = $('mSheet');
+  if (!mHome.box) mHome.box = sh.parentNode;
+  const to = host || mHome.box;
+  if (sh.parentNode !== to) { to.appendChild(sc); to.appendChild(sh); void sh.offsetWidth; }
+}
+function locked(kind, n, host) {
   if (S.member) { if (kind === 'add') addSkill(n); return; }
+  mPlace(host);
   $('mTitle').innerHTML = M_TITLE[kind];
   $('mb').innerHTML = BENEFITS.map(([k, t, ic]) => `<div class="${k === kind ? 'hit' : ''}"><i>${ic}</i>${t}</div>`).join('');
   S.pending = { kind, n };
@@ -2000,7 +2211,9 @@ $('mGo').onclick = () => {
 };
 $('plan').onclick = () => S.member ? toast('멤버십을 이용하고 있어요') : locked('plan');
 function addSkill(n) {
-  if (!S.added.includes(n)) S.added.push(n);
+  const ws = find(n);
+  if (ws && ws.wasCore) { S.extra.splice(S.extra.indexOf(ws), 1); delete ws.wasCore; ws.extra = false; ws.career = false; S.skills.push(ws); } // 뺐던 기본 스킬은 제자리로
+  else if (!S.added.includes(n)) S.added.push(n);
   setTimeout(() => toast(`<b>${n}</b> ${find(n).career ? '내 스킬로 등록했어요' : '내 스킬에 추가했어요'}`), 400);
   if (S.nav.length && !$('s-content').classList.contains('on')) renderDetail(true); else renderRoute();
 }
@@ -2108,7 +2321,7 @@ function renderMarketing() {
   $('heroTrack').innerHTML = H.hero.map(h => { const c = mkOf(h.c); return `<div class="hslide" data-mk="${c.id}">${thHTML(c)}<div class="cap"><i>${h.k}</i><b>${h.t}</b><span>${h.s}</span></div></div>`; }).join('');
   $('heroDots').innerHTML = H.hero.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('');
   $('heroTrack').scrollLeft = 0;
-  $('mkNew').innerHTML = H.nw.map(mkOf).map(c => `<button class="mcard" data-mk="${c.id}">${thHTML(c)}<div class="t">${c.t}</div><div class="s">${c.s}</div><div class="mtags"><span class="nw">NEW</span><span class="skt">${c.sk}</span><span>${c.m}분</span></div></button>`).join('');
+  $('mkNew').innerHTML = H.nw.map(mkOf).map(c => `<button class="mcard" data-mk="${c.id}">${thHTML(c)}<div class="t">${c.t}</div><div class="s">${c.s}</div></button>`).join('');
   $('mkNew').scrollLeft = 0;
   const cur = H.cur;
   $('mkCurH').textContent = H.curH; $('mkCurD').textContent = H.curD; $('mkCur2H').textContent = H.cur2H;
@@ -2141,12 +2354,14 @@ function heroTick() {
 renderMarketing(); heroT = setInterval(heroTick, 3800);
 
 // 로그인: 홈 오른쪽 위 → 로그인 화면 → 다시 홈 (아래에 메뉴 3개)
-document.querySelectorAll('[data-login]').forEach(b => b.onclick = () => {
-  S.loggedIn = true; S.toHome = true; sceneProfile();
+const AUTH_H = '가고 싶은 방향으로<br>거리를 좁혀 가요';
+function doLogin() {
+  S.loggedIn = true; S.toHome = true; S.authRet = null; $('authH').innerHTML = AUTH_H; sceneProfile();
   setTimeout(() => toast('다시 오셨네요. 어느 방향으로 달려 볼까요?'), 500);
-});
-$('authBack').onclick = () => sceneHome();
-const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '프로필']];
+}
+document.querySelectorAll('[data-login]').forEach(b => b.onclick = doLogin);
+$('authBack').onclick = () => { const f = S.authRet; S.authRet = null; $('authH').innerHTML = AUTH_H; f ? f() : sceneHome(); };
+const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '마이클래스']];
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
   if (!el) return;
@@ -2163,7 +2378,7 @@ function renderHomeAuth() {
 $('homeAuth').onclick = () => { if (!S.loggedIn) return show('s-auth', 0); S.toHome = true; sceneProfile(); };
 // 홈 메뉴 → 들어가면 메뉴가 햄버거로 접히고 '스킬 올리기'가 나와요 (프로필을 아직 안 골랐으면 먼저 골라요)
 function homeGo(k) {
-  if (k === 'main') return openTab('main');
+  if (k === 'main' || guest()) return openTab(k);
   if (!S.entered) { S.after = k; return sceneProfile(); }
   openTab(k);
 }
@@ -2222,7 +2437,8 @@ function renderRail() {
   const now = tabNow(), me = profOf(S.pid);
   // HU 로고 = 홈 · 지금 프로필 하나 = 대시보드(거기서 프로필 전환) · 콘텐츠 · 스킬
   const prof = S.entered && me
-    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>${me.target}</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
+    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>마이클래스</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
+    : guest() ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="로그인하면 내 커리어가 여기에 보여요"><span class="im gst">${GUEST_ICON}</span>마이클래스</button>`
     : `<button class="rp" data-tab="home"><span class="im add">${NAV_IC.home}</span>프로필 고르기</button>`;
   const items = [['catalog', '콘텐츠'], ['skills', '스킬']].map(([k, t]) => `<button class="ri ${now === k ? 'on' : ''}" data-tab="${k}"><span class="ic">${NAV_IC[k]}</span>${t}</button>`).join('');
   $('rail').innerHTML = `<button class="rlogo ${now === 'main' ? 'on' : ''}" data-tab="main" title="홈">HU</button>${prof}<hr>${items}`;
@@ -2290,6 +2506,7 @@ function applyView() {
   if (desk !== was && S) {
     closeXP(); closeMenu();
     if (S.nav.length && !$('s-content').classList.contains('on')) renderDetail(true);
+    if ($('s-route').classList.contains('on')) renderRoute();
     renderRail();
   }
   if (desk && document.body.classList.contains('mgal')) { document.body.classList.remove('mgal'); document.body.prepend($('galaxy')); document.body.appendChild($('ghud')); }
