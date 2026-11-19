@@ -2032,7 +2032,7 @@ document.querySelectorAll('[data-login]').forEach(b => b.onclick = () => {
   setTimeout(() => toast('다시 오셨네요. 어느 방향으로 달려 볼까요?'), 500);
 });
 $('authBack').onclick = () => sceneHome();
-const HOME_TABS = [['home', '프로필'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['main', '홈']];
+const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '프로필']];
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
   if (!el) return;
