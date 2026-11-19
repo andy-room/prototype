@@ -178,6 +178,16 @@
   .cl.next .t { font-weight: 600; }
   .cl .m { font: 11px var(--mono); color: var(--g1); }
   .cl { position: relative; }
+  .media.pv { height: auto; aspect-ratio: 16 / 9; }
+  .pvdone { display: none; margin-top: 28px; }
+  .pvdone.on { display: block; animation: pvIn .45s var(--ease) both; }
+  @keyframes pvIn { from { opacity: 0; transform: translateY(12px); } }
+  .pvg { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .pvg span { font: 500 11px var(--mono); letter-spacing: .12em; color: var(--g1); width: 100%; }
+  .pvg b { font: 600 36px var(--mono); color: var(--blue); }
+  .pvg small { font-size: 14px; color: var(--g1); }
+  #pvUpd.pop { background: var(--ink); }
+  .pvdone .cstop { width: 100%; margin-top: 10px; background: var(--g5); color: var(--ink); border: 1px solid var(--g4); font-size: 14px; }
   .cl .prog { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--blue); border-radius: 2px; }
   .cl.playing .t, .cl.got .t { color: var(--blue); }
   .cl.playing .pi, .cl.got .pi { background: var(--blue); box-shadow: none; }
@@ -1364,7 +1374,7 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : personOf(e.id).name;
+const label = e => e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
 function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
@@ -1386,7 +1396,7 @@ function renderDesk(keep) {
   if (!S.nav.length) return sceneRoute(false);
   const base = S.nav[0] && ROOTS.includes(S.nav[0].t) ? 1 : 0;
   if (S.nav.length <= base) { // 폰 칸만
-    paint(S.nav[0], 0, PH, keep, null); show('s-detail', 3); return;
+    closeXP(); paint(S.nav[0], 0, PH, keep, null); show('s-detail', 3); return; // 대메뉴로 옮기면 오른쪽 2단 패널은 닫아요
   }
   if (base) {
     const k = JSON.stringify(S.nav[0]), same = $('dBody').dataset.k === k && $('s-detail').classList.contains('on');
@@ -1412,7 +1422,7 @@ $('xClose').onclick = () => {
 function paint(e, lv, T, keep, backLabel) {
   const $b = $(T.body), sel = q => document.querySelectorAll(`#${T.body} ${q}`);
   const goHere = x => { S.nav.length = lv + 1; go(x); };
-  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : personHTML(personOf(e.id));
+  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : personHTML(personOf(e.id));
   $b.innerHTML = (backLabel ? `<button class="back2" id="${T.pre}Back">← ${backLabel}</button>` : '') + html;
   $b.dataset.k = JSON.stringify(e);
   if (!keep) $(T.scroll).scrollTop = 0;
@@ -1423,8 +1433,10 @@ function paint(e, lv, T, keep, backLabel) {
   sel('[data-go-skill]').forEach(b => b.onclick = () => goHere({ t: 'skill', n: b.dataset.goSkill }));
   sel('[data-go-person]').forEach(b => b.onclick = () => goHere({ t: 'person', id: b.dataset.goPerson }));
   // 데스크탑: 강의는 패널을 떠나지 않고 그 자리에서 재생돼요
-  sel('.cl[data-i]').forEach(b => b.onclick = () => isDesk() ? playInline(b) : sceneContent(b.dataset.n, +b.dataset.i));
-  sel('[data-start]').forEach(b => b.onclick = () => { if (!isDesk()) return sceneContent(b.dataset.start); const sk = find(b.dataset.start), row = $(T.body).querySelector(`.cl[data-n="${sk.n}"][data-i="${nextIdx(sk)}"]`) || $(T.body).querySelector(`.cl[data-n="${sk.n}"][data-i]`); if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => playInline(row), 350); } });
+  sel('.cl[data-i]').forEach(b => b.onclick = () => isDesk() ? goHere({ t: 'play', n: b.dataset.n, i: +b.dataset.i }) : sceneContent(b.dataset.n, +b.dataset.i));
+  // 데스크탑: 스킬 올리기 시작 → 이 칸이 영상 재생 화면으로 바뀌어요
+  sel('[data-start]').forEach(b => b.onclick = () => { if (!isDesk()) return sceneContent(b.dataset.start); const sk = find(b.dataset.start); goHere({ t: 'play', n: sk.n, i: nextIdx(sk) }); });
+  if (e.t === 'play') bindPlay(e, T);
   if (e.t === 'catalog') bindCatalog();
   if (e.t === 'skills') bindFindSkills(lv);
   sel('[data-go-courses]').forEach(b => b.onclick = () => goHere({ t: 'courses', n: b.dataset.goCourses }));
@@ -1468,6 +1480,42 @@ const learners = n => {
 };
 const MENU_BTN = `<button class="menu-btn" data-menu aria-label="메뉴" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 20 20"><path class="l1" d="M4 6.5h12"/><path class="l2" d="M4 13.5h12"/></svg><span>메뉴</span></button>`;
 const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+// 데스크탑 칸 안 영상 재생: 칸을 바꿔 재생하고, 끝나면 그 자리에서 업데이트
+function playHTML(e) {
+  const s = find(e.n), i = e.i, gain = gainOf(s, i), acc = e.acc || 0, base = s.pts + acc;
+  return `
+    <div class="cgain"><div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${gain}P</em><span>${fmt(base)} → <b>${fmt(base + gain)}P</b></span></div></div>
+    <h2 class="h" style="margin-top:22px">${s.titles[i]}</h2>
+    <div class="media pv" id="pvMedia"><button class="play" id="pvPlay" aria-label="재생"><svg width="22" height="26" viewBox="0 0 22 26"><path d="M1.5 1.8 L20 13 L1.5 24.2 Z" fill="none" stroke="#15171B" stroke-width="1.6" stroke-linejoin="round"/></svg></button><div class="wave" aria-hidden="true">${Array.from({ length: 28 }, (_, k) => `<i style="animation-delay:${(k * 97 % 700) / 1000}s"></i>`).join('')}</div></div>
+    <div class="timeline"><i id="pvTl"></i></div>
+    <div class="times"><span id="pvNow">00:00</span><span>${mmss(s.mins[i] * 60)}</span></div>
+    <div class="pvdone" id="pvDone">
+      <div class="pvg"><span>${acc ? `강의 ${(e.cnt || 0) + 1}개 연속` : '강의 하나 끝'}</span><b id="pvGain">+${acc + gain}P</b><small>${s.n}에 모였어요</small></div>
+      <button class="up-btn" id="pvUpd"><div><div class="a">스킬 업데이트</div><div class="b">${fmt(s.pts)}P → ${fmt(s.pts + acc + gain)}P</div></div><div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>
+      <button class="cstop" id="pvNext">이어서 다음 강의 · ${s.titles[(i + 1) % s.titles.length]}</button>
+    </div>`;
+}
+function bindPlay(e, T) {
+  const s = find(e.n), i = e.i, gain = gainOf(s, i), acc = e.acc || 0;
+  const run = async () => {
+    $('pvPlay').disabled = true; $('pvMedia').classList.add('playing');
+    await tween(1600, q => { $('pvTl').style.width = q * 100 + '%'; $('pvNow').textContent = mmss(q * s.mins[i] * 60); });
+    $('pvMedia').classList.remove('playing'); $('pvDone').classList.add('on');
+    $(T.scroll).scrollTo({ top: $(T.scroll).scrollHeight, behavior: 'smooth' });
+  };
+  $('pvPlay').onclick = run;
+  setTimeout(run, 450); // 바로 재생
+  $('pvNext').onclick = () => { const lvl = S.nav.length - 1; S.nav[lvl] = { t: 'play', n: s.n, i: (i + 1) % s.titles.length, acc: acc + gain, cnt: (e.cnt || 0) + 1 }; renderDetail(); };
+  $('pvUpd').onclick = async () => {
+    const tot = acc + gain, from = s.pts;
+    s.lv += (e.cnt || 0) + 1; s.pts += tot; S.week += tot; if (s.extra) S.bonus += (e.cnt || 0) + 1; S.cur = s;
+    navigator.vibrate?.([10, 40, 18]);
+    toast(`<b>${s.n}</b> ${fmt(from)}P → ${fmt(s.pts)}P`);
+    $('pvUpd').classList.add('pop'); $('pvUpd').querySelector('.a').textContent = '업데이트 완료';
+    await wait(700);
+    back();
+  };
+}
 // 그 자리 재생: 줄 아래로 진행 막대가 차오르고, 끝나면 포인트가 바로 쌓여요 (갤럭시엔 빅뱅)
 let inlineBusy = false;
 async function playInline(row) {
