@@ -221,6 +221,33 @@
   .ppl .nm { font-size: 14px; font-weight: 600; }
   .ppl .w { font-size: 12px; color: var(--g1); margin-top: 3px; }
   .ppl .w b { color: var(--ink); font-weight: 500; }
+  .ppl .dest { display: flex; align-items: center; gap: 5px; margin-top: 4px; font-size: 13px; color: var(--g1); }
+  .ppl .dest svg { color: var(--ink); flex: none; }
+  .ppl .dest b { color: var(--ink); font-weight: 700; font-size: 14px; }
+  .ppl .dest span { font-size: 12px; }
+  .ppl .dest i { font: normal 600 10px var(--sans, inherit); color: var(--blue); background: var(--blue-soft); padding: 2px 6px; border-radius: 6px; margin-left: 2px; }
+  .ppl .dest.same svg, .ppl .dest.same b { color: var(--blue); }
+  .ppl.locked .dest { filter: blur(4px); opacity: .6; }
+  .pp-h { line-height: 1.3; }
+  .pp-sk { display: inline-block; color: var(--blue); }
+  .note b { color: var(--ink); font-weight: 600; }
+  .dmix { margin-top: 22px; padding: 16px; border-radius: 16px; background: var(--g5); border: 1px solid var(--g4); }
+  .dmix-t { font-size: 12px; font-weight: 600; color: var(--g1); }
+  .dmix-t em { font-style: normal; color: var(--ink); margin-left: 4px; }
+  .dmix-c { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .dmix-c span { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--g4); font-size: 12px; font-weight: 600; color: var(--ink); }
+  .dmix-c span b { font: 500 11px var(--mono); color: var(--g1); }
+  .dmix-c span.me { border-color: var(--blue); color: var(--blue); }
+  .dmix-c span.me b { color: var(--blue); }
+  /* 수강 화면: 이 강의로 오르는 스킬 */
+  .cgain { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--blue-soft); }
+  .cgain .cg-l { font-size: 14px; color: var(--ink); line-height: 1.4; min-width: 0; }
+  .cgain .cg-l small { display: block; font-size: 11px; font-weight: 600; color: var(--blue); margin-bottom: 2px; }
+  .cgain .cg-l b { font-weight: 700; }
+  .cgain .cg-r { text-align: right; flex: none; }
+  .cgain .cg-r em { display: block; font: 700 22px var(--mono); font-style: normal; color: var(--blue); line-height: 1.1; }
+  .cgain .cg-r span { font: 500 11px var(--mono); color: var(--g1); }
+  .cgain .cg-r span b { color: var(--ink); font-weight: 600; }
   .p-top { display: flex; gap: 16px; align-items: center; margin-top: 6px; }
   .p-top .av { width: 64px; height: 64px; font-size: 24px; }
   .p-top .nm { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
@@ -909,7 +936,7 @@
     <!-- 04 콘텐츠 -->
     <section class="screen" id="s-content">
       <button class="back" id="backBtn">← 남은 거리</button>
-      <div class="eyebrow" id="cSkill"></div>
+      <div class="cgain" id="cSkill"></div>
       <h2 class="h" id="cTitle"></h2>
       <div class="media" id="media">
         <button class="play" id="playBtn" aria-label="재생"><svg width="22" height="26" viewBox="0 0 22 26"><path d="M1.5 1.8 L20 13 L1.5 24.2 Z" fill="none" stroke="#15171B" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
@@ -1121,6 +1148,7 @@ const PACKS = {
 };
 // 지금 프로필이 향하는 커리어 이름 · 받침에 따라 '과/와'
 const T = () => PACKS[S.pid].name;
+const eul = w => { const c = w.charCodeAt(w.length - 1); return c >= 0xAC00 && c <= 0xD7A3 && !((c - 0xAC00) % 28) ? '를' : '을'; };
 const wa = w => { const c = w.charCodeAt(w.length - 1); if (c >= 0xAC00 && c <= 0xD7A3) return w + ((c - 0xAC00) % 28 ? '과' : '와'); return w + '과'; };
 // 프로필마다 따로 기억하는 것들
 const PER = ['skills', 'extra', 'added', 'week', 'bonus', 'shown', 'filter', 'cat', 'fsk', 'cur', 'pend'];
@@ -1605,10 +1633,17 @@ function addFriend(raw, n) {
   toast(`<b>@${id}</b> 님을 친구로 추가했어요`);
   renderDetail(true);
 }
+const FLAG = '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 11V1.5M2.5 2h6.5l-1.5 2.25L9 6.5H2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+// 이 스킬을 키우는 사람들이 향하는 커리어 분포
+function destMix(n) {
+  const c = {}; learners(n).forEach(p => c[p.to] = (c[p.to] || 0) + 1);
+  const all = Object.entries(c).sort((a, b) => b[1] - a[1]), tot = all.reduce((a, b) => a + b[1], 0);
+  return `<div class="dmix"><div class="dmix-t">이 스킬로 향하는 커리어 <em>${all.length}곳</em></div><div class="dmix-c">${all.map(([k, v]) => `<span class="${k === T() ? 'me' : ''}">${FLAG}${k}<b>${Math.round(v / tot * 100)}%</b></span>`).join('')}</div></div>`;
+}
 function pRow(p, n) {
   const has = p.skills[n] != null;
   return `<div class="prow"><button class="ppl" data-go-person="${p.id}">${avHTML(p)}
-      <span><div class="nm">${p.friend ? '@' + p.handle : p.name}${p.friend ? '<i class="ftag">친구</i>' : ''}</div><div class="w"><b>${ro(p.to)}</b> 달리는 중</div><div class="psk ${has ? '' : 'no'}">${has ? `<span>${n}</span><b>${fmt(pplPts(p, n))}P</b>` : `<span>${n}</span><b>아직 0P</b>`}</div></span></button>
+      <span><div class="nm">${p.friend ? '@' + p.handle : p.name}${p.friend ? '<i class="ftag">친구</i>' : ''}</div><div class="dest ${p.to === T() ? 'same' : ''}">${FLAG}<b>${p.to}</b>${p.to === T() ? '<i>나와 같은 목적지</i>' : '<span>으로 달리는 중</span>'}</div><div class="psk ${has ? '' : 'no'}">${has ? `<span>${n}</span><b>${fmt(pplPts(p, n))}P</b>` : `<span>${n}</span><b>아직 0P</b>`}</div></span></button>
       <button class="pin ${isPinned(p.id) ? 'on' : ''}" data-pin="${p.id}" aria-label="${isPinned(p.id) ? '고정 풀기' : '위로 고정'}">${PIN}</button></div>`;
 }
 function peopleHTML(n) {
@@ -1617,9 +1652,10 @@ function peopleHTML(n) {
   const shown = S.member ? ppl : ppl.slice(0, 5);
   const ghost = ['c2', 'c4', 'c1'].map(c => `<div class="ppl locked"><span class="av ${c}">·</span><span><div class="nm">○○○</div><div class="w">○○○으로 달리는 중</div></span><span></span></div>`).join('');
   return `
-    <div class="eyebrow">${n}</div>
-    <h2 class="h">함께 키우는 사람들</h2>
-    <div class="note">${total}명이 이 스킬을 키우고 있어요. 친구를 추가하거나 고정하면 맨 위에서 볼 수 있어요.</div>
+    <div class="eyebrow">같은 스킬, 다른 목적지</div>
+    <h2 class="h pp-h"><span class="pp-sk">${n}</span><br>함께 키우는 사람들</h2>
+    <div class="note"><b>${total}명</b>이 <b>${n}</b>${eul(n)} 키우고 있어요. 스킬은 같아도 달려가는 커리어는 저마다 달라요.</div>
+    ${destMix(n)}
     <form class="fadd" id="faddForm" autocomplete="off"><input id="fid" placeholder="친구 ID로 추가 (예: hu_jiyun)" aria-label="친구 ID"><button type="submit">추가</button></form>
     ${top.length ? `<div class="sec" style="margin-top:32px"><span>친구 · 고정</span><em>${top.length}명</em></div><div>${top.map(p => pRow(p, n)).join('')}</div>` : ''}
     <div class="sec" style="margin-top:${top.length ? 40 : 28}px"><span>이 스킬을 키우는 사람</span><em>핀을 누르면 위로 고정돼요</em></div>
@@ -1669,7 +1705,8 @@ function sceneContent(name, idx, keep) {
   const i = idx ?? nextIdx(s);
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
-  $('cSkill').textContent = `${s.n} · +${s.curGain}P`;
+  const base = s.pts + (S.pend.gain || 0);
+  $('cSkill').innerHTML = `<div class="cg-l"><small>이 강의를 들으면</small><b>${s.n}</b> 스킬이 올라가요</div><div class="cg-r"><em>+${s.curGain}P</em><span>${fmt(base)} → <b>${fmt(base + s.curGain)}P</b></span></div>`;
   $('cTitle').textContent = s.titles[i];
   $('tEnd').textContent = mmss(s.curMin * 60); $('tNow').textContent = '00:00';
   $('tl').style.width = 0; $('media').classList.remove('playing');
