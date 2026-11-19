@@ -177,6 +177,17 @@
   .cl .t { font-size: 14px; font-weight: 500; }
   .cl.next .t { font-weight: 600; }
   .cl .m { font: 11px var(--mono); color: var(--g1); }
+  .cl { position: relative; }
+  .cl .prog { position: absolute; left: 0; bottom: -1px; height: 2px; width: 0; background: var(--blue); border-radius: 2px; }
+  .cl.playing .t, .cl.got .t { color: var(--blue); }
+  .cl.playing .pi, .cl.got .pi { background: var(--blue); box-shadow: none; }
+  .cl.got .m b { color: var(--blue); font-weight: 600; }
+  .cl .eq { display: flex; gap: 2px; align-items: flex-end; height: 10px; }
+  .cl .eq i { width: 2px; background: #fff; border-radius: 1px; animation: eq .6s ease-in-out infinite alternate; }
+  .cl .eq i:nth-child(2) { animation-delay: .2s; } .cl .eq i:nth-child(3) { animation-delay: .4s; }
+  @keyframes eq { from { height: 3px; } to { height: 10px; } }
+  .d-lv .n.bump { animation: nbump .45s var(--ease); display: inline-block; }
+  @keyframes nbump { 40% { transform: scale(1.08); color: var(--blue); } }
   /* 스킬 상세 · 사람 */
   .back2 { font-size: 13px; color: var(--g1); padding: 4px 0; margin: -20px 0 14px; display: flex; gap: 6px; align-items: center; }
   .d-lv { display: flex; align-items: flex-end; gap: 6px; margin-top: 18px; } /* 숫자·P·설명 아래쪽 정렬 */
@@ -258,7 +269,7 @@
   .cmp { font: 11px var(--mono); color: var(--g1); text-align: right; line-height: 1.5; }
   .cmp span { color: var(--g2); }
   .up-btn {
-    margin-top: auto; width: 100%; border-radius: 20px; background: var(--blue); color: #fff; padding: 14px 16px 14px 20px;
+    margin-top: auto; width: 100%; border-radius: 10px; background: var(--blue); color: #fff; padding: 14px 16px 14px 20px;
     display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; text-align: left; transition: transform .15s var(--ease), background .15s;
   }
   .up-btn:active { transform: scale(.98); background: var(--blue-press); }
@@ -1393,8 +1404,9 @@ function paint(e, lv, T, keep, backLabel) {
   if ($(T.pre + 'Back')) $(T.pre + 'Back').onclick = back;
   sel('[data-go-skill]').forEach(b => b.onclick = () => goHere({ t: 'skill', n: b.dataset.goSkill }));
   sel('[data-go-person]').forEach(b => b.onclick = () => goHere({ t: 'person', id: b.dataset.goPerson }));
-  sel('.cl[data-i]').forEach(b => b.onclick = () => sceneContent(b.dataset.n, +b.dataset.i));
-  sel('[data-start]').forEach(b => b.onclick = () => sceneContent(b.dataset.start));
+  // 데스크탑: 강의는 패널을 떠나지 않고 그 자리에서 재생돼요
+  sel('.cl[data-i]').forEach(b => b.onclick = () => isDesk() ? playInline(b) : sceneContent(b.dataset.n, +b.dataset.i));
+  sel('[data-start]').forEach(b => b.onclick = () => { if (!isDesk()) return sceneContent(b.dataset.start); const sk = find(b.dataset.start), row = $(T.body).querySelector(`.cl[data-n="${sk.n}"][data-i="${nextIdx(sk)}"]`) || $(T.body).querySelector(`.cl[data-n="${sk.n}"][data-i]`); if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => playInline(row), 350); } });
   if (e.t === 'catalog') bindCatalog();
   if (e.t === 'skills') bindFindSkills(lv);
   sel('[data-go-courses]').forEach(b => b.onclick = () => goHere({ t: 'courses', n: b.dataset.goCourses }));
@@ -1438,6 +1450,30 @@ const learners = n => {
 };
 const MENU_BTN = `<button class="menu-btn" data-menu aria-label="메뉴" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 20 20"><path class="l1" d="M4 6.5h12"/><path class="l2" d="M4 13.5h12"/></svg><span>메뉴</span></button>`;
 const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+// 그 자리 재생: 줄 아래로 진행 막대가 차오르고, 끝나면 포인트가 바로 쌓여요 (갤럭시엔 빅뱅)
+let inlineBusy = false;
+async function playInline(row) {
+  if (inlineBusy || row.classList.contains('got')) return;
+  inlineBusy = true;
+  const s = find(row.dataset.n), i = +row.dataset.i, gain = gainOf(s, i), min = s.mins[i];
+  const body = row.closest('[id$="Body"]'), m = row.querySelector('.m'), pi = row.querySelector('.pi');
+  row.classList.add('playing'); row.insertAdjacentHTML('beforeend', '<i class="prog"></i>');
+  pi.innerHTML = '<span class="eq"><i></i><i></i><i></i></span>';
+  const prog = row.querySelector('.prog');
+  await tween(1600, q => { prog.style.width = q * 100 + '%'; m.textContent = `${mmss(q * min * 60)} / ${mmss(min * 60)}`; });
+  // 끝: 체크 + 포인트 반영
+  const from = s.pts, to = s.pts + gain;
+  s.lv += 1; s.pts = to; S.week += gain; if (s.extra) S.bonus += 1; S.cur = s;
+  row.classList.remove('playing'); row.classList.add('got');
+  pi.innerHTML = '<svg width="12" height="10" viewBox="0 0 12 10"><path d="M1.5 5.2 4.6 8.2 10.5 1.8" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  m.innerHTML = `<b>+${gain}P</b> 쌓였어요`;
+  navigator.vibrate?.(10);
+  body.querySelectorAll('.d-lv .n').forEach(n => { tween(900, q => n.textContent = fmt(Math.round(from + (to - from) * easeOut(q)))).then(() => { n.classList.remove('bump'); void n.offsetWidth; n.classList.add('bump'); }); });
+  toast(`<b>${s.n}</b> ${fmt(from)}P → ${fmt(to)}P`);
+  await wait(1500);
+  inlineBusy = false;
+  renderDetail(true);
+}
 const clRow = (s, i, next) => `<button class="cl ${next ? 'next' : ''}" data-n="${s.n}" ${isMine(s) ? `data-i="${i}"` : `data-lock="add"`}><span class="pi">${PLAY}</span><span class="t">${s.titles[i]}</span><span class="m">${s.mins[i]}분 · +${gainOf(s, i)}P</span></button>`;
 /* ── 강의 찾기: 썸네일 목록 + 검색 + 필터·정렬, 강의마다 어느 스킬에 몇 P가 쌓이는지 ── */
 const CAT_F = [['all', '전체'], ['grow', '키워 볼 스킬'], ['solid', '탄탄한 스킬'], ['new', '새 스킬'], ['short', '6분 이하']];
