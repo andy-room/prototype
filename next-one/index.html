@@ -182,6 +182,7 @@
   .d-lv { display: flex; align-items: flex-end; gap: 6px; margin-top: 18px; } /* 숫자·P·설명 아래쪽 정렬 */
   .d-lv .n { font-size: 52px; font-weight: 150; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
   .d-lv .u { font-size: 16px; font-weight: 500; line-height: 1; padding-bottom: 4px; }
+  .startnow { margin-top: 20px !important; }
   .addnow { width: 100%; margin-top: 20px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--blue-soft); color: var(--blue); text-align: left; transition: background .2s, transform .15s var(--ease); }
   .addnow:hover { background: #DCE8FF; }
   .addnow:active { transform: scale(.98); }
@@ -734,7 +735,7 @@
   .hauth { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--ink); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--g3); display: inline-flex; align-items: center; gap: 7px; }
   .hauth img { width: 24px; height: 24px; border-radius: 50%; background: #ECECEC; margin-left: -6px; }
   body:not(.authed) .mk-dock, body.desk .mk-dock { display: none !important; }
-  .hometabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+  .hometabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
   /* 아이폰 탭 바처럼: 상자 없이 아이콘 + 작은 글자, 위에 얇은 선 */
   .mk-dock { padding: 6px 12px calc(env(safe-area-inset-bottom, 0px) + 16px) !important; background: rgba(255,255,255,.94) !important; backdrop-filter: blur(16px); border-top: .5px solid var(--g3) !important; }
   .hometabs { gap: 0; }
@@ -742,12 +743,15 @@
   .hometabs button:active { opacity: .5; }
   .hometabs .ic { width: 28px; height: 26px; display: grid; place-items: center; color: var(--ink); }
   .hometabs .ic svg { width: 23px; height: 23px; }
+  .hometabs button:not(.on) .ic { color: var(--g2); }
+  .hometabs button.on { color: var(--ink); font-weight: 600; }
+  .hometabs button:not(.on) .meface { box-shadow: none; opacity: .75; }
   .meface { width: 100%; height: 100%; border-radius: 50%; background: #ECECEC; object-fit: cover; }
   .hometabs .ic .meface { width: 26px; height: 26px; box-shadow: 0 0 0 1.5px var(--ink); }
   .ni .ic .meface, .rail .ri .ic .meface { width: 32px; height: 32px; }
   .ni .ic:has(.meface), .rail .ri .ic:has(.meface) { background: transparent !important; }
   .ni.on .ic .meface, .rail .ri.on .ic .meface { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--ink); }
-  .mk-dock .hometabs { animation: htIn .45s var(--ease); }
+  #s-login .mk-dock .hometabs { animation: htIn .45s var(--ease); }
   @keyframes htIn { from { opacity: 0; transform: translateY(14px); } }
   /* 메뉴 3개 → 햄버거로 접히며 스킬 올리기가 나와요 */
   .dock.morph .menu-btn { animation: mbIn .6s var(--ease) both; }
@@ -893,13 +897,7 @@
       <div class="filters" id="filters"></div>
       <div id="skills"></div>
       </div>
-      <div class="dock">
-      <button class="menu-btn" data-menu aria-label="메뉴" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 20 20"><path class="l1" d="M4 6.5h12"/><path class="l2" d="M4 13.5h12"/></svg><span>메뉴</span></button>
-      <button class="up-btn" id="upBtn">
-        <div><div class="a">스킬 올리기</div><div class="b" id="upSub"></div></div>
-        <div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      </button>
-      </div>
+      <div class="dock mk-dock"><div class="hometabs" id="routeTabs"></div></div>
     </section>
 
     <!-- 03-1 스킬 안 · 03-2 사람 (같은 화면에 갈아 끼움) -->
@@ -1306,7 +1304,7 @@ function renderRoute(fx = {}) {
   $('ptCnt').textContent = `스킬 ${S.skills.filter(s => s.pts).length + S.added.length}개`;
   $('plan').textContent = S.member ? '멤버십' : '무료'; $('plan').classList.toggle('member', S.member);
   const r = nx || solid[0];
-  $('upSub').textContent = `${r.n} · ${r.titles[nextIdx(r)]} · ${r.mins[nextIdx(r)]}분` + (S.mode === 'point' ? ` · +${gainOf(r)}P` : '');
+  fillTabs($('routeTabs'), 'home');
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
@@ -1368,6 +1366,7 @@ function paint(e, lv, T, keep, backLabel) {
   sel('[data-go-skill]').forEach(b => b.onclick = () => goHere({ t: 'skill', n: b.dataset.goSkill }));
   sel('[data-go-person]').forEach(b => b.onclick = () => goHere({ t: 'person', id: b.dataset.goPerson }));
   sel('.cl[data-i]').forEach(b => b.onclick = () => sceneContent(b.dataset.n, +b.dataset.i));
+  sel('[data-start]').forEach(b => b.onclick = () => sceneContent(b.dataset.start));
   if (e.t === 'catalog') bindCatalog();
   if (e.t === 'skills') bindFindSkills(lv);
   sel('[data-go-courses]').forEach(b => b.onclick = () => goHere({ t: 'courses', n: b.dataset.goCourses }));
@@ -1382,7 +1381,9 @@ function paint(e, lv, T, keep, backLabel) {
   const PLUS = '<div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>';
   const r0 = gaps()[0] || S.skills[0], P = T.pre;
   // 오른쪽 칸에서 스킬이 아닌 화면은 아래 버튼 없이 (폰 칸에 이미 있어요)
-  $(T.dock).innerHTML = T === XP && !s ? '' : (T === PH ? MENU_BTN : '') + (!s ? `
+  if (T === PH) { $(T.dock).className = 'dock mk-dock'; $(T.dock).innerHTML = '<div class="hometabs"></div>'; fillTabs($(T.dock).firstChild, S.nav[0] && ROOTS.includes(S.nav[0].t) ? S.nav[0].t : 'home'); }
+  else $(T.dock).innerHTML = '';
+  if (false) $(T.dock).innerHTML = (!s ? `
     <button class="up-btn" id="${P}Next">
       <div><div class="a">스킬 올리기</div><div class="b">${r0.n} · ${r0.titles[nextIdx(r0)]} · ${r0.mins[nextIdx(r0)]}분</div></div>${ARROW}
     </button>` : !isMine(s) ? `
@@ -1574,6 +1575,7 @@ function skillHTML(s) {
     <h2 class="h">${s.n}</h2>
     <div class="d-lv goal-only"><span class="n">${fmt(s.pts)}</span><span class="u">P</span><span class="r">${s.extra ? r : s.pts >= reqP(s) ? `${T()} 수준(${fmt(reqP(s))}P)을<br>넘었어요` : `${T()} 수준(${fmt(reqP(s))}P)까지<br><b>${fmt(reqP(s) - s.pts)}P</b> 남았어요`}</span></div>
     <div class="d-lv pt-only"><span class="n">${fmt(s.pts)}</span><span class="u">P</span><span class="r">${isMine(s) ? '이 스킬에 쌓인 포인트예요<br>끝은 없어요, 계속 쌓여요' : '아직 내 스킬이 아니에요<br>추가하면 포인트를 쌓아요'}</span></div>
+    ${isMine(s) ? `<button class="up-btn startnow" data-start="${s.n}"><div><div class="a">${s.lv === s.start && s.pts === s.pts0 ? '이 스킬 올리기 시작' : '이어서 스킬 올리기'}</div><div class="b">추천 강의 · ${s.titles[nextIdx(s)]} · ${s.mins[nextIdx(s)]}분</div></div><div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>` : ''}
     ${isMine(s) ? '' : `<button class="addnow" data-lock="add" data-n="${s.n}"><span class="pl">+</span><span><b>${s.career ? '내 스킬로 등록하기' : '내 스킬에 추가하기'}</b><small>${s.career ? `${T()} 스킬이라 무료로 바로 등록돼요` : '멤버십으로 연관 스킬을 더할 수 있어요'}</small></span></button>`}
     <div class="bar d-bar goal-only ${s.pts < reqP(s) ? 'blue' : ''}"><i data-to="${Math.min(1, s.pts / SCALE) * 100}" style="width:0"></i></div>
     ${ppl.length ? `<button class="stack" data-go-people="${s.n}" style="margin-top:32px;border-top:1px solid var(--g4)">
@@ -1656,7 +1658,7 @@ async function sceneRoute(first) {
   items.forEach((el, k) => setTimeout(() => el.classList.add('in'), 200 + k * 70));
   S.shown = p;
 }
-$('upBtn').onclick = () => { S.nav = []; sceneContent(); };
+
 
 /* ── 04 스킬 올리기: 짧은 콘텐츠 ───────────────────────── */
 document.querySelector('.wave').innerHTML = Array.from({ length: 28 }, (_, k) => `<i style="animation-delay:${(k * 97 % 700) / 1000}s"></i>`).join('');
@@ -1938,19 +1940,24 @@ document.querySelectorAll('[data-login]').forEach(b => b.onclick = () => {
   setTimeout(() => toast('다시 오셨네요. 어느 방향으로 달려 볼까요?'), 500);
 });
 $('authBack').onclick = () => sceneHome();
-const HOME_TABS = [['home', '내 프로필'], ['catalog', '콘텐츠'], ['skills', '스킬']];
+const HOME_TABS = [['home', '프로필'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['main', '홈']];
+// 모든 화면 같은 하단 탭 (지금 탭은 진하게)
+function fillTabs(el, active) {
+  if (!el) return;
+  el.innerHTML = HOME_TABS.map(([k, t]) => `<button class="${k === active ? 'on' : ''}" data-htab="${k}"><span class="ic">${k === 'home' && S.entered ? meFace() : NAV_IC[k]}</span>${t}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => homeGo(b.dataset.htab));
+}
 const meFace = (cls = 'meface') => { const me = profOf(S.pid); return me ? `<img class="${cls}" src="avatars/a${me.av}.png" alt="">` : NAV_IC.home; };
 function renderHomeAuth() {
   document.body.classList.toggle('authed', !!S.loggedIn);
   const me = profOf(S.pid);
   $('homeAuth').innerHTML = S.loggedIn ? (S.entered && me ? `<img src="avatars/a${me.av}.png" alt="">${me.target}` : '프로필 고르기') : '로그인';
-  $('homeTabs').innerHTML = HOME_TABS.map(([k, t]) => `<button data-htab="${k}"><span class="ic">${k === 'home' && S.entered ? meFace() : NAV_IC[k]}</span>${t}</button>`).join('');
-  $('homeTabs').querySelectorAll('button').forEach(b => b.onclick = () => homeGo(b.dataset.htab));
+  fillTabs($('homeTabs'), 'main');
 }
 $('homeAuth').onclick = () => { if (!S.loggedIn) return show('s-auth', 0); S.toHome = true; sceneProfile(); };
 // 홈 메뉴 → 들어가면 메뉴가 햄버거로 접히고 '스킬 올리기'가 나와요 (프로필을 아직 안 골랐으면 먼저 골라요)
 function homeGo(k) {
-  S.morph = true;
+  if (k === 'main') return openTab('main');
   if (!S.entered) { S.after = k; return sceneProfile(); }
   openTab(k);
 }
