@@ -571,7 +571,7 @@
   body.desk.pmax .viewsw button { color: var(--g1); }
   body.desk.pmax .viewsw button.on { background: var(--ink); color: #fff; }
   /* 모바일 갤럭시: 오른쪽 위 아이콘 → 화면 전체가 뒤집혀 갤럭시 공간으로 */
-  .mgbtn { display: none; position: absolute; top: 12px; right: 16px; z-index: 7; width: 34px; height: 34px; border-radius: 50%; place-items: center; color: #fff; background: #15192A; box-shadow: 0 4px 14px rgba(21,25,42,.25); }
+  .mgbtn { display: none; position: absolute; top: 30px; right: 30px; z-index: 7; width: 34px; height: 34px; border-radius: 50%; place-items: center; color: #fff; background: #15192A; box-shadow: 0 4px 14px rgba(21,25,42,.25); }
   .mgbtn:active { transform: scale(.94); }
   body.in:not(.desk):not(.mgal) #mgBtn { display: grid; }
   body.mgal:not(.desk) #mgBack { display: grid; z-index: 42; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); box-shadow: none; backdrop-filter: blur(8px); }
@@ -818,6 +818,7 @@
     html, body { background: #fff; }
     body { min-height: 100dvh; align-items: stretch; }
     .status { height: calc(env(safe-area-inset-top) + 12px); padding: 0; font-size: 0; }
+    .mgbtn { top: calc(env(safe-area-inset-top) + 14px); right: 18px; }
     .screen { padding-top: calc(env(safe-area-inset-top) + 28px); padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
     .sc .scroll { padding-top: calc(env(safe-area-inset-top) + 28px); }
     .sc .dock { padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
@@ -2383,7 +2384,17 @@ const Galaxy = (() => {
   }
   // 조작: 끌기(돌리기·기울이기), 스크롤(확대), 클릭(스킬 열기)
   const pick = (cx, cy) => { const rc = cv.getBoundingClientRect(), x = cx - rc.left, y = cy - rc.top; let best = null; nodes.forEach(nd => { if (nd.sx == null) return; const d = Math.hypot(x - nd.sx, y - nd.sy); if (d < Math.max(14, nd.sr + 6) && (!best || d < best.d)) best = { nd, d }; }); return best && best.nd; };
-  cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, spin: TG.spin, tilt: TG.tilt, moved: 0 }; cv.setPointerCapture(e.pointerId); idle = performance.now(); });
+  // 두 손가락: 벌리고 오므려서 확대·축소
+  const touches = new Map(); let pinch = null;
+  const pdist = () => { const [a, b] = [...touches.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  cv.addEventListener('pointerdown', e => { touches.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (touches.size === 2) { pinch = { d: pdist(), z: TG.zoom }; drag = null; cv.classList.remove('drag'); hideTip(); } }, true);
+  cv.addEventListener('pointermove', e => {
+    if (!touches.has(e.pointerId)) return; touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch && touches.size >= 2) { TG.zoom = Math.max(.55, Math.min(2.6, pinch.z * pdist() / Math.max(1, pinch.d))); idle = performance.now(); e.stopImmediatePropagation(); }
+  }, true);
+  const lift = e => { touches.delete(e.pointerId); if (touches.size < 2 && pinch) { pinch = null; drag = null; e.stopImmediatePropagation(); } };
+  ['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, lift, true));
+  cv.addEventListener('pointerdown', e => { if (touches.size > 1) return; drag = { x: e.clientX, y: e.clientY, spin: TG.spin, tilt: TG.tilt, moved: 0 }; cv.setPointerCapture(e.pointerId); idle = performance.now(); });
   cv.addEventListener('pointermove', e => {
     idle = performance.now();
     if (drag) {
