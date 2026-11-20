@@ -296,6 +296,7 @@
   .dmix-c { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .dmix-c span, .dmix-c button { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid var(--g4); font-size: 12px; font-weight: 600; color: var(--ink); }
   .dmix-c span b, .dmix-c button b { font: 500 11px var(--mono); color: var(--g1); }
+  .bk-sk { color: var(--ink); font-weight: 700; } /* 뒤로가기 문구 속 스킬명 */
   .dmix-c span.me, .dmix-c button.me { border-color: var(--blue); color: var(--blue); }
   .dmix-c span.me b, .dmix-c button.me b { color: var(--blue); }
   .dmix-c button { cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
@@ -826,6 +827,7 @@
   body.desk.sizing .phone, body.desk.sizing .xp { transition: none !important; }
   body.desk.pmax .phone { width: calc(100vw - 88px); }
   body.desk.pmax.xp-on .phone { width: calc(100vw - 88px - var(--xw)); }
+  body.desk.pmax .phone { box-shadow: -1px 0 0 var(--g4), 8px 0 24px rgba(21,23,27,.08); } /* 넓게 보기: 오른쪽 패널을 덮으며 넓어질 때 진한 그림자 대신 옅게 */
   body.desk.xp-on .phone { box-shadow: 1px 0 0 var(--g4); }
   body.desk .phone, body.desk .phone * { cursor: auto !important; }
   body.desk .phone button, body.desk .phone button *, body.desk .phone a, body.desk .phone label { cursor: pointer !important; }
@@ -868,7 +870,6 @@
   body.desk.sizing .rz { transition: none; }
   body.desk.pmax .rz { left: calc(100vw - 5px); }
   body.desk.pmax.xp-on .rz { left: calc(100vw - var(--xw) - 5px); }
-  body.desk.pre .rz { display: none; }
   .rz::after { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 2px; background: var(--blue); opacity: 0; transition: opacity .2s; }
   .rz:hover::after, body.sizing .rz::after { opacity: 1; }
   .rz i { position: absolute; top: 50%; left: 1px; width: 8px; height: 40px; margin-top: -20px; border-radius: 4px; background: #fff; border: 1px solid var(--g3); box-shadow: 0 2px 8px rgba(0,0,0,.12); }
@@ -913,10 +914,15 @@
   .rail .ri.on .ic { background: var(--ink); color: #fff; }
 
   /* 오른쪽으로 한 칸 확장되는 패널 */
-  body.desk .xp { display: flex; flex-direction: column; position: fixed; left: calc(88px + var(--pw)); top: 0; bottom: 0; width: var(--xw); z-index: 4; background: #fff; border-radius: 0; overflow: hidden; box-shadow: 24px 0 60px rgba(0,0,0,.28), -8px 0 24px rgba(21,23,27,.08), -1px 0 6px rgba(21,23,27,.07); /* 왼쪽 아주 옅은 그림자: 한 겹 위 레이어 */
+  body.desk .xp { display: flex; flex-direction: column; position: fixed; left: calc(88px + var(--pw)); top: 0; bottom: 0; width: var(--xw); z-index: 4; background: #fff; border-radius: 0; overflow: hidden; box-shadow: 24px 0 60px rgba(0,0,0,.28);
     opacity: 0; transform: translateX(-60px); pointer-events: none; transition: opacity .35s var(--ease), transform .45s var(--ease), left .4s var(--ease); }
   body.desk.pmax .xp { left: calc(100vw - var(--xw)); }
   body.desk.xp-on .xp { opacity: 1; transform: none; pointer-events: auto; }
+  /* 넓게 보기: 오른쪽 패널이 먼저 오른쪽으로 빠지며 닫히고, 그다음 1단 패널이 넓어져요(closeXP의 xp-out) */
+  body.desk.pmax .xp { transform: translateX(48px); transition: opacity .26s ease, transform .3s var(--ease), left .4s var(--ease); }
+  body.desk.pmax.xp-on .xp { transform: none; transition: opacity .3s var(--ease), transform .45s var(--ease), left .4s var(--ease); }
+  body.desk.pmax.xp-out .phone { width: calc(100vw - 88px - var(--xw)); } /* 패널이 다 닫힐 때까지 1단 폭 유지 */
+  body.desk.pmax.xp-out .rz { left: calc(100vw - var(--xw) - 5px); }
   .xp .xhead { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px 0 36px; flex: none; }
   .xp .xb { font-size: 13px; color: var(--g1); display: flex; gap: 6px; align-items: center; min-height: 30px; }
   .xp .xc { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; color: var(--g1); background: var(--g5); margin-left: auto; }
@@ -934,7 +940,7 @@
   body.desk .ghud { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; position: fixed; right: 20px; bottom: 20px; z-index: 4; color: rgba(255,255,255,.7); }
   body.desk.pre .ghud { opacity: 0; pointer-events: none; }
   /* 로그인 전 데스크탑 갤럭시: 스킬 수 · 스킬 기반 학습 소개 (3단계 'promo') */
-  .gpromo { display: none; position: fixed; z-index: 5; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 460px; max-width: calc(100vw - 40px); text-align: center; color: #fff; }
+  .gpromo { display: none; position: fixed; z-index: 1; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 460px; max-width: calc(100vw - 40px); text-align: center; color: #fff; }
   body.desk.gpromo-on .gpromo { display: block; }
   /* 등장: 제목은 줄마다 가려진 선 아래에서 밀려 올라오고(숫자는 문장과 한 덩어리), 나머지는 짧게 떠올라요 */
   .gp-ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
@@ -972,7 +978,7 @@
   .gp-join { background: var(--blue); color: #fff; }
   .gp-join:hover { filter: brightness(1.08); }
   /* 갤럭시 하단: 고정한(스크랩) 사람들 · 감싸는 틀 없이, 양 끝만 점점 흐리게 */
-  .gpeople { display: none; position: fixed; z-index: 5; bottom: 22px; left: 50%; transform: translateX(-50%); width: 440px; max-width: calc(100vw - 40px); align-items: center; gap: 4px; }
+  .gpeople { display: none; position: fixed; z-index: 1; bottom: 22px; left: 50%; transform: translateX(-50%); width: 440px; max-width: calc(100vw - 40px); align-items: center; gap: 4px; }
   body.desk .gpeople.has { display: flex; }
   body.mgal .phone > .gpeople.has { display: flex; position: absolute; left: 0; right: 0; width: auto; max-width: none; transform: none; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); z-index: 42; }
   body.mgal .phone > .gpeople .gp-nav { display: none; } /* 모바일: 화살표 없이 밀어서 */
@@ -994,6 +1000,9 @@
   .gp span { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .gp.on img { box-shadow: 0 0 0 2px #0B1020, 0 0 0 4px #4D8DFF; }
   .gp.on span { color: #fff; font-weight: 600; }
+  .gp { position: relative; }
+  .gp-pin { position: absolute; top: 30px; left: 36px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--blue); box-shadow: 0 0 0 2px #0B1020; cursor: pointer; } /* 고정 안 된 사람: 프로필 오른쪽 아래 고정 아이콘 */
+  .gp-pin svg { width: 12px; height: 12px; }
   .gp:active img { transform: scale(.95); }
   .gp-nav { flex: none; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.8); font-size: 18px; line-height: 1; display: grid; place-items: center; }
   .gp-nav:hover { background: rgba(255,255,255,.16); }
@@ -1543,6 +1552,13 @@ function personGalaxy(p) {
     return { ...x, pts, related, lv: 0 };
   });
 }
+// 사람 화면과 그 사람 갤럭시가 같은 숫자를 쓰도록: 갤럭시에 보이는 스킬 기준
+// 키우는 스킬 = 포인트가 있는 스킬, 나와 겹치는 스킬 = 그중 내 스킬
+function personStats(p) {
+  const g = personGalaxy(p).filter(x => x.pts > 0);
+  const own = n => { const s = S.skills.find(x => x.n === n) || S.extra.find(x => x.n === n); return !!s && isMine(s); };
+  return { grow: g.length, both: g.filter(x => own(x.n)).length };
+}
 // 프로필 아바타 (Notion Faces로 만든 얼굴)
 const avHTML = p => `<span class="av ${p.c}"><img src="avatars/${p.img || p.id}.png" alt="">${p.name[0]}</span>`;
 // 사람 찾기: 기본 인물 + ID로 추가한 친구
@@ -1857,8 +1873,8 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'gate' ? { class: '내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : e.t === 'noti' ? '알림' : e.t === 'notid' ? '알림' : personOf(e.id).name;
-function go(e) { S.nav.push(e); GX.sel = undefined; renderDetail(); if (typeof renderGP === 'function') renderGP(); }
+const label = e => e.t === 'gate' ? { class: '내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? (e.n ? `<b class="bk-sk">${e.n}</b> 함께 키우는 사람들` : '함께 키우는 사람들') : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : e.t === 'noti' ? '알림' : e.t === 'notid' ? '알림' : personOf(e.id).name;
+function go(e) { S.nav.push(e); GX.sel = undefined; GX.keepSel = undefined; renderDetail(); if (typeof renderGP === 'function') renderGP(); }
 function back() { S.nav.pop(); if (!S.nav.length && S.retHome) { S.retHome = false; return sceneHome(); } S.nav.length ? renderDetail() : sceneRoute(false); } // 홈에서 연 알림은 홈으로 돌아가요
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
 const ROOTS = ['catalog', 'skills', 'gate', 'gskills'];
@@ -1919,7 +1935,10 @@ function renderDesk(keep) {
   if (!base) renderRoute(); // 열린 스킬 표시
 }
 function openXP() { document.body.classList.add('xp-on'); if (typeof renderRail === 'function') renderRail(); }
-function closeXP() { document.body.classList.remove('xp-on'); if ($('xp').contains($('mSheet'))) { $('mScrim').classList.remove('on'); $('mSheet').classList.remove('on'); } }
+function closeXP() {
+  // 넓게 보기: 오른쪽 패널을 먼저 닫고(오른쪽으로 빠지며 사라짐) → 그다음 1단 패널이 넓어져요
+  const B = document.body; if (B.classList.contains('pmax') && B.classList.contains('xp-on')) { B.classList.add('xp-out'); clearTimeout(closeXP.t); closeXP.t = setTimeout(() => B.classList.remove('xp-out'), 300); }
+  B.classList.remove('xp-on'); if ($('xp').contains($('mSheet'))) { $('mScrim').classList.remove('on'); $('mSheet').classList.remove('on'); } }
 $('xClose').onclick = () => {
   const base = S.nav[0] && ROOTS.includes(S.nav[0].t) ? 1 : 0;
   S.nav.length = base; closeXP();
@@ -2408,10 +2427,12 @@ const FLAG = '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2.5 11V1
 // 이 스킬을 키우는 사람들이 향하는 커리어 분포
 function destMix(n) {
   const c = {}; learners(n).forEach(p => c[p.to] = (c[p.to] || 0) + 1);
-  const all = Object.entries(c).sort((a, b) => b[1] - a[1]), tot = all.reduce((a, b) => a + b[1], 0);
+  const tot = Object.values(c).reduce((a, b) => a + b, 0);
+  // 내 프로필의 커리어는 사람이 없어도 항상 '전체' 바로 다음에
+  const all = [[T(), c[T()] || 0], ...Object.entries(c).filter(([k]) => k !== T()).sort((a, b) => b[1] - a[1])];
   // 커리어를 누르면 아래 사람 목록이 그 커리어로 달리는 사람만 남아요 (다시 누르면 전체)
   const f = S.pplF && S.pplF.n === n ? S.pplF.to : null;
-  return `<div class="dmix"><div class="dmix-t">이 스킬로 향하는 커리어 <em>${all.length}곳</em></div><div class="dmix-c"><button class="${f ? '' : 'on'}" data-dto="">전체</button>${all.map(([k, v]) => `<button class="${k === T() ? 'me' : ''} ${f === k ? 'on' : ''}" data-dto="${k}">${FLAG}${k}<b>${Math.round(v / tot * 100)}%</b></button>`).join('')}</div></div>`;
+  return `<div class="dmix"><div class="dmix-t">이 스킬로 향하는 커리어 <em>${all.length}곳</em></div><div class="dmix-c"><button class="${f ? '' : 'on'}" data-dto="">전체</button>${all.map(([k, v]) => `<button class="${k === T() ? 'me' : ''} ${f === k ? 'on' : ''}" data-dto="${k}">${FLAG}${k}${v && tot ? `<b>${Math.round(v / tot * 100)}%</b>` : ''}</button>`).join('')}</div></div>`;
 }
 function pRow(p, n) {
   const has = p.skills[n] != null;
@@ -2552,7 +2573,7 @@ function pwHTML() {
     </form>`;
 }
 function logout() {
-  S.loggedIn = false; S.entered = false; S.nav = []; S.profRet = null; closeXP();
+  S.loggedIn = false; S.entered = false; S.nav = []; S.profRet = null; S.gxSeen = []; closeXP();
   ['sheet', 'scrim', 'cSheet', 'avSheet', 'avScrim'].forEach(id => $(id)?.classList.remove('on'));
   if (typeof renderRail === 'function') renderRail(); sceneLogin();
   setTimeout(() => toast('로그아웃했어요. 다음에 또 달려요'), 400);
@@ -2570,12 +2591,12 @@ function personHTML(p) {
   }
   p._seeded = true;
   const names = Object.keys(p.skills);
-  const overlap = names.filter(n => kind(n) === 'mine').length;
+  const st = personStats(p); // 갤럭시 위 '나와 겹치는 스킬 N개'와 같은 숫자
   return `
     <div class="p-top"><span class="p-av">${avHTML(p)}<button class="p-gx" data-pgx="${p.id}" aria-label="${p.name} 님의 갤럭시 보기"><svg width="14" height="14" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.2" fill="currentColor"/><ellipse cx="10" cy="10" rx="8.2" ry="3.4" transform="rotate(-24 10 10)" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.4" cy="5.6" r="1.3" fill="currentColor"/></svg></button></span>
       <div style="flex:1"><div class="nm">${p.friend ? '@' + p.handle : p.name}</div><div class="w">${ro(p.to)} 달리는 중</div></div>
       <button class="pin ${isPinned(p.id) ? 'on' : ''}" data-pin="${p.id}" aria-label="위로 고정">${PIN}</button></div>
-    <div class="p-stat"><div>키우는 스킬<b>${names.length}</b></div><div>나와 겹치는 스킬<b>${overlap}</b></div><div>이번 달 강의<b>${p.month}</b></div></div>
+    <div class="p-stat"><div>키우는 스킬<b>${st.grow}</b></div><div>나와 겹치는 스킬<b>${st.both}</b></div><div>이번 달 강의<b>${p.month}</b></div></div>
     <div class="sec" style="margin-top:48px"><span>${p.name} 님이 보고 있는 스킬</span><em>${p.name} · 나</em></div>
     ${['add', 'mine', 'off'].flatMap(k => names.filter(n => kind(n) === k)).map(n => { const k = kind(n), me = loc(n);
       if (k === 'off') return `
@@ -2615,7 +2636,7 @@ document.querySelector('.wave').innerHTML = Array.from({ length: 28 }, (_, k) =>
 function sceneContent(name, idx, keep) {
   if (!keep) S.pend = { n: 0, gain: 0 };
   const s = name ? find(name) : (gaps()[0] || S.skills.find(x => x.lv < MAXC)); S.cur = s;
-  $('backBtn').textContent = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '내 스킬');
+  $('backBtn').innerHTML = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '내 스킬');
   const i = idx ?? nextIdx(s);
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
@@ -3043,7 +3064,7 @@ const AUTH_H = '가고 싶은 방향으로<br>거리를 좁혀 가요';
 // 회원가입: 커리어 → 사진을 정해 첫 프로필을 만들고 시작해요
 function doLogin(ev) {
   const join = S.joining || !!(ev && ev.currentTarget && ev.currentTarget.classList && ev.currentTarget.classList.contains('ljoin'));
-  S.joining = false; S.loggedIn = true; S.toHome = true; S.authRet = null; S.profRet = null; $('authH').innerHTML = AUTH_H;
+  S.joining = false; S.loggedIn = true; S.gxSeen = []; S.toHome = true; S.authRet = null; S.profRet = null; $('authH').innerHTML = AUTH_H;
   if (join) { S.joinFlow = true; sceneDest(); setTimeout(() => toast('반가워요. 어디로 달려 볼지 먼저 정해요'), 450); return; }
   const id = (S.lastPid && S.profiles.some(p => p.id === S.lastPid) ? S.lastPid : S.profiles[0]?.id);
   switchProfile(id);
@@ -3354,7 +3375,7 @@ const Galaxy = (() => {
   const face = src => { if (!faces[src]) { const im = new Image(); im.src = src; faces[src] = im; } return faces[src]; };
   function build() {
     const P = personNow(), key = P ? 'p:' + P.id : 'me:' + S.pid;
-    if (key !== lastKey) { if (lastKey) { swapT = performance.now(); G.prevSrc = G.src; TG.zoom = 1; } lastKey = key; } // 다른 사람으로 바뀌면 확대는 처음 값으로 부드럽게 돌아가요
+    if (key !== lastKey) { if (lastKey) { swapT = performance.now(); G.prevSrc = G.src; TG.zoom = 1; } lastKey = key; if (P) { seenGx(P.id); setTimeout(renderGP, 0); } } // 다른 사람으로 바뀌면 확대는 처음 값으로 부드럽게 돌아가요
     G.who = P;
     const list = P ? personGalaxy(P) : [...S.skills, ...S.added.map(find)].filter(Boolean);
     const n = list.length, goal = S.mode !== 'point';
@@ -3466,7 +3487,7 @@ const Galaxy = (() => {
         if (q > 0 && q < 1 && nd.v.sparks) nd.v.sparks.forEach(sp => { const e = 1 - Math.pow(1 - q, 2.4), d = R0 + e * 120 * sp.sp * p.f; ctx.fillStyle = `rgba(200,225,255,${(1 - q) * .95})`; ctx.beginPath(); ctx.arc(p.x + Math.cos(sp.a) * d, p.y + Math.sin(sp.a) * d * (1 - .75 * k), sp.s * (1 - q * .6), 0, 7); ctx.fill(); });
       }
       nd.sx = p.x; nd.sy = p.y; nd.sr = r;
-      ctx.globalAlpha = reveal * Math.min(1, ai >= 1 ? 1 : Math.max(0, ai * 1.6)) * (lastSel && !sel && hover !== nd ? .35 : 1);
+      ctx.globalAlpha = reveal * Math.min(1, ai >= 1 ? 1 : Math.max(0, ai * 1.6)) * (G.who ? (ownSk(nd.s.n) ? 1 : .35) : (lastSel && !sel && hover !== nd ? .35 : 1)); // 다른 사람 갤럭시: 나와 겹치는 스킬만 또렷하게
       if (sel) { // 선택: 퍼지는 빛 + 두 겹 고리
         const k2 = ((now - selT) % 1600) / 1600;
         const gg = ctx.createRadialGradient(p.x, p.y, r, p.x, p.y, r * 2.6); gg.addColorStop(0, 'rgba(70,140,255,.45)'); gg.addColorStop(1, 'rgba(70,140,255,0)');
@@ -3491,6 +3512,7 @@ const Galaxy = (() => {
       ctx.font = fnt(fs);
       while (fs > 10 && ctx.measureText(nd.s.n).width > r * 2 - 10) ctx.font = fnt(--fs);
       const tw = ctx.measureText(nd.s.n).width, fits = !nd.dim && tw <= r * 2 - 10;
+      nd.lw = 0;
       if (fits) { // 원 안에 쏙
         ctx.fillStyle = nd.solid ? '#fff' : '#15171B';
         ctx.fillText(nd.s.n, p.x, p.y + fs * .36);
@@ -3498,6 +3520,7 @@ const Galaxy = (() => {
         ctx.font = fnt(12);
         ctx.fillStyle = nd.dim ? 'rgba(225,230,240,.5)' : 'rgba(241,244,249,.95)';
         ctx.fillText(nd.s.n, p.x, p.y + r + 17);
+        nd.lw = tw; nd.ly = p.y + r + 17; // 이름 글자도 눌러지게
       }
       if (hov) {
         const t = nd.dim ? '0P' : `${fmt(nd.s.pts)}P`;
@@ -3505,6 +3528,12 @@ const Galaxy = (() => {
         const tw2 = ctx.measureText(t).width + 16, by = p.y - r - 22;
         ctx.fillStyle = nd.solid ? '#2F7BFF' : '#fff'; ctx.beginPath(); ctx.roundRect(p.x - tw2 / 2, by - 11, tw2, 22, 11); ctx.fill();
         ctx.fillStyle = nd.solid ? '#fff' : '#15171B'; ctx.fillText(t, p.x, by + 4.5);
+      }
+      // 다른 사람 갤럭시: 내 커리어 스킬인데 아직 내 것이 아니면 +표시(눌러서 등록하러 가요)
+      if (G.who && canAddSk(nd.s.n)) {
+        const br = 8, a = -Math.PI / 4, bx = p.x + Math.cos(a) * (r + 2), by2 = p.y + Math.sin(a) * (r + 2);
+        ctx.fillStyle = '#2F7BFF'; ctx.strokeStyle = '#0E1322'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(bx, by2, br, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(bx - 3.5, by2); ctx.lineTo(bx + 3.5, by2); ctx.moveTo(bx, by2 - 3.5); ctx.lineTo(bx, by2 + 3.5); ctx.stroke(); ctx.lineCap = 'butt';
       }
     };
     const P = G.who;
@@ -3554,13 +3583,18 @@ const Galaxy = (() => {
     ctx.font = '700 17px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = '#fff';
     ctx.fillText(P ? `${P.friend ? '@' + P.handle : P.name} 님의 갤럭시` : '내 갤럭시', C.left + 32, 68);
     ctx.font = '500 12px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = 'rgba(210,220,240,.7)';
-    const both = P ? nodes.filter(nd => nd.s.pts && find(nd.s.n)?.pts).length : 0;
+    const both = P ? personStats(P).both : 0;
     ctx.fillText(P ? `${ro(P.to)} 달리는 중 · 나와 겹치는 스킬 ${both}개` : `${ro(T())} 달리는 중`, C.left + 32, 88);
     }
     ctx.globalAlpha = 1;
   }
   // 조작: 끌기(돌리기·기울이기), 스크롤(확대), 클릭(스킬 열기)
-  const pick = (cx, cy) => { const rc = cv.getBoundingClientRect(), x = cx - rc.left, y = cy - rc.top; let best = null; nodes.forEach(nd => { if (nd.sx == null) return; const d = Math.hypot(x - nd.sx, y - nd.sy); if (d < Math.max(14, nd.sr + 6) && (!best || d < best.d)) best = { nd, d }; }); return best && best.nd; };
+  // 다른 사람 갤럭시에서: 내 커리어에 있는 스킬(내 것 또는 아직 등록 안 한 것)만 들어갈 수 있어요
+  const mySk = n => S.skills.find(x => x.n === n) || S.extra.find(x => x.n === n);
+  const canAddSk = n => { const s = mySk(n); return !!s && !isMine(s); };
+  const ownSk = n => { const s = mySk(n); return !!s && isMine(s); };
+  const openable = nd => !G.who || !!mySk(nd.s.n);
+  const pick = (cx, cy) => { const rc = cv.getBoundingClientRect(), x = cx - rc.left, y = cy - rc.top; let best = null; nodes.forEach(nd => { if (nd.sx == null) return; let d = Math.hypot(x - nd.sx, y - nd.sy); const inC = d < Math.max(16, nd.sr + 8), inL = nd.lw && Math.abs(x - nd.sx) < nd.lw / 2 + 6 && y > nd.ly - 16 && y < nd.ly + 6; if (!inC && inL) d = Math.abs(y - nd.ly) + nd.sr; if ((inC || inL) && (!best || d < best.d)) best = { nd, d }; }); return best && best.nd; };
   // 두 손가락: 벌리고 오므려서 확대·축소
   const touches = new Map(); let pinch = null;
   const pdist = () => { const [a, b] = [...touches.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
@@ -3583,26 +3617,29 @@ const Galaxy = (() => {
       return;
     }
     const nd = S && S.entered ? pick(e.clientX, e.clientY) : null;
-    if (nd !== hover) { hover = nd; cv.classList.toggle('hov', !!nd); }
+    if (nd !== hover) { hover = nd; cv.classList.toggle('hov', !!nd && openable(nd)); }
     nd && isDesk() ? showTip(nd, e.clientX, e.clientY) : hideTip();
   });
   cv.addEventListener('pointerup', e => {
     cv.classList.remove('drag'); idle = performance.now();
-    if (drag && drag.moved <= 4) { const nd = pick(e.clientX, e.clientY); if (nd) open(nd.s.n); }
+    if (drag && drag.moved <= (e.pointerType === 'touch' ? 10 : 4)) { const nd = pick(e.clientX, e.clientY); if (nd) open(nd.s.n); }
     drag = null;
   });
   cv.addEventListener('pointerleave', () => { hover = null; hideTip(); });
   cv.addEventListener('wheel', e => { e.preventDefault(); TG.zoom = Math.max(.55, Math.min(2.6, TG.zoom * Math.exp(-e.deltaY * .0015))); idle = performance.now(); }, { passive: false });
   function open(n) {
-    if (!isDesk()) { if (G.who && !find(n)) return; return mobGalaxy(false, () => { S.nav = [{ t: 'skills' }]; go({ t: 'skill', n }); }); }
+    if (G.who && !mySk(n)) return toast(`<b>${n}</b> · ${G.who.name} 님 커리어의 스킬이라 내 스킬로는 담을 수 없어요`);
+    // 다른 사람 갤럭시에서 눌러도 화면은 스킬 메인으로 가고, 갤럭시는 그 사람 갤럭시 그대로
+    const keep = G.who ? G.who.id : undefined;
+    const hold = () => { if (keep) { GX.sel = GX.keepSel = keep; if (typeof renderGP === 'function') renderGP(); } };
+    if (!isDesk()) return mobGalaxy(false, () => { S.nav = [{ t: 'skills' }]; go({ t: 'skill', n }); hold(); });
     if (!S.entered || $('s-content').classList.contains('on')) return;
-    if (G.who && !find(n)) return toast(`<b>${n}</b> · ${G.who.name} 님이 키우는 스킬이에요`);
     const base = S.nav[0] && ROOTS.includes(S.nav[0].t) ? 1 : 0;
-    S.nav.length = base; go({ t: 'skill', n });
+    S.nav.length = base; go({ t: 'skill', n }); hold();
   }
   function showTip(nd, x, y) {
     const s = nd.s, goal = S.mode !== 'point', P = G.who, tn = P ? P.to : T(), me = P && find(s.n);
-    $('gtip').innerHTML = `<b>${s.n}</b> <span class="p">${fmt(s.pts)}P</span>${me ? ` <span class="h">· 나 ${fmt(me.pts)}P</span>` : ''}<br><span class="h">${!s.pts ? '아직 0P' : goal && reqP(s) ? (nd.left ? `${tn} 수준까지 ${fmt(nd.left)}P` : `${tn} 수준을 넘었어요`) : '끝없이 쌓여요'}${P ? '' : ' · 눌러서 자세히'}</span>`;
+    $('gtip').innerHTML = `<b>${s.n}</b> <span class="p">${fmt(s.pts)}P</span>${me ? ` <span class="h">· 나 ${fmt(me.pts)}P</span>` : ''}<br><span class="h">${!s.pts ? '아직 0P' : goal && reqP(s) ? (nd.left ? `${tn} 수준까지 ${fmt(nd.left)}P` : `${tn} 수준을 넘었어요`) : '끝없이 쌓여요'}${!P ? ' · 눌러서 자세히' : canAddSk(s.n) ? ' · 내 커리어 스킬 · 눌러서 등록' : mySk(s.n) ? ' · 눌러서 내 스킬 보기' : ''}</span>`;
     $('gtip').style.left = x + 16 + 'px'; $('gtip').style.top = y + 14 + 'px'; $('gtip').classList.add('on');
   }
   function hideTip() { $('gtip').classList.remove('on'); }
@@ -3635,7 +3672,7 @@ async function mobGalaxy(open, after) {
     const todo = GX.mp ? [] : Object.keys(GX.seen).map(find).filter(s => s && s.pts > GX.seen[s.n]);
     if (!GX.mp) Object.keys(GX.seen).forEach(n => { if (!todo.some(s => s.n === n)) delete GX.seen[n]; });
     todo.forEach(s => GX.hold[s.n] = GX.seen[s.n] - s.pts);
-    GX.sel = undefined; ph.appendChild(cv); ph.appendChild(hud); ph.appendChild($('gPeople')); $('gPeople')._centered = false; renderGP(); document.body.classList.add('mgal'); Galaxy.stop(); Galaxy.start(); Galaxy.resize();
+    GX.sel = GX.keepSel; ph.appendChild(cv); ph.appendChild(hud); ph.appendChild($('gPeople')); $('gPeople')._centered = false; renderGP(); document.body.classList.add('mgal'); Galaxy.stop(); Galaxy.start(); Galaxy.resize();
     gxReplay(todo);
   }
   else { gxStop(); Galaxy.stop(); GX.mp = null; GX.sel = undefined; document.body.classList.remove('mgal'); document.body.prepend(cv); document.body.appendChild(hud); document.body.appendChild($('gPeople')); after && after(); }
@@ -3707,10 +3744,13 @@ function gxReplay(list) {
   }, true);
 })();
 // 갤럭시 하단 사람들: '나' + 고정한 사람들. 누르면 그 사람 갤럭시로 바뀌어요(전환 모션은 기존과 같아요)
+function seenGx(id) { if (!id) return; S.gxSeen = S.gxSeen || []; if (!S.gxSeen.includes(id)) S.gxSeen.push(id); }
 function renderGP() {
   const box = $('gPeople'), row = $('gpRow');
-  const ppl = (S.pinned || []).map(personOf).filter(Boolean), me = profOf(S.pid);
-  const has = !!(me && S.entered && !guest() && ppl.length); // 처음엔 고정한 사람이 없어 안 보이고, 고정하면 나타나요
+  // 나 + 한 번이라도 본 갤럭시(고정한 사람 포함, 처음 본 순서) — 다시 로그인하기 전까지 유지
+  (S.pinned || []).forEach(seenGx);
+  const ppl = (S.gxSeen || []).map(personOf).filter(Boolean), me = profOf(S.pid);
+  const has = !!(me && S.entered && !guest() && ppl.length); // 처음엔 아무도 없어 안 보이고, 다른 사람 갤럭시를 보거나 고정하면 나타나요
   const was = box.classList.contains('has'), prevIds = box._ids || [];
   box.classList.toggle('has', has); if (!has) { row.innerHTML = ''; box._ids = []; return; }
   if (!was) { box._centered = false; box.classList.remove('gp-enter'); void box.offsetWidth; box.classList.add('gp-enter'); clearTimeout(box._et); box._et = setTimeout(() => box.classList.remove('gp-enter'), 900); } // 처음 나타날 때 한 번만 아래에서 올라와요
@@ -3718,13 +3758,15 @@ function renderGP() {
   const cur = GX.sel === 'me' ? 'me' : GX.sel || (isDesk() ? navP : GX.mp) || 'me';
   const keep = row.scrollLeft;
   row.innerHTML = [`<button class="gp ${cur === 'me' ? 'on' : ''}" data-gp="me"><img src="avatars/a${me.av}.png" alt="" draggable="false"><span>나</span></button>`,
-    ...ppl.map(p => `<button class="gp ${cur === p.id ? 'on' : ''} ${was && !prevIds.includes(p.id) ? 'gp-new' : ''}" data-gp="${p.id}"><img src="avatars/${p.img || p.id}.png" alt="" draggable="false"><span>${p.friend ? '@' + p.handle : p.name}</span></button>`)].join('');
+    ...ppl.map(p => `<button class="gp ${cur === p.id ? 'on' : ''} ${was && !prevIds.includes(p.id) ? 'gp-new' : ''}" data-gp="${p.id}"><img src="avatars/${p.img || p.id}.png" alt="" draggable="false">${cur === p.id && !isPinned(p.id) ? `<i class="gp-pin" data-gppin="${p.id}" role="button" aria-label="${p.name} 님 고정">${PIN}</i>` : ''}<span>${p.friend ? '@' + p.handle : p.name}</span></button>`)].join('');
   row.scrollLeft = keep; box._ids = ppl.map(p => p.id);
   // 가운데 기준: 고른 사람이 줄 가운데에 오게
   const on = row.querySelector('.gp.on'); if (on && !box._centered) { row.scrollLeft = on.offsetLeft + on.offsetWidth / 2 - row.clientWidth / 2; } box._centered = true;
+  row.querySelectorAll('[data-gppin]').forEach(b => b.onclick = ev => { ev.stopPropagation(); togglePin(b.dataset.gppin); }); // 지금 보는 사람이 고정 안 된 사람이면 바로 고정
   row.querySelectorAll('[data-gp]').forEach(b => b.onclick = () => {
     GX.sel = b.dataset.gp; // 다시 그리지 않고 선택 표시만 옮겨요 (올라오는 모션이 반복되지 않게)
     row.querySelectorAll('.gp').forEach(x => x.classList.toggle('on', x === b)); row.querySelectorAll('.gp-new').forEach(x => x.classList.remove('gp-new'));
+    row.querySelectorAll('.gp-pin').forEach(x => x.remove()); const id = b.dataset.gp; if (id !== 'me' && !isPinned(id)) { b.querySelector('img').insertAdjacentHTML('afterend', `<i class="gp-pin" data-gppin="${id}" role="button" aria-label="고정">${PIN}</i>`); b.querySelector('.gp-pin').onclick = ev => { ev.stopPropagation(); togglePin(id); }; }
     const row2 = $('gpRow'), on2 = b; if (on2) row2.scrollTo({ left: on2.offsetLeft + on2.offsetWidth / 2 - row2.clientWidth / 2, behavior: 'smooth' });
   });
 }
