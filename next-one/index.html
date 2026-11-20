@@ -905,7 +905,7 @@
   .hrow { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 14px -28px 0; padding: 0 28px; scroll-padding: 0 28px; }
   body.desk .hrow { margin-inline: 0; padding: 0; scroll-padding: 0; }
   .hrow::-webkit-scrollbar { display: none; }
-  .mcard { flex: 0 0 72%; max-width: 300px; scroll-snap-align: start; text-align: left; cursor: pointer; }
+  .mcard { flex: 0 0 72%; max-width: 300px; scroll-snap-align: start; text-align: left; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; align-self: flex-start; } /* 설명 줄 수가 달라도 카드 위쪽을 맞춰요 */
   .mcard .t { font-size: 15px; font-weight: 700; margin-top: 12px; letter-spacing: -0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mcard .s { font-size: 13px; color: var(--g1); margin-top: 5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .mtags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 9px; }
@@ -966,7 +966,7 @@
   .hometabs button.on { color: var(--ink); font-weight: 600; }
   .hometabs button:not(.on) .meface { box-shadow: none; opacity: .75; }
   .meface { width: 100%; height: 100%; border-radius: 50%; background: #ECECEC; object-fit: cover; }
-  .hometabs .ic .meface { width: 26px; height: 26px; box-shadow: 0 0 0 1.5px var(--ink); }
+  .hometabs .ic .meface { width: 22px; height: 22px; box-shadow: 0 0 0 1.5px var(--ink); } /* 다른 아이콘(23px)과 같은 크기로 */
   .ni .ic .meface, .rail .ri .ic .meface { width: 32px; height: 32px; }
   .ni .ic:has(.meface), .rail .ri .ic:has(.meface) { background: transparent !important; }
   .ni.on .ic .meface, .rail .ri.on .ic .meface { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--ink); }
@@ -1140,7 +1140,7 @@
 
     <!-- 04 콘텐츠 -->
     <section class="screen" id="s-content">
-      <button class="back" id="backBtn">← 전체 내 스킬</button>
+      <button class="back" id="backBtn">← 내 스킬</button>
       <div class="cgain" id="cSkill"></div>
       <h2 class="h" id="cTitle"></h2>
       <div class="media" id="media">
@@ -1624,7 +1624,7 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'gate' ? { class: '전체 내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : personOf(e.id).name;
+const label = e => e.t === 'gate' ? { class: '내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
 function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
@@ -1661,7 +1661,7 @@ function renderDetail(keep) {
   if (isDesk()) return renderDesk(keep);
   const lv = S.nav.length - 1, e = S.nav[lv];
   const root = lv === 0 && ROOTS.includes(e.t);
-  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : '전체 내 스킬'));
+  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : '내 스킬'));
   show('s-detail', 3);
 }
 // 데스크탑: 첫 칸(폰)은 대시보드나 메뉴 첫 화면, 더 들어가면 오른쪽으로 한 칸 열려요
@@ -1829,7 +1829,7 @@ function bindPlay(e, T) {
     setTimeout(() => openWait([s.n], T === XP ? $('xp') : $('s-detail')), 150);
   };
   // 나중에 올릴게요: 포인트는 대기에 그대로 두고 이전 화면으로
-  if ($('pvLater')) $('pvLater').onclick = () => { toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 전체 내 스킬에서 올릴 수 있어요`); back(); };
+  if ($('pvLater')) $('pvLater').onclick = () => { toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 내 스킬에서 올릴 수 있어요`); back(); };
 }
 // 그 자리 재생: 줄 아래로 진행 막대가 차오르고, 끝나면 포인트가 바로 쌓여요 (갤럭시엔 빅뱅)
 let inlineBusy = false;
@@ -2268,7 +2268,7 @@ document.querySelector('.wave').innerHTML = Array.from({ length: 28 }, (_, k) =>
 function sceneContent(name, idx, keep) {
   if (!keep) S.pend = { n: 0, gain: 0 };
   const s = name ? find(name) : (gaps()[0] || S.skills.find(x => x.lv < MAXC)); S.cur = s;
-  $('backBtn').textContent = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '전체 내 스킬');
+  $('backBtn').textContent = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '내 스킬');
   const i = idx ?? nextIdx(s);
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
@@ -2316,7 +2316,7 @@ function openChoice() {
   $('cNext').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => { sceneContent(s.n, ni, true); setTimeout(() => $('playBtn').click(), 520); }, 250); }; // 이어서 → 바로 재생 (무료 한도면 멤버십 안내로)
   $('cStop').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); S.streak = { ...S.pend }; setTimeout(() => openWait([s.n], null), 200); };
   $('cLater').style.display = gu ? 'none' : '';
-  $('cLater').onclick = () => { $('cSheet').classList.remove('on'); toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 전체 내 스킬에서 올릴 수 있어요`); setTimeout(() => S.nav.length ? renderDetail() : sceneRoute(false), 250); };
+  $('cLater').onclick = () => { $('cSheet').classList.remove('on'); toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 내 스킬에서 올릴 수 있어요`); setTimeout(() => S.nav.length ? renderDetail() : sceneRoute(false), 250); };
   $('cSheet').classList.add('on');
 }
 
@@ -2674,7 +2674,7 @@ function doLogin() {
 }
 document.querySelectorAll('[data-login]').forEach(b => b.onclick = doLogin);
 $('authBack').onclick = () => { const f = S.authRet; S.authRet = null; $('authH').innerHTML = AUTH_H; f ? f() : sceneHome(); };
-const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '전체 내 스킬']];
+const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '내 스킬']];
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
   if (!el) return;
@@ -2750,8 +2750,8 @@ function renderRail() {
   const now = tabNow(), me = profOf(S.pid);
   // HU 로고 = 홈 · 지금 프로필 하나 = 대시보드(거기서 프로필 전환) · 콘텐츠 · 스킬
   const prof = S.entered && me
-    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>전체 내 스킬</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
-    : guest() ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="로그인하면 내 커리어가 여기에 보여요"><span class="im gst">${GUEST_ICON}</span>전체 내 스킬</button>`
+    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>내 스킬</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
+    : guest() ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="로그인하면 내 커리어가 여기에 보여요"><span class="im gst">${GUEST_ICON}</span>내 스킬</button>`
     : `<button class="rp" data-tab="home"><span class="im add">${NAV_IC.home}</span>프로필 고르기</button>`;
   const items = [['catalog', '콘텐츠'], ['skills', '스킬']].map(([k, t]) => `<button class="ri ${now === k ? 'on' : ''}" data-tab="${k}"><span class="ic">${NAV_IC[k]}</span>${t}</button>`).join('');
   $('rail').innerHTML = `<button class="rlogo ${now === 'main' ? 'on' : ''}" data-tab="main" title="홈">HU</button>${prof}<hr>${items}`;
