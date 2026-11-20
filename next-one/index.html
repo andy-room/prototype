@@ -142,7 +142,6 @@
   .ref i { width: 2px; height: 10px; background: var(--g2); border-radius: 1px; }
   /* 스킬 현황 한 줄 (누르면 스킬 안으로) */
   .sk { width: 100%; display: grid; grid-template-columns: 1fr 96px 28px 12px; gap: 10px; align-items: center; text-align: left; padding: 15px 0; border-bottom: 1px solid var(--g4); }
-  .sk:active { background: var(--g5); }
   .sk .nm { font-size: 15px; font-weight: 600; white-space: nowrap; }
   .sk .nm em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--blue); margin-left: 6px; }
   .sk .nm small { font-size: 12px; font-weight: 500; color: var(--g2); margin-left: 6px; }
@@ -154,7 +153,8 @@
   /* 강의 한 줄 */
   .cl { width: 100%; display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; text-align: left; padding: 12px 0; border-bottom: 1px solid var(--g4); }
   .cl:active { opacity: .6; }
-  .search + .filters { margin-top: 20px; } /* 제목 · 검색 · 분류 · 정렬을 기능 단위로 띄워요 */
+  .search + .filters { margin-top: 20px; }
+  #filters { margin-bottom: 10px; } /* 내 스킬: 분류 칩과 첫 줄 사이 */ /* 제목 · 검색 · 분류 · 정렬을 기능 단위로 띄워요 */
   .csort { display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; font-size: 12px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
   .csort::-webkit-scrollbar { display: none; }
   .csort span { font: 500 11px var(--mono); color: var(--g2); margin-right: auto; padding-right: 8px; }
@@ -350,7 +350,7 @@
   .vnum { display: inline-flex; align-items: baseline; gap: 4px; transform-origin: left center; }
   .vnum b { font-size: 52px; font-weight: 200; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
   .vnum small { font-size: 20px; font-weight: 400; transition: color .3s; }
-  .ver.got .vnum b, .ver.got .vnum small { color: var(--blue); }
+  .ver.got .vnum b, .ver.got .vnum small, .ver.rising .vnum b, .ver.rising .vnum small { color: var(--blue); }
   .ver.got .vnum { animation: bump .5s cubic-bezier(.3,1.6,.5,1); }
   .vgain { font: 600 15px var(--mono); padding: 7px 11px; border-radius: 999px; background: var(--g4); color: var(--g1); transition: background .3s, color .3s; }
   .ver.got .vgain { background: var(--blue); color: #fff; animation: bump .5s .1s cubic-bezier(.3,1.6,.5,1) both; }
@@ -366,7 +366,7 @@
   .blist .bv { font: 600 13px var(--mono); color: var(--ink); transition: color .3s; }
   .blist .bv b { color: inherit; font-weight: 600; }
   .blist .bg { font: 600 12px var(--mono); color: var(--blue); background: var(--blue-soft); padding: 4px 8px; border-radius: 999px; transition: background .3s, color .3s; }
-  .blist .br.got .bv { color: var(--blue); } /* 숫자와 P가 같은 색으로 */
+  .blist .br.got .bv, .blist .br.rising .bv { color: var(--blue); } /* 숫자와 P가 같은 색으로 */
   .blist .br.got .bg { background: var(--blue); color: #fff; }
   /* 대시보드: 업데이트를 기다리는 포인트 */
   .wait-hero { margin-top: 24px; padding: 20px 20px 18px; border-radius: 20px; background: var(--blue-soft); border: 1.5px solid rgba(17,100,255,.18); }
@@ -841,7 +841,7 @@
   body.desk .back2 { margin-top: -6px; }
   body.desk .msheet { border-radius: 20px 20px 0 0; }
   /* 데스크탑: 마우스 올리면 이름이 파랗게, 오른쪽 칸에 열린 스킬은 표시 */
-  body.desk .sk:hover .nm, body.desk .rel:hover .nm, body.desk .fsk:hover .n, body.desk .ccard:hover .t, body.desk .cl:hover .t, body.desk .stack:hover b { color: var(--blue); }
+  body.desk .rel:hover .nm, body.desk .fsk:hover .n, body.desk .ccard:hover .t, body.desk .cl:hover .t, body.desk .stack:hover b { color: var(--blue); }
   body.desk .sk { position: relative; }
   body.desk .sk.sel::before { content: ''; position: absolute; left: -36px; top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); }
   body.desk .sk.sel .nm { color: var(--blue); }
@@ -2527,7 +2527,7 @@ function sheetSetup() {
   const s = S.cur;
   $('uSkill').textContent = s.n;
   const P = S.pend;
-  $('vNum').textContent = fmt(s.pts); $('vGain').textContent = `+${P.gain}P`; $('ver').classList.remove('got'); $('laterBtn').classList.remove('ok'); $('laterBtn').textContent = '나중에 할게요';
+  $('vNum').textContent = fmt(s.pts); $('vGain').textContent = `+${P.gain}P`; $('ver').classList.remove('got', 'rising'); $('laterBtn').classList.remove('ok'); $('laterBtn').textContent = '나중에 할게요';
   $('vNote').textContent = `업데이트하면 ${fmt(s.pts + P.gain)}P가 돼요`;
   $('related').innerHTML = '함께 가까워져요 ' + s.related.map(r => `<em>${r}</em>`).join('');
   $('updLabel').innerHTML = '업데이트<small>꾹 눌러 주세요</small>'; $('orbit').style.strokeDashoffset = 534; $('updBtn').classList.remove('busy', 'pop', 'press');
@@ -2540,17 +2540,26 @@ function sheetSetup() {
   }
 }
 // 꾹 누르면 버튼 둘레로 원이 한 바퀴 → 끝까지 누르고 있어야 업데이트, 중간에 떼면 원이 되돌아가요
-const HOLD = 1400; let holdT0 = 0, holdRaf = 0, holding = false, holdP = 0;
+const HOLD = 1400; let holdT0 = 0, holdRaf = 0, holding = false, holdP = 0, rewRaf = 0;
+// 누르는 동안 숫자도 서클과 같은 속도로 올라가고(파랗게), 떼면 서클과 같이 내려와요
+function holdShow(p) {
+  const multi = !!(S.batch && S.batch.length > 1), up = p > 0.001;
+  if (multi) document.querySelectorAll('#bList .br').forEach(row => {
+    const sk = find(row.dataset.bn), w = waitOf()[row.dataset.bn]; if (!sk || !w) return;
+    row.querySelector('.bv b').textContent = fmt(Math.round(sk.pts + w.gain * p)); row.classList.toggle('rising', up);
+  });
+  else if (S.cur && S.pend) { $('vNum').textContent = fmt(Math.round(S.cur.pts + S.pend.gain * p)); $('ver').classList.toggle('rising', up); }
+}
 function holdTick() {
   holdP = Math.min(1, (performance.now() - holdT0) / HOLD);
-  $('orbit').style.strokeDashoffset = 534 * (1 - holdP);
+  $('orbit').style.strokeDashoffset = 534 * (1 - holdP); holdShow(holdP);
   if (holdP >= 1) return finishUpdate();
   holdRaf = requestAnimationFrame(holdTick);
 }
 function holdStart(e) {
   if ($('updBtn').classList.contains('busy')) return;
   e?.preventDefault(); try { e?.pointerId != null && $('updBtn').setPointerCapture(e.pointerId); } catch (_) {}
-  holding = true; holdP = 0; holdT0 = performance.now();
+  holding = true; holdP = 0; holdT0 = performance.now(); cancelAnimationFrame(rewRaf);
   $('orbit').style.transition = ''; $('orbit').style.strokeDashoffset = 534;
   $('updBtn').classList.add('press'); $('updLabel').innerHTML = '업데이트<small>끝까지 누르고 있어요</small>'; navigator.vibrate?.(8);
   cancelAnimationFrame(holdRaf); holdRaf = requestAnimationFrame(holdTick);
@@ -2562,6 +2571,9 @@ function holdEnd() {
   const d = Math.round(200 + 400 * holdP);
   $('orbit').style.transition = `stroke-dashoffset ${d}ms var(--ease)`; $('orbit').style.strokeDashoffset = 534;
   setTimeout(() => { if (!holding) $('orbit').style.transition = ''; }, d + 20);
+  // 숫자도 같은 시간 동안 원래 값으로
+  const p0 = holdP, t0 = performance.now();
+  (function rew(t) { const q = Math.min(1, (t - t0) / d), p = p0 * (1 - easeOut(q)); holdShow(q >= 1 ? 0 : p); if (q < 1 && !holding) rewRaf = requestAnimationFrame(rew); })(t0);
   holdP = 0;
 }
 $('updBtn').addEventListener('pointerdown', holdStart);
@@ -2580,7 +2592,8 @@ async function finishUpdate() {
   // 포인트가 크게 올라가요: 숫자가 차오르고, +P 배지가 파랗게 튀어요
   const from = s.pts, to = s.pts + S.pend.gain;
   $('ver').classList.add('got'); $('vNote').textContent = `${s.n}에 포인트가 쌓였어요`;
-  tween(900, q => $('vNum').textContent = fmt(Math.round(from + (to - from) * easeOut(q))));
+  const st = holdP >= 1 ? to : from; $('ver').classList.remove('rising'); // 꾹 눌러 끝까지 왔으면 이미 올라간 값에서 이어가요
+  tween(900, q => $('vNum').textContent = fmt(Math.round(st + (to - st) * easeOut(q))));
   document.querySelectorAll('#related em').forEach((e, k) => setTimeout(() => e.classList.add('up'), 200 + k * 160));
   await wait(950);
   // 올라간 수치를 확인하고, 직접 눌러서 대시보드로 가요
@@ -2598,8 +2611,8 @@ async function finishBatch() {
   $('updLabel').innerHTML = '완료';
   S.batch.forEach((n, k) => setTimeout(() => {
     const row = document.querySelector(`#bList [data-bn="${n}"]`); if (!row) return;
-    const sk = find(n), from = sk.pts, to = sk.pts + waitOf()[n].gain, b = row.querySelector('.bv b');
-    row.classList.add('got'); tween(700, q => b.textContent = fmt(Math.round(from + (to - from) * easeOut(q))));
+    const sk = find(n), to = sk.pts + waitOf()[n].gain, from = holdP >= 1 ? to : sk.pts, b = row.querySelector('.bv b');
+    row.classList.remove('rising'); row.classList.add('got'); tween(700, q => b.textContent = fmt(Math.round(from + (to - from) * easeOut(q))));
   }, 120 + k * 260));
   await wait(260 + S.batch.length * 260 + 700);
   $('updLabel').innerHTML = '완료<small>+' + fmt(S.pend.gain) + 'P</small>';
@@ -3051,6 +3064,101 @@ const Galaxy = (() => {
   // 지금 프로필의 스킬로 별자리 만들기
   const personNow = () => { if (!isDesk()) return GX.mp ? personOf(GX.mp) : null; const e = S?.nav?.at(-1); return e && e.t === 'person' ? personOf(e.id) : null; };
   let lastKey = '', swapT = -1e9;
+  // 로그인 전 PC 갤럭시 보기 방식 (단계)
+  //   0단계 'sample' = 데이터 PM 샘플 갤럭시를 흐리게
+  //   1단계 'live'   = 샘플 갤럭시의 스킬 별에서 다른 사람 업데이트 말풍선
+  //   2단계 'people' = 중심 없이 사람 프로필들이 떠 있고, 한 명씩 살짝 커지며 말풍선 (배경 별만 흘러요)
+  const GUEST_GALAXY = 'sample';
+  const guestLive = () => GUEST_GALAXY !== 'sample' && !(S && S.entered);
+  const liveOn = () => GUEST_GALAXY === 'live' && guestLive();
+  const peopleOn = () => GUEST_GALAXY === 'people' && guestLive();
+  const crowd = { key: '', spots: [], cur: null, next: 0 };
+  const h32 = s => { let x = 2166136261; for (const c of s) { x ^= c.charCodeAt(0); x = Math.imul(x, 16777619); } return x >>> 0; };
+  function crowdLayout() {
+    const key = `${W}x${H}x${C.left}`; if (crowd.key === key) return;
+    crowd.key = key;
+    const x0 = C.left + 70, x1 = W - 70, y0 = 140, y1 = H - 110, cols = 4, rows = 3, cw = (x1 - x0) / cols, rh = (y1 - y0) / rows;
+    const cells = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push([c, r]);
+    const people = PEOPLE.slice(0, 10);
+    // 칸마다 한 명씩, 칸 안에서 불규칙하게 (겹치지 않게)
+    const pick = cells.map((c, i) => ({ c, k: h32('cell' + i) })).sort((a, b) => a.k - b.k).slice(0, people.length);
+    crowd.spots = people.map((p, i) => {
+      const [c, r] = pick[i].c, h = h32(p.id + 'pos'), rr = 20 + (h % 15);
+      return { p, r: rr, x: x0 + c * cw + rr + ((h >>> 3) % Math.max(1, Math.floor(cw - rr * 2))), y: y0 + r * rh + rr + ((h >>> 7) % Math.max(1, Math.floor(rh - rr * 2))), ph: (h % 628) / 100 };
+    });
+  }
+  function peopleDraw(now) {
+    crowdLayout();
+    // 한 명씩 차례로: 살짝 커지면서 말풍선 (겹치지 않게 한 번에 한 명)
+    if (!crowd.next) crowd.next = now + 900;
+    if (crowd.cur && now - crowd.cur.t > 3200) crowd.cur = null;
+    if (!crowd.cur && now >= crowd.next) {
+      const prev = crowd.last, pool = crowd.spots.filter(s => s !== prev), s = pool[Math.floor(Math.random() * pool.length)];
+      const sks = Object.keys(s.p.skills);
+      crowd.cur = { s, t: now, sk: sks[Math.floor(Math.random() * sks.length)], g: [25, 30, 35, 40][Math.floor(Math.random() * 4)] };
+      crowd.last = s; crowd.next = now + 3600 + Math.random() * 1400; live.count += 1 + Math.floor(Math.random() * 3);
+    }
+    const ease = x => 1 - Math.pow(1 - Math.max(0, Math.min(1, x)), 3);
+    ctx.save(); ctx.globalAlpha = 1;
+    const act = crowd.cur, aAge = act ? now - act.t : 0, grow = act ? (aAge < 2800 ? ease(aAge / 320) : 1 - ease((aAge - 2800) / 400)) : 0;
+    crowd.spots.forEach(s => {
+      const on = act && act.s === s, k = on ? grow : 0, r = s.r * (1 + .22 * k), x = s.x, y = s.y + Math.sin(now / 2200 + s.ph) * 4;
+      s.dx = x; s.dy = y; s.dr = r;
+      if (on && k > 0) { const gg = ctx.createRadialGradient(x, y, r, x, y, r * 1.9); gg.addColorStop(0, `rgba(80,150,255,${.35 * k})`); gg.addColorStop(1, 'rgba(80,150,255,0)'); ctx.fillStyle = gg; ctx.beginPath(); ctx.arc(x, y, r * 1.9, 0, 7); ctx.fill(); }
+      const im = face(`avatars/${s.p.img || s.p.id}.png`);
+      ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.clip(); ctx.fillStyle = '#E9ECF3'; ctx.fill(); if (im.complete && im.naturalWidth) ctx.drawImage(im, x - r, y - r, r * 2, r * 2); ctx.restore();
+      ctx.globalAlpha = on ? 1 : .82; ctx.strokeStyle = on ? `rgba(127,176,255,${.5 + .5 * k})` : 'rgba(255,255,255,.18)'; ctx.lineWidth = on ? 2 : 1; ctx.beginPath(); ctx.arc(x, y, r + (on ? 2 : 0), 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
+    });
+    if (act) {
+      const s = act.s, a = aAge < 300 ? aAge / 300 : aAge > 2800 ? Math.max(0, 1 - (aAge - 2800) / 400) : 1;
+      const txt = `${s.p.name} 님 · ${act.sk} +${act.g}P`;
+      ctx.font = '600 13px "Pretendard Variable", Pretendard, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const w = ctx.measureText(txt).width + 28, h = 34, bx = Math.max(C.left + 16, Math.min(W - 16 - w, s.dx - w / 2)), by = s.dy - s.dr - 14 - h - (1 - a) * 6;
+      ctx.globalAlpha = a; ctx.fillStyle = 'rgba(255,255,255,.96)'; ctx.beginPath(); ctx.roundRect(bx, by, w, h, 17); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(s.dx - 6, by + h); ctx.lineTo(s.dx, by + h + 7); ctx.lineTo(s.dx + 6, by + h); ctx.fill();
+      ctx.fillStyle = '#15171B'; ctx.fillText(txt, bx + w / 2, by + h / 2 + 1);
+    }
+    ctx.restore();
+  }
+  function liveHeader(now) {
+    ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '500 10px "Geist Mono", monospace';
+    ctx.fillStyle = `rgba(255,90,95,${.55 + .45 * Math.sin(now / 420)})`; ctx.beginPath(); ctx.arc(C.left + 36, 40, 3.5, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(160,185,230,.85)'; ctx.fillText('LIVE', C.left + 46, 44);
+    ctx.font = '700 17px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = '#fff';
+    ctx.fillText('지금 달리는 사람들', C.left + 32, 68);
+    ctx.font = '500 12px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = 'rgba(210,220,240,.7)';
+    ctx.fillText(`오늘 ${fmt(live.count)}명이 스킬을 올렸어요`, C.left + 32, 88);
+  }
+  const live = { next: 0, list: [], count: 1284 };
+  function liveTick(now) {
+    if (!liveOn()) { live.list.length = 0; return; }
+    live.list = live.list.filter(b => now - b.t < 3400);
+    if (!live.next) live.next = now + 1200; // 처음엔 잠깐 뒤에 첫 소식
+    if (now < live.next || live.list.length >= 2) return;
+    const pool = nodes.filter(nd => nd.sx != null && !live.list.some(b => b.n === nd.s.n)); if (!pool.length) return;
+    live.next = now + 2600 + Math.random() * 2200;
+    const nd = pool[Math.floor(Math.random() * pool.length)], pp = PEOPLE[Math.floor(Math.random() * PEOPLE.length)];
+    nd.v.pulse = 1; live.count += 1 + Math.floor(Math.random() * 3);
+    live.list.push({ n: nd.s.n, p: pp, g: [25, 30, 35, 40][Math.floor(Math.random() * 4)], t: now }); // 별은 매 프레임 새로 만들어져서 이름으로 찾아요
+  }
+  function liveDraw(now) {
+    ctx.save(); ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    live.list.forEach(b => {
+      const nd = nodes.find(x => x.s.n === b.n); if (!nd || nd.sx == null) return;
+      const age = now - b.t, a = age < 260 ? age / 260 : age > 2700 ? Math.max(0, 1 - (age - 2700) / 700) : 1, rise = Math.min(1, age / 3400) * 12;
+      const txt = `${b.p.name} 님 · ${nd.s.n} +${b.g}P`;
+      ctx.font = '600 12px "Pretendard Variable", Pretendard, sans-serif';
+      const w = ctx.measureText(txt).width + 46, h = 30, x = nd.sx - w / 2, y = nd.sy - nd.sr - 18 - h - rise;
+      ctx.globalAlpha = a;
+      ctx.fillStyle = 'rgba(255,255,255,.94)'; ctx.beginPath(); ctx.roundRect(x, y, w, h, 15); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(nd.sx - 5, y + h); ctx.lineTo(nd.sx, y + h + 6); ctx.lineTo(nd.sx + 5, y + h); ctx.fill();
+      const im = face(`avatars/${b.p.img || b.p.id}.png`);
+      ctx.save(); ctx.beginPath(); ctx.arc(x + 17, y + h / 2, 11, 0, 7); ctx.clip(); ctx.fillStyle = '#ECECEC'; ctx.fill(); if (im.complete && im.naturalWidth) ctx.drawImage(im, x + 6, y + h / 2 - 11, 22, 22); ctx.restore();
+      ctx.fillStyle = '#15171B'; ctx.fillText(txt, x + 34, y + h / 2 + 1);
+    });
+    ctx.restore();
+  }
   const faces = {};
   const face = src => { if (!faces[src]) { const im = new Image(); im.src = src; faces[src] = im; } return faces[src]; };
   function build() {
@@ -3108,7 +3216,7 @@ const Galaxy = (() => {
     ctx.setLineDash(dash || []); ctx.strokeStyle = `rgba(160,180,220,${alpha})`; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
   }
   function draw(now) {
-    const k = Math.min(1, C.tilt / 1.02), reveal = S && S.entered ? 1 : .25;
+    const k = Math.min(1, C.tilt / 1.02), reveal = S && S.entered ? 1 : liveOn() ? .6 : .25;
     const g = ctx.createRadialGradient(C.cx, C.cy, 0, C.cx, C.cy, Math.max(W, H) * .7);
     g.addColorStop(0, '#17203A'); g.addColorStop(.45, '#0D1220'); g.addColorStop(1, '#07080C');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -3116,6 +3224,7 @@ const Galaxy = (() => {
     STARS.forEach(st => { const p = proj(st.x, st.y, st.z); if (p.x < -10 || p.x > W + 10 || p.y < -10 || p.y > H + 10) return; const a = .25 + .55 * st.s * (.7 + .3 * Math.sin(now / 900 + st.tw)); ctx.fillStyle = `rgba(220,230,255,${a})`; ctx.fillRect(p.x, p.y, st.s > .85 ? 1.6 : 1, st.s > .85 ? 1.6 : 1); });
     ctx.globalAlpha = reveal;
     DUST.forEach(d => { const p = proj(d.x, d.y, d.z); ctx.fillStyle = `rgba(150,175,230,${.12 + d.s * .18})`; ctx.fillRect(p.x, p.y, 1.2, 1.2); });
+    if (peopleOn()) { ctx.globalAlpha = 1; peopleDraw(now); liveHeader(now); return; } // 2단계: 별 배경 + 사람들만
     // 목표 평면의 궤도
     [140, 280, 420, 560].forEach((r, i) => ring(r, 0, .1 + (i === 1 ? .04 : 0)));
     // 기울이면: 깊이 바닥 고리와 깊이 눈금
@@ -3239,12 +3348,17 @@ const Galaxy = (() => {
     // 누구의 갤럭시인지 (왼쪽 위)
     ctx.textAlign = 'left';
     ctx.font = '500 10px "Geist Mono", monospace'; ctx.fillStyle = 'rgba(160,185,230,.7)';
+    if (liveOn()) {
+      // 로그인 전: 지금 달리는 사람들 (LIVE 점이 숨 쉬듯 깜빡여요)
+      liveHeader(now); liveTick(now); liveDraw(now); // 별 위치가 정해진 뒤에
+    } else {
     ctx.fillText(P ? 'THEIR GALAXY' : 'MY GALAXY', C.left + 32, 44);
     ctx.font = '700 17px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = '#fff';
     ctx.fillText(P ? `${P.friend ? '@' + P.handle : P.name} 님의 갤럭시` : '내 갤럭시', C.left + 32, 68);
     ctx.font = '500 12px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = 'rgba(210,220,240,.7)';
     const both = P ? nodes.filter(nd => nd.s.pts && find(nd.s.n)?.pts).length : 0;
     ctx.fillText(P ? `${ro(P.to)} 달리는 중 · 나와 겹치는 스킬 ${both}개` : `${ro(T())} 달리는 중`, C.left + 32, 88);
+    }
     ctx.globalAlpha = 1;
   }
   // 조작: 끌기(돌리기·기울이기), 스크롤(확대), 클릭(스킬 열기)
