@@ -37,7 +37,7 @@
   .restart { margin-top: 18px; font-size: 12px; color: var(--g1); border-bottom: 1px solid var(--g3); padding-bottom: 2px; }
 
   /* 폰 */
-  .phone { position: relative; width: 390px; height: 800px; background: var(--white); border-radius: 48px; border: 1px solid var(--g3); overflow: hidden; }
+  .phone { position: relative; width: 390px; height: 800px; background: var(--white); border-radius: 48px; border: 1px solid var(--g3); overflow: hidden; container: phone / size; }
   /* 패드로 보기: 아이패드 미니 세로 크기(744px 폭) */
   body.padv { padding: 100px 16px 24px; }
   body.padv .phone { width: 744px; height: min(1133px, calc(100vh - 124px)); border-radius: 36px; }
@@ -58,6 +58,12 @@
     opacity: 0; transform: translateX(24px); pointer-events: none; transition: opacity .45s var(--ease), transform .45s var(--ease);
   }
   .screen.on { opacity: 1; transform: none; pointer-events: auto; }
+  /* 화면 높이가 낮아도(패드 가로 등) 버튼·이미지가 찌그러지지 않고, 넘치면 스크롤돼요 */
+  .screen:not(.sc) { overflow-y: auto; scrollbar-width: none; }
+  .screen:not(.sc) > * { flex-shrink: 0; }
+  /* 로그인·사진 고르기·목표 찾기: 넓은 화면(패드)에서는 모바일 폭 그대로 가운데에 */
+  #s-auth, #s-avatar, #s-dest, #s-profile { padding-left: max(28px, calc((100% - 440px) / 2)); padding-right: max(28px, calc((100% - 440px) / 2)); }
+  .gate { width: 100%; max-width: 440px; margin-left: auto; margin-right: auto; } /* 로그인 안내 페이지도 같은 폭 */
   .screen:not(.on) * { pointer-events: none !important; }
   .screen.out { opacity: 0; transform: translateX(-24px); }
   .eyebrow { font: 500 14px var(--mono); letter-spacing: 0; word-spacing: -.15em; color: var(--g1); }
@@ -332,7 +338,7 @@
   body.mgal .toast { z-index: 45; top: calc(env(safe-area-inset-top) + 116px); }
 
   /* 04 콘텐츠 */
-  .media { margin-top: 24px; height: auto; aspect-ratio: 16 / 9; flex: none; border-radius: 16px; background: var(--g4); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .media { margin-top: 24px; height: auto; aspect-ratio: 16 / 9; flex: none; width: min(100%, calc(42cqh * 16 / 9)); margin-left: auto; margin-right: auto; /* 가로 화면에서도 영상이 화면 밖으로 안 나가게 높이를 화면의 42%까지 */ border-radius: 16px; background: var(--g4); display: grid; place-items: center; position: relative; overflow: hidden; }
   .play { width: 72px; height: 72px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; transition: opacity .3s, transform .2s; }
   .play:active { transform: scale(.94); }
   .play svg { margin-left: 4px; }
@@ -603,7 +609,7 @@
   /* 01-1 새 방향의 나 고르기 (아바타) */
   .av-hero { width: 120px; height: 120px; border-radius: 34px; overflow: hidden; margin: 30px auto 0; box-shadow: 0 12px 30px rgba(21,23,27,.12); }
   .av-hero img, .av-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .av-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 30px; }
+  .av-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 30px; width: 100%; max-width: 520px; margin-left: auto; margin-right: auto; }
   .av-grid button { aspect-ratio: 1; border-radius: 16px; overflow: hidden; transition: box-shadow .15s, transform .15s var(--ease); }
   .av-grid button:active { transform: scale(.94); }
   .av-grid button.on { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink); }
@@ -861,7 +867,7 @@
   /* 데스크탑: 마우스 올리면 이름이 파랗게, 오른쪽 칸에 열린 스킬은 표시 */
   body.desk .rel:hover .nm, body.desk .fsk:hover .n, body.desk .ccard:hover .t, body.desk .cl:hover .t, body.desk .stack:hover b { color: var(--blue); }
   body.desk .sk { position: relative; }
-  body.desk .sk.sel::before { content: ''; position: absolute; left: -36px; top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); }
+  body.desk .sk.sel::before { content: ''; position: absolute; left: calc(-1 * var(--gut)); top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); } /* 패널 폭과 상관없이 늘 왼쪽 벽에 붙어요 */
   body.desk .sk.sel .nm { color: var(--blue); }
 
   /* 왼쪽 메뉴 */
@@ -1064,7 +1070,7 @@
   body:not(.desk) .mk { padding-bottom: 120px !important; }
   /* 아이콘만, 낮은 높이 · 아래로 스크롤하면 작아지고 위로 올리면 돌아와요 */
   .mk-dock { transform-origin: 50% 100%; transition: transform .38s var(--ease), opacity .3s; }
-  .mk-dock.min { transform: scale(.74); }
+  .mk-dock.min { transform: scale(.8); }
   /* 시트·팝업이 뜨면 떠 있는 메뉴는 아래로 비켜서, 시트 버튼을 가리지 않아요 */
   .phone:has(.scrim.on, .mscrim.on, .sheet.on, .msheet.on, .csheet.on, .hswap.on) .mk-dock { opacity: 0; transform: translateY(28px) scale(.96); pointer-events: none; }
   .mk-dock .hometabs button { font-size: 0 !important; gap: 0; padding: 9px 0 !important; }
@@ -1199,6 +1205,7 @@
     </section>
 
     <section class="screen" id="s-profile">
+      <button class="back" id="profBack" hidden>← 홈</button>
       <div class="eyebrow">프로필</div>
       <h2 class="h">오늘은 어느 방향으로<br>달려 볼까요?</h2>
       <p class="sub2">목표마다 나를 따로 만들 수 있어요.<br>같은 나라도 가는 방향이 다르면 거리도 달라요.</p>
@@ -1550,9 +1557,13 @@ function sceneProfile() {
     if (id === 'add') return canAdd() ? sceneAvatar() : locked('profile');
     switchProfile(id);
   });
+  // 홈·내 스킬에서 들어왔으면 왼쪽 위에 돌아가기 (처음 로그인해서 고를 때는 없음)
+  const ret = S.entered && S.profRet;
+  $('profBack').hidden = !ret;
+  if (ret) { $('profBack').textContent = '← ' + ret.label; $('profBack').onclick = () => { const f = S.profRet.go; S.profRet = null; S.toHome = false; f(); }; }
   show('s-profile', 1);
 }
-$('meSw').onclick = e => isDesk() ? profPop($('meSw')) : sceneProfile();
+$('meSw').onclick = e => { if (isDesk()) return profPop($('meSw')); S.profRet = { label: '내 스킬', go: () => sceneRoute(false) }; sceneProfile(); };
 // 프로필 사진을 누르면: 이 프로필의 사진만 바꿔요 (방향·포인트는 그대로)
 function openAvSheet() {
   const me = profOf(S.pid); if (!me) return;
@@ -2433,7 +2444,7 @@ function pwHTML() {
     </form>`;
 }
 function logout() {
-  S.loggedIn = false; S.entered = false; S.nav = []; closeXP();
+  S.loggedIn = false; S.entered = false; S.nav = []; S.profRet = null; closeXP();
   ['sheet', 'scrim', 'cSheet', 'avSheet', 'avScrim'].forEach(id => $(id)?.classList.remove('on'));
   if (typeof renderRail === 'function') renderRail(); sceneLogin();
   setTimeout(() => toast('로그아웃했어요. 다음에 또 달려요'), 400);
@@ -2899,7 +2910,7 @@ renderMarketing(); heroT = setInterval(heroTick, 3800);
 // 로그인: 홈 오른쪽 위 → 로그인 화면 → 다시 홈 (아래에 메뉴 3개)
 const AUTH_H = '가고 싶은 방향으로<br>거리를 좁혀 가요';
 function doLogin() {
-  S.loggedIn = true; S.toHome = true; S.authRet = null; $('authH').innerHTML = AUTH_H; sceneProfile();
+  S.loggedIn = true; S.toHome = true; S.authRet = null; S.profRet = null; $('authH').innerHTML = AUTH_H; sceneProfile();
   setTimeout(() => toast('다시 오셨네요. 어느 방향으로 달려 볼까요?'), 500);
 }
 document.querySelectorAll('[data-login]').forEach(b => b.onclick = doLogin);
@@ -2920,7 +2931,7 @@ function renderHomeAuth() {
   fillTabs($('homeTabs'), 'main');
 }
 $('homeBell').onclick = () => { S.nav = []; S.retHome = true; go({ t: 'noti' }); };
-$('homeAuth').onclick = () => { if (!S.loggedIn) return show('s-auth', 0); S.toHome = true; sceneProfile(); };
+$('homeAuth').onclick = () => { if (!S.loggedIn) return show('s-auth', 0); S.toHome = true; S.profRet = { label: '홈', go: sceneHome }; sceneProfile(); };
 // 홈 메뉴 → 들어가면 메뉴가 햄버거로 접히고 '스킬 올리기'가 나와요 (프로필을 아직 안 골랐으면 먼저 골라요)
 function homeGo(k) {
   if (k === 'main' || guest()) return openTab(k);
