@@ -3137,6 +3137,7 @@ function applyView() {
   document.body.classList.toggle('padv', VIEW === 'pad' && innerWidth > 1000 && !tabletPortrait);
   document.body.classList.toggle('land', PAD_ORI === 'land');
   document.querySelectorAll('#padOri button').forEach(b => b.classList.toggle('on', b.dataset.o === PAD_ORI));
+  if (document.body.classList.contains('mgal')) setTimeout(() => Galaxy.resize(), 0); // 갤럭시를 연 채로 보기를 바꾸면 캔버스도 다시 맞춰요
   document.querySelectorAll('#viewSw button').forEach(b => b.classList.toggle('on', b.dataset.v === VIEW));
   if (desk !== was && S) {
     closeXP(); closeMenu();
@@ -3544,6 +3545,8 @@ const Galaxy = (() => {
   $('gOut').onclick = () => { TG.zoom = Math.max(.55, TG.zoom / 1.25); };
   $('gReset').onclick = () => { TG.zoom = 1; TG.tilt = 0; TG.spin = -.5; syncSeg(); };
   addEventListener('resize', () => on && size());
+  // 화면 틀 크기가 바뀌어도(패드로 보기·세로/가로 전환 등) 캔버스를 다시 맞춰서 늘어나 보이지 않게
+  if (window.ResizeObserver) new ResizeObserver(() => { if (on) { size(); C.cx = 0; } }).observe(cv);
   G.size = size;
   return {
     start() { if (on) return; on = true; size(); t0 = performance.now(); raf = requestAnimationFrame(frame); },
