@@ -480,6 +480,10 @@
   .gbrowse { width: 100%; height: 50px; margin-top: 10px; border-radius: 16px; background: var(--g5); border: 1px solid var(--g4); color: var(--ink); font-size: 14px; font-weight: 600; }
   .rp .im.gst { margin: 0; border: 1.5px dashed var(--g3); background: var(--g5); display: grid; place-items: center; }
   .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 16px; margin-top: 36px; }
+  /* 프로필 고르기: 폭에 맞춰 열 수가 늘어요 (폰 2열 · 넓은 패널 3열 · 패드 4열) */
+  .pwrap { container-type: inline-size; }
+  @container (min-width: 480px) { .pgrid { grid-template-columns: repeat(3, 1fr); gap: 24px 16px; } }
+  @container (min-width: 640px) { .pgrid { grid-template-columns: repeat(4, 1fr); gap: 28px 18px; } }
   .ptile { text-align: left; display: grid; gap: 10px; }
   .ptile .img { aspect-ratio: 1; border-radius: 20px; overflow: hidden; position: relative; background: var(--g4); transition: transform .2s var(--ease), box-shadow .2s; }
   .ptile:hover .img { box-shadow: 0 0 0 2px var(--ink); }
@@ -914,7 +918,7 @@
   .mk-top .hauth { height: 40px; padding: 0 14px; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
   body:has(#s-login.on) #mgBtn { display: none !important; } /* 홈 상단은 프로필·알림 자리 */
   .logo.sm { width: 32px; height: 32px; border-radius: 9px; font-size: 11px; margin: 0; }
-  .hero { position: relative; margin-top: 18px; }
+  .hero { position: relative; margin-top: 18px; container-type: inline-size; }
   .hero-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 18px; }
   .hero-track::-webkit-scrollbar { display: none; }
   .hslide { flex: 0 0 100%; scroll-snap-align: start; position: relative; cursor: pointer; }
@@ -927,6 +931,11 @@
   .hslide .cap { padding: 14px 2px 0; color: var(--ink); }
   .hslide .cap b { display: block; font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
   .hslide .cap span { display: block; font-size: 13px; color: var(--g1); margin-top: 4px; }
+  /* 넓은 화면(아이패드·넓은 패널): 배너는 가운데, 양옆 배너가 살짝 보이게 */
+  @container (min-width: 560px) {
+    .hero-track { padding: 0 18cqw; scroll-padding: 0 18cqw; border-radius: 0; }
+    .hslide { flex-basis: 64cqw; scroll-snap-align: center; }
+  }
   .hslide .cap i { font: 500 10px var(--mono); letter-spacing: .14em; font-style: normal; color: var(--blue); display: block; margin-bottom: 6px; }
   .hero-dots { display: flex; justify-content: center; gap: 5px; margin-top: 12px; }
   .hero-dots i { width: 6px; height: 6px; border-radius: 3px; background: var(--g3); transition: width .3s var(--ease), background .3s; }
@@ -1174,7 +1183,7 @@
       <div class="eyebrow">프로필</div>
       <h2 class="h">오늘은 어느 방향으로<br>달려 볼까요?</h2>
       <p class="sub2">목표마다 나를 따로 만들 수 있어요.<br>같은 나라도 가는 방향이 다르면 거리도 달라요.</p>
-      <div class="pgrid" id="pgrid"></div>
+      <div class="pwrap"><div class="pgrid" id="pgrid"></div></div>
     </section>
 
     <!-- 02 목표 찾기: 키워드로 찾은 커리어를 목표로 -->
@@ -2853,7 +2862,8 @@ function renderMarketing() {
   });
   // 배너: 넘길 때 점 표시 + 자동으로 넘어가기
   const tr = $('heroTrack'), dots = () => $('heroDots').querySelectorAll('i');
-  const idx = () => Math.round(tr.scrollLeft / Math.max(1, tr.clientWidth + 12));
+  const step = () => (tr.children[0]?.offsetWidth || tr.clientWidth) + 12; // 배너 하나 폭만큼씩
+  const idx = () => Math.round(tr.scrollLeft / Math.max(1, step()));
   tr.onscroll = () => dots().forEach((d, i) => d.classList.toggle('on', i === idx()));
   $('mkCur').onscroll = () => { const el = $('mkCur'); const pages = el.children; let k = 0; for (let i = 0; i < pages.length; i++) if (Math.abs(pages[i].offsetLeft - el.offsetLeft - el.scrollLeft - (pages[0].offsetLeft - el.offsetLeft)) < pages[i].offsetWidth / 2) k = i; $('mkCurN').textContent = `${k + 1} / ${pages.length}`; };
 }
@@ -2861,8 +2871,8 @@ let heroT = 0, heroHold = 0;
 function heroTick() {
   const tr = $('heroTrack');
   if (!$('s-login').classList.contains('on') || performance.now() < heroHold) return;
-  const n = tr.children.length, i = Math.round(tr.scrollLeft / Math.max(1, tr.clientWidth + 12));
-  tr.scrollTo({ left: ((i + 1) % n) * (tr.clientWidth + 12), behavior: 'smooth' });
+  const n = tr.children.length, w = (tr.children[0]?.offsetWidth || tr.clientWidth) + 12, i = Math.round(tr.scrollLeft / Math.max(1, w));
+  tr.scrollTo({ left: ((i + 1) % n) * w, behavior: 'smooth' });
 }
 ['pointerdown', 'wheel', 'touchstart'].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest('#heroTrack')) heroHold = performance.now() + 6000; }, { passive: true }));
 renderMarketing(); heroT = setInterval(heroTick, 3800);
