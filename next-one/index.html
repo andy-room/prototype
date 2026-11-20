@@ -348,8 +348,8 @@
   .ver { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .vnum { display: inline-flex; align-items: baseline; gap: 4px; transform-origin: left center; }
   .vnum b { font-size: 52px; font-weight: 200; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; transition: color .3s; }
-  .vnum small { font-size: 20px; font-weight: 400; }
-  .ver.got .vnum b { color: var(--blue); }
+  .vnum small { font-size: 20px; font-weight: 400; transition: color .3s; }
+  .ver.got .vnum b, .ver.got .vnum small { color: var(--blue); }
   .ver.got .vnum { animation: bump .5s cubic-bezier(.3,1.6,.5,1); }
   .vgain { font: 600 15px var(--mono); padding: 7px 11px; border-radius: 999px; background: var(--g4); color: var(--g1); transition: background .3s, color .3s; }
   .ver.got .vgain { background: var(--blue); color: #fff; animation: bump .5s .1s cubic-bezier(.3,1.6,.5,1) both; }
@@ -362,10 +362,10 @@
   .blist .br:first-child { border-top: 0; }
   .blist .bn { font-size: 15px; font-weight: 600; }
   .blist .bn small { display: block; font-size: 12px; font-weight: 500; color: var(--g1); margin-top: 2px; }
-  .blist .bv { font: 500 13px var(--mono); color: var(--g1); }
-  .blist .bv b { color: var(--ink); font-weight: 600; transition: color .3s; }
+  .blist .bv { font: 600 13px var(--mono); color: var(--ink); transition: color .3s; }
+  .blist .bv b { color: inherit; font-weight: 600; }
   .blist .bg { font: 600 12px var(--mono); color: var(--blue); background: var(--blue-soft); padding: 4px 8px; border-radius: 999px; transition: background .3s, color .3s; }
-  .blist .br.got .bv b { color: var(--blue); }
+  .blist .br.got .bv { color: var(--blue); } /* 숫자와 P가 같은 색으로 */
   .blist .br.got .bg { background: var(--blue); color: #fff; }
   /* 대시보드: 업데이트를 기다리는 포인트 */
   .wait-hero { margin-top: 24px; padding: 20px 20px 18px; border-radius: 20px; background: var(--blue-soft); border: 1.5px solid rgba(17,100,255,.18); }
@@ -378,7 +378,7 @@
   .wait-hero .wchips span b { font: 600 12px var(--mono); color: var(--blue); margin-left: 4px; }
   .wait-hero .wbtn { margin-top: 16px; width: 100%; height: 50px; border-radius: 14px; background: var(--blue); color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .wait-hero .wbtn:active { transform: scale(.98); }
-  .sk .ptv .wtag { display: block; margin-top: 3px; font: 600 11px var(--mono); color: var(--blue); }
+  .sk .nm small.wt { font: 600 11px var(--mono); color: var(--blue); background: var(--blue-soft); padding: 3px 7px; border-radius: 999px; white-space: nowrap; } /* 대기 포인트: 이름 옆 한 줄 */
   /* 스킬 상세: 업데이트를 기다리는 포인트 */
   .wait-row { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding: 14px 14px 14px 18px; border-radius: 16px; background: var(--blue-soft); }
   .wait-row + .up-btn { margin-top: 10px; }
@@ -489,7 +489,39 @@
   .ptile .nm { font-size: 15px; font-weight: 600; line-height: 1.35; }
   .ptile .w { font-size: 12px; color: var(--g1); margin-top: 2px; }
   .ptile.new .img { box-shadow: 0 0 0 2px var(--blue); }
-  .me-row .av.photo { cursor: pointer; }
+  .me-av { position: relative; flex: none; padding: 0; border-radius: 50%; }
+  .me-av i { position: absolute; right: -2px; bottom: -2px; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: #fff; border: 2px solid #fff; display: grid; place-items: center; }
+  .me-av:active { transform: scale(.96); }
+  .setbtn { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: var(--g1); margin-left: 4px; }
+  .setbtn:hover { background: var(--g5); color: var(--ink); }
+  .avs-sub { margin-top: 8px; font-size: 13px; color: var(--g1); }
+  .avs-done { position: static; margin-top: 24px; width: 100%; }
+  /* 설정 */
+  .set-me { display: flex; align-items: center; gap: 14px; margin-top: 24px; padding: 18px; border-radius: 18px; background: var(--g5); }
+  .set-me img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: #fff; }
+  .set-me b { display: block; font-size: 17px; font-weight: 600; }
+  .set-me small { display: block; margin-top: 3px; font-size: 13px; color: var(--g1); }
+  .set-me .plan { margin-left: auto; }
+  .set-sec { margin-top: 32px; font-size: 13px; font-weight: 600; color: var(--g1); }
+  .set-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--g4); text-align: left; font-size: 15px; color: var(--ink); }
+  .set-row .sv { margin-left: auto; font-size: 14px; color: var(--g1); }
+  .set-row .sd { display: block; font-size: 12px; color: var(--g1); margin-top: 3px; }
+  .set-row > span:first-child { flex: 1; }
+  .set-row svg.chev { flex: none; color: var(--g2); }
+  .tg { flex: none; position: relative; width: 44px; height: 26px; border-radius: 999px; background: var(--g3); transition: background .2s; }
+  .tg::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s var(--ease); }
+  .tg.on { background: var(--blue); }
+  .tg.on::after { transform: translateX(18px); }
+  .set-out { width: 100%; height: 52px; margin-top: 36px; border-radius: 14px; background: var(--g5); color: var(--ink); font-size: 15px; font-weight: 600; }
+  .set-bye { display: block; margin: 16px auto 8px; font-size: 12px; color: var(--g2); text-decoration: underline; text-underline-offset: 3px; }
+  .pw-f { margin-top: 24px; display: grid; gap: 14px; }
+  .pw-f label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--g1); }
+  .pw-f input { height: 50px; padding: 0 16px; border-radius: 14px; border: 1.5px solid var(--g4); background: var(--g5); font-size: 15px; color: var(--ink); }
+  .pw-f input:focus { outline: none; border-color: var(--ink); background: #fff; }
+  .pw-f .hint { font-size: 12px; color: var(--g1); font-weight: 400; }
+  .pw-f .err { font-size: 12px; color: #E5484D; font-weight: 500; min-height: 16px; }
+  .pw-f .cta { position: static; width: 100%; margin-top: 6px; }
+  .pw-f .cta:disabled { opacity: .4; }
   .me-row .sw { font-size: 12px; color: var(--g1); margin-top: 3px; display: inline-flex; align-items: center; gap: 3px; }
   /* 01-1 새 방향의 나 고르기 (아바타) */
   .av-hero { width: 120px; height: 120px; border-radius: 34px; overflow: hidden; margin: 30px auto 0; box-shadow: 0 12px 30px rgba(21,23,27,.12); }
@@ -551,10 +583,14 @@
   .ckb svg { opacity: 0; }
   .sk.picked .ckb { background: var(--blue); border-color: var(--blue); }
   .sk.picked .ckb svg { opacity: 1; }
-  .skw { position: relative; overflow: hidden; }
-  .skw .sk { position: relative; z-index: 1; background: #fff; touch-action: pan-y; }
-  .skdel { position: absolute; top: 0; right: 0; bottom: 1px; width: 84px; display: grid; place-items: center; }
-  .skdel i { width: 44px; height: 44px; border-radius: 50%; background: #E5484D; color: #fff; display: grid; place-items: center; transform: scale(.6); opacity: 0; transition: transform .25s var(--ease), opacity .2s; }
+  /* 밀어서 삭제: 아래 줄은 그대로, 줄 내용만 밀려요 */
+  /* 줄은 화면 끝까지 넓혀서, 밀 때 스킬명이 콘텐츠 여백이 아니라 화면 끝에서 잘려요 (구분선은 원래 폭) */
+  .skw { position: relative; }
+  body:not(.desk) .skw { overflow: hidden; margin: 0 -28px; padding: 0 28px; }
+  body:not(.desk) .skw::after { content: ''; position: absolute; left: 28px; right: 28px; bottom: 0; height: 1px; background: var(--g4); z-index: 2; pointer-events: none; }
+  body:not(.desk) .skw .sk { position: relative; z-index: 1; background: #fff; touch-action: pan-y; border-bottom: 0; outline: none; margin: 0 -28px; padding-left: 28px; padding-right: 28px; width: calc(100% + 56px); }
+  .skdel { position: absolute; top: 0; right: 12px; bottom: 0; width: 68px; display: grid; place-items: center; }
+  .skdel i { width: 32px; height: 32px; border-radius: 50%; background: #E5484D; color: #fff; display: grid; place-items: center; transform: scale(.6); opacity: 0; transition: transform .25s var(--ease), opacity .2s; }
   .skw.open .skdel i, .skw.drag .skdel i { transform: none; opacity: 1; }
   .skdel:active i { background: #D13B40; }
   .sk.fresh, body.mode-point .sk.fresh { grid-template-columns: 1fr auto 12px; }
@@ -1070,7 +1106,7 @@
     <!-- 03 남은 거리 (홈) -->
     <section class="screen sc" id="s-route">
       <div class="scroll" id="routeScroll">
-      <div class="me-row"><img class="av photo" src="avatars/a1.png" alt="프로필 바꾸기" id="meAv"><div><div class="nm"><span class="tro">데이터 PM으로</span> 달리는 나</div><button class="sw" id="meSw">프로필 바꾸기 ›</button></div><button class="plan" id="plan" style="margin-left:auto">무료</button><button class="maxbtn" id="maxBtn" data-max title="패널 넓게 보기" aria-label="패널 넓게 보기"><svg class="o" width="16" height="16" viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="c" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.3" transform="rotate(-24 9 9)"/><circle cx="14.6" cy="3.2" r=".9" fill="currentColor"/><circle cx="3" cy="14.4" r=".7" fill="currentColor"/></svg></button></div>
+      <div class="me-row"><button class="me-av" id="meAvBtn" aria-label="프로필 사진 바꾸기"><img class="av photo" src="avatars/a1.png" alt="" id="meAv"><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M8.6 1.6a1.3 1.3 0 0 1 1.8 1.8L4.2 9.6l-2.4.6.6-2.4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></i></button><div><div class="nm"><span class="tro">데이터 PM으로</span> 달리는 나</div><button class="sw" id="meSw">프로필 바꾸기 ›</button></div><button class="plan" id="plan" style="margin-left:auto">무료</button><button class="setbtn" id="setBtn" aria-label="설정" title="설정"><svg width="17" height="17" viewBox="0 0 20 20"><path d="M10 12.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16.2 12.3a1.3 1.3 0 0 0 .26 1.43l.05.05a1.58 1.58 0 1 1-2.23 2.23l-.05-.05a1.3 1.3 0 0 0-1.43-.26 1.3 1.3 0 0 0-.79 1.19v.14a1.58 1.58 0 1 1-3.16 0v-.07a1.3 1.3 0 0 0-.85-1.19 1.3 1.3 0 0 0-1.43.26l-.05.05a1.58 1.58 0 1 1-2.23-2.23l.05-.05a1.3 1.3 0 0 0 .26-1.43 1.3 1.3 0 0 0-1.19-.79h-.14a1.58 1.58 0 1 1 0-3.16h.07a1.3 1.3 0 0 0 1.19-.85 1.3 1.3 0 0 0-.26-1.43l-.05-.05a1.58 1.58 0 1 1 2.23-2.23l.05.05a1.3 1.3 0 0 0 1.43.26h.06a1.3 1.3 0 0 0 .79-1.19v-.14a1.58 1.58 0 1 1 3.16 0v.07a1.3 1.3 0 0 0 .79 1.19 1.3 1.3 0 0 0 1.43-.26l.05-.05a1.58 1.58 0 1 1 2.23 2.23l-.05.05a1.3 1.3 0 0 0-.26 1.43v.06a1.3 1.3 0 0 0 1.19.79h.14a1.58 1.58 0 1 1 0 3.16h-.07a1.3 1.3 0 0 0-1.19.79Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button><button class="maxbtn" id="maxBtn" data-max title="패널 넓게 보기" aria-label="패널 넓게 보기"><svg class="o" width="16" height="16" viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="c" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.3" transform="rotate(-24 9 9)"/><circle cx="14.6" cy="3.2" r=".9" fill="currentColor"/><circle cx="3" cy="14.4" r=".7" fill="currentColor"/></svg></button></div>
       <div class="pt-hero pt-only" style="margin-top:36px"><div class="n"><span id="ptTotal">0</span><small>P</small></div>
         <div class="w"><span class="tro">데이터 PM으로</span> 달리는 사람 중 <b class="rank" id="ptRank">상위 0%</b>예요.<br>끝이 정해져 있지 않아요. 쌓을수록 가까워져요.</div>
         <div class="chips2"><span>이번 주 <b id="ptWeek">+0P</b></span><span id="ptCnt" hidden>스킬 0개</span></div></div>
@@ -1086,6 +1122,14 @@
       <div id="skills"></div>
       </div>
       <div class="dock mk-dock"><div class="hometabs" id="routeTabs"></div></div>
+      <div class="scrim" id="avScrim"></div>
+      <div class="sheet" id="avSheet">
+        <div class="grab"></div>
+        <h2 class="h" style="margin:0">프로필 사진 바꾸기</h2>
+        <p class="avs-sub" id="avsSub"></p>
+        <div class="av-grid" id="avsGrid" style="margin-top:20px"></div>
+        <button class="cta avs-done" id="avsDone">이 사진으로 할게요</button>
+      </div>
     </section>
 
     <!-- 03-1 스킬 안 · 03-2 사람 (같은 화면에 갈아 끼움) -->
@@ -1096,7 +1140,7 @@
 
     <!-- 04 콘텐츠 -->
     <section class="screen" id="s-content">
-      <button class="back" id="backBtn">← 남은 거리</button>
+      <button class="back" id="backBtn">← 전체 내 스킬</button>
       <div class="cgain" id="cSkill"></div>
       <h2 class="h" id="cTitle"></h2>
       <div class="media" id="media">
@@ -1385,7 +1429,25 @@ function sceneProfile() {
   });
   show('s-profile', 1);
 }
-$('meAv').onclick = $('meSw').onclick = e => isDesk() ? profPop($('meSw')) : sceneProfile();
+$('meSw').onclick = e => isDesk() ? profPop($('meSw')) : sceneProfile();
+// 프로필 사진을 누르면: 이 프로필의 사진만 바꿔요 (방향·포인트는 그대로)
+function openAvSheet() {
+  const me = profOf(S.pid); if (!me) return;
+  let sel = me.av;
+  $('avsSub').textContent = `${ro(me.target)} 달리는 나의 사진이에요`;
+  $('avsGrid').innerHTML = Array.from({ length: 10 }, (_, k) => `<button data-a="${k + 1}" class="${sel === k + 1 ? 'on' : ''}"><img src="avatars/a${k + 1}.png" alt="아바타 ${k + 1}"></button>`).join('');
+  $('avsGrid').querySelectorAll('button').forEach(b => b.onclick = () => { sel = +b.dataset.a; $('avsGrid').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); });
+  const close = () => { $('avSheet').classList.remove('on'); $('avScrim').classList.remove('on'); };
+  $('avScrim').onclick = close;
+  $('avsDone').onclick = () => {
+    close(); if (sel === me.av) return;
+    me.av = sel; renderRoute(); if (typeof renderRail === 'function') renderRail(); renderHomeAuth();
+    toast('프로필 사진을 바꿨어요');
+  };
+  $('avScrim').classList.add('on'); $('avSheet').classList.add('on');
+}
+$('meAvBtn').onclick = openAvSheet;
+$('setBtn').onclick = () => { S.nav = []; go({ t: 'settings' }); }; // 프로필 사진을 눌러서는 바꾸지 않아요 ('프로필 바꾸기 ›'만)
 
 /* ── 01-1 새 방향의 나: 아바타 고르기 (무료는 1개 추가까지) ─── */
 const FREE_PROFILES = 2; // 기본 1 + 추가 1
@@ -1467,12 +1529,12 @@ const TRASH = '<svg width="16" height="16" viewBox="0 0 16 16"><path d="M2.5 4.5
 const CHECK = '<svg width="11" height="9" viewBox="0 0 11 9"><path d="M1.2 4.6 4 7.3 9.8 1.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 // 모바일: 줄을 왼쪽으로 밀면 뒤의 '삭제'가 드러나요
 function swipeRow(w) {
-  const row = w.querySelector('.sk'), W = 84; let x0 = 0, y0 = 0, dx = 0, on = false, drag = false;
-  const set = (x, an) => { row.style.transition = an ? 'width .25s var(--ease)' : 'none'; row.style.width = x ? `calc(100% - ${-x}px)` : ''; };
+  const row = w.querySelector('.sk'), W = 80; let x0 = 0, y0 = 0, dx = 0, on = false, drag = false;
+  const set = (x, an) => { row.style.transition = an ? 'transform .25s var(--ease)' : 'none'; row.style.transform = x ? `translateX(${x}px)` : ''; }; // 스킬명까지 줄 전체가 함께 밀려요
   row.addEventListener('pointerdown', e => { x0 = e.clientX; y0 = e.clientY; dx = 0; on = true; drag = false; });
   row.addEventListener('pointermove', e => {
     if (!on) return; const mx = e.clientX - x0, my = e.clientY - y0;
-    if (!drag && Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) { drag = true; document.querySelectorAll('#skills .skw.open').forEach(o => o !== w && (o.classList.remove('open'), o.querySelector('.sk').style.width = '')); }
+    if (!drag && Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) { drag = true; document.querySelectorAll('#skills .skw.open').forEach(o => o !== w && (o.classList.remove('open'), o.querySelector('.sk').style.transform = '')); }
     if (!drag) return; const base = w.classList.contains('open') ? -W : 0;
     dx = Math.max(-W - 20, Math.min(0, base + mx)); set(dx); w.classList.toggle('drag', dx < -24);
   });
@@ -1528,9 +1590,9 @@ function renderRoute(fx = {}) {
       <span class="skadd" data-reg="${s.n}">+ 등록</span>${CHEV}
     </button>`).join('') : `<div class="empty">${T()} 추천 스킬을 모두 추가했어요.</div>`) : list.map(s => `
     <div class="skw"><button class="sk ${s === nx ? 'rec' : ''} ${picked.has(s.n) ? 'picked' : ''} ${desk && document.body.classList.contains('xp-on') && S.nav[0]?.t === 'skill' && S.nav[0].n === s.n ? 'sel' : ''}" data-n="${s.n}">
-      ${ed ? `<span class="ckb">${CHECK}</span>` : ''}<span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}${s.extra ? `<small class="add">${s.career ? '새로 등록' : '내가 추가'}</small>` : ''}</span>
+      ${ed ? `<span class="ckb">${CHECK}</span>` : ''}<span class="nm">${s.n}${s === nx ? '<em>추천</em>' : ''}${s.extra ? `<small class="add">${s.career ? '새로 등록' : '내가 추가'}</small>` : ''}${waitOf()[s.n]?.gain ? `<small class="wt">+${fmt(waitOf()[s.n].gain)}P 대기</small>` : ''}</span>
       ${barHTML(s, fx.n === s.n ? fx.from : s.pts)}
-      <span class="ptv">${fmt(s.pts)}P${waitOf()[s.n]?.gain ? `<em class="wtag">+${fmt(waitOf()[s.n].gain)}P 대기</em>` : ''}</span>${ed ? '' : CHEV}
+      <span class="ptv">${fmt(s.pts)}P</span>${ed ? '' : CHEV}
     </button>${desk ? '' : `<button class="skdel" data-rm="${s.n}" aria-label="${s.n} 삭제"><i>${TRASH}</i></button>`}</div>`).join('');
   fill();
   document.querySelectorAll('#skills .sk').forEach(b => b.onclick = () => {
@@ -1562,7 +1624,7 @@ function renderRoute(fx = {}) {
 }
 
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
-const label = e => e.t === 'gate' ? { class: '마이클래스', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : personOf(e.id).name;
+const label = e => e.t === 'gate' ? { class: '전체 내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
 function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
@@ -1599,7 +1661,7 @@ function renderDetail(keep) {
   if (isDesk()) return renderDesk(keep);
   const lv = S.nav.length - 1, e = S.nav[lv];
   const root = lv === 0 && ROOTS.includes(e.t);
-  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : '남은 거리'));
+  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : '전체 내 스킬'));
   show('s-detail', 3);
 }
 // 데스크탑: 첫 칸(폰)은 대시보드나 메뉴 첫 화면, 더 들어가면 오른쪽으로 한 칸 열려요
@@ -1634,7 +1696,7 @@ function paint(e, lv, T, keep, backLabel) {
   if (T === XP) { document.querySelectorAll('#xp > .pvdone').forEach(x => x.remove()); dropXpSheets(); }
   const $b = $(T.body), sel = q => document.querySelectorAll(`#${T.body} ${q}`);
   const goHere = x => { S.nav.length = lv + 1; go(x); };
-  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : e.t === 'gate' ? gateHTML(e) : e.t === 'gskills' ? gskillsHTML() : e.t === 'gskill' ? gskillHTML(e) : personHTML(personOf(e.id));
+  const html = e.t === 'catalog' ? catalogHTML() : e.t === 'skills' ? findSkillsHTML() : e.t === 'skill' ? skillHTML(find(e.n)) : e.t === 'people' ? peopleHTML(e.n) : e.t === 'courses' ? coursesHTML(e.n) : e.t === 'play' ? playHTML(e) : e.t === 'gate' ? gateHTML(e) : e.t === 'gskills' ? gskillsHTML() : e.t === 'gskill' ? gskillHTML(e) : e.t === 'settings' ? settingsHTML() : e.t === 'pw' ? pwHTML() : personHTML(personOf(e.id));
   $b.innerHTML = (backLabel ? `<button class="back2" id="${T.pre}Back">← ${backLabel}</button>` : '') + html;
   $b.dataset.k = JSON.stringify(e);
   if (!keep) $(T.scroll).scrollTop = 0;
@@ -1648,6 +1710,22 @@ function paint(e, lv, T, keep, backLabel) {
   sel('.cl[data-i]').forEach(b => b.onclick = () => isDesk() ? goHere({ t: 'play', n: b.dataset.n, i: +b.dataset.i }) : sceneContent(b.dataset.n, +b.dataset.i));
   // 데스크탑: 스킬 올리기 시작 → 이 칸이 영상 재생 화면으로 바뀌어요
   sel('[data-start]').forEach(b => b.onclick = () => { if (!isDesk()) return sceneContent(b.dataset.start); const sk = find(b.dataset.start); goHere({ t: 'play', n: sk.n, i: nextIdx(sk) }); });
+  // 설정
+  sel('[data-tg]').forEach(b => b.onclick = () => { const st = setOf(), k = b.dataset.tg; st[k] = !st[k]; b.querySelector('.tg').classList.toggle('on', st[k]); if (k === 'mkt') toast(st[k] ? '이벤트 · 혜택 소식을 받아요' : '이벤트 · 혜택 소식을 받지 않아요'); });
+  sel('[data-sgo]').forEach(b => b.onclick = () => {
+    const k = b.dataset.sgo;
+    if (k === 'pw') return goHere({ t: 'pw' });
+    if (k === 'photo') { if (!isDesk()) { S.nav = []; sceneRoute(false); setTimeout(openAvSheet, 380); } else openAvSheet(); return; }
+    if (k === 'plan') return locked('plan', null, b.closest('#xp'));
+    if (k === 'logout') return logout();
+    if (k === 'bye') return toast('프로토타입에서는 탈퇴할 수 없어요');
+    toast('프로토타입에서는 아직 준비 중이에요');
+  });
+  if ($('pwForm')) {
+    const f = $('pwForm'), chk = () => { const a = $('pw1').value, c = $('pw2').value, ok = $('pw0').value && a.length >= 8 && /[a-z]/i.test(a) && /\d/.test(a) && a === c; $('pwErr').textContent = c && a !== c ? '새 비밀번호가 서로 달라요' : ''; $('pwGo').disabled = !ok; };
+    f.oninput = chk;
+    f.onsubmit = ev => { ev.preventDefault(); if ($('pwGo').disabled) return; toast('비밀번호를 바꿨어요'); back(); };
+  }
   sel('[data-dto]').forEach(b => b.onclick = () => { const to = b.dataset.dto; S.pplF = to && !(S.pplF && S.pplF.n === e.n && S.pplF.to === to) ? { n: e.n, to } : null; renderDetail(true); });
   sel('[data-wup]').forEach(b => b.onclick = () => openWait([b.dataset.wup], b.closest('#xp') || b.closest('.screen')));
   if (e.t === 'play') bindPlay(e, T);
@@ -1751,7 +1829,7 @@ function bindPlay(e, T) {
     setTimeout(() => openWait([s.n], T === XP ? $('xp') : $('s-detail')), 150);
   };
   // 나중에 올릴게요: 포인트는 대기에 그대로 두고 이전 화면으로
-  if ($('pvLater')) $('pvLater').onclick = () => { toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 마이클래스에서 올릴 수 있어요`); back(); };
+  if ($('pvLater')) $('pvLater').onclick = () => { toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 전체 내 스킬에서 올릴 수 있어요`); back(); };
 }
 // 그 자리 재생: 줄 아래로 진행 막대가 차오르고, 끝나면 포인트가 바로 쌓여요 (갤럭시엔 빅뱅)
 let inlineBusy = false;
@@ -2098,6 +2176,53 @@ function peopleHTML(n) {
     <div>${shown.map(p => pRow(p, n)).join('')}</div>
     ${S.member ? '' : ghost + `<button class="lock" data-lock="people" data-n="${n}">${LOCK} ${total}명 더 보기</button>`}`;
 }
+// 설정: 계정 · 멤버십 · 알림 · 개인정보 · 로그아웃 (프로토타입이라 실제 계정 정보는 쓰지 않아요)
+const SET_CHEV = '<svg class="chev" width="12" height="12" viewBox="0 0 12 12"><path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const setOf = () => (S.set = S.set || { remind: true, wait: true, people: true, open: true, mkt: false });
+function settingsHTML() {
+  const me = profOf(S.pid), st = setOf();
+  const tg = (k, n, d) => `<button class="set-row" data-tg="${k}"><span>${n}${d ? `<span class="sd">${d}</span>` : ''}</span><i class="tg ${st[k] ? 'on' : ''}"></i></button>`;
+  const go = (k, n, v) => `<button class="set-row" data-sgo="${k}"><span>${n}</span>${v ? `<span class="sv">${v}</span>` : ''}${SET_CHEV}</button>`;
+  return `
+    <div class="eyebrow">설정</div>
+    <h2 class="h">내 정보</h2>
+    <div class="set-me">${me ? `<img src="avatars/a${me.av}.png" alt="">` : ''}<div><b>hu_runner</b><small>runner@example.com</small></div><button class="plan ${S.member ? 'member' : ''}" data-sgo="plan">${S.member ? '멤버십' : '무료'}</button></div>
+    <div class="set-sec">계정</div>
+    ${go('photo', '프로필 사진 바꾸기')}
+    ${go('pw', '비밀번호 변경')}
+    ${go('phone', '휴대폰 번호', '010-****-1234')}
+    ${go('mail', '이메일', 'runner@example.com')}
+    <div class="set-sec">멤버십</div>
+    ${go('plan', '내 플랜', S.member ? 'HU 멤버십' : '무료')}
+    <div class="set-sec">알림</div>
+    ${tg('remind', '학습 알림', '정한 시간에 다음 강의를 알려 드려요')}
+    ${tg('wait', '업데이트 대기 알림', '올리지 않은 포인트가 있으면 알려 드려요')}
+    ${tg('people', '함께 키우는 사람 소식', '친구가 같은 스킬을 올리면 알려 드려요')}
+    ${tg('mkt', '이벤트 · 혜택 소식', '마케팅 정보 수신 동의 (선택)')}
+    <div class="set-sec">개인정보</div>
+    ${tg('open', '내 프로필 공개', '함께 키우는 사람들에 나를 보여 줘요')}
+    ${go('privacy', '개인정보 처리방침')}
+    ${go('terms', '서비스 이용약관')}
+    <button class="set-out" data-sgo="logout">로그아웃</button>
+    <button class="set-bye" data-sgo="bye">회원 탈퇴</button>`;
+}
+function pwHTML() {
+  return `
+    <div class="eyebrow">설정</div>
+    <h2 class="h">비밀번호 변경</h2>
+    <form class="pw-f" id="pwForm" autocomplete="off">
+      <label>지금 비밀번호<input type="password" id="pw0" autocomplete="off"></label>
+      <label>새 비밀번호<input type="password" id="pw1" autocomplete="new-password"><span class="hint">영문 · 숫자를 섞어 8자 이상</span></label>
+      <label>새 비밀번호 확인<input type="password" id="pw2" autocomplete="new-password"><span class="err" id="pwErr"></span></label>
+      <button class="cta" type="submit" id="pwGo" disabled>비밀번호 바꾸기</button>
+    </form>`;
+}
+function logout() {
+  S.loggedIn = false; S.entered = false; S.nav = []; closeXP();
+  ['sheet', 'scrim', 'cSheet', 'avSheet', 'avScrim'].forEach(id => $(id)?.classList.remove('on'));
+  if (typeof renderRail === 'function') renderRail(); sceneLogin();
+  setTimeout(() => toast('로그아웃했어요. 다음에 또 달려요'), 400);
+}
 function personHTML(p) {
   // 주변 사람이 보는 스킬 중 '나에게 없는 스킬'이 꼭 하나는 있게 (없으면 한 개를 골라 넣어요)
   const notMine = n => find(n) && !isMine(find(n));
@@ -2143,7 +2268,7 @@ document.querySelector('.wave').innerHTML = Array.from({ length: 28 }, (_, k) =>
 function sceneContent(name, idx, keep) {
   if (!keep) S.pend = { n: 0, gain: 0 };
   const s = name ? find(name) : (gaps()[0] || S.skills.find(x => x.lv < MAXC)); S.cur = s;
-  $('backBtn').textContent = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '남은 거리');
+  $('backBtn').textContent = '← ' + (S.nav.length ? label(S.nav.at(-1)) : '전체 내 스킬');
   const i = idx ?? nextIdx(s);
   s.curMin = s.mins[i];
   s.curGain = s.mins[i] * 5;
@@ -2191,7 +2316,7 @@ function openChoice() {
   $('cNext').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); if (!free) return locked('courses'); setTimeout(() => { sceneContent(s.n, ni, true); setTimeout(() => $('playBtn').click(), 520); }, 250); }; // 이어서 → 바로 재생 (무료 한도면 멤버십 안내로)
   $('cStop').onclick = () => { if (gu) return own(); $('cSheet').classList.remove('on'); S.streak = { ...S.pend }; setTimeout(() => openWait([s.n], null), 200); };
   $('cLater').style.display = gu ? 'none' : '';
-  $('cLater').onclick = () => { $('cSheet').classList.remove('on'); toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 마이클래스에서 올릴 수 있어요`); setTimeout(() => S.nav.length ? renderDetail() : sceneRoute(false), 250); };
+  $('cLater').onclick = () => { $('cSheet').classList.remove('on'); toast(`<b>${s.n}</b> +${fmt(waitOf()[s.n]?.gain || 0)}P · 전체 내 스킬에서 올릴 수 있어요`); setTimeout(() => S.nav.length ? renderDetail() : sceneRoute(false), 250); };
   $('cSheet').classList.add('on');
 }
 
@@ -2549,7 +2674,7 @@ function doLogin() {
 }
 document.querySelectorAll('[data-login]').forEach(b => b.onclick = doLogin);
 $('authBack').onclick = () => { const f = S.authRet; S.authRet = null; $('authH').innerHTML = AUTH_H; f ? f() : sceneHome(); };
-const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '마이클래스']];
+const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '전체 내 스킬']];
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
   if (!el) return;
@@ -2625,8 +2750,8 @@ function renderRail() {
   const now = tabNow(), me = profOf(S.pid);
   // HU 로고 = 홈 · 지금 프로필 하나 = 대시보드(거기서 프로필 전환) · 콘텐츠 · 스킬
   const prof = S.entered && me
-    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>마이클래스</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
-    : guest() ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="로그인하면 내 커리어가 여기에 보여요"><span class="im gst">${GUEST_ICON}</span>마이클래스</button>`
+    ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="${ro(me.target)} 달리는 나 · 대시보드"><span class="im"><img src="avatars/a${me.av}.png" alt=""></span>전체 내 스킬</button><button class="rsw" id="railSw" title="프로필 바꾸기"><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 4h8M7.5 1.5 10 4 7.5 6.5M10 8H2M4.5 5.5 2 8l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>바꾸기</button>`
+    : guest() ? `<button class="rp ${now === 'home' ? 'on' : ''}" data-tab="home" title="로그인하면 내 커리어가 여기에 보여요"><span class="im gst">${GUEST_ICON}</span>전체 내 스킬</button>`
     : `<button class="rp" data-tab="home"><span class="im add">${NAV_IC.home}</span>프로필 고르기</button>`;
   const items = [['catalog', '콘텐츠'], ['skills', '스킬']].map(([k, t]) => `<button class="ri ${now === k ? 'on' : ''}" data-tab="${k}"><span class="ic">${NAV_IC[k]}</span>${t}</button>`).join('');
   $('rail').innerHTML = `<button class="rlogo ${now === 'main' ? 'on' : ''}" data-tab="main" title="홈">HU</button>${prof}<hr>${items}`;
