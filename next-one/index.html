@@ -154,7 +154,8 @@
   /* 강의 한 줄 */
   .cl { width: 100%; display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; text-align: left; padding: 12px 0; border-bottom: 1px solid var(--g4); }
   .cl:active { opacity: .6; }
-  .csort { display: flex; align-items: center; gap: 12px; margin: 14px 0 4px; font-size: 12px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+  .search + .filters { margin-top: 20px; } /* 제목 · 검색 · 분류 · 정렬을 기능 단위로 띄워요 */
+  .csort { display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; font-size: 12px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
   .csort::-webkit-scrollbar { display: none; }
   .csort span { font: 500 11px var(--mono); color: var(--g2); margin-right: auto; padding-right: 8px; }
   .csort button { color: var(--g2); font-size: 12px; }
@@ -492,15 +493,16 @@
   .me-av { position: relative; flex: none; padding: 0; border-radius: 50%; }
   .me-av i { position: absolute; right: -2px; bottom: -2px; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: #fff; border: 2px solid #fff; display: grid; place-items: center; }
   .me-av:active { transform: scale(.96); }
-  .setbtn { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: var(--g1); margin-left: 4px; }
+  .setbtn { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink); margin-left: -2px; }
+  .setbtn svg { width: 22px; height: 22px; }
   .setbtn:hover { background: var(--g5); color: var(--ink); }
   .avs-sub { margin-top: 8px; font-size: 13px; color: var(--g1); }
   .avs-done { position: static; margin-top: 24px; width: 100%; }
   /* 알림 */
   .nbell { position: relative; }
-  .nbell .nb-dot { position: absolute; top: 6px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 0 2px #fff; display: none; }
+  .nbell .nb-dot { position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 0 2px #fff; display: none; }
   .nbell.has .nb-dot { display: block; }
-  .nt-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+  .nt-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; margin-bottom: 10px; }
   .nt-only { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--g1); }
   .nt-only .tg { width: 38px; height: 22px; }
   .nt-only .tg::after { width: 16px; height: 16px; }
@@ -508,7 +510,18 @@
   .nt-all { font-size: 13px; color: var(--g1); text-decoration: underline; text-underline-offset: 3px; }
   .nt-all:disabled { opacity: .35; text-decoration: none; }
   .nt-grp { margin-top: 28px; font-size: 13px; font-weight: 600; color: var(--g1); }
-  .nt-item { width: 100%; display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--g4); text-align: left; }
+  .nt-item { width: calc(100% + 24px); margin: 0 -12px; display: flex; align-items: flex-start; gap: 14px; padding: 12px; border-radius: 14px; text-align: left; transition: background .15s; }
+  @media (hover: hover) { .nt-item:hover { background: rgba(21,23,27,.035); } } /* PC: 마우스를 올리면 줄 배경이 살짝 바뀌어요 */
+  .nt-item:active { background: rgba(21,23,27,.05); } /* 모바일: 누르는 동안 같은 효과 */
+  .nt-item .nt-ic, .nt-item .nt-av { flex: none; width: 40px; height: 40px; border-radius: 50%; }
+  .nt-av { object-fit: cover; background: #ECECEC; }
+  /* 글이 한 줄이면 아이콘 가운데에, 여러 줄(최대 3줄)이면 첫 줄이 아이콘 위쪽에 맞아요 */
+  .nt-item .nt-t { flex: 1; min-width: 0; min-height: 40px; display: flex; flex-direction: column; justify-content: center; }
+  .nt-item .nt-tt { font-size: 15px; font-weight: 400; line-height: 1.45; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .nt-at { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; color: var(--g2); white-space: nowrap; }
+  .nt-tag { font-style: normal; font-size: 12px; font-weight: 600; color: var(--g1); margin-right: 6px; }
+  .nt-new { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); vertical-align: top; margin: 3px 0 0 3px; }
+  .nt-more { margin-top: 40px; margin-bottom: 4px; font-size: 13px; font-weight: 600; color: var(--g1); }
   .nt-ic { flex: none; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--g5); color: var(--ink); }
   .nt-ic.c-wait, .nt-ic.c-skill { background: var(--blue-soft); color: var(--blue); }
   .nt-ic.c-learn { background: #FFF1E6; color: #D9661F; }
@@ -521,7 +534,8 @@
   .nt-tx small { display: block; margin-top: 3px; font-size: 13px; color: var(--g1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .nt-dot { flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
   .nt-empty { margin-top: 48px; text-align: center; font-size: 14px; color: var(--g1); line-height: 1.6; }
-  .nt-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 13px; color: var(--g2); }
+  .nt-h { margin-top: 10px; font-size: 22px; font-weight: 700; line-height: 1.45; letter-spacing: -0.02em; }
+  .nt-meta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--g2); }
   .nt-meta .nt-ic { width: 28px; height: 28px; }
   .nt-meta .nt-ic svg { width: 14px; height: 14px; }
   .nt-body { margin-top: 24px; font-size: 15px; line-height: 1.7; color: var(--ink); }
@@ -532,7 +546,8 @@
   .nt-card .r b { font: 600 15px var(--mono); color: var(--ink); }
   .nt-card .r b.up { color: var(--blue); }
   .nt-card .r b.down { color: #E5484D; }
-  .nt-act { margin-top: 24px; }
+  .nt-act { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; height: 42px; padding: 0 18px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 14px; font-weight: 600; }
+  .nt-act:active { transform: scale(.98); }
   .nt-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--g4); }
   .nt-nav button { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 14px 16px; border-radius: 14px; background: var(--g5); text-align: left; }
   .nt-nav button.nx { text-align: right; align-items: flex-end; }
@@ -894,6 +909,9 @@
   #s-login.sc { justify-content: flex-start; }
   .mk { padding-bottom: 40px !important; }
   .mk-top { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--g1); }
+  .mk-top > span { white-space: nowrap; }
+  .mk-top .hauth { height: 40px; padding: 0 14px; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  body:has(#s-login.on) #mgBtn { display: none !important; } /* 홈 상단은 프로필·알림 자리 */
   .logo.sm { width: 32px; height: 32px; border-radius: 9px; font-size: 11px; margin: 0; }
   .hero { position: relative; margin-top: 18px; }
   .hero-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: 18px; }
@@ -997,6 +1015,11 @@
   #s-auth { justify-content: space-between; }
   .hauth { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--ink); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--g3); display: inline-flex; align-items: center; gap: 7px; }
   .hauth img { width: 24px; height: 24px; border-radius: 50%; background: #ECECEC; margin-left: -6px; }
+  /* 홈 상단 알림: 프로필 알약과 같은 테두리·높이의 원, 바로 옆에 */
+  .hbell { position: relative; flex: none; margin-left: -4px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--g3); display: grid; place-items: center; color: var(--ink); }
+  .hbell[hidden] { display: none; }
+  .hbell i { position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 0 2px #fff; display: none; }
+  .hbell.has i { display: block; }
   body.desk .mk-dock { display: none !important; }
   .hometabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
   /* 아이폰 탭 바처럼: 상자 없이 아이콘 + 작은 글자, 위에 얇은 선 */
@@ -1009,8 +1032,19 @@
   .mk-dock::before { content: ''; position: absolute; left: 1px; right: 1px; top: 1px; height: 48%; border-radius: 29px 29px 16px 16px; background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,0)); pointer-events: none; }
   .mk-dock .hometabs { position: relative; }
   .mk-dock .hometabs button { padding: 7px 0 6px; border-radius: 24px; transition: color .15s, background .25s var(--ease), box-shadow .25s var(--ease); }
-  .mk-dock .hometabs button.on { background: rgba(255,255,255,.78); box-shadow: inset 0 0 0 1px rgba(255,255,255,.95), 0 2px 10px rgba(21,23,27,.1); }
-  body:not(.desk) .mk { padding-bottom: 130px !important; }
+  .mk-dock .hometabs button.on { background: rgba(21,23,27,.07); box-shadow: none; } /* 선택: 아이콘을 감싸는 영역은 두되 그림자 없이 평평한 면으로 */
+  body:not(.desk) .mk { padding-bottom: 120px !important; }
+  /* 아이콘만, 낮은 높이 · 아래로 스크롤하면 작아지고 위로 올리면 돌아와요 */
+  .mk-dock { transform-origin: 50% 100%; transition: transform .38s var(--ease), opacity .3s; }
+  .mk-dock.min { transform: scale(.84); }
+  /* 시트·팝업이 뜨면 떠 있는 메뉴는 아래로 비켜서, 시트 버튼을 가리지 않아요 */
+  .phone:has(.scrim.on, .mscrim.on, .sheet.on, .msheet.on, .csheet.on, .hswap.on) .mk-dock { opacity: 0; transform: translateY(28px) scale(.96); pointer-events: none; }
+  .mk-dock .hometabs button { font-size: 0 !important; gap: 0; padding: 9px 0 !important; }
+  .mk-dock .hometabs .ic { width: 32px; height: 32px; }
+  .mk-dock .hometabs .ic svg { width: 27px; height: 27px; }
+  .mk-dock .hometabs .ic .meface { width: 30px; height: 30px; }
+  .mk-dock .hometabs button.on .meface { box-shadow: 0 0 0 1px rgba(21,23,27,.12); } /* 선택돼도 검은 테두리 없이 */
+  .mk-dock .hometabs button:not(.on) .meface { opacity: 1; box-shadow: 0 0 0 1px rgba(21,23,27,.12); } /* 얼굴이 잘 보이게 흐리지 않아요 */
   .hometabs { gap: 0; }
   .hometabs button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0 0; font-size: 10.5px; font-weight: 500; color: var(--g1); letter-spacing: 0; transition: color .15s, opacity .15s; }
   .hometabs button:active { opacity: .5; }
@@ -1043,6 +1077,7 @@
     .mgbtn { top: calc(env(safe-area-inset-top) + 14px); right: 18px; }
     .screen { padding-top: calc(env(safe-area-inset-top) + 28px); padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
     .sc .scroll { padding-top: calc(env(safe-area-inset-top) + 28px); }
+    #s-route .me-row { margin-top: 40px; } /* 실제 폰: 오른쪽 위 갤럭시 버튼 아래로 */
     .sc .dock { padding-bottom: calc(env(safe-area-inset-bottom) + 16px); }
     .toast { top: calc(env(safe-area-inset-top) + 12px); }
     .back, .back2 { margin-top: 0; }
@@ -1096,7 +1131,7 @@
     <!-- 01 지금의 나 -->
     <section class="screen sc" id="s-login">
       <div class="scroll mk" id="mkScroll">
-        <div class="mk-top"><div class="logo sm">HU</div><span>오늘의 스킬 콘텐츠</span><button class="hauth" id="homeAuth">로그인</button></div>
+        <div class="mk-top"><div class="logo sm">HU</div><span>hunet University</span><button class="hauth" id="homeAuth">로그인</button><button class="hbell" id="homeBell" aria-label="알림" hidden><svg width="19" height="19" viewBox="0 0 20 20"><path d="M10 2.5a5 5 0 0 0-5 5v3.2L3.6 13.5h12.8L15 10.7V7.5a5 5 0 0 0-5-5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 16a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><i></i></button></div>
         <div class="hero" id="hero"><div class="hero-track" id="heroTrack"></div><div class="hero-dots" id="heroDots"></div></div>
         <div class="mk-sec"><h3>새로 나온 콘텐츠</h3><em>이번 주 12개</em></div>
         <div class="hrow" id="mkNew"></div>
@@ -1682,7 +1717,7 @@ function renderRoute(fx = {}) {
 /* ── 03-1 스킬 안 · 03-2 사람: 뒤로 쌓이는 탐색 ──────────── */
 const label = e => e.t === 'gate' ? { class: '내 스킬', content: '강의 찾기', skills: '스킬 찾기' }[e.k] : e.t === 'gskills' ? '스킬 둘러보기' : e.t === 'gskill' ? e.n : e.t === 'catalog' ? '강의 찾기' : e.t === 'skills' ? '스킬 찾기' : e.t === 'skill' ? e.n : e.t === 'people' ? '함께 키우는 사람들' : e.t === 'courses' ? '강의 전체' : e.t === 'play' ? '강의 재생' : e.t === 'settings' ? '설정' : e.t === 'pw' ? '비밀번호 변경' : e.t === 'noti' ? '알림' : e.t === 'notid' ? '알림' : personOf(e.id).name;
 function go(e) { S.nav.push(e); renderDetail(); }
-function back() { S.nav.pop(); S.nav.length ? renderDetail() : sceneRoute(false); }
+function back() { S.nav.pop(); if (!S.nav.length && S.retHome) { S.retHome = false; return sceneHome(); } S.nav.length ? renderDetail() : sceneRoute(false); } // 홈에서 연 알림은 홈으로 돌아가요
 const learnerN = n => ((n.length * 397 + n.charCodeAt(0)) % 2400 + 600).toLocaleString();
 const ROOTS = ['catalog', 'skills', 'gate', 'gskills'];
 const MAX_BTN = `<button class="maxbtn" data-max title="패널 넓게 보기" aria-label="패널 넓게 보기"><svg class="o" width="16" height="16" viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="c" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="9" cy="9" rx="8" ry="2.8" fill="none" stroke="currentColor" stroke-width="1.3" transform="rotate(-24 9 9)"/><circle cx="14.6" cy="3.2" r=".9" fill="currentColor"/><circle cx="3" cy="14.4" r=".7" fill="currentColor"/></svg></button>`;
@@ -1717,7 +1752,7 @@ function renderDetail(keep) {
   if (isDesk()) return renderDesk(keep);
   const lv = S.nav.length - 1, e = S.nav[lv];
   const root = lv === 0 && ROOTS.includes(e.t);
-  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : '내 스킬'));
+  paint(e, lv, PH, keep, root ? null : (S.nav.length > 1 ? label(S.nav.at(-2)) : S.retHome ? '홈' : '내 스킬'));
   show('s-detail', 3);
 }
 // 데스크탑: 첫 칸(폰)은 대시보드나 메뉴 첫 화면, 더 들어가면 오른쪽으로 한 칸 열려요
@@ -1936,7 +1971,7 @@ function catalogHTML() {
   return `
     <div class="tabhead"><div class="eyebrow">강의 찾기</div>${MAX_BTN}</div>
     <h2 class="h">어떤 강의로<br>포인트를 쌓아 볼까요?</h2>
-    <label class="search" style="margin-top:20px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="catQ" placeholder="강의나 스킬 이름으로 찾아보세요" autocomplete="off" value="${S.cat.q.replace(/"/g, '&quot;')}"></label>
+    <label class="search" style="margin-top:32px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="catQ" placeholder="강의나 스킬 이름으로 찾아보세요" autocomplete="off" value="${S.cat.q.replace(/"/g, '&quot;')}"></label>
     <div class="filters cf-row" id="catF"></div>
     <div class="csort" id="catS"></div>
     <div id="catList"></div>`;
@@ -1988,7 +2023,7 @@ function findSkillsHTML() {
     <div class="tabhead"><div class="eyebrow">스킬 찾기</div>${MAX_BTN}</div>
     <h2 class="h">${ro(T())} 가는 데<br>쓰이는 스킬이에요</h2>
     <div class="note">지금 프로필의 목표 커리어에 맞는 스킬만 보여요.<br>프로필을 바꾸면 그 방향의 스킬로 바뀌어요.</div>
-    <label class="search" style="margin-top:20px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="skQ" placeholder="스킬 이름으로 찾아보세요" autocomplete="off" value="${S.fsk.q.replace(/"/g, '&quot;')}"></label>
+    <label class="search" style="margin-top:32px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="skQ" placeholder="스킬 이름으로 찾아보세요" autocomplete="off" value="${S.fsk.q.replace(/"/g, '&quot;')}"></label>
     <div class="filters" id="skF"></div>
     <div id="skList"></div>`;
 }
@@ -2093,7 +2128,7 @@ function gskillsHTML() {
     <div class="tabhead"><div class="eyebrow">스킬 둘러보기</div>${MAX_BTN}</div>
     <h2 class="h">어떤 커리어에 쓰이는<br>스킬이 궁금해요?</h2>
     <div class="note">키워드로 커리어를 찾아 고르면<br>그 커리어에 쓰이는 스킬을 보여 드려요.</div>
-    <label class="search" style="margin-top:20px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="gsQ" placeholder="관심 있는 말로 찾아보세요" autocomplete="off"></label>
+    <label class="search" style="margin-top:32px"><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="8" cy="8" r="5.5" fill="none" stroke="#6E7179" stroke-width="1.7"/><path d="M12.2 12.2 16 16" stroke="#6E7179" stroke-width="1.7" stroke-linecap="round"/></svg><input id="gsQ" placeholder="관심 있는 말로 찾아보세요" autocomplete="off"></label>
     <div class="kws" id="gsK"></div>
     <div class="results" id="gsR"></div>
     <div id="gsList"></div>`;
@@ -2135,6 +2170,7 @@ function gskillHTML(e) {
 const ownTitle = n => `${n}${eul(n)}<br>내 스킬로 만들어요`;
 const rootTab = e => !e ? 'home' : e.t === 'gate' ? { class: 'home', content: 'catalog', skills: 'skills' }[e.k] : e.t === 'gskills' ? 'skills' : e.t;
 function openTab(k) {
+  S.retHome = false;
   if (guest() && k !== 'main') {
     closeMenu(); closeXP(); S.gb = S.gb || {};
     S.nav = [k === 'catalog' ? (S.gb.content ? { t: 'catalog' } : { t: 'gate', k: 'content' }) : k === 'skills' ? (S.gb.skills ? { t: 'gskills' } : { t: 'gate', k: 'skills' }) : { t: 'gate', k: 'class' }];
@@ -2249,7 +2285,7 @@ function peopleHTML(n) {
     ${S.member ? '' : ghost + `<button class="lock" data-lock="people" data-n="${n}">${LOCK} ${total}명 더 보기</button>`}`;
 }
 // 알림: 학습 · 업데이트 대기 · 함께 키우는 사람 · 새 스킬 · 이벤트 (설정의 알림 항목과 같은 분류)
-const NOTI_CAT = [['all', '전체'], ['learn', '학습'], ['wait', '업데이트'], ['people', '함께 키우는 사람'], ['skill', '새 스킬'], ['event', '이벤트 · 혜택']];
+const NOTI_CAT = [['all', '전체'], ['learn', '학습'], ['wait', '스킬 업데이트'], ['people', '함께 키우는 사람'], ['skill', '새 스킬'], ['event', '이벤트 · 혜택']];
 const NOTI_IC = {
   learn: '<svg width="17" height="17" viewBox="0 0 20 20"><path d="M3 15.5 8 10l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 6h4v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   wait: '<svg width="17" height="17" viewBox="0 0 20 20"><path d="M10 16V4M5 8.5 10 4l5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -2262,22 +2298,23 @@ function notiList() {
   const T0 = T(), my = [...S.skills].sort((a, b) => b.pts - a.pts), fresh = careerPool().filter(s => !isMine(s));
   const P = PEOPLE, sk = my[1] || my[0], sk2 = my[3] || my[0], top = my[0];
   const rk = rankOf(points()), ws = waitSum(), wl = waitList(), nx = gaps()[0] || my[0];
+  const av = p => `avatars/${p.img || p.id}.png`;
   const L = [];
   if (ws) L.push({ id: 'w1', c: 'wait', g: 0, at: '방금', t: `올리지 않은 포인트 +${fmt(ws)}P가 기다려요`, s: `${wl.map(s => s.n).join(', ')} · 한번에 올릴 수 있어요`,
     d: `<p>강의는 들었는데 아직 스킬에 올리지 않은 포인트가 있어요. 올리면 갤럭시에서 바로 반영돼요.</p>`, card: wl.map(s => [s.n, `+${fmt(waitOf()[s.n].gain)}P`, 'up']), act: ['한번에 올리기', 'wait'] });
   L.push({ id: 'l1', c: 'learn', g: 0, at: '2시간 전', t: `순위가 상위 ${rk}%에서 ${rk + 3}%로 내려갔어요`, s: `${ro(T0)} 달리는 사람들이 이번 주에 많이 달렸어요`,
     d: `<p>이번 주 ${ro(T0)} 달리는 사람들이 평소보다 강의를 많이 들었어요. 그래서 내 자리가 조금 뒤로 밀렸어요.</p><p>짧은 강의 하나면 다시 <b>상위 ${rk}%</b>로 돌아갈 수 있어요.</p>`,
     card: [['지난주', `상위 ${rk}%`], ['이번 주', `상위 ${rk + 3}%`, 'down']], act: [`${nx.n} 강의 듣기`, 'play', nx.n] });
-  L.push({ id: 'p1', c: 'people', g: 0, at: '3시간 전', t: `${P[0].name} 님이 ${sk.n}에서 나를 앞섰어요`, s: `${P[0].name} 님 ${fmt(sk.pts + 25)}P · 나 ${fmt(sk.pts)}P`,
+  L.push({ id: 'p1', c: 'people', g: 0, at: '3시간 전', av: av(P[0]), t: `${P[0].name} 님이 ${sk.n}에서 나를 앞섰어요`, s: `${P[0].name} 님 ${fmt(sk.pts + 25)}P · 나 ${fmt(sk.pts)}P`,
     d: `<p>${P[0].name} 님이 오늘 <b>${sk.n}</b> 강의를 듣고 나보다 포인트가 많아졌어요. ${P[0].name} 님은 ${ro(P[0].to)} 달리고 있어요.</p><p>강의 하나면 다시 앞설 수 있어요.</p>`,
     card: [[`${P[0].name} 님`, `${fmt(sk.pts + 25)}P`], ['나', `${fmt(sk.pts)}P`, 'down']], act: [`${P[0].name} 님 보기`, 'person', P[0].id] });
   if (fresh[0]) L.push({ id: 's1', c: 'skill', g: 0, at: '5시간 전', t: `${ro(T0)} 가는 데 쓰이는 새 스킬: ${fresh[0].n}`, s: `강의 ${nCourses(fresh[0])}개 · ${learnerN(fresh[0].n)}명이 키우는 중`,
     d: `<p><b>${fresh[0].n}</b>${eul(fresh[0].n)} ${T0} 스킬로 새로 더했어요. 지금 커리어에 맞는 스킬이라 바로 등록할 수 있어요.</p><p>${learnerN(fresh[0].n)}명이 이 스킬을 함께 키우고 있어요.</p>`, act: ['스킬 보기', 'skill', fresh[0].n] });
-  L.push({ id: 'p2', c: 'people', g: 1, at: '어제', t: `${P[1].name} 님이 ${sk2.n}${eul(sk2.n)} 내 스킬에 추가했어요`, s: `나와 같은 스킬을 키우는 사람이 한 명 더 늘었어요`,
+  L.push({ id: 'p2', c: 'people', g: 1, at: '어제', av: av(P[1]), t: `${P[1].name} 님이 ${sk2.n}${eul(sk2.n)} 내 스킬에 추가했어요`, s: `나와 같은 스킬을 키우는 사람이 한 명 더 늘었어요`,
     d: `<p>${P[1].name} 님이 <b>${sk2.n}</b>${eul(sk2.n)} 새로 키우기 시작했어요. 이제 이 스킬을 나와 함께 키워요.</p><p>${P[1].name} 님은 ${ro(P[1].to)} 달리고 있어요. 같은 스킬, 다른 목적지예요.</p>`, act: [`${P[1].name} 님 보기`, 'person', P[1].id] });
   L.push({ id: 'l2', c: 'learn', g: 1, at: '어제', t: '3일째 강의를 듣지 않았어요', s: '하루 5분이면 거리를 다시 좁힐 수 있어요',
     d: `<p>마지막으로 강의를 들은 지 3일이 지났어요. 쉬어 가도 괜찮지만, 짧게라도 이어 가면 다시 시작하기가 훨씬 쉬워요.</p><p>추천 강의는 <b>${nx.titles[nextIdx(nx)]}</b> · ${nx.mins[nextIdx(nx)]}분이에요.</p>`, act: ['추천 강의 듣기', 'play', nx.n] });
-  L.push({ id: 'p3', c: 'people', g: 1, at: '어제', t: `${P[2].name} 님이 ${top.n} +35P를 올렸어요`, s: `${P[2].name} 님 이번 주 강의 ${P[2].month}개`,
+  L.push({ id: 'p3', c: 'people', g: 1, at: '어제', av: av(P[2]), t: `${P[2].name} 님이 ${top.n} +35P를 올렸어요`, s: `${P[2].name} 님 이번 주 강의 ${P[2].month}개`,
     d: `<p>${P[2].name} 님이 <b>${top.n}</b>에 포인트를 올렸어요. 이번 주에만 강의를 ${P[2].month}개 들었어요.</p>`, act: [`${P[2].name} 님 보기`, 'person', P[2].id] });
   if (fresh[1]) L.push({ id: 's2', c: 'skill', g: 2, at: '3일 전', t: `${fresh[1].n} 스킬에 새 강의 3개가 올라왔어요`, s: `${T0} 추천 스킬이에요`,
     d: `<p><b>${fresh[1].n}</b> 스킬에 새 강의 3개가 올라왔어요. 아직 내 스킬이 아니라면 등록하고 바로 들을 수 있어요.</p>`, act: ['스킬 보기', 'skill', fresh[1].n] });
@@ -2292,17 +2329,18 @@ function notiList() {
 const notiUnread = () => guest() ? 0 : notiList().filter(n => n.unread).length;
 const notiF = () => (S.notiF = S.notiF || { c: 'all', only: false });
 const notiShown = (ignoreOnly) => notiList().filter(n => (notiF().c === 'all' || n.c === notiF().c) && (ignoreOnly || !notiF().only || n.unread));
+// 알림 한 줄: 제목(새 알림은 끝 위에 점) + 시간
+const ntLead = n => n.av ? `<img class="nt-av" src="${n.av}" alt="">` : `<span class="nt-ic c-${n.c}">${NOTI_IC[n.c]}</span>`;
+const ntRow = (n, tag) => `<button class="nt-item ${n.unread ? 'new' : ''}" data-${tag ? 'nmove' : 'nid'}="${n.id}">${ntLead(n)}<span class="nt-t"><span class="nt-tt">${tag ? `<em class="nt-tag">${tag}</em>` : ''}${n.t}${n.unread ? '<i class="nt-new" aria-label="새 알림"></i>' : ''}</span><span class="nt-at">${n.at}</span></span></button>`;
 function notiHTML() {
   const f = notiF(), all = notiList(), list = notiShown(), un = all.filter(n => n.unread).length;
   const cnt = k => all.filter(n => (k === 'all' || n.c === k) && n.unread).length;
-  const GRP = ['오늘', '이번 주', '지난 알림'];
   return `
     <div class="eyebrow">알림</div>
     <h2 class="h">알림${un ? ` <span style="color:var(--blue)">${un}</span>` : ''}</h2>
-    <div class="filters cf-row" style="margin-top:20px">${NOTI_CAT.map(([k, n]) => `<button class="${f.c === k ? 'on' : ''}" data-nf="${k}">${n}${cnt(k) ? `<b>${cnt(k)}</b>` : ''}</button>`).join('')}</div>
+    <div class="filters cf-row" style="margin-top:28px">${NOTI_CAT.map(([k, n]) => `<button class="${f.c === k ? 'on' : ''}" data-nf="${k}">${n}${cnt(k) ? `<b>${cnt(k)}</b>` : ''}</button>`).join('')}</div>
     <div class="nt-bar"><button class="nt-only" data-nonly><i class="tg ${f.only ? 'on' : ''}"></i>안 읽은 알림만</button><button class="nt-all" data-nall ${un ? '' : 'disabled'}>모두 읽음</button></div>
-    ${list.length ? GRP.map((g, gi) => { const xs = list.filter(n => n.g === gi); return xs.length ? `<div class="nt-grp">${g}</div>` + xs.map(n => `
-      <button class="nt-item ${n.unread ? 'new' : ''}" data-nid="${n.id}"><span class="nt-ic c-${n.c}">${NOTI_IC[n.c]}</span><span class="nt-tx"><span class="nt-cat">${NOTI_CAT.find(x => x[0] === n.c)[1]} · ${n.at}</span><b>${n.t}</b><small>${n.s}</small></span>${n.unread ? '<i class="nt-dot" aria-label="안 읽음"></i>' : ''}</button>`).join('') : ''; }).join('')
+    ${list.length ? list.map(n => ntRow(n)).join('')
     : `<div class="nt-empty">${f.only ? '안 읽은 알림이 없어요.<br>모두 확인했어요.' : '아직 알림이 없어요.'}</div>`}`;
 }
 function notiDetailHTML(id) {
@@ -2312,16 +2350,12 @@ function notiDetailHTML(id) {
   const pv = list[i - 1], nx = list[i + 1], cat = NOTI_CAT.find(x => x[0] === n.c)[1];
   return `
     <div class="eyebrow">알림 · ${cat}</div>
-    <h2 class="h">${n.t}</h2>
-    <div class="nt-meta"><span class="nt-ic c-${n.c}">${NOTI_IC[n.c]}</span>${n.at}</div>
+    <h2 class="nt-h">${n.t}</h2>
+    <div class="nt-meta">${n.at}</div>
     <div class="nt-body">${n.d}</div>
     ${n.card ? `<div class="nt-card">${n.card.map(([a, b, c]) => `<div class="r"><span>${a}</span><b class="${c || ''}">${b}</b></div>`).join('')}</div>` : ''}
-    ${n.act ? `<button class="up-btn nt-act" data-nact="${n.act[1]}" data-nv="${n.act[2] || ''}"><div><div class="a">${n.act[0]}</div></div><div class="arrow"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button>` : ''}
-    <div class="nt-nav">
-      <button class="pv" ${pv ? `data-nmove="${pv.id}"` : 'disabled'}><small>‹ 이전 알림</small><b>${pv ? pv.t : '처음이에요'}</b></button>
-      <button class="nx" ${nx ? `data-nmove="${nx.id}"` : 'disabled'}><small>다음 알림 ›</small><b>${nx ? nx.t : '마지막이에요'}</b></button>
-    </div>
-    <div class="nt-pos">${i + 1} / ${list.length}</div>`;
+    ${n.act ? `<button class="nt-act" data-nact="${n.act[1]}" data-nv="${n.act[2] || ''}">${n.act[0]}<svg width="13" height="13" viewBox="0 0 16 16"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ''}
+    ${pv || nx ? `<div class="nt-more">다른 알림</div>${pv ? ntRow(pv, '이전') : ''}${nx ? ntRow(nx, '다음') : ''}` : ''}`;
 }
 // 설정: 계정 · 멤버십 · 알림 · 개인정보 · 로그아웃 (프로토타입이라 실제 계정 정보는 쓰지 않아요)
 const SET_CHEV = '<svg class="chev" width="12" height="12" viewBox="0 0 12 12"><path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -2391,6 +2425,7 @@ function personHTML(p) {
 }
 const setPos = p => { $('lineMe').style.left = p + '%'; $('lineDone').style.width = p + '%'; };
 async function sceneRoute(first) {
+  S.retHome = false;
   // 로그인(또는 홈에서 프로필 바꾸기)의 끝: 프로필을 고르면 홈으로
   if (S.toHome) { S.toHome = false; S.entered = true; S.nav = []; const ch = homeFor !== homeKey(); S.swapping = ch; sceneHome(); if (ch) { S.swapping = false; setTimeout(homeSwap, 520); } return; }
   if (S.after) { const k = S.after; S.after = null; S.entered = true; if (k !== 'home') { S.nav = [{ t: k }]; return renderDetail(); } }
@@ -2833,8 +2868,10 @@ function renderHomeAuth() {
   document.body.classList.toggle('authed', !!S.loggedIn);
   const me = profOf(S.pid);
   $('homeAuth').innerHTML = S.loggedIn ? (S.entered && me ? `<img src="avatars/a${me.av}.png" alt="">${me.target}` : '프로필 고르기') : '로그인';
+  $('homeBell').hidden = !(S.loggedIn && S.entered && me); $('homeBell').classList.toggle('has', !$('homeBell').hidden && notiUnread() > 0);
   fillTabs($('homeTabs'), 'main');
 }
+$('homeBell').onclick = () => { S.nav = []; S.retHome = true; go({ t: 'noti' }); };
 $('homeAuth').onclick = () => { if (!S.loggedIn) return show('s-auth', 0); S.toHome = true; sceneProfile(); };
 // 홈 메뉴 → 들어가면 메뉴가 햄버거로 접히고 '스킬 올리기'가 나와요 (프로필을 아직 안 골랐으면 먼저 골라요)
 function homeGo(k) {
@@ -3339,6 +3376,18 @@ function gxReplay(list) {
     else { clearTimeout(dwell); dwell = 0; }
   });
   document.addEventListener('mouseleave', () => { clearTimeout(dwell); dwell = 0; if (body.classList.contains('gctl') && !hide) hide = setTimeout(() => { body.classList.remove('gctl'); hide = 0; }, 1500); });
+})();
+// 하단 메뉴: 아래로 스크롤하면 작아지고, 위로 스크롤하면 원래 크기로
+(() => {
+  const last = new WeakMap();
+  document.addEventListener('scroll', e => {
+    const sc = e.target; if (!(sc instanceof Element) || isDesk()) return;
+    const dock = sc.closest('.screen')?.querySelector(':scope > .mk-dock'); if (!dock) return;
+    const y = sc.scrollTop, py = last.get(sc) ?? y, d = y - py; last.set(sc, y);
+    if (y < 24) dock.classList.remove('min');
+    else if (d > 6) dock.classList.add('min');
+    else if (d < -6) dock.classList.remove('min');
+  }, true);
 })();
 $('mgBtn').onclick = () => mobGalaxy(true);
 $('mgBack').onclick = () => mobGalaxy(false);
