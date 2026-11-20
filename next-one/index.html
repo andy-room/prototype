@@ -882,6 +882,7 @@
   body.desk .sk { position: relative; }
   body.desk .sk.sel::before { content: ''; position: absolute; left: calc(-1 * var(--gut)); top: 10px; bottom: 10px; width: 3px; border-radius: 0 3px 3px 0; background: var(--blue); } /* 패널 폭과 상관없이 늘 왼쪽 벽에 붙어요 */
   body.desk .sk.sel .nm { color: var(--blue); }
+  @container phone (min-width: 700px) { body.desk .sk.sel::before { display: none; } } /* 1단 패널을 넓히면 왼쪽 벽 선택 바는 숨겨요 (파란 이름으로만 표시) */
 
   /* 왼쪽 메뉴 */
   body.desk .rail { display: flex; flex-direction: column; align-items: center; gap: 6px; position: fixed; left: 0; top: 0; bottom: 0; width: 88px; z-index: 6; padding: 22px 0; background: #fff; border-right: 1px solid var(--g4); color: var(--g1); transition: opacity .4s; }
@@ -935,6 +936,13 @@
   body.desk .gpeople.has { display: flex; }
   body.mgal .phone > .gpeople.has { display: flex; position: absolute; left: 0; right: 0; width: auto; max-width: none; transform: none; bottom: calc(env(safe-area-inset-bottom, 0px) + 26px); z-index: 42; }
   body.mgal .phone > .gpeople .gp-nav { display: none; } /* 모바일: 화살표 없이 밀어서 */
+  /* 패드(패드로 보기 · 실제 태블릿): 데스크탑처럼 440px 줄 + 좌우 화살표 */
+  body.mgal.padv .phone > .gpeople.has { left: 50%; right: auto; width: 440px; transform: translateX(-50%); }
+  body.mgal.padv .phone > .gpeople .gp-nav { display: grid; }
+  @media (min-width: 600px) and (pointer: coarse) {
+    body.mgal .phone > .gpeople.has { left: 50%; right: auto; width: 440px; transform: translateX(-50%); }
+    body.mgal .phone > .gpeople .gp-nav { display: grid; }
+  }
   .gp-row { flex: 1; min-width: 0; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px calc(50% - 29px); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%); scroll-behavior: smooth; }
   .gp-row::-webkit-scrollbar { display: none; }
   /* 마우스로 끌어서 넘길 때: 글자·이미지가 선택되거나 끌려가지 않게, 끄는 동안은 스냅·부드러운 스크롤을 꺼요 */
