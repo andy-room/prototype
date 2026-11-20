@@ -318,7 +318,7 @@
   body.mgal .toast { z-index: 45; top: calc(env(safe-area-inset-top) + 116px); }
 
   /* 04 콘텐츠 */
-  .media { margin-top: 24px; height: 200px; border-radius: 16px; background: var(--g4); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .media { margin-top: 24px; height: auto; aspect-ratio: 16 / 9; flex: none; border-radius: 16px; background: var(--g4); display: grid; place-items: center; position: relative; overflow: hidden; }
   .play { width: 72px; height: 72px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; transition: opacity .3s, transform .2s; }
   .play:active { transform: scale(.94); }
   .play svg { margin-left: 4px; }
@@ -745,7 +745,7 @@
   .fsk .have small { display: block; font: 500 10px var(--mono); color: var(--g2); text-align: right; margin-top: 2px; }
   .fsec { display: flex; justify-content: space-between; margin-top: 24px; font-size: 13px; font-weight: 600; }
   .fsec em { font: 500 11px var(--mono); font-style: normal; color: var(--g2); }
-  @media (max-width: 1000px) { .nacc { bottom: calc(env(safe-area-inset-bottom) + 100px); } }
+  @media (max-width: 1000px), (orientation: portrait) and (pointer: coarse) and (max-width: 1400px) { .nacc { bottom: calc(env(safe-area-inset-bottom) + 100px); } }
 
   /* ── 보기 전환: 데스크탑 / 모바일 ── */
   .viewsw { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: #fff; border: 1px solid var(--g3); box-shadow: 0 2px 10px rgba(0,0,0,.06); }
@@ -904,7 +904,7 @@
   .gtip b { font-size: 13px; }
   .gtip .p { font: 500 12px var(--mono); color: var(--blue); }
   .gtip .h { color: var(--g1); font-size: 11px; }
-  @media (max-width: 1000px) { .viewsw { display: none; } }
+  @media (max-width: 1000px), (orientation: portrait) and (pointer: coarse) and (max-width: 1400px) { .viewsw { display: none; } }
 
   /* ── 첫 화면: 마케팅 + 아래 로그인 ── */
   #s-login.sc { justify-content: flex-start; }
@@ -1067,7 +1067,7 @@
   .dock.morph .up-btn { animation: upIn .5s .18s var(--ease) both; }
   @keyframes upIn { from { opacity: 0; transform: translateX(30px); } }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1000px), (orientation: portrait) and (pointer: coarse) and (max-width: 1400px) {
     body { grid-template-columns: 1fr; padding: 0; }
     .steps, .side, .mode, .qrbox { display: none; }
     .phone { width: 100vw; height: 100dvh; border-radius: 0; border: 0; justify-self: center; max-width: 480px; }
@@ -1083,6 +1083,11 @@
     .toast { top: calc(env(safe-area-inset-top) + 12px); }
     .back, .back2 { margin-top: 0; }
     .touch { display: none; }
+  }
+  /* 태블릿(아이패드 미니·프로 등 터치 기기)에서 모바일 화면: 좌우를 꽉 채워요 */
+  @media (min-width: 600px) and (pointer: coarse) and (max-width: 1000px), (min-width: 600px) and (orientation: portrait) and (pointer: coarse) and (max-width: 1400px) {
+    .phone { max-width: none; width: 100vw; }
+    .mk-dock { left: calc(50% - 210px); right: calc(50% - 210px); } /* 하단 메뉴는 아이콘 4개에 맞는 폭으로 */
   }
 </style>
 </head>
@@ -3011,7 +3016,9 @@ function profPop(anchor) {
 /* ── 보기 전환: 데스크탑으로 보기 / 모바일로 보기 ── */
 let VIEW = 'mob'; // 처음엔 언제나 모바일로 보기
 function applyView() {
-  const desk = VIEW === 'desk' && innerWidth > 1000, was = isDesk();
+  // 아이패드처럼 터치 기기를 세로로 들면 넓어도 모바일 화면으로 봐요
+  const tabletPortrait = matchMedia('(orientation: portrait) and (pointer: coarse) and (max-width: 1400px)').matches;
+  const desk = VIEW === 'desk' && innerWidth > 1000 && !tabletPortrait, was = isDesk();
   document.body.classList.toggle('desk', desk);
   document.querySelectorAll('#viewSw button').forEach(b => b.classList.toggle('on', b.dataset.v === VIEW));
   if (desk !== was && S) {
