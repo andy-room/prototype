@@ -493,6 +493,8 @@
   .lbtns { display: grid; gap: 10px; }
   .lbtn { height: 54px; border-radius: 14px; font-size: 16px; font-weight: 600; border: 1px solid var(--g3); }
   .lbtn.main { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .ljoin { height: 40px; margin-top: 2px; font-size: 14px; color: var(--g1); } /* 로그인 버튼보다 덜 눈에 띄는 텍스트 버튼 */
+  .ljoin b { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
   .terms { font-size: 11px; color: var(--g2); text-align: center; margin: 14px 0 0; }
   /* 01 프로필 선택 */
   .sub2 { margin: 10px 0 0; font-size: 13px; color: var(--g1); line-height: 1.6; }
@@ -911,7 +913,7 @@
   .rail .ri.on .ic { background: var(--ink); color: #fff; }
 
   /* 오른쪽으로 한 칸 확장되는 패널 */
-  body.desk .xp { display: flex; flex-direction: column; position: fixed; left: calc(88px + var(--pw)); top: 0; bottom: 0; width: var(--xw); z-index: 4; background: #fff; border-radius: 0; overflow: hidden; box-shadow: 24px 0 60px rgba(0,0,0,.28);
+  body.desk .xp { display: flex; flex-direction: column; position: fixed; left: calc(88px + var(--pw)); top: 0; bottom: 0; width: var(--xw); z-index: 4; background: #fff; border-radius: 0; overflow: hidden; box-shadow: 24px 0 60px rgba(0,0,0,.28), -8px 0 24px rgba(21,23,27,.08), -1px 0 6px rgba(21,23,27,.07); /* 왼쪽 아주 옅은 그림자: 한 겹 위 레이어 */
     opacity: 0; transform: translateX(-60px); pointer-events: none; transition: opacity .35s var(--ease), transform .45s var(--ease), left .4s var(--ease); }
   body.desk.pmax .xp { left: calc(100vw - var(--xw)); }
   body.desk.xp-on .xp { opacity: 1; transform: none; pointer-events: auto; }
@@ -931,6 +933,44 @@
   body.desk:not(.gctl) .ghud { transform: translateY(8px); }
   body.desk .ghud { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; position: fixed; right: 20px; bottom: 20px; z-index: 4; color: rgba(255,255,255,.7); }
   body.desk.pre .ghud { opacity: 0; pointer-events: none; }
+  /* 로그인 전 데스크탑 갤럭시: 스킬 수 · 스킬 기반 학습 소개 (3단계 'promo') */
+  .gpromo { display: none; position: fixed; z-index: 5; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 460px; max-width: calc(100vw - 40px); text-align: center; color: #fff; }
+  body.desk.gpromo-on .gpromo { display: block; }
+  /* 등장: 제목은 줄마다 가려진 선 아래에서 밀려 올라오고(숫자는 문장과 한 덩어리), 나머지는 짧게 떠올라요 */
+  .gp-ln { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+  .gp-ln > span { display: block; }
+  body.desk.gpromo-on .gp-ln > span { animation: gpLine 1.2s cubic-bezier(.19,1,.22,1) both; }
+  body.desk.gpromo-on .gp-ln:nth-child(1) > span { animation-delay: .22s; }
+  body.desk.gpromo-on .gp-ln:nth-child(2) > span { animation-delay: .32s; }
+  @keyframes gpLine { from { transform: translateY(110%); } to { transform: none; } }
+  body.desk.gpromo-on .gp-eyebrow { animation: gpEye 1.4s cubic-bezier(.19,1,.22,1) .05s both; }
+  @keyframes gpEye { from { opacity: 0; letter-spacing: .36em; } to { opacity: 1; letter-spacing: .2em; } }
+  body.desk.gpromo-on .gp-p, body.desk.gpromo-on .gp-join, body.desk.gpromo-on .gp-small { animation: gpUp 1s cubic-bezier(.19,1,.22,1) both; }
+  body.desk.gpromo-on .gp-p { animation-delay: .52s; }
+  body.desk.gpromo-on .gp-join { animation-delay: .64s; }
+  body.desk.gpromo-on .gp-small { animation-delay: .74s; }
+  @keyframes gpUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes gpromoIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 14px)); } to { opacity: 1; transform: translate(-50%, -50%); } } /* 가운데 맞춤(translate)을 유지한 채로 나타나요 */
+  .gp-eyebrow { font: 500 12px var(--mono); letter-spacing: .2em; color: rgba(160,190,255,.85); }
+  .gp-h { margin: 14px 0 0; font-size: 34px; font-weight: 700; line-height: 1.3; letter-spacing: -0.03em; }
+  .gp-h b { color: #7FB0FF; font-weight: 700; }
+  .gp-p { margin: 14px 0 0; font-size: 15px; line-height: 1.6; color: rgba(220,230,250,.72); }
+  .gp-flow { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font-size: 13px; color: rgba(220,230,250,.85); }
+  .gp-flow span { padding: 6px 11px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); }
+  .gp-flow i { font-style: normal; color: rgba(160,190,255,.7); }
+  .gp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 26px; }
+  .gp-stats div { padding: 14px 8px; border-radius: 14px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  .gp-stats b { display: block; font: 600 22px var(--mono); color: #fff; }
+  .gp-stats small { display: block; margin-top: 4px; font-size: 12px; color: rgba(220,230,250,.6); }
+  .gp-cta { display: grid; gap: 6px; width: 340px; max-width: 100%; margin: 32px auto 0; }
+  .gp-p b { color: #7FB0FF; font-weight: 600; }
+  .gp-small { height: 40px; font-size: 13px !important; font-weight: 400 !important; color: rgba(220,230,250,.65); }
+  .gp-small b { color: #fff; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .gp-cta button { height: 50px; border-radius: 14px; font-size: 15px; font-weight: 600; }
+  .gp-login { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.18); }
+  .gp-login:hover { background: rgba(255,255,255,.16); }
+  .gp-join { background: var(--blue); color: #fff; }
+  .gp-join:hover { filter: brightness(1.08); }
   /* 갤럭시 하단: 고정한(스크랩) 사람들 · 감싸는 틀 없이, 양 끝만 점점 흐리게 */
   .gpeople { display: none; position: fixed; z-index: 5; bottom: 22px; left: 50%; transform: translateX(-50%); width: 440px; max-width: calc(100vw - 40px); align-items: center; gap: 4px; }
   body.desk .gpeople.has { display: flex; }
@@ -1181,6 +1221,12 @@
     <div class="dock" id="xDock"></div>
   </aside>
   <div class="gpeople" id="gPeople" aria-label="고정한 사람들의 갤럭시"><button class="gp-nav" data-gpn="-1" aria-label="이전">‹</button><div class="gp-row" id="gpRow"></div><button class="gp-nav" data-gpn="1" aria-label="다음">›</button></div>
+  <div class="gpromo" id="gPromo" aria-label="스킬 기반 학습 소개">
+    <div class="gp-eyebrow">SKILL-BASED LEARNING</div>
+    <h2 class="gp-h"><span class="gp-ln"><span><b>26,559</b>개 스킬로</span></span><span class="gp-ln"><span>가고 싶은 커리어까지</span></span></h2>
+    <p class="gp-p">강의를 들을수록 스킬이 쌓이고, 커리어가 가까워져요.</p>
+    <div class="gp-cta"><button class="gp-join" data-gpauth="login">내 커리어 프로필 만들기</button><button class="gp-small" data-gpauth="join">처음이신가요? <b>신규 회원가입</b></button></div>
+  </div>
   <div class="ghud" id="ghud">
     <div class="gseg" id="gTilt"><button data-tilt="0" class="on">평면</button><button data-tilt=".95">기울여 보기</button><button data-tilt="1.5">수평으로 보기</button></div>
     <div class="gseg"><button id="gOut" aria-label="축소">−</button><button id="gReset">처음 위치</button><button id="gIn" aria-label="확대">+</button></div>
@@ -1245,6 +1291,7 @@
           <button class="lbtn main" data-login>카카오로 시작하기</button>
           <button class="lbtn" data-login>Apple로 계속하기</button>
           <button class="lbtn" data-login>이메일로 로그인</button>
+          <button class="ljoin" data-login>처음이신가요? <b>신규 회원가입</b></button>
         </div>
         <p class="terms">시안에서는 누르면 바로 로그인돼요</p>
       </div>
@@ -1535,10 +1582,11 @@ const eul = w => { const c = w.charCodeAt(w.length - 1); return c >= 0xAC00 && c
 const wa = w => { const c = w.charCodeAt(w.length - 1); if (c >= 0xAC00 && c <= 0xD7A3) return w + ((c - 0xAC00) % 28 ? '과' : '와'); return w + '과'; };
 // 프로필마다 따로 기억하는 것들
 const PER = ['skills', 'extra', 'added', 'week', 'bonus', 'shown', 'filter', 'cat', 'fsk', 'cur', 'pend'];
-function mkPack(pid) {
+function mkPack(pid, fresh) {
   const P = PACKS[pid];
-  const mk = x => { const o = { ...x, titles: [...x.titles], mins: [...x.mins], start: x.lv, related: P.rel[x.n] || [], pts: START_PTS[pid]?.[x.n] ?? (x.lv ? x.lv * 100 + hsh(x.n + pid) % 60 : 0) }; o.pts0 = o.pts; return o; };
-  return { skills: P.skills.map(mk), extra: P.extra.map(mk), added: [], week: P.week || 0, bonus: 0, shown: 0, filter: 'all' };
+  // fresh: 새로 만든 프로필이라 아직 들은 강의가 없어요 → 모든 스킬 0P에서 시작
+  const mk = x => { const o = { ...x, titles: [...x.titles], mins: [...x.mins], start: x.lv, related: P.rel[x.n] || [], pts: fresh ? 0 : (START_PTS[pid]?.[x.n] ?? (x.lv ? x.lv * 100 + hsh(x.n + pid) % 60 : 0)) }; o.pts0 = o.pts; return o; };
+  return { skills: P.skills.map(mk), extra: P.extra.map(mk), added: [], week: fresh ? 0 : (P.week || 0), bonus: 0, shown: 0, filter: 'all' };
 }
 function usePack(pid) {
   if (S.pid && S.pid !== pid) { const st = (S.store[S.pid] = {}); PER.forEach(k => st[k] = S[k]); }
@@ -1552,8 +1600,8 @@ const profOf = id => S.profiles.find(p => p.id === id);
 function switchProfile(id) {
   if (!PACKS[id]) return toast('이 시안에서는 이 프로필을 이어서 볼 수 없어요');
   const changed = S.pid !== id;
-  if (changed && S.entered && $('s-login').classList.contains('on')) { usePack(id); S.profiles.forEach(p => p.fresh = false); S.nav = []; if (typeof closeMenu === 'function') closeMenu(); renderHomeAuth(); if (typeof renderRail === 'function') renderRail(); return homeSwap(); }
-  usePack(id); S.profiles.forEach(p => p.fresh = false); S.nav = [];
+  if (changed && S.entered && $('s-login').classList.contains('on')) { usePack(id); S.lastPid = id; S.profiles.forEach(p => p.fresh = false); S.nav = []; if (typeof closeMenu === 'function') closeMenu(); renderHomeAuth(); if (typeof renderRail === 'function') renderRail(); return homeSwap(); }
+  usePack(id); S.lastPid = id; S.profiles.forEach(p => p.fresh = false); S.nav = [];
   if (typeof closeMenu === 'function') closeMenu();
   sceneRoute(changed || !$('s-route').classList.contains('on'));
   if (changed) setTimeout(() => toast(`<b>${ro(T())}</b> 달리는 나로 바꿨어요`), 500);
@@ -1647,7 +1695,8 @@ $('avBack').onclick = () => sceneDest(true);
 // 새 방향: 목표(직군)를 먼저 고르고 → 그 방향으로 달릴 나(사진)를 골라 시작해요
 $('avGo').onclick = () => {
   if (!S.profiles.find(p => p.id === 'dpm')) S.profiles.push({ id: 'dpm', target: '데이터 PM', w: '오늘 달리기 시작했어요', fresh: true, av: S.newAv });
-  usePack('dpm');
+  // 새로 만든 프로필은 0P에서 시작해요(이전 데모 값을 덮어씀)
+  S.store.dpm = mkPack('dpm', true); if (S.pid === 'dpm') { S.pid = null; } usePack('dpm'); S.lastPid = 'dpm'; S.joinFlow = false;
   sceneRoute(true);
 };
 
@@ -1681,7 +1730,7 @@ function sceneDest(keep) {
 }
 $('q').oninput = e => search(e.target.value);
 $('toRoute').onclick = () => { if (pick) sceneAvatar(); };
-$('destBack').onclick = () => sceneProfile();
+$('destBack').onclick = () => { if (S.joinFlow) { S.joinFlow = false; S.loggedIn = false; S.joining = true; return show('s-auth', 0); } sceneProfile(); };
 
 /* ── 03 남은 거리: 나와 직무 사이를 스킬로 ──────────────── */
 const ORDER = n => SKILLS.findIndex(x => x.n === n);
@@ -2210,7 +2259,7 @@ const gateHTML = e => { const g = GATE[e.k]; return `
     <div class="gate">
       <div><div class="logo">HU</div><h2 class="h" style="margin-top:28px">${g.h}</h2><p class="sub2">지금 수준은 묻지 않아요.<br>목표를 정하면 스킬로 한 걸음씩 다가가요.</p></div>
       <div>
-        <div class="lbtns"><button class="lbtn main" data-glogin>카카오로 시작하기</button><button class="lbtn" data-glogin>Apple로 계속하기</button><button class="lbtn" data-glogin>이메일로 로그인</button></div>
+        <div class="lbtns"><button class="lbtn main" data-glogin>카카오로 시작하기</button><button class="lbtn" data-glogin>Apple로 계속하기</button><button class="lbtn" data-glogin>이메일로 로그인</button><button class="ljoin" data-glogin>처음이신가요? <b>신규 회원가입</b></button></div>
         ${g.b ? `<button class="gbrowse" data-browse="${e.k}">${g.b}</button>` : ''}
         <p class="terms">시안에서는 누르면 바로 로그인돼요</p>
       </div>
@@ -2990,12 +3039,18 @@ renderMarketing(); heroT = setInterval(heroTick, 3800);
 
 // 로그인: 홈 오른쪽 위 → 로그인 화면 → 다시 홈 (아래에 메뉴 3개)
 const AUTH_H = '가고 싶은 방향으로<br>거리를 좁혀 가요';
-function doLogin() {
-  S.loggedIn = true; S.toHome = true; S.authRet = null; S.profRet = null; $('authH').innerHTML = AUTH_H; sceneProfile();
-  setTimeout(() => toast('다시 오셨네요. 어느 방향으로 달려 볼까요?'), 500);
+// 로그인: 가장 마지막에 쓴 프로필로 바로 들어가요 (회원이면 프로필이 늘 하나 이상 있어요)
+// 회원가입: 커리어 → 사진을 정해 첫 프로필을 만들고 시작해요
+function doLogin(ev) {
+  const join = S.joining || !!(ev && ev.currentTarget && ev.currentTarget.classList && ev.currentTarget.classList.contains('ljoin'));
+  S.joining = false; S.loggedIn = true; S.toHome = true; S.authRet = null; S.profRet = null; $('authH').innerHTML = AUTH_H;
+  if (join) { S.joinFlow = true; sceneDest(); setTimeout(() => toast('반가워요. 어디로 달려 볼지 먼저 정해요'), 450); return; }
+  const id = (S.lastPid && S.profiles.some(p => p.id === S.lastPid) ? S.lastPid : S.profiles[0]?.id);
+  switchProfile(id);
+  setTimeout(() => toast(`다시 오셨네요. <b>${ro(T())}</b> 이어서 달려요`), 600);
 }
 document.querySelectorAll('[data-login]').forEach(b => b.onclick = doLogin);
-$('authBack').onclick = () => { const f = S.authRet; S.authRet = null; $('authH').innerHTML = AUTH_H; f ? f() : sceneHome(); };
+$('authBack').onclick = () => { S.joining = false; const f = S.authRet; S.authRet = null; $('authH').innerHTML = AUTH_H; f ? f() : sceneHome(); };
 const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬'], ['home', '내 스킬']];
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
@@ -3202,7 +3257,9 @@ const Galaxy = (() => {
   //   0단계 'sample' = 데이터 PM 샘플 갤럭시를 흐리게
   //   1단계 'live'   = 샘플 갤럭시의 스킬 별에서 다른 사람 업데이트 말풍선
   //   2단계 'people' = 중심 없이 사람 프로필들이 떠 있고, 한 명씩 살짝 커지며 말풍선 (배경 별만 흘러요)
-  const GUEST_GALAXY = 'sample';
+  //   3단계 'promo'  = 샘플 갤럭시를 아주 흐리게 깔고 가운데에 스킬 수 · 스킬 기반 학습 소개 + 로그인·회원가입
+  const GUEST_GALAXY = 'promo';
+  const promoOn = () => GUEST_GALAXY === 'promo' && !(S && S.loggedIn);
   const guestLive = () => GUEST_GALAXY !== 'sample' && !(S && S.entered);
   const liveOn = () => GUEST_GALAXY === 'live' && guestLive();
   const peopleOn = () => GUEST_GALAXY === 'people' && guestLive();
@@ -3320,7 +3377,8 @@ const Galaxy = (() => {
     const dt = Math.min(50, now - t0); t0 = now;
     // 패널 오른쪽 남은 공간의 가운데로
     const left = !isDesk() ? 0 : Math.round((document.body.classList.contains('xp-on') ? $('xp') : document.querySelector('.phone')).getBoundingClientRect().right);
-    if (isDesk()) { const gp = $('gPeople'), gl = Math.round(left + (innerWidth - left) / 2); if (gp._l !== gl) { gp._l = gl; gp.style.left = gl + 'px'; } } else if ($('gPeople')._l) { $('gPeople')._l = 0; $('gPeople').style.left = ''; }
+    if (isDesk()) { const gp = $('gPeople'), pr = $('gPromo'), gl = Math.round(left + (innerWidth - left) / 2); if (gp._l !== gl) { gp._l = gl; gp.style.left = gl + 'px'; } if (pr._l !== gl) { pr._l = gl; pr.style.left = gl + 'px'; } } // 갤럭시 영역 가운데 else if ($('gPeople')._l) { $('gPeople')._l = 0; $('gPeople').style.left = ''; }
+    document.body.classList.toggle('gpromo-on', isDesk() && promoOn());
     C.left = left;
     if (left > W - 40) return; // 패널이 화면을 다 덮으면 그리지 않아요
     const tx = left + (W - left) / 2, ty = H / 2 + 16 - Math.sin(C.tilt) * DEPTH * C.zoom * .45; // 기울일수록 아래로 내려간 스킬이 보이게 위로
@@ -3351,7 +3409,7 @@ const Galaxy = (() => {
     ctx.setLineDash(dash || []); ctx.strokeStyle = `rgba(160,180,220,${alpha})`; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
   }
   function draw(now) {
-    const k = Math.min(1, C.tilt / 1.02), reveal = S && S.entered ? 1 : liveOn() ? .6 : .25;
+    const k = Math.min(1, C.tilt / 1.02), reveal = S && S.entered ? 1 : liveOn() ? .6 : promoOn() ? .14 : .25;
     const g = ctx.createRadialGradient(C.cx, C.cy, 0, C.cx, C.cy, Math.max(W, H) * .7);
     g.addColorStop(0, '#17203A'); g.addColorStop(.45, '#0D1220'); g.addColorStop(1, '#07080C');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -3360,6 +3418,7 @@ const Galaxy = (() => {
     ctx.globalAlpha = reveal;
     DUST.forEach(d => { const p = proj(d.x, d.y, d.z); ctx.fillStyle = `rgba(150,175,230,${.12 + d.s * .18})`; ctx.fillRect(p.x, p.y, 1.2, 1.2); });
     if (peopleOn()) { ctx.globalAlpha = 1; peopleDraw(now); liveHeader(now); return; } // 2단계: 별 배경 + 사람들만
+    if (promoOn()) { ctx.globalAlpha = 1; return; } // 3단계: 별 배경만 (스킬·프로필 없이)
     // 목표 평면의 궤도
     [140, 280, 420, 560].forEach((r, i) => ring(r, 0, .1 + (i === 1 ? .04 : 0)));
     // 기울이면: 깊이 바닥 고리와 깊이 눈금
@@ -3490,7 +3549,7 @@ const Galaxy = (() => {
     if (liveOn()) {
       // 로그인 전: 지금 달리는 사람들 (LIVE 점이 숨 쉬듯 깜빡여요)
       liveHeader(now); liveTick(now); liveDraw(now); // 별 위치가 정해진 뒤에
-    } else {
+    } else if (!promoOn()) {
     ctx.fillText(P ? 'THEIR GALAXY' : 'MY GALAXY', C.left + 32, 44);
     ctx.font = '700 17px "Pretendard Variable", Pretendard, sans-serif'; ctx.fillStyle = '#fff';
     ctx.fillText(P ? `${P.friend ? '@' + P.handle : P.name} 님의 갤럭시` : '내 갤럭시', C.left + 32, 68);
@@ -3670,6 +3729,13 @@ function renderGP() {
   });
 }
 document.querySelectorAll('#gPeople [data-gpn]').forEach(b => b.onclick = () => { const row = $('gpRow'); row.scrollBy({ left: +b.dataset.gpn * 72 * 3, behavior: 'smooth' }); });
+// 로그인 전 갤럭시 소개: 로그인 / 회원가입
+document.querySelectorAll('[data-gpauth]').forEach(b => b.onclick = () => {
+  S.nav = []; closeXP();
+  S.joining = b.dataset.gpauth === 'join';
+  $('authH').innerHTML = S.joining ? '가입하고 내 갤럭시를<br>만들어 봐요' : AUTH_H;
+  S.authRet = () => sceneHome(); show('s-auth', 0);
+});
 $('mgBtn').onclick = () => mobGalaxy(true);
 $('mgBack').onclick = () => mobGalaxy(false);
 
