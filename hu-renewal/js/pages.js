@@ -46,7 +46,8 @@ function renderConcept(){
     <span class="badge brand">${c.sub}</span><h3>${c.name}</h3>
     <h4>서비스 컨셉</h4><p>${c.service}</p><ul>${c.flow.map(f=>`<li>${f}</li>`).join('')}</ul>
     <h4>디자인 컨셉</h4><p>${c.design}</p>
-    <h4>레퍼런스</h4><p class="c60">${c.ref} (uibowl)</p>`;
+    <h4>레퍼런스</h4><p class="c60">${c.ref} (uibowl)</p>
+    <p class="t12 c45" style="margin-top:var(--spacing-5)">제목·썸네일은 현행 서비스 기준이고, 학습 시간·학습자 수·스킬 포인트·커리큘럼은 예시 값이에요.</p>`;
   p.classList.toggle('open', store.get('hu3-concept')!=='0');
   $('#tgConcept').setAttribute('aria-pressed', p.classList.contains('open'));
 }
@@ -87,7 +88,7 @@ PAGES.a = {
       <div class="a-bar"><div class="chips">${typeChips()}</div><span style="width:var(--border-1);height:16px;background:var(--line-strong);margin:0 var(--spacing-2)"></span><div class="chips">${priceChips('')}${qChip()}</div>
         <span class="sp"></span>${sortSel()}<div class="vsw"><button class="gicon ${F.view==='grid'?'on':''}" data-f="view=grid" aria-label="카드로 보기">${I.grid}</button><button class="gicon ${F.view==='list'?'on':''}" data-f="view=list" aria-label="리스트로 보기">${I.list}</button></div></div>
       <p class="a-count">총 <b>${list.length}</b>개</p>
-      ${!list.length ? '<p class="empty">조건에 맞는 콘텐츠가 없어요. 필터를 바꿔보세요.</p>'
+      ${!list.length ? emptyState()
         : F.view==='list' ? `<div class="a-list">${list.map(c=>`<article class="a-li" data-c="${c.id}" tabindex="0">${th(c.img)}<div><div class="tags">${typeBadge(c)}${badge(c.cat,'normal')}</div><h3 class="clamp2" style="margin-top:var(--spacing-2)">${c.title}</h3><p class="clamp2">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-2)">${metaHTML(c)}</div><div style="margin-top:var(--spacing-3)">${skTags(c,3)}</div></div><div class="r">${priceHTML(c)}</div></article>`).join('')}</div>`
         : `<div class="a-g4">${list.map(aCard).join('')}</div>`}
       <div style="height:var(--spacing-24)"></div></div>`;
@@ -108,7 +109,8 @@ PAGES.a = {
       <aside class="a-buy"><div class="price">${bigPrice(c)}</div><button class="btn primary lg full" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button>
         <div class="acts"><button class="btn outline" data-toast="찜 목록에 담았어요">${I.heart}찜하기</button><button class="btn outline" data-toast="링크를 복사했어요">${I.share}공유</button></div>${factsKV(c)}</aside></div>
       ${sec(sh('함께 보면 좋은 콘텐츠') + `<div class="a-g4">${relatedOf(c).map(aCard).join('')}</div>`)}
-    </div>`;
+    </div>
+    <div class="mcta"><div><div class="t20">${priceHTML(c)}</div><div class="t12 c45 num">${c.t}${c.n?` · ${c.n}명 학습`:''}</div></div><button class="btn primary md" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button></div>`;
   },
 
   // 스킬 목록 (핵심): 디렉터리 색인 — 그룹 제목 고정 + 3열 항목
@@ -176,7 +178,7 @@ PAGES.b = {
           <div><h4>카테고리</h4>${CATS.map(c=>opt('cat',c,countBy('cat',c))).join('')}</div>
           <div><h4>유형</h4>${['전체',...TYPES].map(t=>opt('type',t,countBy('type',t))).join('')}</div>
           <div><h4>가격</h4>${['전체','무료','멤버십','유료'].map(t=>opt('price',t)).join('')}</div></aside>
-        <div class="b-table">${bHead()}${list.length ? list.map(bRow).join('') : '<p class="empty">조건에 맞는 콘텐츠가 없어요.</p>'}</div>
+        <div class="b-table">${bHead()}${list.length ? list.map(bRow).join('') : emptyState()}</div>
       </div><div style="height:var(--spacing-24)"></div></div>`;
   },
 
@@ -264,7 +266,7 @@ PAGES.c = {
       <div class="c-pt"><h1>콘텐츠<span class="num">${list.length}</span></h1><nav class="c-cats">${CATS.map(c=>`<button class="${F.cat===c?'on':''}" data-f="cat=${c}">${c}</button>`).join('')}</nav></div>
       <div class="c-filter"><div class="chips">${typeChips('option')}</div><div class="chips">${priceChips()}${qChip()}</div><span class="sp"></span><form class="input" data-qform style="width:280px">${I.search}<input name="q" placeholder="콘텐츠 검색" autocomplete="off"></form>${sortSel()}</div>
       ${hero ? `<article class="c-feature" data-c="${hero.id}" tabindex="0">${th(hero.img)}<div><span class="k">${hero.cat} · ${hero.type}</span><h2>${hero.title}</h2><p class="clamp3">${descOf(hero)}</p><div class="meta" style="margin-top:var(--spacing-4)">${metaHTML(hero,true)}</div><button class="btn neutral md" style="margin-top:var(--spacing-6)">자세히 보기</button></div></article>
-        <div class="c-g3">${rest.map(cCard).join('')}</div>` : '<p class="empty">조건에 맞는 콘텐츠가 없어요.</p>'}
+        <div class="c-g3">${rest.map(cCard).join('')}</div>` : emptyState()}
       <div style="height:var(--spacing-24)"></div></div>`;
   },
 
@@ -328,6 +330,11 @@ function bindSkq(){
     const v = q.value.trim().toLowerCase();
     $$('#skList [data-s], #skList [data-bsk]').forEach(b => b.style.display = !v || b.textContent.toLowerCase().includes(v) ? '' : 'none');
     $$('#skList .a-grp, #skList .c-idx').forEach(g => g.style.display = $$('[data-s]', g).some(b=>b.style.display!=='none') ? '' : 'none');
+    // 검색 결과 없음 안내
+    const none = !$$('#skList [data-s], #skList [data-bsk]').some(b=>b.style.display!=='none');
+    let em = $('#skEmpty');
+    if (none && !em){ $('#skList').insertAdjacentHTML('beforeend', `<div id="skEmpty">${emptyState('찾는 스킬이 없어요', '다른 이름으로 검색하거나 스킬 갤럭시에서 둘러보세요', false)}</div>`); }
+    if (!none && em) em.remove();
   });
 }
 document.addEventListener('click', e => {

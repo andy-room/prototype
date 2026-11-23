@@ -150,7 +150,20 @@ main{min-width:0}
 
 /* 썸네일 */
 .th{position:relative;aspect-ratio:16/9;border-radius:var(--radius-md);background:var(--bg-strong);overflow:hidden;isolation:isolate}
-.th img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.th img{width:100%;height:100%;object-fit:cover;opacity:0;transition:transform .3s,opacity .3s}
+.th.ok img{opacity:1}
+/* 로딩 스켈레톤 */
+.th:not(.ok)::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,transparent 0%,var(--interaction-button-subtle) 50%,transparent 100%);transform:translateX(-100%);animation:shim 1.2s ease-in-out infinite}
+@keyframes shim{to{transform:translateX(100%)}}
+/* 카드 키보드 포커스 */
+[data-c]:focus-visible,[data-s]:focus-visible{outline:var(--border-2) solid var(--brand-company-primary);outline-offset:var(--spacing-1);border-radius:var(--radius-md)}
+/* 빈 상태 */
+.empty-st{display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);padding:var(--spacing-16) var(--spacing-4);text-align:center}
+.empty-st b{margin-top:var(--spacing-2);font-size:var(--text-18);letter-spacing:var(--tracking-18);font-weight:var(--font-bold)}
+.empty-st p{font-size:var(--text-14);letter-spacing:var(--tracking-14);color:var(--typography-black-60)}
+.empty-st .btn{margin-top:var(--spacing-3)}
+/* A 상세 모바일 하단 구매 바 */
+.mcta{display:none}
 .th::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 var(--border-1) rgba(0,0,0,.04);pointer-events:none}
 .th .badge{position:absolute;left:var(--spacing-2);top:var(--spacing-2);z-index:1}
 .th.sq{aspect-ratio:1/1}.th.r43{aspect-ratio:4/3}.th.r34{aspect-ratio:3/4}
@@ -459,6 +472,7 @@ body[data-v="b"] #rail{position:sticky;top:116px;height:calc(100vh - 116px);disp
 .b-stat b span{font-size:var(--text-14);font-weight:var(--font-regular);color:var(--typography-black-45);margin-left:var(--spacing-1)}
 /* B 데이터 행 (콘텐츠 목록 핵심) */
 .b-list{display:grid;grid-template-columns:260px minmax(0,1fr);gap:var(--spacing-6);align-items:start;margin-top:var(--spacing-6)}
+.b-list > *,.b-atlas > *,.a-pdp > *,.a-sdp > *{min-width:0}
 .b-filter{position:sticky;top:140px;display:flex;flex-direction:column;gap:var(--spacing-6)}
 .b-filter h4{font-size:var(--text-12);letter-spacing:var(--tracking-12);font-weight:var(--font-bold);color:var(--typography-black-45);margin-bottom:var(--spacing-2)}
 .b-fopt{display:flex;align-items:center;justify-content:space-between;width:100%;height:36px;padding:0 var(--spacing-3);border-radius:var(--radius-md);font-size:var(--text-14);letter-spacing:var(--tracking-14);color:var(--typography-black-80);transition:background-color .15s}
@@ -630,6 +644,7 @@ body[data-v="c"] .c-search{display:inline-flex}
   .a-cats{grid-template-columns:repeat(5,minmax(0,1fr))}
   .a-pdp{grid-template-columns:minmax(0,1fr) 320px;gap:var(--spacing-8)}
   .a-pdp-hero{grid-template-columns:1fr}
+  .a-pdp-hero .th{order:-1}
   .b-atlas{grid-template-columns:340px minmax(0,1fr)}
   .b-thead,.b-tr{grid-template-columns:minmax(0,1fr) 72px 120px}
   .b-thead .hide-md,.b-tr .hide-md{display:none}
@@ -664,6 +679,20 @@ body[data-v="c"] .c-search{display:inline-flex}
   .c-big-rank{grid-template-columns:1fr}
   .c-g3{grid-template-columns:repeat(2,minmax(0,1fr))}
   .b-login .gxe{min-height:320px}
+  /* A 상세: 하단 고정 구매 바 + 이미지 먼저 */
+  .mcta{position:fixed;left:0;right:0;bottom:64px;z-index:57;display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-4);padding:var(--spacing-3) var(--spacing-5);background:var(--bg-surface);box-shadow:0 calc(-1 * var(--border-1)) 0 var(--line-layout)}
+  .mcta .btn{min-width:160px}
+  body[data-v="a"] main:has(.mcta){padding-bottom:140px}
+  .a-buy .btn.lg{display:none}
+  /* C 모달: 이미지 원본 비율 */
+  .c-modal-hero .th{aspect-ratio:16/9;min-height:0;height:auto}
+  /* B 필터: 가로 스크롤 칩 */
+  .b-filter{gap:var(--spacing-3)}
+  .b-filter > div{display:flex;gap:var(--spacing-1);overflow-x:auto;scrollbar-width:none}
+  .b-filter h4{display:none}
+  .b-fopt{flex:none;width:auto;height:32px;border-radius:var(--radius-full);background:var(--bg-surface);box-shadow:inset 0 0 0 var(--border-1) var(--line-layout)}
+  .b-fopt.on{background:#46474C;color:#FFFFFF;box-shadow:none}
+  .b-fopt small{display:none}
 }
 @media (max-width:767px){
   .proto .ttl{display:none}

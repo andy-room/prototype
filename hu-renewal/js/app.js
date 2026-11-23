@@ -80,7 +80,10 @@ const openGalaxy  = (id=2) => go({o:'galaxy:'+id});
 const closeOv     = () => go({o:null});
 
 // ---------- HDS 기반 공통 조각 ----------
-const th = (src, cls='', inner='') => `<div class="th ${cls}">${inner}${src?`<img src="${src}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`:''}</div>`;
+// 썸네일: 로딩 중 스켈레톤 → 로드되면 페이드인 (실패 시 회색 면 유지)
+const th = (src, cls='', inner='') => `<div class="th ${cls} ${src?'':'ok'}">${inner}${src?`<img src="${src}" alt="" loading="lazy" decoding="async" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok');this.remove()">`:''}</div>`;
+// 빈 상태
+const emptyState = (title='조건에 맞는 콘텐츠가 없어요', desc='필터를 줄이거나 다른 검색어로 찾아보세요', reset=true) => `<div class="empty-st"><span class="si lg gi4">${I.search}</span><b>${title}</b><p>${desc}</p>${reset?'<button class="btn outline" data-reset>필터 초기화</button>':''}</div>`;
 const TYPE_BADGE = {'과정':'normal','아티클':'info','영상':'warning','카드뉴스':'success'};
 const badge = (t, kind) => `<span class="badge ${kind||TYPE_BADGE[t]||'normal'}">${t}</span>`;
 const typeBadge = c => badge(c.type);
@@ -334,6 +337,7 @@ document.addEventListener('click', e => {
   if (t.closest('[data-csearch]')) { e.preventDefault(); F.q=''; return go({page:'contents', id:null, o:null}); }
   const n = t.closest('[data-nav]'); if (n) { e.preventDefault(); if (n.dataset.nav==='contents') F.q=''; return go({page:n.dataset.nav, id:null, o:null}); }
   const ts = t.closest('[data-toast]'); if (ts) { e.preventDefault(); return toast(ts.dataset.toast); }
+  if (t.closest('[data-reset]')) { e.preventDefault(); Object.assign(F, {cat:'전체', type:'전체', price:'전체', q:''}); return render(); }
   const f = t.closest('[data-f]'); if (f) { const i=f.dataset.f.indexOf('='); F[f.dataset.f.slice(0,i)] = f.dataset.f.slice(i+1); return render(); }
 });
 document.addEventListener('keydown', e => {
