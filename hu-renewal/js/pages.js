@@ -29,7 +29,7 @@ const CONCEPTS = {
     ref:'리디 메인 · 인프런 메인'},
   b: {name:'B · Atlas', sub:'스킬 지도',
     service:'"탐험하는 사람"을 위한 스킬 지도. 무엇을 배울지 아직 모르는 학습자가 스킬 갤럭시에서 출발해 연결된 콘텐츠와 커리어를 따라가며 학습 경로를 발견해요.',
-    flow:['홈: 갤럭시 히어로 + 스킬 칩으로 중심 이동','콘텐츠: 좌측 필터 + 정렬 가능한 데이터 표 (학습 시간·학습자·스킬 포인트)','스킬: 왼쪽 목록 ↔ 오른쪽 지도 동기화','상세: 오른쪽 드로어 (목록 맥락 유지)'],
+    flow:['홈: 갤럭시 히어로 + 스킬 칩으로 중심 이동','콘텐츠: 좌측 필터 + 정렬 가능한 데이터 표 (학습 시간·스킬 포인트)','스킬: 왼쪽 목록 ↔ 오른쪽 지도 동기화','상세: 오른쪽 드로어 (목록 맥락 유지)'],
     design:'HDS 라이트 기본(툴바에서 다크 전환 가능). 옅은 회색 지도 바탕 위에 스킬=초록, 콘텐츠=파랑, 커리어=주황처럼 HDS 상태색을 범례로만 써요. 숫자는 SUIT로 계기판처럼 정렬해요.',
     ref:'인프런 강의 상세 · 현행 HU 스킬 갤럭시'},
   c: {name:'C · Bold Folio', sub:'굵은 화첩',
@@ -110,7 +110,7 @@ PAGES.a = {
         <div class="acts"><button class="btn outline" data-toast="찜 목록에 담았어요">${I.heart}찜하기</button><button class="btn outline" data-toast="링크를 복사했어요">${I.share}공유</button></div>${factsKV(c)}</aside></div>
       ${sec(sh('함께 보면 좋은 콘텐츠') + `<div class="a-g4">${relatedOf(c).map(aCard).join('')}</div>`)}
     </div>
-    <div class="mcta"><div><div class="t20">${priceHTML(c)}</div><div class="t12 c45 num">${c.t}${c.n?` · ${c.n}명 학습`:''}</div></div><button class="btn primary md" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button></div>`;
+    <div class="mcta"><div><div class="t20">${priceHTML(c)}</div><div class="t12 c45 num">${c.t}</div></div><button class="btn primary md" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button></div>`;
   },
 
   // 스킬 목록 (핵심): 디렉터리 색인 — 그룹 제목 고정 + 3열 항목
@@ -148,8 +148,8 @@ PAGES.a = {
 // =========================================================
 // B · Atlas
 // =========================================================
-const bHead = () => `<div class="b-thead"><span>콘텐츠</span><button class="r hide-md ${F.sort==='time'?'on':''}" data-f="sort=time">학습 시간</button><button class="r ${F.sort==='pop'?'on':''}" data-f="sort=pop">학습자</button><span class="r">스킬 포인트</span></div>`;
-const bRow = c => { const pt=firstPt(c); return `<article class="b-tr" data-c="${c.id}" tabindex="0"><div class="c">${th(c.img)}<div><div class="meta">${typeBadge(c)}<span>${c.cat}</span><span class="dot"></span>${priceHTML(c)}</div><h3 class="clamp2" style="margin-top:var(--spacing-1)">${c.title}</h3>${skTags(c,3)}</div></div><span class="v r hide-md">${c.t}</span><span class="v r">${c.n}명</span><div class="ptbar"><i><b style="width:${Math.min(100,pt)}%"></b></i><span>+${pt}</span></div></article>`; };
+const bHead = () => `<div class="b-thead"><span class="srt">콘텐츠<span class="dot"></span><button class="${F.sort==='pop'?'on':''}" data-f="sort=pop">인기순</button><button class="${F.sort==='time'?'on':''}" data-f="sort=time">학습 시간순</button></span><span class="r hide-md">학습 시간</span><span class="r">스킬 포인트</span></div>`;
+const bRow = c => { const pt=firstPt(c); return `<article class="b-tr" data-c="${c.id}" tabindex="0"><div class="c">${th(c.img)}<div><div class="meta">${typeBadge(c)}<span>${c.cat}</span><span class="dot"></span>${priceHTML(c)}</div><h3 class="clamp2" style="margin-top:var(--spacing-1)">${c.title}</h3>${skTags(c,3)}</div></div><span class="v r hide-md">${c.t}</span><div class="ptbar"><i><b style="width:${Math.min(100,pt)}%"></b></i><span>+${pt}</span></div></article>`; };
 const bSummary = s => { const cs=contentsOfSkill(s), cars=careersOfSkill(s); return `<div style="display:flex;gap:var(--spacing-3);align-items:center">${si(s)}<div><h3>${s.k}</h3><small>${s.e} · ${s.g}</small></div></div>
   <div class="row"><div><b>${s.n.toLocaleString()}</b><span>학습자</span></div><div><b>${cs.length}</b><span>콘텐츠</span></div><div><b>${cars.length}</b><span>커리어</span></div></div>
   <div style="display:flex;gap:var(--spacing-2)"><button class="btn primary xs" data-s="${s.id}">스킬 상세</button><button class="btn outline xs" data-galaxy="${s.id}">전체 화면</button></div>`; };

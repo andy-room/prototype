@@ -88,7 +88,7 @@ const TYPE_BADGE = {'과정':'normal','아티클':'info','영상':'warning','카
 const badge = (t, kind) => `<span class="badge ${kind||TYPE_BADGE[t]||'normal'}">${t}</span>`;
 const typeBadge = c => badge(c.type);
 const priceHTML = c => c.p==='무료' ? '<span class="pr free">무료</span>' : c.p==='멤버십 전용' ? '<span class="pr mem">멤버십</span>' : c.p ? `<span class="pr">${c.p}</span>` : '<span class="pr mem c60 w5">바로 보기</span>';
-const metaHTML = (c, withPrice=false) => [withPrice?priceHTML(c):'', `<span class="num">${c.t}</span>`, c.n?`<span><span class="num">${c.n}</span>명 학습</span>`:''].filter(Boolean).join('<span class="dot"></span>');
+const metaHTML = (c, withPrice=false) => [withPrice?priceHTML(c):'', `<span class="num">${c.t}</span>`].filter(Boolean).join('<span class="dot"></span>');
 const skTags = (c, n=2, cls='') => `<div class="tags">${c.sk.slice(0,n).map(k=>`<span class="tag ${cls}">${k}</span>`).join('')}</div>`;
 const chg = ['▲2','NEW','▲1','–','▼1','▲3','–','▼2','NEW'];
 const chgBadge = x => x==='NEW' ? badge('NEW','info') : x.startsWith('▲') ? badge(x,'brand') : x.startsWith('▼') ? badge(x,'normal') : '';
