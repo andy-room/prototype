@@ -1000,6 +1000,8 @@
   .gp span { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .gp.on img { box-shadow: 0 0 0 2px #0B1020, 0 0 0 4px #4D8DFF; }
   .gp.on span { color: #fff; font-weight: 600; }
+  .gpeople { transition: translate .5s var(--ease), opacity .35s ease; }
+  .gpeople.gp-zoom { translate: 0 calc(100% + 60px); opacity: 0; pointer-events: none; } /* 갤럭시를 확대해 볼 때는 시원하게 */
   .gp { position: relative; }
   .gp-pin { position: absolute; top: 30px; left: 36px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--blue); box-shadow: 0 0 0 2px #0B1020; cursor: pointer; } /* 고정 안 된 사람: 프로필 오른쪽 아래 고정 아이콘 */
   .gp-pin svg { width: 12px; height: 12px; }
@@ -1152,7 +1154,7 @@
   .hometabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
   /* 아이폰 탭 바처럼: 상자 없이 아이콘 + 작은 글자, 위에 얇은 선 */
   /* 하단 메뉴: 떠 있는 유리 바 (iOS 아쿠아 느낌) · 뒤 화면은 흐리게 비쳐요 */
-  .mk-dock { position: absolute !important; left: 14px; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); z-index: 20; margin: 0 !important; padding: 6px !important; border-radius: 30px;
+  .mk-dock { position: absolute !important; left: 14px; right: 14px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); z-index: 20; margin: 0 !important; padding: 5px 6px !important; border-radius: 30px;
     border: 1px solid rgba(255,255,255,.8) !important; border-top: 1px solid rgba(255,255,255,.95) !important;
     background: linear-gradient(180deg, rgba(255,255,255,.66), rgba(246,247,250,.42)) !important;
     -webkit-backdrop-filter: blur(22px) saturate(1.8); backdrop-filter: blur(22px) saturate(1.8);
@@ -1167,9 +1169,10 @@
   .mk-dock.min { transform: scale(.8); }
   /* 시트·팝업이 뜨면 떠 있는 메뉴는 아래로 비켜서, 시트 버튼을 가리지 않아요 */
   .phone:has(.scrim.on, .mscrim.on, .sheet.on, .msheet.on, .csheet.on, .hswap.on) .mk-dock { opacity: 0; transform: translateY(28px) scale(.96); pointer-events: none; }
-  .mk-dock .hometabs button { font-size: 0 !important; gap: 0; padding: 9px 0 !important; }
-  .mk-dock .hometabs .ic { width: 32px; height: 32px; }
-  .mk-dock .hometabs .ic svg { width: 27px; height: 27px; }
+  .mk-dock .hometabs button { font-size: 0 !important; gap: 0; padding: 6px 0 !important; } /* 메뉴 위아래 여백 조금 줄임 */
+  .mk-dock .hometabs .ic { width: 34px; height: 34px; }
+  .mk-dock .hometabs .ic svg { width: 30px; height: 30px; }
+  .mk-dock .hometabs button:not(.on) .ic { color: var(--ink); } /* 하단 메뉴 아이콘은 모두 기본 검은 선 아이콘(내 스킬도 사진 대신 아이콘) */
   .mk-dock .hometabs .ic .meface { width: 30px; height: 30px; }
   .mk-dock .hometabs button.on .meface { box-shadow: 0 0 0 1px rgba(21,23,27,.12); } /* 선택돼도 검은 테두리 없이 */
   .mk-dock .hometabs button:not(.on) .meface { opacity: 1; box-shadow: 0 0 0 1px rgba(21,23,27,.12); } /* 얼굴이 잘 보이게 흐리지 않아요 */
@@ -3076,7 +3079,7 @@ const HOME_TABS = [['main', '홈'], ['catalog', '콘텐츠'], ['skills', '스킬
 // 모든 화면 같은 하단 탭 (지금 탭은 진하게)
 function fillTabs(el, active) {
   if (!el) return;
-  el.innerHTML = HOME_TABS.map(([k, t]) => `<button class="${k === active ? 'on' : ''}" data-htab="${k}"><span class="ic">${k === 'home' && S.entered ? meFace() : NAV_IC[k]}</span>${t}</button>`).join('');
+  el.innerHTML = HOME_TABS.map(([k, t]) => `<button class="${k === active ? 'on' : ''}" data-htab="${k}"><span class="ic">${NAV_IC[k]}</span>${t}</button>`).join('');
   el.querySelectorAll('button').forEach(b => b.onclick = () => homeGo(b.dataset.htab));
 }
 const meFace = (cls = 'meface') => { const me = profOf(S.pid); return me ? `<img class="${cls}" src="avatars/a${me.av}.png" alt="">` : NAV_IC.home; };
@@ -3400,6 +3403,7 @@ const Galaxy = (() => {
     const left = !isDesk() ? 0 : Math.round((document.body.classList.contains('xp-on') ? $('xp') : document.querySelector('.phone')).getBoundingClientRect().right);
     if (isDesk()) { const gp = $('gPeople'), pr = $('gPromo'), gl = Math.round(left + (innerWidth - left) / 2); if (gp._l !== gl) { gp._l = gl; gp.style.left = gl + 'px'; } if (pr._l !== gl) { pr._l = gl; pr.style.left = gl + 'px'; } } // 갤럭시 영역 가운데 else if ($('gPeople')._l) { $('gPeople')._l = 0; $('gPeople').style.left = ''; }
     document.body.classList.toggle('gpromo-on', isDesk() && promoOn());
+    { const gp = $('gPeople'), z = TG.zoom > 1.12; if (gp._z !== z) { gp._z = z; gp.classList.toggle('gp-zoom', z); } } // 확대하면 아래 사람 줄은 내려가 비켜 주고, 축소하면 다시 올라와요
     C.left = left;
     if (left > W - 40) return; // 패널이 화면을 다 덮으면 그리지 않아요
     const tx = left + (W - left) / 2, ty = H / 2 + 16 - Math.sin(C.tilt) * DEPTH * C.zoom * .45; // 기울일수록 아래로 내려간 스킬이 보이게 위로
