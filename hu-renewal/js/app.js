@@ -57,7 +57,8 @@ const si = (s, cls='') => `<span class="si gi${gIdx(s)} ${cls}">${sv(GI[gIdx(s)]
 
 // ---------- 상태 & 라우터 ----------
 // 해시: #<안>/<페이지>[/<id>][?o=<오버레이>]   오버레이: content:3 | skill:2 | login | galaxy:2
-const VIEWS = ['cur','a','b','c'];
+const VIEWS = ['cur','a','a1','b','c'];
+const PAGE_DETAIL = v => v==='a' || v==='a1';  // 상세 = 별도 페이지인 안
 const PAGE_KEYS = ['home','contents','content','skills','skill','login'];
 let S = {v:'a', page:'home', id:null, o:null};
 const F = {cat:'전체', type:'전체', price:'전체', sort:'pop', q:'', view:'grid', group:'전체', bsk:2, bskTab:'info'};
@@ -73,8 +74,8 @@ const href = (st={}) => { const s={...S,...st}; return `#${s.v}/${s.page}${s.id?
 const go = st => { const h = href(st); if (location.hash===h) render(); else location.hash = h; };
 
 // 안별 상세 노출: A=페이지, B=드로어, C=모달
-const openContent = id => S.v==='a' ? go({page:'content', id, o:null}) : go({o:'content:'+id});
-const openSkill   = id => S.v==='a' ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
+const openContent = id => PAGE_DETAIL(S.v) ? go({page:'content', id, o:null}) : go({o:'content:'+id});
+const openSkill   = id => PAGE_DETAIL(S.v) ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
 const openLogin   = () => S.v==='c' ? go({o:'login'}) : go({page:'login', id:null, o:null});
 const openGalaxy  = (id=2) => go({o:'galaxy:'+id});
 const closeOv     = () => go({o:null});
@@ -140,9 +141,11 @@ function renderShell(){
       ${right}</div>
     <nav class="navrow"><div class="tabs">${NAV.map(([k,l])=>`<a class="tab" href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${l}</a>`).join('')}</div><span class="sp"></span>
       <a class="ghost" data-login>마이클래스</a><a class="ghost" data-toast="프리미엄 콘텐츠는 시안 범위 밖이에요">프리미엄</a></nav></div>`;
-  $('#rail').innerHTML = NAV.map(([k,l,ic])=>`<a class="rl" href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('')
-    + `<a class="rl" data-login>${I.user}마이</a><a class="rl sep" data-toast="프리미엄 콘텐츠는 시안 범위 밖이에요">${I.trophy}프리미엄</a>`;
-  $('#tabbar').innerHTML = NAV.map(([k,l,ic])=>`<a href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + `<a data-login>${I.user}마이</a>`;
+  // A-1: 스킬 갤럭시를 대표 메뉴로 (누르면 전체 화면 갤럭시)
+  const gxNav = v==='a1' ? `<a class="rl gx-nav" href="javascript:void 0" data-galaxy="2">${I.galaxy}갤럭시</a>` : '';
+  $('#rail').innerHTML = NAV.map(([k,l,ic])=>`<a class="rl" href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + gxNav
+    + `<a class="rl" data-login>${I.user}${v==='a1'?'마이클래스':'마이'}</a><a class="rl sep" data-toast="프리미엄 콘텐츠는 시안 범위 밖이에요">${I.trophy}프리미엄</a>`;
+  $('#tabbar').innerHTML = NAV.map(([k,l,ic])=>`<a href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + (v==='a1'?`<a href="javascript:void 0" data-galaxy="2">${I.galaxy}갤럭시</a>`:'') + `<a data-login>${I.user}마이</a>`;
   $('#msheet').innerHTML = `<div class="dim" data-msheet></div><div class="panel">
     <div style="display:flex;align-items:center;justify-content:space-between"><span class="logo"><i></i>Hunet University</span><button class="gicon" data-msheet aria-label="닫기">${I.x}</button></div>
     ${search}
@@ -155,6 +158,8 @@ function renderShell(){
 function syncShell(){
   const key = {home:'home',contents:'contents',content:'contents',skills:'skills',skill:'skills'}[S.page];
   $$('[data-navkey]').forEach(a=>a.classList.toggle('on', a.dataset.navkey===key));
+  const gxOn = (S.o||'').startsWith('galaxy');
+  $$('.rl.gx-nav, #tabbar [data-galaxy]').forEach(a=>a.classList.toggle('on', gxOn));
   $$('.proto [data-view]').forEach(b=>b.setAttribute('aria-selected', b.dataset.view===S.v));
   $$('[data-qform] input').forEach(i=>{ if (document.activeElement!==i) i.value=F.q; });
 }
@@ -308,7 +313,7 @@ function applyTheme(){
 // ---------- 렌더 ----------
 function render(){
   S = parse();
-  if (S.v!=='a' && S.v!=='cur' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`});
+  if (!PAGE_DETAIL(S.v) && S.v!=='cur' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`});
   if (S.v==='c' && S.page==='login') return go({page:'home', id:null, o:'login'});
   store.set('hu3-v', S.v);
   document.body.dataset.v = S.v;
@@ -345,7 +350,7 @@ document.addEventListener('keydown', e => {
   if (e.key==='Escape'){ if ($('#msheet').classList.contains('open')) return $('#msheet').classList.remove('open'); if (S.o) return closeOv(); }
   if (e.key==='Enter' && document.activeElement?.matches('[data-c]')) return openContent(+document.activeElement.dataset.c);
   if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
-  const i = '1234'.indexOf(e.key); if (i>-1) go({v:VIEWS[i], o:null});
+  const i = '12345'.indexOf(e.key); if (i>-1) go({v:VIEWS[i], o:null});
 });
 document.addEventListener('change', e => { const f=e.target.closest('[data-fsel]'); if(f){ F[f.dataset.fsel]=f.value; render(); } });
 addEventListener('hashchange', render);

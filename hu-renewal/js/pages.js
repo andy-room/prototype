@@ -1,6 +1,6 @@
 // =========================================================
 // 안별 화면 — 같은 스킬 기반 학습 개념, 다른 스타일
-// A Quiet Index(흰 색인·상세=페이지) / B Atlas(스킬 지도·상세=드로어) / C Bold Folio(잡지·상세=모달)
+// A Quiet Index(흰 색인·상세=페이지) / A-1(A + 왼쪽 레일·풀폭) / B Atlas(스킬 지도·상세=드로어) / C Bold Folio(잡지·상세=모달)
 // =========================================================
 const C = id => byId(id);
 const pick = HOME.pick.map(C), trend = HOME.trend.map(C), free = HOME.free.map(C);
@@ -27,6 +27,11 @@ const CONCEPTS = {
     flow:['홈: 이번 주 추천 + 스킬 바로가기 + 3열 순위','콘텐츠: 아이콘 카테고리 → 칩 필터 → 카드/리스트','스킬: 분야별 디렉터리 색인','상세: 별도 페이지 (오른쪽 고정 구매 박스)'],
     design:'흰 바탕 위에 상자 없는 썸네일 격자. 색은 콘텐츠 이미지에서만 오고, 휴넷 레드는 학습 시작·무료·상승 순위에만 써요. 구분은 선 대신 여백과 글자 크기 차이로 해요.',
     ref:'리디 메인 · 인프런 메인'},
+  a1: {name:'A-1 · Quiet Index Wide', sub:'넓은 색인',
+    service:'A안의 "찾는 사람"을 위한 학습 서점에 B안의 탐색 구조를 더했어요. 왼쪽 메뉴에서 언제든 스킬 갤럭시를 열 수 있고, 스킬은 아이콘이 아니라 이름으로 바로 찾아요.',
+    flow:['메뉴: 왼쪽 세로 메뉴 (홈·콘텐츠·커리어·스킬·갤럭시·마이클래스)','홈: 이번 주 추천 + 스킬명 타일 + C안 스타일 3열 순위','스킬: 인기 스킬 + 분야별 스킬명 색인 (영문 없음)','갤럭시: 왼쪽 메뉴에서 전체 화면으로','상세: 별도 페이지 (A안과 같음)'],
+    design:'화면 전체 폭을 쓰고 내용은 최대 1600px. 순위는 큰 숫자와 오른쪽 썸네일로, 스킬은 굵은 한글 이름과 작은 색 점으로 보여줘요. 나머지 톤은 A안의 흰 바탕·상자 없는 카드를 그대로 써요.',
+    ref:'A안 + B안 왼쪽 메뉴 + C안 순위'},
   b: {name:'B · Atlas', sub:'스킬 지도',
     service:'"탐험하는 사람"을 위한 스킬 지도. 무엇을 배울지 아직 모르는 학습자가 스킬 갤럭시에서 출발해 연결된 콘텐츠와 커리어를 따라가며 학습 경로를 발견해요.',
     flow:['홈: 갤럭시 히어로 + 스킬 칩으로 중심 이동','콘텐츠: 좌측 필터 + 정렬 가능한 데이터 표 (학습 시간·스킬 포인트)','스킬: 왼쪽 목록 ↔ 오른쪽 지도 동기화','상세: 오른쪽 드로어 (목록 맥락 유지)'],
@@ -143,6 +148,61 @@ PAGES.a = {
   contentOverlay: c => PAGES.c.contentOverlay(c),
   skillOverlay: s => PAGES.c.skillOverlay(s),
   after(){ bindSkq(); }
+};
+
+// =========================================================
+// A-1 · Quiet Index + 왼쪽 레일 (A안에 B안 구조 접목)
+// - 메뉴: 왼쪽 세로 레일 + 스킬 갤럭시 대표 메뉴
+// - 전체 폭 사용 (최대 1600px)
+// - 순위: C안 큰 숫자 스타일 3열
+// - 스킬: 아이콘보다 한글 스킬명이 먼저 보이게
+// =========================================================
+const sdot = s => `<i class="sdot gi${gIdx(s)}"></i>`;
+const a1Tile = s => `<button class="a1-tile" data-s="${s.id}"><span class="g">${sdot(s)}${s.g}</span><b>${s.k}</b><small>콘텐츠 <span class="num">${contentsOfSkill(s).length}</span>개</small></button>`;
+const a1Sk = s => `<button class="a1-sk" data-s="${s.id}">${sdot(s)}<b>${s.k}</b><span class="u num">${s.n.toLocaleString()}</span></button>`;
+PAGES.a1 = {
+  ...PAGES.a,
+  home(){
+    const h = pick[0];
+    return `<div class="wrap">
+      <section class="a-hero">
+        <article class="big" data-c="${h.id}" tabindex="0">${th(h.img)}<div><div class="tags">${badge('이번 주 추천','brand')}${typeBadge(h)}</div>
+          <h2 class="t28 w7" style="margin-top:var(--spacing-3)">${h.title}</h2><p class="t16 c60" style="margin-top:var(--spacing-2)">${h.d}</p><div class="meta" style="margin-top:var(--spacing-3)">${metaHTML(h,true)}</div></div></article>
+        <div class="side"><h4>함께 많이 본 콘텐츠</h4>${pick.slice(1).map(aRow).join('')}</div>
+      </section>
+      ${sec(sh('스킬로 찾기','배우고 싶은 스킬을 고르면 관련 콘텐츠를 모아 보여드려요', moreLink('전체 스킬','data-nav="skills"'))
+        + `<div class="a1-tiles">${topSkills(8).map(a1Tile).join('')}</div>`)}
+      ${sec(sh('지금 많이 보는 콘텐츠','최근 7일 학습자 기준', moreLink('전체보기','data-nav="contents"'))
+        + `<div class="c-big-rank a1-rank">${RANK9.map((c,i)=>`<article class="c-br" data-c="${c.id}" tabindex="0"><span class="n">${i+1}</span><div><h3 class="clamp2">${c.title}</h3><div class="meta" style="margin-top:var(--spacing-1)">${metaHTML(c,true)}${chg[i]&&chg[i]!=='–'?`<span class="dot"></span>${chgBadge(chg[i])}`:''}</div></div>${th(c.img)}</article>`).join('')}</div>`)}
+      ${sec(sh('무료로 시작하기','가입 없이 바로 볼 수 있어요', moreLink('전체보기','data-navf="contents|price=무료"')) + `<div class="a-g4">${free.map(aCard).join('')}</div>`)}
+      ${sec(sh('프리미엄 과정','학위·자격 수준의 심화 과정') + `<div class="a-list">${PREMIUM.map(p=>`<article class="a-li" data-toast="프리미엄 과정 상세는 시안 범위 밖이에요">${th(p.img)}<div><div>${badge('프리미엄','normal')}</div><h3 style="margin-top:var(--spacing-2)">${p.t}</h3><p>${p.d}</p><div class="meta" style="margin-top:var(--spacing-2)">${p.meta}</div></div><div class="r">${p.price?`<div class="t14 c45" style="text-decoration:line-through">${p.price.was}</div><div><span class="t16 w7 cred">${p.price.off}</span> <span class="pr">${p.price.now}</span></div>`:'<span class="pr mem">가격 문의</span>'}</div></article>`).join('')}</div>`)}
+      ${sec(`<div class="a-member"><div><h2>HU 멤버십으로 모든 스킬을 무제한으로</h2><p>콘텐츠 전체와 커리어 로드맵을 한 번에. 언제든 해지할 수 있어요.</p></div><button class="btn primary md" data-login>멤버십 시작하기</button></div>`)}
+    </div>`;
+  },
+  skills(){
+    const groups = F.group==='전체' ? GROUPS : [F.group];
+    return `<div class="wrap">
+      <div class="a-pt"><h1>스킬</h1><p class="t16 c60" style="margin-top:var(--spacing-1)">직무에 필요한 스킬 <span class="num">${SKILLS.length}</span>개를 분야별로 정리했어요</p></div>
+      <div class="a-skbar">${skillSearch()}<span class="sp"></span><button class="btn outline" data-galaxy="2">${I.galaxy}스킬 갤럭시로 보기</button></div>
+      <div class="chips" style="margin-top:var(--spacing-4)">${groupChips()}</div>
+      ${F.group==='전체' ? `<section style="padding-top:var(--spacing-10)">${sh('인기 스킬','이번 달 학습자가 가장 많이 선택했어요')}<div class="a1-top">${topSkills(5).map((s,i)=>`<button class="a1-tsk" data-s="${s.id}"><span class="n">${i+1}</span><b>${s.k}</b><small>${s.g} · <span class="num">${s.n.toLocaleString()}</span>명 학습</small></button>`).join('')}</div></section>`:''}
+      <div id="skList" style="margin-top:var(--spacing-12)">${groups.map(g=>{ const l=SKILLS.filter(s=>s.g===g); return `<section class="a-grp a1-grp"><h3>${g}<small>${l.length}개 스킬</small></h3><div class="a1-dir">${l.map(a1Sk).join('')}</div></section>`; }).join('')}</div>
+      <div style="height:var(--spacing-24)"></div></div>`;
+  },
+  skill(id){
+    const s = skillById(id) || SKILLS[0], cs = contentsOfSkill(s), cars = careersOfSkill(s);
+    return `<div class="wrap">
+      <nav class="crumb"><a href="${href({page:'skills',id:null})}">스킬</a>›<span>${s.g}</span></nav>
+      <div class="a-sdp a1-sdp"><div><span class="g">${sdot(s)}${s.g}</span><h1>${s.k}</h1>
+        <p class="d">${skillDesc(s)}</p>
+        <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>학습자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>연결된 커리어</small></div></div>
+        <div style="display:flex;gap:var(--spacing-2);margin-top:var(--spacing-8)"><button class="btn primary md" data-scroll="sk-c">관련 콘텐츠 보기</button><button class="btn outline md" data-toast="관심 스킬에 추가했어요">${I.heart}관심 스킬</button></div></div>
+        <div class="gxw"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div></div>
+      ${sec(sh('이 스킬을 배울 수 있는 콘텐츠', `${cs.length}개`) + `<div class="a-g4">${cs.map(aCard).join('')}</div>`, 'id="sk-c"')}
+      ${sec(sh('이 스킬이 필요한 커리어') + `<div class="a-g4">${cars.map(aCareer).join('')}</div>`)}
+      ${sec(sh('함께 배우면 좋은 스킬') + `<div class="a1-tiles">${relatedSkills(s).map(a1Tile).join('')}</div>`)}
+    </div>`;
+  }
 };
 
 // =========================================================
