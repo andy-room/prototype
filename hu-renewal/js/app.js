@@ -207,20 +207,20 @@ function galaxyModel(sid){
   return {s, nodes, counts:{skill:skills.length, content:mixed.filter(n=>n.t==='content').length, career:mixed.filter(n=>n.t==='career').length}};
 }
 const trunc = (t,n) => t.length>n ? t.slice(0,n-1)+'…' : t;
-const giSvg = (s, size, col) => `<svg x="${-size/2}" y="${-size/2}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${GI[gIdx(s)]}</svg>`;
+const giSvg = (s, size, col) => `<svg x="${-size/2}" y="${-size/2}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" style="stroke:${col}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${GI[gIdx(s)]}</svg>`;
 function galaxySVG(m, uid){
   const link = n => { const mx=n.x/2 - n.y*.18, my=n.y/2 + n.x*.18; return `<path class="gl-link l-${n.t}" data-for="${n.t}:${n.id}" d="M0 0 Q${mx.toFixed(1)} ${my.toFixed(1)} ${n.x.toFixed(1)} ${n.y.toFixed(1)}"/>`; };
   const node = (n,i) => {
     const col = GX[n.t], tr = `transform="translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})"`;
     if (n.t==='skill') return `<g class="gn gn-skill" data-gt="skill" data-gid="${n.id}" ${tr}><circle class="halo" r="34" fill="${col}" opacity=".18"/><circle class="core" r="24"/><circle class="ring" r="24"/>${giSvg(skillById(n.id),20,col)}<text y="44">${trunc(n.label,10)}</text></g>`;
     const r = n.t==='content' ? 27 : 25;
-    return `<g class="gn gn-${n.t}" data-gt="${n.t}" data-gid="${n.id}" ${tr}><defs><clipPath id="cp${uid}-${i}"><circle r="${r}"/></clipPath></defs><circle class="halo" r="${r+10}" fill="${col}" opacity=".2"/><circle r="${r}" fill="#1B1C1E"/><image href="${n.img}" x="${-r*1.6}" y="${-r}" width="${r*3.2}" height="${r*2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${uid}-${i})"/><circle class="ring" r="${r}"/><text y="${r+18}">${trunc(n.label,12)}</text></g>`;
+    return `<g class="gn gn-${n.t}" data-gt="${n.t}" data-gid="${n.id}" ${tr}><defs><clipPath id="cp${uid}-${i}"><circle r="${r}"/></clipPath></defs><circle class="halo" r="${r+10}" fill="${col}" opacity=".2"/><circle class="nbg" r="${r}"/><image href="${n.img}" x="${-r*1.6}" y="${-r}" width="${r*3.2}" height="${r*2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${uid}-${i})"/><circle class="ring" r="${r}"/><text y="${r+18}">${trunc(n.label,12)}</text></g>`;
   };
   return `<svg viewBox="-600 -455 1200 950" preserveAspectRatio="xMidYMid meet" aria-label="${m.s.k} 스킬 갤럭시">
     <defs><radialGradient id="cg${uid}"><stop offset="0" stop-color="#00BF40" stop-opacity=".3"/><stop offset="1" stop-color="#00BF40" stop-opacity="0"/></radialGradient></defs>
-    <g class="gz"><circle r="178" fill="none" stroke="rgba(247,247,248,.05)"/><circle r="340" fill="none" stroke="rgba(247,247,248,.04)"/>
+    <g class="gz"><circle class="orb" r="178"/><circle class="orb" r="340"/>
       ${m.nodes.map(link).join('')}${m.nodes.map(node).join('')}
-      <g class="gn gn-center" data-gt="center" data-gid="${m.s.id}"><circle r="120" fill="url(#cg${uid})"/><circle class="pulse" r="46" stroke-width="2"/><circle class="pulse p2" r="46" stroke-width="2"/><circle r="46" fill="#0F2A1A" stroke="#00BF40" stroke-width="3"/>${giSvg(m.s,36,'#5CE08A')}<text y="72">${m.s.k}</text></g>
+      <g class="gn gn-center" data-gt="center" data-gid="${m.s.id}"><circle r="120" fill="url(#cg${uid})"/><circle class="pulse" r="46" stroke-width="2"/><circle class="pulse p2" r="46" stroke-width="2"/><circle class="cc" r="46" stroke="#00BF40" stroke-width="3"/>${giSvg(m.s,36,'var(--gx-ico)')}<text y="72">${m.s.k}</text></g>
     </g></svg>`;
 }
 let gxSeq = 0;
@@ -298,11 +298,11 @@ function mountGalaxy(el, sid, opts={}){
 let toastT;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),1800); }
 
-// ---------- 테마: B는 HDS 다크 고정, A·C는 토글 ----------
+// ---------- 테마: 세 안 모두 라이트 기본, 툴바에서 다크 토글 ----------
 function applyTheme(){
-  const t = S.v==='b' ? 'dark' : (store.get('hu3-theme')||'light');
+  const t = store.get('hu3-theme')||'light';
   document.documentElement.setAttribute('data-theme', t);
-  const tg = $('#tgTheme'); tg.disabled = S.v==='b'; tg.setAttribute('aria-pressed', t==='dark');
+  const tg = $('#tgTheme'); tg.setAttribute('aria-pressed', t==='dark');
 }
 
 // ---------- 렌더 ----------
@@ -352,5 +352,5 @@ addEventListener('hashchange', render);
 
 function initProto(){
   $('.proto .seg').addEventListener('click', e => { const b=e.target.closest('[data-view]'); if(b) go({v:b.dataset.view, o:null}); });
-  $('#tgTheme').onclick = () => { if (S.v==='b') return; store.set('hu3-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); applyTheme(); };
+  $('#tgTheme').onclick = () => { store.set('hu3-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); applyTheme(); };
 }

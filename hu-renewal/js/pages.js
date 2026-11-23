@@ -1,6 +1,6 @@
 // =========================================================
 // 안별 화면 — 같은 스킬 기반 학습 개념, 다른 스타일
-// A Quiet Index(흰 색인·상세=페이지) / B Night Atlas(다크 지도·상세=드로어) / C Bold Folio(잡지·상세=모달)
+// A Quiet Index(흰 색인·상세=페이지) / B Atlas(스킬 지도·상세=드로어) / C Bold Folio(잡지·상세=모달)
 // =========================================================
 const C = id => byId(id);
 const pick = HOME.pick.map(C), trend = HOME.trend.map(C), free = HOME.free.map(C);
@@ -27,10 +27,10 @@ const CONCEPTS = {
     flow:['홈: 이번 주 추천 + 스킬 바로가기 + 3열 순위','콘텐츠: 아이콘 카테고리 → 칩 필터 → 카드/리스트','스킬: 분야별 디렉터리 색인','상세: 별도 페이지 (오른쪽 고정 구매 박스)'],
     design:'흰 바탕 위에 상자 없는 썸네일 격자. 색은 콘텐츠 이미지에서만 오고, 휴넷 레드는 학습 시작·무료·상승 순위에만 써요. 구분은 선 대신 여백과 글자 크기 차이로 해요.',
     ref:'리디 메인 · 인프런 메인'},
-  b: {name:'B · Night Atlas', sub:'밤의 지도',
+  b: {name:'B · Atlas', sub:'스킬 지도',
     service:'"탐험하는 사람"을 위한 스킬 지도. 무엇을 배울지 아직 모르는 학습자가 스킬 갤럭시에서 출발해 연결된 콘텐츠와 커리어를 따라가며 학습 경로를 발견해요.',
     flow:['홈: 갤럭시 히어로 + 스킬 칩으로 중심 이동','콘텐츠: 좌측 필터 + 정렬 가능한 데이터 표 (학습 시간·학습자·스킬 포인트)','스킬: 왼쪽 목록 ↔ 오른쪽 지도 동기화','상세: 오른쪽 드로어 (목록 맥락 유지)'],
-    design:'HDS 다크 테마 고정. 스킬=초록, 콘텐츠=파랑, 커리어=주황처럼 HDS 상태색을 범례로만 써요. 숫자는 SUIT로 계기판처럼 정렬해요.',
+    design:'HDS 라이트 기본(툴바에서 다크 전환 가능). 옅은 회색 지도 바탕 위에 스킬=초록, 콘텐츠=파랑, 커리어=주황처럼 HDS 상태색을 범례로만 써요. 숫자는 SUIT로 계기판처럼 정렬해요.',
     ref:'인프런 강의 상세 · 현행 HU 스킬 갤럭시'},
   c: {name:'C · Bold Folio', sub:'굵은 화첩',
     service:'"영감을 얻는 사람"을 위한 학습 매거진. 에디터가 고른 이야기와 큰 순위, 인기도가 보이는 스킬 구름으로 가볍게 둘러보다가 관심이 생기면 모달에서 바로 시작해요.',
@@ -146,7 +146,7 @@ PAGES.a = {
 };
 
 // =========================================================
-// B · Night Atlas
+// B · Atlas
 // =========================================================
 const bHead = () => `<div class="b-thead"><span>콘텐츠</span><button class="r hide-md ${F.sort==='time'?'on':''}" data-f="sort=time">학습 시간</button><button class="r ${F.sort==='pop'?'on':''}" data-f="sort=pop">학습자</button><span class="r">스킬 포인트</span></div>`;
 const bRow = c => { const pt=firstPt(c); return `<article class="b-tr" data-c="${c.id}" tabindex="0"><div class="c">${th(c.img)}<div><div class="meta">${typeBadge(c)}<span>${c.cat}</span><span class="dot"></span>${priceHTML(c)}</div><h3 class="clamp2" style="margin-top:var(--spacing-1)">${c.title}</h3>${skTags(c,3)}</div></div><span class="v r hide-md">${c.t}</span><span class="v r">${c.n}명</span><div class="ptbar"><i><b style="width:${Math.min(100,pt)}%"></b></i><span>+${pt}</span></div></article>`; };
