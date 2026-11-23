@@ -353,4 +353,21 @@ addEventListener('hashchange', render);
 function initProto(){
   $('.proto .seg').addEventListener('click', e => { const b=e.target.closest('[data-view]'); if(b) go({v:b.dataset.view, o:null}); });
   $('#tgTheme').onclick = () => { store.set('hu3-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); applyTheme(); };
+  // 시안 툴바: 기본 숨김. 마우스가 화면 맨 위(12px)에 1.5초 머무르면 위→아래로 노출, 벗어나면 0.4초 뒤 숨김
+  const bar = $('.proto'), HOT = 12; let showT = null, hideT = null;
+  const show = () => { clearTimeout(hideT); bar.classList.add('on'); };
+  const hide = () => { if (bar.matches(':hover') || bar.contains(document.activeElement)) return; bar.classList.remove('on'); };
+  document.addEventListener('mousemove', e => {
+    if (bar.classList.contains('on')) return;
+    if (e.clientY <= HOT){ if (!showT) showT = setTimeout(()=>{ showT=null; show(); }, 1500); }
+    else { clearTimeout(showT); showT = null; }
+  });
+  document.documentElement.addEventListener('mouseleave', () => { clearTimeout(showT); showT = null; });
+  bar.addEventListener('mouseenter', () => clearTimeout(hideT));
+  bar.addEventListener('mouseleave', () => { clearTimeout(hideT); hideT = setTimeout(hide, 400); });
+  bar.addEventListener('focusin', show);
+  bar.addEventListener('focusout', () => { clearTimeout(hideT); hideT = setTimeout(hide, 400); });
+  // 터치 기기: 상단 손잡이 탭으로 열고, 바깥 탭으로 닫기
+  $('#protoHandle').addEventListener('click', show);
+  document.addEventListener('pointerdown', e => { if (e.pointerType!=='mouse' && bar.classList.contains('on') && !bar.contains(e.target) && !e.target.closest('#protoHandle')) bar.classList.remove('on'); });
 }
