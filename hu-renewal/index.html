@@ -5,32 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- 현행 서비스 CDN 이미지를 그대로 쓰기 위해 리퍼러 미전송 -->
 <meta name="referrer" content="no-referrer">
-<title>HU 홈 개선 시안</title>
+<title>HU 개선 시안</title>
+<!-- HDS 폰트: Pretendard(기본) · SUIT(숫자/영문) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
+<link rel="stylesheet" href="css/hds-tokens.css">
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <!-- 프로토타입 툴바 (시안 전용) -->
   <div class="proto" role="toolbar" aria-label="시안 전환">
-    <span class="brand-title">HU 개선 시안<small>v1</small></span>
-    <div class="tabs" role="tablist">
+    <span class="ttl">HU 개선 시안<small>v2 · HDS</small></span>
+    <div class="seg" role="tablist">
       <button role="tab" data-view="cur">현행</button>
-      <button role="tab" data-view="a">A 가치 제안형</button>
-      <button role="tab" data-view="b">B 탐색형</button>
-      <button role="tab" data-view="c">C 매거진형</button>
+      <button role="tab" data-view="a">A Quiet Index</button>
+      <button role="tab" data-view="b">B Night Atlas</button>
+      <button role="tab" data-view="c">C Bold Folio</button>
     </div>
     <span class="sp"></span>
-    <button class="tg" id="tgNotes" aria-pressed="false">📝 <span>설계 의도</span></button>
+    <button class="tg" id="tgConcept" aria-pressed="true">ⓘ <span>컨셉</span></button>
     <button class="tg" id="tgTheme" aria-pressed="false">◐ <span>다크</span></button>
   </div>
 
-  <!-- 서비스 셸 -->
-  <header class="gnb" id="gnb"></header>
+  <header class="hdr" id="hdr"></header>
   <div class="layout">
-    <nav class="side" id="side" aria-label="주 메뉴"></nav>
+    <nav id="rail" aria-label="주 메뉴"></nav>
     <main id="main"></main>
   </div>
-
+  <nav class="tabbar" id="tabbar" aria-label="하단 메뉴"></nav>
+  <div class="msheet" id="msheet"></div>
+  <aside class="concept" id="concept" aria-label="시안 컨셉"></aside>
   <div id="ov"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
