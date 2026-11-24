@@ -63,6 +63,31 @@ function renderConcept(){
 const aCard = c => `<article class="a-card" data-c="${c.id}" tabindex="0">${th(c.img,'',typeBadge(c))}<div class="b"><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
 const aRow = c => `<article class="a-row" data-c="${c.id}" tabindex="0">${th(c.img)}<div style="display:flex;flex-direction:column;gap:var(--spacing-1)"><div>${typeBadge(c)}</div><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
 const aCareer = c => `<article class="a-card" data-toast="커리어 페이지는 시안 범위 밖이에요">${th(c.img,'r43')}<div class="b"><h3>${c.k}</h3><div class="meta">${c.e}<span class="dot"></span>필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`;
+const aLi = c => `<article class="a-li" data-c="${c.id}" tabindex="0">${th(c.img)}<div><div class="tags">${typeBadge(c)}${badge(c.cat,'normal')}</div><h3 class="clamp2" style="margin-top:var(--spacing-2)">${c.title}</h3><p class="clamp2">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-2)">${metaHTML(c)}</div><div style="margin-top:var(--spacing-3)">${skTags(c,3)}</div></div><div class="r">${priceHTML(c)}</div></article>`;
+// 콘텐츠 목록 무한 스크롤 — 필터·정렬·보기 방식이 같으면 보던 개수를 유지
+const PG = {key:'', shown:0};
+const pgFirst = () => S.v==='a1' ? 15 : 16, pgStep = () => S.v==='a1' ? 10 : 12;
+const pgSync = () => { const k=[S.v,F.cat,F.type,F.price,F.sort,F.q,F.view].join('|'); if (PG.key!==k){ PG.key=k; PG.shown=pgFirst(); } };
+const pgTail = total => PG.shown < total ? `<div class="pg-more" id="pgMore" aria-hidden="true"></div>` : (total > pgFirst() ? `<p class="pg-end">모든 콘텐츠를 다 봤어요</p>` : '');
+const aSkel = () => F.view==='list' ? `<article class="a-li sk-card"><div class="th"></div><div><i></i><i></i><i class="s"></i></div></article>` : `<article class="a-card sk-card"><div class="th"></div><div class="b"><i></i><i class="s"></i></div></article>`;
+function bindMore(){
+  const m = $('#pgMore'); if (!m) return;
+  const io = new IntersectionObserver(es => {
+    if (!es[0].isIntersecting || m.dataset.busy) return;
+    m.dataset.busy = 1; io.disconnect();
+    const list = filtered(), box = $('#cList'), n = Math.min(pgStep(), list.length - PG.shown);
+    box.insertAdjacentHTML('beforeend', Array.from({length:n}, aSkel).join(''));   // 스켈레톤 먼저
+    setTimeout(() => {
+      if (!box.isConnected) return;   // 그 사이 화면이 바뀌면 중단
+      $$('.sk-card', box).forEach(e => e.remove());
+      const next = list.slice(PG.shown, PG.shown + n); PG.shown += n;
+      box.insertAdjacentHTML('beforeend', next.map(F.view==='list' ? aLi : aCard).join(''));
+      m.outerHTML = pgTail(list.length);
+      bindMore();
+    }, 400);
+  }, {rootMargin:'0px 0px 400px 0px'});
+  io.observe(m);
+}
 const aSc = s => `<button class="a-sc" data-s="${s.id}">${si(s,'lg')}<span>${s.k}</span></button>`;
 
 PAGES.a = {
@@ -86,7 +111,8 @@ PAGES.a = {
 
   // 콘텐츠 목록 (핵심): 아이콘 카테고리 → 칩 필터 → 카드/리스트
   contents(){
-    const list = filtered();
+    const list = filtered(); pgSync();
+    const shown = list.slice(0, PG.shown);
     return `<div class="wrap">
       <div class="a-pt"><h1>콘텐츠</h1><p class="t16 c60" style="margin-top:var(--spacing-1)">강의, 아티클, 영상, 카드뉴스를 한곳에서</p></div>
       <nav class="a-cats">${CATS.map((c,i)=>`<button class="a-cat ${F.cat===c?'on':''}" data-f="cat=${c}">${CAT_ICO[i]}<span>${c}</span></button>`).join('')}</nav>
@@ -94,8 +120,9 @@ PAGES.a = {
         <span class="sp"></span>${sortSel()}<div class="vsw"><button class="gicon ${F.view==='grid'?'on':''}" data-f="view=grid" aria-label="카드로 보기">${I.grid}</button><button class="gicon ${F.view==='list'?'on':''}" data-f="view=list" aria-label="리스트로 보기">${I.list}</button></div></div>
       <p class="a-count">총 <b>${list.length}</b>개</p>
       ${!list.length ? emptyState()
-        : F.view==='list' ? `<div class="a-list">${list.map(c=>`<article class="a-li" data-c="${c.id}" tabindex="0">${th(c.img)}<div><div class="tags">${typeBadge(c)}${badge(c.cat,'normal')}</div><h3 class="clamp2" style="margin-top:var(--spacing-2)">${c.title}</h3><p class="clamp2">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-2)">${metaHTML(c)}</div><div style="margin-top:var(--spacing-3)">${skTags(c,3)}</div></div><div class="r">${priceHTML(c)}</div></article>`).join('')}</div>`
-        : `<div class="a-g4">${list.map(aCard).join('')}</div>`}
+        : F.view==='list' ? `<div class="a-list" id="cList">${shown.map(aLi).join('')}</div>`
+        : `<div class="a-g4" id="cList">${shown.map(aCard).join('')}</div>`}
+      ${list.length ? pgTail(list.length) : ''}
       <div style="height:var(--spacing-24)"></div></div>`;
   },
 
@@ -147,7 +174,7 @@ PAGES.a = {
   login(){ return `<div class="a-login">${loginBody()}</div>`; },
   contentOverlay: c => PAGES.c.contentOverlay(c),
   skillOverlay: s => PAGES.c.skillOverlay(s),
-  after(){ bindSkq(); }
+  after(){ bindSkq(); bindMore(); }
 };
 
 // =========================================================
