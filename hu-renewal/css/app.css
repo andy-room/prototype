@@ -394,11 +394,11 @@ body[data-v="a"] #rail{display:none}
 .a-pt h1{font-size:var(--text-32);letter-spacing:var(--tracking-32);line-height:var(--leading-heading);font-weight:var(--font-bold)}
 .a-cats{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:var(--spacing-1);margin-top:var(--spacing-8);padding-bottom:var(--spacing-2)}
 .a-cat{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--spacing-2);padding:var(--spacing-2) 0 var(--spacing-2);color:var(--typography-black-60);font-size:var(--text-14);letter-spacing:var(--tracking-14);transition:color .15s}
-.a-cat .ic{display:grid;place-items:center;width:64px;height:64px;border-radius:20px;background:var(--cbg);box-shadow:inset 0 0 0 0 var(--cc);transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s}
+.a-cat .ic{display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:color-mix(in srgb,var(--cbg) 70%,#fff);box-shadow:inset 0 0 0 0 var(--cc);transition:transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s}
 .a-cat .ic svg{width:50px;height:50px;transition:transform .2s cubic-bezier(.2,.7,.2,1)}
 .a-cat:hover .ic{transform:translateY(-3px)}
 .a-cat:hover .ic svg{transform:scale(1.04)}
-.a-cat.on .ic{box-shadow:inset 0 0 0 2px var(--cc)}
+.a-cat.on .ic{box-shadow:inset 0 0 0 1.5px var(--cc)}
 .a-cat:hover{color:var(--typography-black-100)}
 .a-cat.on{color:var(--typography-black-100);font-weight:var(--font-bold)}
 
@@ -954,4 +954,43 @@ body[data-v="a1"].pn-full #main{height:calc(100vh - 72px);overflow:hidden;visibi
   .pn-h [data-pn-full]{display:none}
   .pn-cv{grid-template-columns:1fr}
   .pn-cv h1{font-size:var(--text-32)}
+}
+
+/* =========================================================
+   로그인 (A·A-1) — 배경 갤럭시 은은하게 + 가운데 카드
+   ========================================================= */
+.gx-light{
+  --gx-bg:transparent; --gx-fg:var(--typography-black-100); --gx-fg80:var(--typography-black-80); --gx-fg60:var(--typography-black-60); --gx-fg45:var(--typography-black-45);
+  --gx-node:#EEEEF0; --gx-core:#E6F9EC; --gx-ico:#00A336; --gx-orbit:rgba(0,0,0,.07); --gx-halo:#FFFFFF; --gx-link:.6; --gx-panel:rgba(255,255,255,.94); --gx-ghost:rgba(0,0,0,.05); --gx-line:var(--line-layout);
+}
+.a-login{position:relative;display:grid;place-items:center;min-height:calc(100vh - 116px);padding:var(--spacing-16) var(--spacing-6);overflow:hidden;background:radial-gradient(900px 600px at 50% 40%,#FFFFFF 0%,#F6F7F9 70%)}
+body[data-v="a1"] .a-login{min-height:calc(100vh - 72px)}
+.al-bg{position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;margin:-60vmax 0 0 -60vmax;opacity:.22;-webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 0,transparent 16%,#000 40%);mask-image:radial-gradient(circle at 50% 50%,transparent 0,transparent 16%,#000 40%);pointer-events:none;animation:al-spin 240s linear infinite}
+.al-bg .gxe{background:transparent}
+.al-bg .gx-tools,.al-bg .gx-leg,.al-bg .gx-info{display:none}
+.al-bg .gn-center .pulse{display:none}
+@keyframes al-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.al-bg{animation:none}}
+.al-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:var(--spacing-5);width:100%;max-width:440px}
+.a-login .login{max-width:none;padding:var(--spacing-12) var(--spacing-10) var(--spacing-8);border-radius:28px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(0,0,0,.04),0 24px 64px -16px rgba(20,24,40,.18)}
+.a-login .login .logo{font-size:var(--text-18)}
+.a-login .login h1{font-size:var(--text-28);letter-spacing:var(--tracking-28);margin-top:var(--spacing-5)}
+.a-login .login > p{margin-top:var(--spacing-3)}
+.a-login .sns{gap:var(--spacing-2-5,10px);margin-top:var(--spacing-8)}
+.a-login .or{margin:var(--spacing-5) 0}
+.a-login .btn.neutral{height:52px;border-radius:12px}
+.al-stats{display:inline-block;padding:var(--spacing-2) var(--spacing-4);border-radius:var(--radius-full);background:rgba(255,255,255,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:var(--text-13,13px);color:var(--typography-black-60)}
+.al-stats b{color:var(--typography-black-100);font-family:var(--font-number)}
+.al-stats .dot{display:inline-block;width:3px;height:3px;margin:0 var(--spacing-2);vertical-align:middle;border-radius:var(--radius-full);background:var(--line-strong)}
+.al-stats b{margin:0 1px 0 4px}
+/* SNS 버튼 공통 정리: 같은 높이·같은 정렬 */
+.sns button{display:flex;align-items:center;justify-content:center;height:52px;border-radius:12px;font-weight:var(--font-bold);transition:filter .15s,transform .15s}
+.sns button:hover{filter:brightness(.97)}
+.sns button:active{transform:scale(.99)}
+.sns .ico{display:grid;place-items:center;width:24px;height:24px;left:var(--spacing-5)}
+@media (max-width:767px){
+  .a-login{padding:var(--spacing-8) var(--spacing-4)}
+  .a-login .login{padding:var(--spacing-8) var(--spacing-5) var(--spacing-6);border-radius:20px}
+  .a-login .login h1{font-size:var(--text-24)}
+  .al-stats{font-size:var(--text-12)}
 }

@@ -191,11 +191,18 @@ function renderOverlay(){
   $$('#ov [data-gx-mini]').forEach(el=>mountGalaxy(el, +el.dataset.gxMini, {mini:true}));
   root.querySelector('.dr-b,.md-b')?.scrollTo(0,0);
 }
+// SNS 로고 (단색·간결 버전)
+const SNS_ICO = {
+  kakao: '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#191600" d="M12 3.5c-5 0-9 3.1-9 7 0 2.5 1.7 4.7 4.2 5.9l-.9 3.4c-.1.3.3.5.5.3l4-2.7c.4 0 .8.1 1.2.1 5 0 9-3.1 9-7s-4-7-9-7z"/></svg>',
+  naver: '<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#fff" d="M15.6 12.7 8.1 2H2v20h6.4V11.3L15.9 22H22V2h-6.4z"/></svg>',
+  google: '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.8c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.5 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.1c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7.1H2.1C1.4 8.6 1 10.2 1 12s.4 3.4 1.1 4.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.5 2.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>',
+  apple: '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#111" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>'
+};
 const loginBody = () => `<div class="login" style="margin:0 auto">
   <span class="logo" style="justify-content:center"><i></i>Hunet University</span>
   <h1>배움이 커리어가 되는 곳,<br>휴넷 유니버시티</h1>
   <p>새 계정을 만들거나 SNS 계정으로 간편하게 시작하세요.</p>
-  <div class="sns">${[['kakao','●','카카오로 계속하기'],['naver','N','네이버로 계속하기'],['google','G','Google로 계속하기'],['apple','','Apple로 계속하기']].map(([c,i,l])=>`<button class="${c}" data-toast="프로토타입이라 실제 로그인은 동작하지 않아요"><span class="ico">${i}</span>${l}</button>`).join('')}</div>
+  <div class="sns">${[['kakao',SNS_ICO.kakao,'카카오로 계속하기'],['naver',SNS_ICO.naver,'네이버로 계속하기'],['google',SNS_ICO.google,'Google로 계속하기'],['apple',SNS_ICO.apple,'Apple로 계속하기']].map(([c,i,l])=>`<button class="${c}" data-toast="프로토타입이라 실제 로그인은 동작하지 않아요"><span class="ico">${i}</span>${l}</button>`).join('')}</div>
   <div class="or">또는</div>
   <button class="btn neutral md full" data-toast="프로토타입이라 실제 로그인은 동작하지 않아요">이메일로 계속하기</button>
   <p class="foot">계속하면 <a href="javascript:void 0">이용약관</a> 및 <a href="javascript:void 0">개인정보 처리방침</a>에 동의하는 것으로 간주돼요.</p></div>`;

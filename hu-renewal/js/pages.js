@@ -171,7 +171,9 @@ PAGES.a = {
       ${sec(sh('함께 배우면 좋은 스킬') + `<div class="a-shortcuts">${relatedSkills(s).map(aSc).join('')}</div>`)}
     </div>`;
   },
-  login(){ return `<div class="a-login">${loginBody()}</div>`; },
+  // 로그인: 배경에 스킬 갤럭시를 은은하게 + 가운데 카드
+  login(){ return `<div class="a-login"><div class="al-bg gx-light" aria-hidden="true"><div data-gx-mini="2" style="position:absolute;inset:0"></div></div>
+    <div class="al-in">${loginBody()}<p class="al-stats">스킬 <b class="num">${SKILLS.length}</b>개<span class="dot"></span>콘텐츠 <b class="num">${CONTENTS.length}</b>개<span class="dot"></span>커리어 <b class="num">${CAREERS.length}</b>개가 연결되어 있어요</p></div></div>`; },
   contentOverlay: c => PAGES.c.contentOverlay(c),
   skillOverlay: s => PAGES.c.skillOverlay(s),
   after(){ bindSkq(); bindMore(); }
