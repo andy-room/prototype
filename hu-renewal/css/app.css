@@ -1132,3 +1132,5 @@ body.pn-resizing .pn-rz::after{background:var(--typography-black-100)}
 .si.sk-bolt{background:rgba(0,191,64,.1);color:#0B9A3C}
 /* 커리어 학습 경로 제목: 48 → 32px */
 .cp-hero h1{font-size:var(--text-32);letter-spacing:var(--tracking-32);margin-top:var(--spacing-1)}
+/* 스킬 상세 제목도 커리어와 동일하게 32px */
+.a1-sdp h1{font-size:var(--text-32);letter-spacing:var(--tracking-32);margin-top:var(--spacing-1)}
