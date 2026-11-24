@@ -1102,3 +1102,20 @@ body.pn-resizing .pn-rz::before{background-color:var(--typography-black-100);bac
 .pn-rz::before{left:3px;width:4px;height:28px;margin-top:-14px;border-radius:var(--radius-full);background:var(--line-strong);background-image:none;box-shadow:none;transition:background-color .15s}
 .pn-rz:hover::before,.pn-rz:focus-visible::before{background:var(--typography-black-45);box-shadow:none}
 body.pn-resizing .pn-rz::before{background:var(--typography-black-100);background-image:none}
+
+/* 가격: 유료만 금액 강조 */
+.bx-pr{font-size:var(--text-32);letter-spacing:var(--tracking-32);font-weight:var(--font-bold);line-height:1.2}
+.pn-f.free .btn,.mcta.free .btn{flex:1}
+/* 커리어: 썸네일 없는 직무명 중심 + 패널 학습 경로 */
+.cp-hero{grid-template-columns:1fr;max-width:880px}
+.cp-hero h1{font-size:var(--text-48)}
+.a1-dir.one{grid-template-columns:1fr}
+.pn-path{display:flex;flex-direction:column;gap:var(--spacing-2)}
+.pn-path li{position:relative;display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--spacing-3)}
+.pn-path li::before{content:"";position:absolute;left:15px;top:34px;bottom:-8px;width:2px;background:var(--line-layout)}
+.pn-path li:last-child::before{display:none}
+.pn-path .n{display:grid;place-items:center;width:32px;height:32px;border-radius:var(--radius-full);background:var(--typography-black-100);color:#fff;font-size:var(--text-12);font-weight:var(--font-bold)}
+.pn-psk{display:inline-flex;align-items:center;gap:var(--spacing-2);min-height:32px;font-size:var(--text-18);font-weight:var(--font-bold)}
+.pn-psk:hover{text-decoration:underline;text-underline-offset:4px}
+.pn-path .pn-rows .a-row{grid-template-columns:96px minmax(0,1fr);padding-top:var(--spacing-1)}
+.pn-path .pn-rows .a-row h3{font-size:var(--text-14)}

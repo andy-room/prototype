@@ -81,7 +81,7 @@ const openPane = (kind, id) => { if (fromPane && S.o) PN.push({o:S.o, full:S.ful
 const openContent = id => S.v==='a1' ? openPane('content', id) : PAGE_DETAIL(S.v) ? go({page:'content', id, o:null}) : go({o:'content:'+id});
 const openSkill   = id => S.v==='a1' ? openPane('skill', id)   : PAGE_DETAIL(S.v) ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
 // A-1: 패널 안에서 누르면 커리어 패널, 그 밖에서는 학습 경로 페이지
-const openCareer  = id => S.v==='a1' ? (fromPane ? openPane('career', id) : go({page:'career', id, o:null, full:false})) : toast('커리어 페이지는 시안 범위 밖이에요');
+const openCareer  = id => S.v==='a1' ? openPane('career', id) : toast('커리어 페이지는 시안 범위 밖이에요');
 const openLogin   = () => S.v==='c' ? go({o:'login'}) : go({page:'login', id:null, o:null});
 const openGalaxy  = (id=2) => go({o:'galaxy:'+id});
 const closeOv     = () => { PN.length = 0; go({o:null, full:false}); };
@@ -130,8 +130,8 @@ const mins = t => { const h=+(t.match(/(\d+)시간/)||[0,0])[1], m=+(t.match(/(\
 
 // ---------- 셸: 안마다 다른 GNB, 기능은 동일 ----------
 const NAV = [['home','홈',I.home],['contents','콘텐츠',I.play],['careers','커리어',I.brief],['skills','스킬',I.bolt]];
-// A-1은 커리어 중심: 커리어 페이지가 있고 스킬 메뉴는 없음 (스킬은 패널로만)
-const navList = () => S.v==='a1' ? NAV.filter(([k])=>k!=='skills') : NAV;
+// A-1: 커리어 페이지 있음 (상세는 오른쪽 패널)
+const navList = () => NAV;   // A-1도 스킬 메뉴 유지
 const navHref = k => k==='careers' && S.v!=='a1' ? 'javascript:void 0' : href({page:k, id:null, o:null});
 const navAttr = k => k==='careers' && S.v!=='a1' ? 'data-toast="커리어 페이지는 시안 범위 밖이에요"' : `data-nav="${k}"`;
 function renderShell(){
@@ -369,7 +369,7 @@ function renderPane(){
 function render(){
   S = parse();
   // A-1: 상세 주소로 들어오면 목록 + 펼친 패널로
-  if (S.v==='a1' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`, full:true});
+  if (S.v==='a1' && (S.page==='content'||S.page==='skill'||S.page==='career')) return go({page:S.page+'s', id:null, o:`${S.page}:${S.id}`, full:true});
   if (!PAGE_DETAIL(S.v) && S.v!=='cur' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`});
   if (S.v==='c' && S.page==='login') return go({page:'home', id:null, o:'login'});
   store.set('hu3-v', S.v);
