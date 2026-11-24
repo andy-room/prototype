@@ -1130,3 +1130,5 @@ body.pn-resizing .pn-rz::before{opacity:1;background:#fff;box-shadow:inset 0 0 0
 body.pn-resizing .pn-rz::after{background:var(--typography-black-100)}
 /* 스킬 = 초록 번개로 통일 */
 .si.sk-bolt{background:rgba(0,191,64,.1);color:#0B9A3C}
+/* 커리어 학습 경로 제목: 48 → 32px */
+.cp-hero h1{font-size:var(--text-32);letter-spacing:var(--tracking-32);margin-top:var(--spacing-1)}
