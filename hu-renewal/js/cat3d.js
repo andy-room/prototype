@@ -1,73 +1,90 @@
 // =========================================================
-// 콘텐츠 분류 2.5D 플랫 아이콘 (48 그리드, 외곽선 없이 면 + 명암 2단, 반사·그림자 없음, 채도 -10%)
+// 콘텐츠 분류 아이콘 — 그라데이션 면 + 반투명 레이어, 타일 없음 (48 그리드)
+// 한 색 안에서 밝은 → 진한 그라데이션, 포인트 요소는 1~2개만
 // =========================================================
 (() => {
-  // 돌출 블록: 아랫면(진한 색) 위에 윗면을 얹어 두께감
-  const blk = (x,y,w,h,top,side,r=2.5,d=2) => `<rect x="${x}" y="${y+d}" width="${w}" height="${h}" rx="${r}" fill="${side}"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${top}"/>`;
-  const hi = () => '';   // 하이라이트 반사 없음 (플랫)
-  const svg = (inner) => `<svg viewBox="0 0 48 48" width="44" height="44" aria-hidden="true">${inner}</svg>`;
-  const shadow = () => '';   // 바닥 그림자 없음 (플랫)
+  let n = 0;
+  // 그라데이션 정의 (아이콘마다 고유 id)
+  const lg = (c1, c2, dir='d') => {
+    const id = `cg${n++}`, xy = dir==='v' ? 'x1="0" y1="0" x2="0" y2="1"' : 'x1="0" y1="0" x2="1" y2="1"';
+    return { id, def:`<linearGradient id="${id}" ${xy}><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>` };
+  };
+  const svg = (defs, inner) => `<svg viewBox="0 0 48 48" width="52" height="52" aria-hidden="true"><defs>${defs.map(d=>d.def).join('')}</defs>${inner}</svg>`;
+  const star = (cx, cy, r, fill, op=1) => `<path d="M${cx} ${cy-r} C${cx+r*.16} ${cy-r*.16} ${cx+r*.16} ${cy-r*.16} ${cx+r} ${cy} C${cx+r*.16} ${cy+r*.16} ${cx+r*.16} ${cy+r*.16} ${cx} ${cy+r} C${cx-r*.16} ${cy+r*.16} ${cx-r*.16} ${cy+r*.16} ${cx-r} ${cy} C${cx-r*.16} ${cy-r*.16} ${cx-r*.16} ${cy-r*.16} ${cx} ${cy-r}Z" fill="${fill}" opacity="${op}"/>`;
 
-  window.CAT3D = [
-    // 전체: 평면 블록 4개 — 다른 분류 색을 채도 한 단계 낮춘 모던 톤
-    { c:'#3D4250', bg:'#F2F3F7', svg: svg(
-      `<rect x="9" y="9" width="13.5" height="13.5" rx="3" fill="#E46A78"/>`
-      + `<rect x="25.5" y="9" width="13.5" height="13.5" rx="3" fill="#4F7FE0"/>`
-      + `<rect x="9" y="25.5" width="13.5" height="13.5" rx="3" fill="#2FA97A"/>`
-      + `<rect x="25.5" y="25.5" width="13.5" height="13.5" rx="3" fill="#E8A93A"/>`) },
-    // 리더십: 산 정상의 깃발
-    { c:'#E43B4F', bg:'#FDE3E6', svg: svg(shadow(24,43,18)
-      + `<path d="M4 41 L19 17 L34 41Z" fill="#B3B6D0"/><path d="M19 17 L34 41 L24 41Z" fill="#969ABA"/>`
-      + `<path d="M16 41 L29 21 L44 41Z" fill="#8C90B6"/><path d="M29 21 L44 41 L35 41Z" fill="#6F759F"/>`
-      + `<path d="M25.6 26.2 L29 21 L32.4 26.2 L30.4 25 L29 26.6 L27.4 25Z" fill="#fff"/>`
-      + `<rect x="28.2" y="6" width="1.8" height="16" rx=".9" fill="#5A5E7F"/>`
-      + `<path d="M30 6.5 L41 9.8 L30 13.4Z" fill="#E43B4F"/><path d="M30 10.2 L41 9.8 L30 13.4Z" fill="#B8283B"/>`) },
-    // 비즈니스: 서류 가방
-    { c:'#325BCD', bg:'#E1E9FD', svg: svg(shadow()
-      + `<path d="M18 13 a3 3 0 0 1 3 -3 h6 a3 3 0 0 1 3 3 v3 h-3 v-2.5 h-6 V16 h-3Z" fill="#26408D"/>`
-      + blk(7,15,34,24,'#416EE4','#2C4AAA',3.5,2) + hi(10,18,10,2.5)
-      + `<rect x="7" y="24" width="34" height="3.2" fill="#3256B9"/>`
-      + blk(20.5,22,7,7,'#F3BA40','#CD921D',2,2)) },
-    // 업무생산성: 체크 클립보드
-    { c:'#1C965D', bg:'#E0F4EA', svg: svg(shadow()
-      + blk(10,8,28,33,'#25A96A','#187F4E',3.5,2)
-      + `<rect x="13.5" y="12" width="21" height="26" rx="3" fill="#fff"/>`
-      + blk(18,5.5,12,6,'#6B7084','#4C5063',3,2)
-      + `<path d="M17 19.5 l2.4 2.4 l4 -4.4" stroke="#25A96A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="25.5" y="18.6" width="6" height="2.4" rx="1.2" fill="#CED3DD"/>`
-      + `<path d="M17 28.5 l2.4 2.4 l4 -4.4" stroke="#25A96A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="25.5" y="27.6" width="6" height="2.4" rx="1.2" fill="#CED3DD"/>`) },
-    // AI: 칩 + 반짝이
-    { c:'#794EF4', bg:'#E9E1FD', svg: svg(shadow()
-      + [14,20,26,32].map(p=>`<rect x="${p}" y="6.5" width="2.4" height="5" rx="1.2" fill="#A487F7"/><rect x="${p}" y="36.5" width="2.4" height="5" rx="1.2" fill="#A487F7"/><rect x="6.5" y="${p}" width="5" height="2.4" rx="1.2" fill="#A487F7"/><rect x="36.5" y="${p}" width="5" height="2.4" rx="1.2" fill="#A487F7"/>`).join('')
-      + blk(10,10,28,27,'#8157F4','#5B34C9',4,2) + hi(13,13,9,2.5)
-      + `<path d="M24 15.5 C25 21 26.5 22.5 32 23.5 C26.5 24.5 25 26 24 31.5 C23 26 21.5 24.5 16 23.5 C21.5 22.5 23 21 24 15.5Z" fill="#F4CF4E"/>`
-      + `<path d="M38 3 C38.4 5.2 39 5.8 41.2 6.2 C39 6.6 38.4 7.2 38 9.4 C37.6 7.2 37 6.6 34.8 6.2 C37 5.8 37.6 5.2 38 3Z" fill="#F3BA40"/>`) },
-    // 데이터 사이언스: 입체 막대그래프
-    { c:'#179595', bg:'#DEF3F3', svg: svg(shadow(24,42,17)
-      + [[8,26,'#7DD4D4','#4DBBBB','#359C9C'],[19,16,'#41C5C5','#1FA6A6','#138686'],[30,8,'#1FA6A6','#138686','#0C6B6B']].map(([x,y,t,f,s])=>
-        `<path d="M${x} ${y} l5 -3 l5 3 l-5 3Z" fill="${t}"/><path d="M${x} ${y} l5 3 v${39-y-3} l-5 -3Z" fill="${f}"/><path d="M${x+5} ${y+3} l5 -3 v${39-y-3} l-5 3Z" fill="${s}"/>`).join('')) },
-    // 인문/교양: 펼친 책
-    { c:'#E27720', bg:'#FDEBDC', svg: svg(shadow(24,42,18)
-      + `<path d="M4 15 Q14 12 24 16 Q34 12 44 15 V38 Q34 35 24 39 Q14 35 4 38Z" fill="#C66116"/>`
-      + `<path d="M6 12 Q15 9.5 24 13.5 V36 Q15 32 6 34.5Z" fill="#FFFFFF"/><path d="M42 12 Q33 9.5 24 13.5 V36 Q33 32 42 34.5Z" fill="#EEE8E0"/>`
-      + `<path d="M10 17 Q15 15.6 20 17.4 M10 21.5 Q15 20.1 20 21.9 M10 26 Q15 24.6 20 26.4 M28 17.4 Q33 15.6 38 17 M28 21.9 Q33 20.1 38 21.5" stroke="#EB9C5A" stroke-width="1.6" fill="none" stroke-linecap="round"/>`
-      + `<path d="M31 9 h5 v11 l-2.5 -2 l-2.5 2Z" fill="#E27720"/>`) },
-    // 어학: 겹친 말풍선 (A / 가)
-    { c:'#2295E2', bg:'#DDEFFD', svg: svg(shadow(24,43,16)
-      + `<path d="M22 30 l-3 7 l8 -7Z" fill="#CD921D"/>` + blk(18,17,26,17,'#F3BA40','#CD921D',5,2)
-      + `<text x="31" y="29.6" text-anchor="middle" font-size="11" font-weight="800" fill="#6F4607" font-family="Pretendard Variable, sans-serif">가</text>`
-      + `<path d="M12 21 l-2 7 l8 -6Z" fill="#1B71B2"/>` + blk(4,6,26,18,'#32A2F2','#1B71B2',5,2) + hi(8,9,7,2.4)
-      + `<text x="17" y="19.4" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff" font-family="SUIT Variable, sans-serif">A</text>`) },
-    // 라이프: 화분
-    { c:'#5B9D25', bg:'#EAF4DE', svg: svg(shadow(24,43,13)
-      + `<path d="M24 26 C24 18 22 14 15 10 C13.5 17 16 23 24 26Z" fill="#78BC36"/><path d="M24 26 C19 22 16.5 17 15 10 C19 14 22 18 24 26Z" fill="#5B9D25"/>`
-      + `<path d="M24 26 C24 16 27 11 35 8 C36 16 32.5 23 24 26Z" fill="#8BD042"/><path d="M24 26 C28 20 31 14 35 8 C32 14 28.5 19 24 26Z" fill="#68AE2C"/>`
-      + `<rect x="23" y="20" width="2" height="8" fill="#4C8320"/>`
-      + `<path d="M13 27 h22 l-3 14 a2 2 0 0 1 -2 1.6 h-12 a2 2 0 0 1 -2 -1.6Z" fill="#D96941"/><path d="M24 27 h11 l-3 14 a2 2 0 0 1 -2 1.6 h-6Z" fill="#BA5532"/>`
-      + `<rect x="11.5" y="25" width="25" height="5" rx="2" fill="#E57B51"/>`) },
-    // 커리어: 계단 + 상승 화살표
-    { c:'#F46A4C', bg:'#FDE7E0', svg: svg(shadow(24,43,18)
-      + blk(6,31,12,9,'#F6876C','#D5583D',2,3) + blk(18,23,12,17,'#F47457','#CD4B32',2,3) + blk(30,15,12,25,'#F46A4C','#B8432C',2,3)
-      + hi(8,33,5,2) + hi(20,25,5,2) + hi(32,17,5,2)
-      + `<path d="M8 25 L19 15 L24 19 L35 8" stroke="#2B2D36" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M29.5 7 L36.5 6.6 L36 13.6" stroke="#2B2D36" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`) },
-  ];
+  const I = [];
+
+  // 전체: 반투명 사각 4개 그리드
+  { const a = lg('#4C8DFF','#2F5BFF'), b = lg('#7FD6FF','#3FB2FF');
+    I.push({ c:'#2F5BFF', svg: svg([a,b],
+      `<rect x="6" y="6" width="17" height="17" rx="5" fill="url(#${a.id})"/>`
+      + `<rect x="25" y="6" width="17" height="17" rx="5" fill="url(#${b.id})" opacity=".85"/>`
+      + `<rect x="6" y="25" width="17" height="17" rx="5" fill="url(#${b.id})" opacity=".85"/>`
+      + `<rect x="25" y="25" width="17" height="17" rx="5" fill="url(#${a.id})"/>`) }); }
+
+  // 리더십: 깃발 2겹
+  { const a = lg('#FF6B81','#F2385A'), p = lg('#FFB3C0','#FF8FA3','v');
+    I.push({ c:'#F2385A', svg: svg([a,p],
+      `<rect x="10" y="5" width="3.4" height="38" rx="1.7" fill="url(#${p.id})"/>`
+      + `<path d="M13.4 10 C21 6 26 14 38 9 V27 C26 32 21 24 13.4 28Z" fill="#FF9AAC" opacity=".55" transform="translate(3 3)"/>`
+      + `<path d="M13.4 8 C21 4 26 12 38 7 V25 C26 30 21 22 13.4 26Z" fill="url(#${a.id})"/>`) }); }
+
+  // 비즈니스: 서류 가방 (반투명 앞판)
+  { const a = lg('#5A8CFF','#3148E6'), h = lg('#7FA6FF','#4A6BF0','v');
+    I.push({ c:'#3148E6', svg: svg([a,h],
+      `<path d="M17 14 V10.5 a3.5 3.5 0 0 1 3.5 -3.5 h7 a3.5 3.5 0 0 1 3.5 3.5 V14" fill="none" stroke="url(#${h.id})" stroke-width="3.4"/>`
+      + `<rect x="5" y="14" width="38" height="27" rx="7" fill="url(#${a.id})"/>`
+      + `<path d="M5 25 H43 V34 a7 7 0 0 1 -7 7 H12 a7 7 0 0 1 -7 -7Z" fill="#fff" opacity=".22"/>`
+      + `<rect x="20.5" y="22" width="7" height="6.5" rx="2" fill="#fff" opacity=".95"/>`) }); }
+
+  // 업무생산성: 겹친 종이 + 체크
+  { const a = lg('#34D399','#10A971');
+    I.push({ c:'#10A971', svg: svg([a],
+      `<rect x="15" y="5" width="26" height="32" rx="5" fill="#7EE8C0" opacity=".55"/>`
+      + `<rect x="7" y="11" width="28" height="32" rx="5" fill="url(#${a.id})"/>`
+      + `<path d="M14 27.5 l4.6 4.6 L28 22" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`) }); }
+
+  // AI: 반짝이 별 2개
+  { const a = lg('#A57CFF','#6A3DF5'), b = lg('#D4BFFF','#A57CFF');
+    I.push({ c:'#6A3DF5', svg: svg([a,b],
+      star(21, 27, 17, `url(#${a.id})`) + star(37, 11, 7.5, `url(#${b.id})`) + star(39, 33, 4, `url(#${b.id})`, .8)) }); }
+
+  // 데이터 사이언스: 반투명 막대
+  { const a = lg('#2DD4BF','#0EA5A0','v'), b = lg('#7CE7D9','#2DD4BF','v');
+    I.push({ c:'#0EA5A0', svg: svg([a,b],
+      `<rect x="5" y="24" width="7.5" height="18" rx="3.75" fill="url(#${b.id})" opacity=".7"/>`
+      + `<rect x="15" y="10" width="7.5" height="32" rx="3.75" fill="url(#${a.id})"/>`
+      + `<rect x="25" y="19" width="7.5" height="23" rx="3.75" fill="url(#${b.id})" opacity=".7"/>`
+      + `<rect x="35" y="6" width="7.5" height="36" rx="3.75" fill="url(#${a.id})"/>`) }); }
+
+  // 인문/교양: 펼친 책
+  { const a = lg('#FFB547','#FF8A1F'), b = lg('#FFD089','#FFB547');
+    I.push({ c:'#FF8A1F', svg: svg([a,b],
+      `<path d="M24 13 C18 8.5 11 8 4 10 V38 C11 36 18 36.5 24 41Z" fill="url(#${b.id})" opacity=".85"/>`
+      + `<path d="M24 13 C30 8.5 37 8 44 10 V38 C37 36 30 36.5 24 41Z" fill="url(#${a.id})"/>`
+      + `<path d="M30 9.4 V20 l3 -2.2 l3 2.2 V8.5" fill="#fff" opacity=".9"/>`) }); }
+
+  // 어학: 겹친 말풍선
+  { const a = lg('#4FC3FF','#1E88FF'), b = lg('#9BE0FF','#5CC8FF');
+    I.push({ c:'#1E88FF', svg: svg([a,b],
+      `<path d="M22 6 h14 a8 8 0 0 1 8 8 v4 a8 8 0 0 1 -8 8 h-1 l1 5 -6.5 -5 H22 a8 8 0 0 1 -8 -8 v-4 a8 8 0 0 1 8 -8Z" fill="url(#${b.id})" opacity=".75"/>`
+      + `<path d="M12 17 h14 a8 8 0 0 1 8 8 v5 a8 8 0 0 1 -8 8 H17 l-7 5 1.5 -5.4 A8 8 0 0 1 4 30 v-5 a8 8 0 0 1 8 -8Z" fill="url(#${a.id})"/>`
+      + `<rect x="10" y="24.5" width="16" height="3" rx="1.5" fill="#fff" opacity=".95"/><rect x="10" y="30" width="10" height="3" rx="1.5" fill="#fff" opacity=".75"/>`) }); }
+
+  // 라이프: 겹친 하트 2개 (뒤 하트 반투명)
+  { const a = lg('#FF8FB1','#FF4F7E'), b = lg('#FFC1D3','#FF8FB1');
+    const heart = (dx, dy, k, fill, op=1) => `<path transform="translate(${dx} ${dy}) scale(${k})" d="M20 36 C8 28.5 3 22.5 3 16 C3 11 6.8 7 11.6 7 C15 7 18 9 20 11.8 C22 9 25 7 28.4 7 C33.2 7 37 11 37 16 C37 22.5 32 28.5 20 36Z" fill="${fill}" opacity="${op}"/>`;
+    I.push({ c:'#FF4F7E', svg: svg([a,b],
+      heart(18, 2, .72, `url(#${b.id})`, .8) + heart(2, 8, 1, `url(#${a.id})`)) }); }
+
+  // 커리어: 계단 + 상승 화살표
+  { const a = lg('#7C83FF','#4B4FE0','v'), r = lg('#A78BFA','#6D5BF2');
+    I.push({ c:'#4B4FE0', svg: svg([a,r],
+      `<rect x="4" y="30" width="12" height="13" rx="3" fill="url(#${a.id})" opacity=".5"/>`
+      + `<rect x="18" y="22" width="12" height="21" rx="3" fill="url(#${a.id})" opacity=".75"/>`
+      + `<rect x="32" y="14" width="12" height="29" rx="3" fill="url(#${a.id})"/>`
+      + `<path d="M5 22 L20 9.5 L25 14 L35 5.5" fill="none" stroke="url(#${r.id})" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`
+      + `<path d="M29.5 4.5 L37 4 L36.5 11.5" fill="none" stroke="url(#${r.id})" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>`) }); }
+
+  window.CAT3D = I;
 })();
