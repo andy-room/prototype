@@ -110,7 +110,7 @@ const relatedSkills = s => {
   return [...fromC, ...SKILLS.filter(x=>x.g===s.g && x.id!==s.id && !fromC.includes(x))].slice(0,8);
 };
 const topSkills = n => [...SKILLS].sort((a,b)=>b.n-a.n).slice(0,n);
-const skillPtsHTML = c => `<div class="skp">${skillPts(c).map(({s,pt})=>`<button data-s="${s.id}">${si(s,'sm')}<span class="t16 w5">${s.k}</span><span class="bar"><i style="width:${Math.min(100,pt)}%"></i></span><span class="pt">+${pt}pt</span></button>`).join('')}</div>`;
+const skillPtsHTML = c => `<div class="skp">${skillPts(c).map(({s,pt})=>`<button data-s="${s.id}"><span class="si sm sk-bolt">${I.bolt}</span><span class="t16 w5">${s.k}</span><span class="bar"><i style="width:${Math.min(100,pt)}%"></i></span><span class="pt">+${pt}pt</span></button>`).join('')}</div>`;
 const currHTML = c => `<ol class="curr">${CURRICULUM(c).map((t,i)=>`<li><span class="n">${String(i+1).padStart(2,'0')}</span><span>${t}</span><span class="d">${c.type==='과정'?`${18+i*7}분`:''}</span></li>`).join('')}</ol>`;
 const factsKV = c => `<dl class="kv"><dt>형태</dt><dd>${c.type==='과정'?'온라인 강의':c.type}</dd><dt>학습 시간</dt><dd class="num">${c.t}</dd><dt>수강 기간</dt><dd>${c.type==='과정'?'제한 없음':'-'}</dd><dt>수료</dt><dd>${c.type==='과정'?'이수증 발급':'-'}</dd><dt>카테고리</dt><dd>${c.cat}</dd></dl>`;
 const bigPrice = c => c.p==='무료' ? `<span class="pr free t28">무료</span>${c.was?`<span class="t14 c45" style="text-decoration:line-through">${c.was}</span>`:''}` : c.p ? `<span class="pr t28">${c.p}</span>` : `<span class="pr t28">바로 보기</span>`;
