@@ -163,7 +163,7 @@ PAGES.a = {
       <nav class="crumb"><a href="${href({page:'skills',id:null})}">스킬</a>›<span>${s.g}</span></nav>
       <div class="a-sdp"><div>${si(s,'xl')}<h1>${s.k}</h1><div style="display:flex;align-items:center;gap:var(--spacing-2);margin-top:var(--spacing-1)"><span class="en">${s.e}</span>${badge(s.g,'normal')}</div>
         <p class="d">${skillDesc(s)}</p>
-        <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>학습자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>연결된 커리어</small></div></div>
+        <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>보유자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>연결된 커리어</small></div></div>
         <div style="display:flex;gap:var(--spacing-2);margin-top:var(--spacing-8)"><button class="btn primary md" data-scroll="sk-c">관련 콘텐츠 보기</button><button class="btn outline md" data-toast="관심 스킬에 추가했어요">${I.heart}관심 스킬</button></div></div>
         <div class="gxw"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div></div>
       ${sec(sh('이 스킬을 배울 수 있는 콘텐츠', `${cs.length}개`) + `<div class="a-g4">${cs.map(aCard).join('')}</div>`, 'id="sk-c"')}
@@ -224,7 +224,7 @@ PAGES.a1 = {
       <nav class="crumb"><a href="${href({page:'skills',id:null})}">스킬</a>›<span>${s.g}</span></nav>
       <div class="a-sdp a1-sdp"><div><span class="g">${sdot(s)}${s.g}</span><h1>${s.k}</h1>
         <p class="d">${skillDesc(s)}</p>
-        <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>학습자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>연결된 커리어</small></div></div>
+        <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>보유자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>연결된 커리어</small></div></div>
         <div style="display:flex;gap:var(--spacing-2);margin-top:var(--spacing-8)"><button class="btn primary md" data-scroll="sk-c">관련 콘텐츠 보기</button><button class="btn outline md" data-toast="관심 스킬에 추가했어요">${I.heart}관심 스킬</button></div></div>
         <div class="gxw"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div></div>
       ${sec(sh('이 스킬을 배울 수 있는 콘텐츠', `${cs.length}개`) + `<div class="a-g4">${cs.map(aCard).join('')}</div>`, 'id="sk-c"')}
@@ -263,7 +263,7 @@ PAGES.a1.pane = (kind, id, full, canBack) => {
     const s = skillById(id) || SKILLS[0], cs = contentsOfSkill(s), cars = careersOfSkill(s);
     if (full) body = PAGES.a1.skill(s.id);
     else body = `<div class="pn-sec"><span class="pn-g">${sdot(s)}${s.g}</span><h2 class="pn-t big">${s.k}</h2><p class="pn-d">${skillDesc(s)}</p>
-        ${pnStats([[s.n.toLocaleString(),'학습자'],[cs.length,'관련 콘텐츠'],[cars.length,'연결된 커리어']])}
+        ${pnStats([[s.n.toLocaleString(),'보유자'],[cs.length,'관련 콘텐츠'],[cars.length,'연결된 커리어']])}
         <div class="pn-gx"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div></div>
       <div class="pn-sec"><h3>이 스킬을 배울 수 있는 콘텐츠 <span class="num">${cs.length}</span></h3><div class="pn-rows">${cs.slice(0,6).map(aRow).join('')}</div></div>
       <div class="pn-sec"><h3>이 스킬이 필요한 커리어</h3><div class="pn-cars">${cars.map(pnCar).join('')}</div></div>
@@ -291,7 +291,7 @@ PAGES.a1.pane = (kind, id, full, canBack) => {
 const bHead = () => `<div class="b-thead"><span class="srt">콘텐츠<span class="dot"></span><button class="${F.sort==='pop'?'on':''}" data-f="sort=pop">인기순</button><button class="${F.sort==='time'?'on':''}" data-f="sort=time">학습 시간순</button></span><span class="r hide-md">학습 시간</span><span class="r">스킬 포인트</span></div>`;
 const bRow = c => { const pt=firstPt(c); return `<article class="b-tr" data-c="${c.id}" tabindex="0"><div class="c">${th(c.img)}<div><div class="meta">${typeBadge(c)}<span>${c.cat}</span><span class="dot"></span>${priceHTML(c)}</div><h3 class="clamp2" style="margin-top:var(--spacing-1)">${c.title}</h3>${skTags(c,3)}</div></div><span class="v r hide-md">${c.t}</span><div class="ptbar"><i><b style="width:${Math.min(100,pt)}%"></b></i><span>+${pt}</span></div></article>`; };
 const bSummary = s => { const cs=contentsOfSkill(s), cars=careersOfSkill(s); return `<div style="display:flex;gap:var(--spacing-3);align-items:center">${si(s)}<div><h3>${s.k}</h3><small>${s.e} · ${s.g}</small></div></div>
-  <div class="row"><div><b>${s.n.toLocaleString()}</b><span>학습자</span></div><div><b>${cs.length}</b><span>콘텐츠</span></div><div><b>${cars.length}</b><span>커리어</span></div></div>
+  <div class="row"><div><b>${s.n.toLocaleString()}</b><span>보유자</span></div><div><b>${cs.length}</b><span>콘텐츠</span></div><div><b>${cars.length}</b><span>커리어</span></div></div>
   <div style="display:flex;gap:var(--spacing-2)"><button class="btn primary xs" data-s="${s.id}">스킬 상세</button><button class="btn outline xs" data-galaxy="${s.id}">전체 화면</button></div>`; };
 
 PAGES.b = {
@@ -354,7 +354,7 @@ PAGES.b = {
     return `<div class="dim" data-close></div><aside class="drawer" role="dialog" aria-modal="true" aria-label="${s.k}">
       <div class="dr-h"><span class="t">스킬 · ${s.g}</span><button class="gicon" data-toast="관심 스킬에 추가했어요" aria-label="관심 스킬">${I.heart}</button><button class="gicon" data-close aria-label="닫기">${I.x}</button></div>
       <div class="dr-b"><div style="display:flex;gap:var(--spacing-4);align-items:center">${si(s,'lg')}<div><h1 class="t28 w7">${s.k}</h1><span class="t14 c45">${s.e}</span></div></div>
-        <div class="stats" style="margin-top:var(--spacing-6)"><div><b>${s.n.toLocaleString()}</b><small>학습자</small></div><div><b>${cs.length}</b><small>콘텐츠</small></div><div><b>${cars.length}</b><small>커리어</small></div></div>
+        <div class="stats" style="margin-top:var(--spacing-6)"><div><b>${s.n.toLocaleString()}</b><small>보유자</small></div><div><b>${cs.length}</b><small>콘텐츠</small></div><div><b>${cars.length}</b><small>커리어</small></div></div>
         <div class="tabs" style="margin-top:var(--spacing-6);box-shadow:inset 0 calc(-1 * var(--border-1)) 0 var(--line-layout)">${[['info','스킬 정보'],['contents',`콘텐츠 ${cs.length}`],['careers',`커리어 ${cars.length}`]].map(([k,l])=>`<button class="tab ${tab===k?'on':''}" data-f="bskTab=${k}">${l}</button>`).join('')}</div>
         ${tab==='info' ? `<p class="t16 c80" style="margin-top:var(--spacing-5)">${skillDesc(s)}</p><div style="position:relative;height:280px;border-radius:var(--radius-lg);overflow:hidden;margin-top:var(--spacing-5)"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" style="position:absolute;right:var(--spacing-3);bottom:var(--spacing-3);z-index:2" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div>
             <h2 class="t18 w7" style="margin:var(--spacing-8) 0 var(--spacing-3)">함께 배우면 좋은 스킬</h2><div class="chips">${relatedSkills(s).slice(0,6).map(x=>`<button class="chip option" data-s="${x.id}">${x.k}</button>`).join('')}</div>`
@@ -435,7 +435,7 @@ PAGES.c = {
     const cs = contentsOfSkill(s), cars = careersOfSkill(s);
     return `<div class="dim" data-close></div><div class="modal md" role="dialog" aria-modal="true" aria-label="${s.k}"><button class="gicon md-x" data-close aria-label="닫기">${I.x}</button>
       <div class="md-b"><div class="c-field" style="padding:var(--spacing-12) var(--spacing-10) var(--spacing-10)">${si(s,'lg')}<h1 class="t40 w7" style="margin-top:var(--spacing-4)">${s.k}</h1><div class="t16 c45">${s.e} · ${s.g}</div><p class="t16 c80" style="margin-top:var(--spacing-4)">${skillDesc(s)}</p>
-          <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>학습자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>커리어</small></div></div></div>
+          <div class="stats"><div><b>${s.n.toLocaleString()}</b><small>보유자</small></div><div><b>${cs.length}</b><small>관련 콘텐츠</small></div><div><b>${cars.length}</b><small>커리어</small></div></div></div>
         <div style="padding:var(--spacing-8) var(--spacing-10)"><div style="position:relative;height:300px;border-radius:var(--radius-lg);overflow:hidden"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" style="position:absolute;right:var(--spacing-3);bottom:var(--spacing-3);z-index:2" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div>
           <h2 class="t24 w7" style="margin:var(--spacing-10) 0 var(--spacing-6)">이 스킬을 배울 수 있는 콘텐츠</h2><div class="c-g3" style="grid-template-columns:repeat(2,minmax(0,1fr))">${cs.slice(0,4).map(cCard).join('')}</div>
           <h2 class="t24 w7" style="margin:var(--spacing-12) 0 var(--spacing-4)">함께 배우면 좋은 스킬</h2><div class="c-words">${relatedSkills(s).slice(0,6).map(cWord).join('')}</div></div></div></div>`;
