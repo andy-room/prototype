@@ -871,3 +871,87 @@ html.shot .th img{opacity:1}
   .a-cat .ic{width:56px;height:56px;border-radius:18px}
   .a-cat .ic svg{width:38px;height:38px}
 }
+
+/* =========================================================
+   A-1 오른쪽 패널 — 플로팅 아님. 같은 줄에서 본문을 밀어내며 등장
+   ========================================================= */
+#pane{display:none}
+body[data-v="a1"] .layout{grid-template-columns:88px minmax(0,1fr) auto}
+body[data-v="a1"] #main{container-type:inline-size;min-width:0}
+body[data-v="a1"] #pane{display:flex;flex-direction:column;position:sticky;top:72px;height:calc(100vh - 72px);width:0;overflow:hidden;background:var(--bg-surface);box-shadow:inset var(--border-1) 0 0 var(--line-layout);transition:width .32s cubic-bezier(.2,.7,.2,1)}
+body[data-v="a1"].pn-open #pane{width:480px}
+body[data-v="a1"].pn-full #pane{width:calc(100vw - 88px)}
+body[data-v="a1"].pn-full .layout{overflow:clip}
+body[data-v="a1"].pn-full #main{height:calc(100vh - 72px);overflow:hidden;visibility:hidden;transition:visibility 0s .32s}
+.pn-h{flex:none;display:flex;align-items:center;gap:var(--spacing-1);height:56px;padding:0 var(--spacing-3) 0 var(--spacing-5);box-shadow:0 var(--border-1) 0 var(--line-layout);min-width:480px}
+.pn-h .pn-k{font-size:var(--text-14);letter-spacing:var(--tracking-14);font-weight:var(--font-bold);color:var(--typography-black-60)}
+.pn-h .gicon:first-child{margin-left:calc(-1 * var(--spacing-3))}
+.pn-h .sp{flex:1}
+.pn-b{flex:1;overflow-y:auto;overscroll-behavior:contain;min-width:480px}
+.pn-b:not(.full){width:480px}
+.pn-b.full .wrap{max-width:1400px}
+.pn-b.full .crumb{display:none}
+#pane .a-tabs{top:0}
+#pane .a-buy{top:var(--spacing-6)}
+.pn-sec{padding:var(--spacing-6);border-top:var(--border-1) solid var(--line-layout)}
+.pn-sec:first-child{border-top:0}
+.pn-sec h3{font-size:var(--text-16);letter-spacing:var(--tracking-16);font-weight:var(--font-bold);margin-bottom:var(--spacing-3)}
+.pn-sec h3 .num{color:var(--typography-black-45);font-weight:var(--font-regular);margin-left:var(--spacing-1)}
+.pn-sec > .th{border-radius:var(--radius-lg)}
+.pn-t{font-size:var(--text-24);letter-spacing:var(--tracking-24);line-height:var(--leading-heading);font-weight:var(--font-bold);margin-top:var(--spacing-3);word-break:keep-all}
+.pn-t.big{font-size:var(--text-32);letter-spacing:var(--tracking-32);margin-top:var(--spacing-2)}
+.pn-d{font-size:var(--text-14);letter-spacing:var(--tracking-14);line-height:var(--leading-body);color:var(--typography-black-80);margin-top:var(--spacing-2)}
+.pn-g{display:inline-flex;align-items:center;gap:var(--spacing-2);margin-top:var(--spacing-4);font-size:var(--text-13,13px);color:var(--typography-black-60)}
+.pn-sec > .pn-g:first-child{margin-top:0}
+.pn-stats{display:flex;gap:var(--spacing-8);margin-top:var(--spacing-5)}
+.pn-stats b{display:block;font-family:var(--font-number);font-size:var(--text-24);font-weight:var(--font-bold);line-height:1.2}
+.pn-stats small{font-size:var(--text-12);color:var(--typography-black-45)}
+.pn-gx{position:relative;height:240px;margin-top:var(--spacing-5);border-radius:var(--radius-lg);overflow:hidden}
+.pn-gx .btn{position:absolute;right:var(--spacing-3);bottom:var(--spacing-3);z-index:2}
+.pn-rows{display:flex;flex-direction:column}
+.pn-rows .a-row{grid-template-columns:112px minmax(0,1fr)}
+.pn-chips{display:flex;flex-wrap:wrap;gap:var(--spacing-2)}
+.pn-chip{display:inline-flex;align-items:center;gap:var(--spacing-2);height:40px;padding:0 var(--spacing-4);border-radius:var(--radius-full);background:var(--bg-strong);font-size:var(--text-15,15px);font-weight:var(--font-bold);transition:background-color .15s}
+.pn-chip:hover{background:var(--bg-muted)}
+.pn-cars{display:flex;flex-direction:column;gap:var(--spacing-2)}
+.pn-car{display:grid;grid-template-columns:88px minmax(0,1fr);gap:var(--spacing-4);align-items:center;padding:var(--spacing-2);margin:0 calc(-1 * var(--spacing-2));border-radius:var(--radius-md);text-align:left;transition:background-color .15s}
+.pn-car:hover{background:var(--bg-ghost)}
+.pn-car .th{aspect-ratio:4/3;border-radius:var(--radius-md)}
+.pn-car b{display:block;font-size:var(--text-16);font-weight:var(--font-bold)}
+.pn-car small{font-size:var(--text-12);color:var(--typography-black-45)}
+.pn-f{flex:none;display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-4);min-width:480px;width:480px;padding:var(--spacing-4) var(--spacing-6);box-shadow:0 calc(-1 * var(--border-1)) 0 var(--line-layout);background:var(--bg-surface)}
+.pn-f .btn{min-width:160px}
+#pane .pn-wide{padding-top:var(--spacing-10)}
+.pn-cv{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:var(--spacing-10);align-items:center}
+.pn-cv .th{aspect-ratio:16/10;border-radius:var(--radius-lg)}
+.pn-cv h1{font-size:var(--text-48);letter-spacing:var(--tracking-48);line-height:var(--leading-heading);font-weight:var(--font-bold);margin-top:var(--spacing-2)}
+.pn-cv .pn-g{margin-top:0}
+/* 패널이 열려 선택된 항목 */
+.pn-sel{position:relative}
+.a-card.pn-sel .th,.a-row.pn-sel .th,.c-br.pn-sel .th{box-shadow:0 0 0 3px var(--typography-black-100)}
+.a1-tile.pn-sel,.a1-tsk.pn-sel{box-shadow:inset 0 0 0 2px var(--typography-black-100)}
+.a1-sk.pn-sel{background:var(--bg-muted)}
+/* 본문 폭에 맞춰 열 수 자동 조정 (패널이 열리면 본문이 좁아짐) */
+@container (max-width:1240px){
+  body[data-v="a1"] .a-pt ~ .a-g4,body[data-v="a1"] .a-g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .c-big-rank.a1-rank{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none}
+  .a1-top{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .a1-dir{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body[data-v="a1"] .a-cats{grid-template-columns:repeat(5,minmax(0,1fr));row-gap:var(--spacing-4)}
+}
+@container (max-width:1000px){
+  body[data-v="a1"] .a-pt ~ .a-g4,body[data-v="a1"] .a-g4{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .a1-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .a1-dir{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-v="a1"] .a-hero{grid-template-columns:1fr}
+}
+/* 모바일: 밀어낼 공간이 없어 전체 화면으로 */
+@media (max-width:1023px){
+  body[data-v="a1"] #pane{position:fixed;inset:0;z-index:85;width:100% !important;height:100%;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+  body[data-v="a1"].pn-open #pane{transform:none}
+  body[data-v="a1"].pn-full #main{visibility:visible;height:auto;overflow:visible}
+  .pn-h,.pn-b,.pn-b:not(.full),.pn-f{min-width:0;width:100%}
+  .pn-h [data-pn-full]{display:none}
+  .pn-cv{grid-template-columns:1fr}
+  .pn-cv h1{font-size:var(--text-32)}
+}

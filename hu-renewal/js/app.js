@@ -60,7 +60,9 @@ const si = (s, cls='') => `<span class="si gi${gIdx(s)} ${cls}">${sv(GI[gIdx(s)]
 const VIEWS = ['cur','a','a1','b','c'];
 const PAGE_DETAIL = v => v==='a' || v==='a1';  // 상세 = 별도 페이지인 안
 const PAGE_KEYS = ['home','contents','content','skills','skill','login'];
-let S = {v:'a', page:'home', id:null, o:null};
+let S = {v:'a', page:'home', id:null, o:null, full:false};
+const PN = [];            // A-1 오른쪽 패널 안에서 이동한 기록 (뒤로 가기용)
+let fromPane = false;     // 이번 클릭이 패널 안에서 일어났는지
 const F = {cat:'전체', type:'전체', price:'전체', sort:'pop', q:'', view:'grid', group:'전체', bsk:2, bskTab:'info'};
 let lastKey = '', lastShell = '';
 
@@ -68,17 +70,20 @@ function parse(){
   const h = decodeURIComponent(location.hash.slice(1));
   const [path, qs] = h.split('?');
   const [v, page, id] = (path||'').split('/');
-  return { v:VIEWS.includes(v)?v:(store.get('hu3-v')||'a'), page:PAGE_KEYS.includes(page)?page:'home', id:id||null, o:new URLSearchParams(qs||'').get('o') };
+  return { v:VIEWS.includes(v)?v:(store.get('hu3-v')||'a'), page:PAGE_KEYS.includes(page)?page:'home', id:id||null, o:new URLSearchParams(qs||'').get('o'), full:new URLSearchParams(qs||'').get('f')==='1' };
 }
-const href = (st={}) => { const s={...S,...st}; return `#${s.v}/${s.page}${s.id?'/'+s.id:''}${s.o?'?o='+s.o:''}`; };
+const href = (st={}) => { const s={...S,...st}; return `#${s.v}/${s.page}${s.id?'/'+s.id:''}${s.o?'?o='+s.o+(s.full?'&f=1':''):''}`; };
 const go = st => { const h = href(st); if (location.hash===h) render(); else location.hash = h; };
 
 // 안별 상세 노출: A=페이지, B=드로어, C=모달
-const openContent = id => PAGE_DETAIL(S.v) ? go({page:'content', id, o:null}) : go({o:'content:'+id});
-const openSkill   = id => PAGE_DETAIL(S.v) ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
+// A-1: 상세 = 오른쪽 패널 (본문을 밀어내며 등장, 펼치면 전체 화면)
+const openPane = (kind, id) => { if (fromPane && S.o) PN.push({o:S.o, full:S.full}); else PN.length = 0; go({o:`${kind}:${id}`, full: fromPane ? S.full : false}); };
+const openContent = id => S.v==='a1' ? openPane('content', id) : PAGE_DETAIL(S.v) ? go({page:'content', id, o:null}) : go({o:'content:'+id});
+const openSkill   = id => S.v==='a1' ? openPane('skill', id)   : PAGE_DETAIL(S.v) ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
+const openCareer  = id => S.v==='a1' ? openPane('career', id)  : toast('커리어 페이지는 시안 범위 밖이에요');
 const openLogin   = () => S.v==='c' ? go({o:'login'}) : go({page:'login', id:null, o:null});
 const openGalaxy  = (id=2) => go({o:'galaxy:'+id});
-const closeOv     = () => go({o:null});
+const closeOv     = () => { PN.length = 0; go({o:null, full:false}); };
 
 // ---------- HDS 기반 공통 조각 ----------
 // 썸네일: 로딩 중 스켈레톤 → 로드되면 페이드인 (실패 시 회색 면 유지)
@@ -170,7 +175,7 @@ function bindQForms(root){
 // ---------- 오버레이 ----------
 function renderOverlay(){
   const root = $('#ov');
-  if (!S.o || S.v==='cur'){ root.innerHTML=''; document.body.classList.remove('lock'); return; }
+  if (!S.o || S.v==='cur' || (S.v==='a1' && /^(content|skill|career):/.test(S.o))){ root.innerHTML=''; document.body.classList.toggle('lock', S.v==='a1' && !!S.o && innerWidth<=1023); return; }
   const [kind, id] = S.o.split(':');
   document.body.classList.add('lock');
   if (kind==='galaxy'){
@@ -311,8 +316,30 @@ function applyTheme(){
 }
 
 // ---------- 렌더 ----------
+// ---------- A-1 오른쪽 패널 ----------
+function renderPane(){
+  const pane = $('#pane'); if (!pane) return;
+  const on = S.v==='a1' && !!S.o && /^(content|skill|career):/.test(S.o);
+  document.body.classList.toggle('pn-open', on);
+  document.body.classList.toggle('pn-full', on && S.full);
+  $$('.pn-sel').forEach(e=>e.classList.remove('pn-sel'));
+  if (!on){ if (pane.dataset.key){ setTimeout(()=>{ if (!document.body.classList.contains('pn-open')) pane.innerHTML=''; }, 320); } pane.dataset.key=''; PN.length=0; return; }
+  const [kind, id] = S.o.split(':'), key = S.o + (S.full?'|f':'');
+  if (pane.dataset.key !== key){
+    const same = pane.dataset.key && pane.dataset.key.split('|')[0]===S.o;   // 펼치기/줄이기만 바뀐 경우
+    pane.innerHTML = PAGES.a1.pane(kind, +id, S.full, PN.length>0);
+    pane.dataset.key = key;
+    $$('#pane [data-gx-mini]').forEach(el=>mountGalaxy(el, +el.dataset.gxMini, {mini:true}));
+    if (!same) $('#pane .pn-b')?.scrollTo(0,0);
+  }
+  const attr = {content:'data-c', skill:'data-s', career:'data-career'}[kind];
+  $$(`#main [${attr}="${id}"]`).forEach(e=>e.classList.add('pn-sel'));
+}
+
 function render(){
   S = parse();
+  // A-1: 상세 주소로 들어오면 목록 + 펼친 패널로
+  if (S.v==='a1' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`, full:true});
   if (!PAGE_DETAIL(S.v) && S.v!=='cur' && (S.page==='content'||S.page==='skill')) return go({page:S.page==='content'?'contents':'skills', id:null, o:`${S.page}:${S.id}`});
   if (S.v==='c' && S.page==='login') return go({page:'home', id:null, o:'login'});
   store.set('hu3-v', S.v);
@@ -327,12 +354,17 @@ function render(){
   PAGES[S.v]?.after?.();
   bindQForms($('#main'));
   renderOverlay();
+  renderPane();
 }
 
 // ---------- 전역 이벤트 ----------
 document.addEventListener('click', e => {
   const t = e.target;
   if (!t.closest('.hp')){ $('#hpMenu')?.classList.remove('open'); $('#hpBtn')?.setAttribute('aria-expanded','false'); }
+  fromPane = !!t.closest('#pane');
+  if (t.closest('[data-pn-full]')) { e.preventDefault(); return go({full:!S.full}); }
+  if (t.closest('[data-pn-back]')) { e.preventDefault(); const p = PN.pop(); return p ? go(p) : closeOv(); }
+  const cr = t.closest('[data-career]'); if (cr) { e.preventDefault(); return openCareer(+cr.dataset.career); }
   const c = t.closest('[data-c]'); if (c && !t.closest('.gx-stage')) { e.preventDefault(); $('#msheet').classList.remove('open'); return openContent(+c.dataset.c); }
   const s = t.closest('[data-s]'); if (s && !t.closest('.gx-stage')) { e.preventDefault(); return openSkill(+s.dataset.s); }
   if (t.closest('[data-login]')) { e.preventDefault(); $('#msheet').classList.remove('open'); return openLogin(); }
@@ -353,7 +385,12 @@ document.addEventListener('keydown', e => {
   const i = '12345'.indexOf(e.key); if (i>-1) go({v:VIEWS[i], o:null});
 });
 document.addEventListener('change', e => { const f=e.target.closest('[data-fsel]'); if(f){ F[f.dataset.fsel]=f.value; render(); } });
-addEventListener('hashchange', render);
+addEventListener('hashchange', e => {
+  // A-1: 경로가 같고 패널(o·f)만 바뀌면 본문은 그대로 두고 패널만 갱신 (스크롤·무한 스크롤 유지)
+  const op = (new URL(e.oldURL).hash||'').split('?')[0], np = location.hash.split('?')[0];
+  if (op===np && np.startsWith('#a1/')){ S = parse(); renderOverlay(); renderPane(); syncShell(); return; }
+  render();
+});
 
 function initProto(){
   $('.proto .seg').addEventListener('click', e => { const b=e.target.closest('[data-view]'); if(b) go({v:b.dataset.view, o:null}); });

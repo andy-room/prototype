@@ -62,7 +62,7 @@ function renderConcept(){
 // =========================================================
 const aCard = c => `<article class="a-card" data-c="${c.id}" tabindex="0">${th(c.img,'',typeBadge(c))}<div class="b"><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
 const aRow = c => `<article class="a-row" data-c="${c.id}" tabindex="0">${th(c.img)}<div style="display:flex;flex-direction:column;gap:var(--spacing-1)"><div>${typeBadge(c)}</div><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
-const aCareer = c => `<article class="a-card" data-toast="커리어 페이지는 시안 범위 밖이에요">${th(c.img,'r43')}<div class="b"><h3>${c.k}</h3><div class="meta">${c.e}<span class="dot"></span>필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`;
+const aCareer = c => `<article class="a-card" data-career="${c.id}" tabindex="0">${th(c.img,'r43')}<div class="b"><h3>${c.k}</h3><div class="meta">${c.e}<span class="dot"></span>필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`;
 const aLi = c => `<article class="a-li" data-c="${c.id}" tabindex="0">${th(c.img)}<div><div class="tags">${typeBadge(c)}${badge(c.cat,'normal')}</div><h3 class="clamp2" style="margin-top:var(--spacing-2)">${c.title}</h3><p class="clamp2">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-2)">${metaHTML(c)}</div><div style="margin-top:var(--spacing-3)">${skTags(c,3)}</div></div><div class="r">${priceHTML(c)}</div></article>`;
 // 콘텐츠 목록 무한 스크롤 — 필터·정렬·보기 방식이 같으면 보던 개수를 유지
 const PG = {key:'', shown:0};
@@ -230,6 +230,56 @@ PAGES.a1 = {
       ${sec(sh('함께 배우면 좋은 스킬') + `<div class="a1-tiles">${relatedSkills(s).map(a1Tile).join('')}</div>`)}
     </div>`;
   }
+};
+
+// ---------- A-1 오른쪽 패널 내용 ----------
+const ICO_MAX = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>';
+const ICO_MIN = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg>';
+const careerById = id => CAREERS.find(x=>x.id===id) || CAREERS[0];
+const careerContents = c => CONTENTS.filter(x=>x.sk.some(k=>c.sk.includes(k)));
+const pnCar = c => `<button class="pn-car" data-career="${c.id}">${th(c.img)}<span><b>${c.k}</b><small>필요 스킬 <span class="num">${c.sk.length}</span>개</small></span></button>`;
+const pnChip = s => `<button class="pn-chip" data-s="${s.id}">${sdot(s)}${s.k}</button>`;
+const pnStats = arr => `<div class="pn-stats">${arr.map(([v,l])=>`<div><b class="num">${v}</b><small>${l}</small></div>`).join('')}</div>`;
+PAGES.a1.pane = (kind, id, full, canBack) => {
+  const head = `<div class="pn-h">${canBack?`<button class="gicon" data-pn-back aria-label="뒤로">${I.back}</button>`:''}
+    <span class="pn-k">${{content:'콘텐츠',skill:'스킬',career:'커리어'}[kind]}</span><span class="sp"></span>
+    <button class="gicon" data-pn-full aria-label="${full?'줄이기':'펼치기'}" title="${full?'줄이기':'펼치기'}">${full?ICO_MIN:ICO_MAX}</button>
+    <button class="gicon" data-close aria-label="닫기" title="닫기">${I.x}</button></div>`;
+  let body = '', foot = '';
+  if (kind==='content'){
+    const c = C(id) || CONTENTS[0];
+    if (full) body = PAGES.a.content(c.id);
+    else {
+      body = `<div class="pn-sec">${th(c.img)}<div class="tags" style="margin-top:var(--spacing-4)">${typeBadge(c)}${badge(c.cat,'normal')}</div>
+        <h2 class="pn-t">${c.title}</h2><p class="pn-d">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-3)">${metaHTML(c)}</div></div>
+        <div class="pn-sec"><h3>학습하면 얻는 스킬 <span class="num">${c.sk.length}</span></h3>${skillPtsHTML(c)}</div>
+        <div class="pn-sec"><h3>커리큘럼 <span class="num">${CURRICULUM(c).length}</span></h3>${currHTML(c)}</div>
+        <div class="pn-sec"><h3>함께 보면 좋은 콘텐츠</h3><div class="pn-rows">${relatedOf(c,4).map(aRow).join('')}</div></div>`;
+      foot = `<div class="pn-f"><div class="t20">${priceHTML(c)}</div><button class="btn primary md" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button></div>`;
+    }
+  } else if (kind==='skill'){
+    const s = skillById(id) || SKILLS[0], cs = contentsOfSkill(s), cars = careersOfSkill(s);
+    if (full) body = PAGES.a1.skill(s.id);
+    else body = `<div class="pn-sec"><span class="pn-g">${sdot(s)}${s.g}</span><h2 class="pn-t big">${s.k}</h2><p class="pn-d">${skillDesc(s)}</p>
+        ${pnStats([[s.n.toLocaleString(),'학습자'],[cs.length,'관련 콘텐츠'],[cars.length,'연결된 커리어']])}
+        <div class="pn-gx"><div data-gx-mini="${s.id}" style="position:absolute;inset:0"></div><button class="btn outline xs" data-galaxy="${s.id}">${I.galaxy}갤럭시에서 보기</button></div></div>
+      <div class="pn-sec"><h3>이 스킬을 배울 수 있는 콘텐츠 <span class="num">${cs.length}</span></h3><div class="pn-rows">${cs.slice(0,6).map(aRow).join('')}</div></div>
+      <div class="pn-sec"><h3>이 스킬이 필요한 커리어</h3><div class="pn-cars">${cars.map(pnCar).join('')}</div></div>
+      <div class="pn-sec"><h3>함께 배우면 좋은 스킬</h3><div class="pn-chips">${relatedSkills(s).slice(0,8).map(pnChip).join('')}</div></div>`;
+  } else {
+    const c = careerById(id), sks = c.sk.map(skillByName).filter(Boolean), cs = careerContents(c), others = CAREERS.filter(x=>x.id!==c.id);
+    const desc = `${c.k} 직무에서 자주 쓰는 핵심 스킬과, 그 스킬을 올릴 수 있는 콘텐츠를 모았어요.`;
+    body = full
+      ? `<div class="wrap pn-wide"><div class="pn-cv">${th(c.img)}<div><span class="pn-g">커리어</span><h1>${c.k}</h1><p class="pn-d">${desc}</p>${pnStats([[sks.length,'필요 스킬'],[cs.length,'추천 콘텐츠']])}</div></div>
+          ${sec(sh('필요한 스킬', `${sks.length}개`) + `<div class="a1-tiles">${sks.map(a1Tile).join('')}</div>`)}
+          ${sec(sh('추천 콘텐츠', `${cs.length}개`) + `<div class="a-g4">${cs.slice(0,8).map(aCard).join('')}</div>`)}
+          ${sec(sh('함께 살펴보면 좋은 커리어') + `<div class="a-g4">${others.map(aCareer).join('')}</div>`)}</div>`
+      : `<div class="pn-sec">${th(c.img,'r43')}<h2 class="pn-t big">${c.k}</h2><p class="pn-d">${desc}</p>${pnStats([[sks.length,'필요 스킬'],[cs.length,'추천 콘텐츠']])}</div>
+        <div class="pn-sec"><h3>필요한 스킬 <span class="num">${sks.length}</span></h3><div class="pn-chips">${sks.map(pnChip).join('')}</div></div>
+        <div class="pn-sec"><h3>추천 콘텐츠</h3><div class="pn-rows">${cs.slice(0,5).map(aRow).join('')}</div></div>
+        <div class="pn-sec"><h3>함께 살펴보면 좋은 커리어</h3><div class="pn-cars">${others.slice(0,3).map(pnCar).join('')}</div></div>`;
+  }
+  return head + `<div class="pn-b ${full?'full':''}">${body}</div>` + foot;
 };
 
 // =========================================================
