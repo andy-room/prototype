@@ -9,12 +9,12 @@
   const shadow = () => '';   // 바닥 그림자 없음 (플랫)
 
   window.CAT3D = [
-    // 전체: 색 블록 4개
-    { c:'#5B5BE6', bg:'#E3E3FD', svg: svg(shadow(24,43,16)
-      + blk(7,8,15,15,'#F45A6D','#CE3D51') + hi(10,10.5,6,2.5)
-      + blk(26,8,15,15,'#4088F3','#2A67C5') + hi(29,10.5,6,2.5)
-      + blk(7,25,15,15,'#29B575','#188D58') + hi(10,27.5,6,2.5)
-      + blk(26,25,15,15,'#F3BA40','#CD921D') + hi(29,27.5,6,2.5)) },
+    // 전체: 평면 그레이 블록 4개 (두께 없음, 한 칸만 진하게)
+    { c:'#5A5D66', bg:'#F2F3F5', svg: svg(
+      `<rect x="9" y="9" width="13.5" height="13.5" rx="3" fill="#B9BCC4"/>`
+      + `<rect x="25.5" y="9" width="13.5" height="13.5" rx="3" fill="#8A8E99"/>`
+      + `<rect x="9" y="25.5" width="13.5" height="13.5" rx="3" fill="#8A8E99"/>`
+      + `<rect x="25.5" y="25.5" width="13.5" height="13.5" rx="3" fill="#5A5D66"/>`) },
     // 리더십: 산 정상의 깃발
     { c:'#E43B4F', bg:'#FDE3E6', svg: svg(shadow(24,43,18)
       + `<path d="M4 41 L19 17 L34 41Z" fill="#B3B6D0"/><path d="M19 17 L34 41 L24 41Z" fill="#969ABA"/>`
