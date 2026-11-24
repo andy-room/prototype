@@ -115,7 +115,7 @@ PAGES.a = {
     const shown = list.slice(0, PG.shown);
     return `<div class="wrap">
       <div class="a-pt"><h1>콘텐츠</h1><p class="t16 c60" style="margin-top:var(--spacing-1)">강의, 아티클, 영상, 카드뉴스를 한곳에서</p></div>
-      <nav class="a-cats">${CATS.map((c,i)=>`<button class="a-cat ${F.cat===c?'on':''}" data-f="cat=${c}">${CAT_ICO[i]}<span>${c}</span></button>`).join('')}</nav>
+      <nav class="a-cats">${CATS.map((c,i)=>`<button class="a-cat ${F.cat===c?'on':''}" data-f="cat=${c}" style="--cc:${CAT3D[i].c};--cbg:${CAT3D[i].bg}"><span class="ic">${CAT3D[i].svg}</span><span>${c}</span></button>`).join('')}</nav>
       <div class="a-bar"><div class="chips">${typeChips()}</div><span style="width:var(--border-1);height:16px;background:var(--line-strong);margin:0 var(--spacing-2)"></span><div class="chips">${priceChips('')}${qChip()}</div>
         <span class="sp"></span>${sortSel()}<div class="vsw"><button class="gicon ${F.view==='grid'?'on':''}" data-f="view=grid" aria-label="카드로 보기">${I.grid}</button><button class="gicon ${F.view==='list'?'on':''}" data-f="view=list" aria-label="리스트로 보기">${I.list}</button></div></div>
       <p class="a-count">총 <b>${list.length}</b>개</p>
