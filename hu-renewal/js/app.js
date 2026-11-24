@@ -324,6 +324,24 @@ function applyTheme(){
 
 // ---------- 렌더 ----------
 // ---------- A-1 오른쪽 패널 ----------
+// 패널 폭: 경계선 드래그로 조절, 마지막 폭을 기억 (localStorage)
+const PW_KEY = 'hu3-pw', PW_DEF = 480, PW_MIN = 400;
+const pwMax = () => Math.max(PW_MIN, document.documentElement.clientWidth - 88 - 480);
+let PW = PW_DEF;
+const setPW = w => { PW = Math.round(Math.min(pwMax(), Math.max(PW_MIN, w))); document.body.style.setProperty('--pw', PW+'px'); return PW; };
+const savePW = () => store.set(PW_KEY, PW);
+document.addEventListener('pointerdown', e => {
+  const h = e.target.closest('.pn-rz'); if (!h || e.button!==0) return;
+  e.preventDefault(); h.setPointerCapture?.(e.pointerId);
+  document.body.classList.add('pn-resizing');
+  const right = document.documentElement.clientWidth;
+  const move = ev => setPW(right - ev.clientX);
+  const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remove('pn-resizing'))); savePW(); };
+  document.addEventListener('pointermove', move); document.addEventListener('pointerup', up);
+});
+document.addEventListener('dblclick', e => { if (e.target.closest('.pn-rz')){ setPW(PW_DEF); savePW(); } });
+document.addEventListener('keydown', e => { if (!e.target.closest?.('.pn-rz')) return; if (e.key==='ArrowLeft'||e.key==='ArrowRight'){ e.preventDefault(); setPW(PW + (e.key==='ArrowLeft'?16:-16)); savePW(); } });
+addEventListener('resize', () => setPW(PW));
 function renderPane(){
   const pane = $('#pane'); if (!pane) return;
   const on = S.v==='a1' && !!S.o && /^(content|skill|career):/.test(S.o);
@@ -400,6 +418,7 @@ addEventListener('hashchange', e => {
 });
 
 function initProto(){
+  setPW(+store.get(PW_KEY) || PW_DEF);
   $('.proto .seg').addEventListener('click', e => { const b=e.target.closest('[data-view]'); if(b) go({v:b.dataset.view, o:null}); });
   $('#tgTheme').onclick = () => { store.set('hu3-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); applyTheme(); };
   // 시안 툴바: 기본 숨김. 마우스가 화면 맨 위(12px)에 1.5초 머무르면 위→아래로 노출, 벗어나면 0.4초 뒤 숨김

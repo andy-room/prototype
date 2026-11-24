@@ -116,9 +116,9 @@ PAGES.a = {
     return `<div class="wrap">
       <div class="a-pt"><h1>콘텐츠</h1><p class="t16 c60" style="margin-top:var(--spacing-1)">강의, 아티클, 영상, 카드뉴스를 한곳에서</p></div>
       <nav class="a-cats">${CATS.map((c,i)=>`<button class="a-cat ${F.cat===c?'on':''}" data-f="cat=${c}" style="--cc:${CAT3D[i].c};--cbg:${CAT3D[i].bg}"><span class="ic">${CAT3D[i].svg}</span><span>${c}</span></button>`).join('')}</nav>
-      <div class="a-bar"><div class="chips">${typeChips()}</div><span style="width:var(--border-1);height:16px;background:var(--line-strong);margin:0 var(--spacing-2)"></span><div class="chips">${priceChips('')}${qChip()}</div>
-        <span class="sp"></span>${sortSel()}<div class="vsw"><button class="gicon ${F.view==='grid'?'on':''}" data-f="view=grid" aria-label="카드로 보기">${I.grid}</button><button class="gicon ${F.view==='list'?'on':''}" data-f="view=list" aria-label="리스트로 보기">${I.list}</button></div></div>
-      <p class="a-count">총 <b>${list.length}</b>개</p>
+      <div class="a-bar"><div class="a-fl"><div class="chips">${typeChips()}</div><span class="a-div"></span><div class="chips">${priceChips('')}${qChip()}</div></div>
+        <span class="sp"></span><div class="a-tools">${sortSel()}<div class="vsw"><button class="gicon ${F.view==='grid'?'on':''}" data-f="view=grid" aria-label="카드로 보기">${I.grid}</button><button class="gicon ${F.view==='list'?'on':''}" data-f="view=list" aria-label="리스트로 보기">${I.list}</button></div></div>
+        <p class="a-count">총 <b>${list.length}</b>개</p></div>
       ${!list.length ? emptyState()
         : F.view==='list' ? `<div class="a-list" id="cList">${shown.map(aLi).join('')}</div>`
         : `<div class="a-g4" id="cList">${shown.map(aCard).join('')}</div>`}
@@ -281,7 +281,8 @@ PAGES.a1.pane = (kind, id, full, canBack) => {
         <div class="pn-sec"><h3>추천 콘텐츠</h3><div class="pn-rows">${cs.slice(0,5).map(aRow).join('')}</div></div>
         <div class="pn-sec"><h3>함께 살펴보면 좋은 커리어</h3><div class="pn-cars">${others.slice(0,3).map(pnCar).join('')}</div></div>`;
   }
-  return head + `<div class="pn-b ${full?'full':''}">${body}</div>` + foot;
+  const rz = full ? '' : `<div class="pn-rz" role="separator" aria-orientation="vertical" aria-label="패널 폭 조절 (더블클릭: 기본 폭)" tabindex="0" title="드래그해서 폭 조절 · 더블클릭하면 기본 폭"></div>`;
+  return rz + head + `<div class="pn-b ${full?'full':''}">${body}</div>` + foot;
 };
 
 // =========================================================
