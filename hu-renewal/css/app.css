@@ -1080,3 +1080,25 @@ body.pn-resizing #main{pointer-events:none}
 .pn-rz::before{content:"";position:absolute;left:2px;top:50%;width:8px;height:44px;margin-top:-22px;border-radius:var(--radius-full);background:#fff radial-gradient(circle,var(--typography-black-45) 1.2px,transparent 1.6px) center/8px 8px repeat-y;background-size:8px 8px;background-position:center 14px;box-shadow:0 0 0 1px var(--line-strong),0 2px 6px rgba(20,24,40,.08);transition:box-shadow .15s,background-color .15s}
 .pn-rz:hover::before,.pn-rz:focus-visible::before{box-shadow:0 0 0 1px var(--typography-black-60),0 2px 8px rgba(20,24,40,.14)}
 body.pn-resizing .pn-rz::before{background-color:var(--typography-black-100);background-image:radial-gradient(circle,#fff 1.2px,transparent 1.6px);box-shadow:none}
+
+/* 콘텐츠 상세 구매 박스: 정보(위) → 가격·버튼(아래 회색 구역) */
+.a-buy{padding:0;gap:0;overflow:hidden}
+.bx-info{padding:var(--spacing-6)}
+.bx-info h4{font-size:var(--text-14);letter-spacing:var(--tracking-14);font-weight:var(--font-bold);color:var(--typography-black-60);margin-bottom:var(--spacing-4)}
+.a-buy .bx-info .kv{padding-top:0;border-top:0}
+.bx-sk{display:flex;align-items:center;gap:var(--spacing-2);width:100%;margin-top:var(--spacing-5);padding:var(--spacing-3) var(--spacing-4);border-radius:var(--radius-md);background:#E9F9EF;color:#0B7A36;font-size:var(--text-14);font-weight:var(--font-medium);text-align:left}
+.bx-sk svg{width:16px;height:16px}
+.bx-sk .sp{flex:1}
+.bx-sk b{font-family:var(--font-number)}
+.bx-buy{display:flex;flex-direction:column;gap:var(--spacing-4);padding:var(--spacing-6);background:var(--bg-strong)}
+.bx-buy .price{display:flex;flex-direction:column;gap:var(--spacing-1)}
+.bx-acts{display:flex;align-items:center;justify-content:center;gap:var(--spacing-4)}
+.bx-acts button{display:inline-flex;align-items:center;gap:var(--spacing-1-5,6px);font-size:var(--text-14);color:var(--typography-black-60);transition:color .15s}
+.bx-acts button:hover{color:var(--typography-black-100)}
+.bx-acts svg{width:16px;height:16px}
+.bx-acts span{width:1px;height:12px;background:var(--line-strong)}
+@media (max-width:1023px){ .bx-buy{display:none} }
+/* 패널 손잡이: 작은 박스만 살짝 */
+.pn-rz::before{left:3px;width:4px;height:28px;margin-top:-14px;border-radius:var(--radius-full);background:var(--line-strong);background-image:none;box-shadow:none;transition:background-color .15s}
+.pn-rz:hover::before,.pn-rz:focus-visible::before{background:var(--typography-black-45);box-shadow:none}
+body.pn-resizing .pn-rz::before{background:var(--typography-black-100);background-image:none}

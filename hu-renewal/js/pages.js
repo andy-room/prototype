@@ -138,8 +138,11 @@ PAGES.a = {
         <section class="a-psec" id="sec-curr"><h2>커리큘럼 <span class="c45 w4 num">${CURRICULUM(c).length}</span></h2>${currHTML(c)}</section>
         <section class="a-psec" id="sec-review"><h2>수강평 <span class="c45 w4 num">0</span></h2><p class="t14 c45">아직 수강평이 없어요. 학습을 마치고 첫 수강평을 남겨주세요.</p></section>
       </div>
-      <aside class="a-buy"><div class="price">${bigPrice(c)}</div><button class="btn primary lg full" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button>
-        <div class="acts"><button class="btn outline" data-toast="찜 목록에 담았어요">${I.heart}찜하기</button><button class="btn outline" data-toast="링크를 복사했어요">${I.share}공유</button></div>${factsKV(c)}</aside></div>
+      <aside class="a-buy">
+        <div class="bx-info"><h4>콘텐츠 정보</h4>${factsKV(c)}<button class="bx-sk" data-scroll="sec-skills">${I.bolt}<span>이 콘텐츠로 얻는 스킬 <b class="num">${c.sk.length}</b>개</span><span class="sp"></span>${I.down}</button></div>
+        <div class="bx-buy"><div class="price">${c.p ? bigPrice(c) : `<span class="t20 w7">가입 없이 바로 볼 수 있어요</span><span class="t14 c45">${c.type} · ${c.t}</span>`}</div>
+          <button class="btn primary lg full" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button>
+          <div class="bx-acts"><button data-toast="찜 목록에 담았어요">${I.heart}찜하기</button><span></span><button data-toast="링크를 복사했어요">${I.share}공유</button></div></div></aside></div>
       ${sec(sh('함께 보면 좋은 콘텐츠') + `<div class="a-g4">${relatedOf(c).map(aCard).join('')}</div>`)}
     </div>
     <div class="mcta"><div><div class="t20">${priceHTML(c)}</div><div class="t12 c45 num">${c.t}</div></div><button class="btn primary md" data-login>${c.type==='과정'?'학습하기':'바로 보기'}</button></div>`;
