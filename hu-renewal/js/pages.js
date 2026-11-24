@@ -62,7 +62,7 @@ function renderConcept(){
 // =========================================================
 const aCard = c => `<article class="a-card" data-c="${c.id}" tabindex="0">${th(c.img,'',typeBadge(c))}<div class="b"><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
 const aRow = c => `<article class="a-row" data-c="${c.id}" tabindex="0">${th(c.img)}<div style="display:flex;flex-direction:column;gap:var(--spacing-1)"><div>${typeBadge(c)}</div><h3 class="clamp2">${c.title}</h3><div class="meta">${metaHTML(c,true)}</div></div></article>`;
-const aCareer = c => `<article class="a-card" data-career="${c.id}" tabindex="0">${th(c.img,'r43')}<div class="b"><h3>${c.k}</h3><div class="meta">${c.e}<span class="dot"></span>필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`;
+const aCareer = c => `<article class="a-card" data-career="${c.id}" tabindex="0">${th(c.img,'r43')}<div class="b"><h3>${c.k}</h3><div class="meta">${c.g}<span class="dot"></span>필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`;
 const aLi = c => `<article class="a-li" data-c="${c.id}" tabindex="0">${th(c.img)}<div><div class="tags">${typeBadge(c)}${badge(c.cat,'normal')}</div><h3 class="clamp2" style="margin-top:var(--spacing-2)">${c.title}</h3><p class="clamp2">${descOf(c)}</p><div class="meta" style="margin-top:var(--spacing-2)">${metaHTML(c)}</div><div style="margin-top:var(--spacing-3)">${skTags(c,3)}</div></div><div class="r">${priceHTML(c)}</div></article>`;
 // 콘텐츠 목록 무한 스크롤 — 필터·정렬·보기 방식이 같으면 보던 개수를 유지
 const PG = {key:'', shown:0};
@@ -199,7 +199,7 @@ PAGES.a1 = {
           <h2 class="t28 w7" style="margin-top:var(--spacing-3)">${h.title}</h2><p class="t16 c60" style="margin-top:var(--spacing-2)">${h.d}</p><div class="meta" style="margin-top:var(--spacing-3)">${metaHTML(h,true)}</div></div></article>
         <div class="side"><h4>함께 많이 본 콘텐츠</h4>${pick.slice(1).map(aRow).join('')}</div>
       </section>
-      ${sec(sh('스킬로 찾기','배우고 싶은 스킬을 고르면 관련 콘텐츠를 모아 보여드려요', moreLink('전체 스킬','data-nav="skills"'))
+      ${sec(sh('스킬로 찾기','배우고 싶은 스킬을 고르면 관련 콘텐츠를 모아 보여드려요', moreLink('갤럭시에서 전체 보기','data-galaxy="2"'))
         + `<div class="a1-tiles">${topSkills(8).map(a1Tile).join('')}</div>`)}
       ${sec(sh('지금 많이 보는 콘텐츠','최근 7일 학습자 기준', moreLink('전체보기','data-nav="contents"'))
         + `<div class="c-big-rank a1-rank">${RANK9.map((c,i)=>`<article class="c-br" data-c="${c.id}" tabindex="0"><span class="n">${i+1}</span><div><h3 class="clamp2">${c.title}</h3><div class="meta" style="margin-top:var(--spacing-1)">${metaHTML(c,true)}${chg[i]&&chg[i]!=='–'?`<span class="dot"></span>${chgBadge(chg[i])}`:''}</div></div>${th(c.img)}</article>`).join('')}</div>`)}
@@ -285,6 +285,50 @@ PAGES.a1.pane = (kind, id, full, canBack) => {
   return rz + head + `<div class="pn-b ${full?'full':''}">${body}</div>` + foot;
 };
 
+// ---------- A-1 커리어 (1안: 커리어 중심 학습 경로) ----------
+const CGROUPS = [...new Set(CAREERS.map(c=>c.g))];
+// 학습 경로 스킬 6개: 직무 스킬 + 같은 분야 연관 스킬로 채움 (예시)
+const pathSkills = c => { const base = c.sk.map(skillByName).filter(Boolean); const extra = SKILLS.filter(s=>!base.includes(s) && base.some(b=>b.g===s.g)).sort((a,b)=>b.n-a.n); return [...base, ...extra].slice(0,6); };
+const pathPlan = c => { const used = new Set(); return pathSkills(c).map(s => { const cs = contentsOfSkill(s).filter(x=>!used.has(x.id)).slice(0,3); cs.forEach(x=>used.add(x.id)); return {s, cs}; }); };
+const toMin = t => { if (!t) return 0; const h=+(t.match(/(\d+)시간/)||[0,0])[1], m=+(t.match(/(\d+)분/)||[0,0])[1]; return h*60+m || (/장/.test(t)?10:0); };
+const fmtMin = m => m>=60 ? `${Math.floor(m/60)}시간${m%60?` ${m%60}분`:''}` : `${m}분`;
+const crCard = c => { const p = pathPlan(c), n = p.reduce((a,x)=>a+x.cs.length,0); return `<article class="cr-card" data-career="${c.id}" tabindex="0">${th(c.img,'r43')}<div class="b"><span class="g">${c.g}</span><h3>${c.k}</h3><small>핵심 스킬 <span class="num">${p.length}</span>개<span class="dot"></span>콘텐츠 <span class="num">${n}</span>개</small></div></article>`; };
+PAGES.a1.careers = () => {
+  const list = CAREERS.filter(c => F.cg==='전체' || c.g===F.cg);
+  return `<div class="wrap">
+    <div class="a-pt"><h1>커리어</h1><p class="t16 c60" style="margin-top:var(--spacing-1)">하고 싶은 일을 고르면 필요한 스킬과 먼저 볼 콘텐츠로 학습 경로를 만들어 드려요</p></div>
+    <div class="a-skbar"><div class="input">${I.search}<input id="crq" placeholder="직무 이름으로 찾기" autocomplete="off"></div><span class="sp"></span><span class="t14 c60">직무 <b class="num c100">${list.length}</b>개</span></div>
+    <div class="a-fl cr-chips" style="margin-top:var(--spacing-4)"><div class="chips">${['전체',...CGROUPS].map(g=>`<button class="chip option ${F.cg===g?'selected':''}" data-f="cg=${g}">${g}</button>`).join('')}</div></div>
+    <div class="cr-grid" id="crList">${list.map(crCard).join('')}</div>
+    <div id="crEmpty" hidden>${emptyState('찾는 직무가 없어요','다른 이름으로 검색하거나 분야를 바꿔보세요', false)}</div>
+    <div style="height:var(--spacing-24)"></div></div>`;
+};
+PAGES.a1.career = id => {
+  const c = careerById(+id), plan = pathPlan(c), cs = plan.flatMap(x=>x.cs), mins = cs.reduce((a,x)=>a+toMin(x.t),0);
+  const others = CAREERS.filter(x=>x.id!==c.id && x.g===c.g).concat(CAREERS.filter(x=>x.g!==c.g)).slice(0,4);
+  return `<div class="wrap">
+    <nav class="crumb"><a href="${href({page:'careers',id:null,o:null})}">커리어</a>›<span>${c.g}</span></nav>
+    <section class="cp-hero">${th(c.img,'r43')}<div>
+      <span class="pn-g">커리어 · ${c.g}</span><h1>${c.k}</h1>
+      <p class="pn-d t16">${c.k} 직무에서 자주 쓰는 핵심 스킬을 순서대로 정리했어요. 단계마다 먼저 볼 콘텐츠부터 시작해 보세요.</p>
+      ${pnStats([[plan.length,'핵심 스킬'],[cs.length,'추천 콘텐츠'],[fmtMin(mins),'예상 학습 시간']])}
+      <div class="acts"><button class="btn primary lg" data-login>이 경로로 시작하기</button><button class="btn outline lg" data-toast="관심 커리어에 추가했어요">${I.heart}관심 커리어</button></div></div></section>
+    ${sec(sh('학습 경로','위에서부터 차례로 스킬을 올려보세요') + `<ol class="cp-path">${plan.map(({s,cs},i)=>`<li class="cp-step">
+        <span class="n num">${String(i+1).padStart(2,'0')}</span>
+        <div class="cp-b"><div class="cp-h"><button class="cp-sk" data-s="${s.id}">${sdot(s)}${s.k}</button><span class="t14 c45">${s.g} · 콘텐츠 <span class="num">${contentsOfSkill(s).length}</span>개</span></div>
+          <p class="cp-d">${skillDesc(s)}</p>
+          ${cs.length ? `<div class="cp-cs">${cs.map(aCard).join('')}</div>` : `<p class="cp-none">이 스킬의 콘텐츠를 준비하고 있어요</p>`}</div></li>`).join('')}</ol>`)}
+    ${sec(sh('함께 살펴보면 좋은 커리어') + `<div class="cr-grid">${others.map(crCard).join('')}</div>`)}
+  </div>`;
+};
+function bindCrq(){
+  const q = $('#crq'); if (!q) return;
+  q.addEventListener('input', () => { const v = q.value.trim().toLowerCase(); let any=false;
+    $$('#crList [data-career]').forEach(b => { const on = !v || b.textContent.toLowerCase().includes(v); b.style.display = on?'':'none'; any = any||on; });
+    $('#crEmpty').hidden = any; });
+}
+{ const prev = PAGES.a1.after; PAGES.a1.after = () => { prev?.(); bindCrq(); }; }
+
 // =========================================================
 // B · Atlas
 // =========================================================
@@ -302,7 +346,7 @@ PAGES.b = {
           <div class="chips">${topSkills(6).map(s=>`<button class="chip option ${F.bsk===s.id?'selected':''}" data-bhome="${s.id}">${s.k}</button>`).join('')}</div></div></section>
       <div class="b-stat">${[['탐색할 수 있는 스킬',SKILLS.length,'개'],['연결된 콘텐츠',CONTENTS.length,'개'],['커리어 로드맵',CAREERS.length,'개'],['가장 많이 배우는 스킬',topSkills(1)[0].k,'']].map(([l,v,u])=>`<div class="b-panel"><small>${l}</small><b>${v}${u?`<span>${u}</span>`:''}</b></div>`).join('')}</div>
       ${sec(sh('지금 뜨는 콘텐츠','최근 7일 학습자 기준', moreLink('전체보기','data-nav="contents"')) + `<div class="b-table">${bHead()}${trend.concat([C(1)]).map(bRow).join('')}</div>`)}
-      ${sec(sh('커리어 좌표','직무를 고르면 필요한 스킬이 지도에 표시돼요') + `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--spacing-3)">${CAREERS.map(c=>`<article class="b-panel" style="padding:var(--spacing-3);cursor:pointer" data-toast="커리어 페이지는 시안 범위 밖이에요">${th(c.img,'r43')}<div style="padding:var(--spacing-3) var(--spacing-1) 0"><b class="t16">${c.k}</b><div class="t12 c45">필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`).join('')}</div>`)}
+      ${sec(sh('커리어 좌표','직무를 고르면 필요한 스킬이 지도에 표시돼요') + `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--spacing-3)">${CAREERS.slice(0,8).map(c=>`<article class="b-panel" style="padding:var(--spacing-3);cursor:pointer" data-toast="커리어 페이지는 시안 범위 밖이에요">${th(c.img,'r43')}<div style="padding:var(--spacing-3) var(--spacing-1) 0"><b class="t16">${c.k}</b><div class="t12 c45">필요 스킬 <span class="num">${c.sk.length}</span>개</div></div></article>`).join('')}</div>`)}
       ${sec(`<div class="b-panel" style="display:flex;align-items:center;justify-content:space-between;gap:var(--spacing-6);padding:var(--spacing-8)"><div><h2 class="t24 w7">HU 멤버십으로 지도의 모든 길을</h2><p class="t14 c60" style="margin-top:var(--spacing-1)">콘텐츠 전체와 커리어 로드맵. 언제든 해지할 수 있어요.</p></div><button class="btn primary md" data-login>멤버십 시작하기</button></div>`)}
     </div>`;
   },

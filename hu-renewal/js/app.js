@@ -59,11 +59,11 @@ const si = (s, cls='') => `<span class="si gi${gIdx(s)} ${cls}">${sv(GI[gIdx(s)]
 // 해시: #<안>/<페이지>[/<id>][?o=<오버레이>]   오버레이: content:3 | skill:2 | login | galaxy:2
 const VIEWS = ['cur','a','a1','b','c'];
 const PAGE_DETAIL = v => v==='a' || v==='a1';  // 상세 = 별도 페이지인 안
-const PAGE_KEYS = ['home','contents','content','skills','skill','login'];
+const PAGE_KEYS = ['home','contents','content','skills','skill','careers','career','login'];
 let S = {v:'a', page:'home', id:null, o:null, full:false};
 const PN = [];            // A-1 오른쪽 패널 안에서 이동한 기록 (뒤로 가기용)
 let fromPane = false;     // 이번 클릭이 패널 안에서 일어났는지
-const F = {cat:'전체', type:'전체', price:'전체', sort:'pop', q:'', view:'grid', group:'전체', bsk:2, bskTab:'info'};
+const F = {cat:'전체', type:'전체', price:'전체', sort:'pop', q:'', view:'grid', group:'전체', bsk:2, bskTab:'info', cg:'전체'};
 let lastKey = '', lastShell = '';
 
 function parse(){
@@ -80,14 +80,16 @@ const go = st => { const h = href(st); if (location.hash===h) render(); else loc
 const openPane = (kind, id) => { if (fromPane && S.o) PN.push({o:S.o, full:S.full}); else PN.length = 0; go({o:`${kind}:${id}`, full: fromPane ? S.full : false}); };
 const openContent = id => S.v==='a1' ? openPane('content', id) : PAGE_DETAIL(S.v) ? go({page:'content', id, o:null}) : go({o:'content:'+id});
 const openSkill   = id => S.v==='a1' ? openPane('skill', id)   : PAGE_DETAIL(S.v) ? go({page:'skill', id, o:null})   : go({o:'skill:'+id});
-const openCareer  = id => S.v==='a1' ? openPane('career', id)  : toast('커리어 페이지는 시안 범위 밖이에요');
+// A-1: 패널 안에서 누르면 커리어 패널, 그 밖에서는 학습 경로 페이지
+const openCareer  = id => S.v==='a1' ? (fromPane ? openPane('career', id) : go({page:'career', id, o:null, full:false})) : toast('커리어 페이지는 시안 범위 밖이에요');
 const openLogin   = () => S.v==='c' ? go({o:'login'}) : go({page:'login', id:null, o:null});
 const openGalaxy  = (id=2) => go({o:'galaxy:'+id});
 const closeOv     = () => { PN.length = 0; go({o:null, full:false}); };
 
 // ---------- HDS 기반 공통 조각 ----------
+const SHOT = document.documentElement.classList.contains('shot');   // 캡처 모드: 이미지 즉시 로드
 // 썸네일: 로딩 중 스켈레톤 → 로드되면 페이드인 (실패 시 회색 면 유지)
-const th = (src, cls='', inner='') => `<div class="th ${cls} ${src?'':'ok'}">${inner}${src?`<img src="${src}" alt="" loading="lazy" decoding="async" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok');this.remove()">`:''}</div>`;
+const th = (src, cls='', inner='') => `<div class="th ${cls} ${src?'':'ok'}">${inner}${src?`<img src="${src}" alt="" loading="${SHOT?'eager':'lazy'}" decoding="async" onload="this.parentNode.classList.add('ok')" onerror="this.parentNode.classList.add('ok');this.remove()">`:''}</div>`;
 // 빈 상태
 const emptyState = (title='조건에 맞는 콘텐츠가 없어요', desc='필터를 줄이거나 다른 검색어로 찾아보세요', reset=true) => `<div class="empty-st"><span class="si lg gi4">${I.search}</span><b>${title}</b><p>${desc}</p>${reset?'<button class="btn outline" data-reset>필터 초기화</button>':''}</div>`;
 const TYPE_BADGE = {'과정':'normal','아티클':'info','영상':'warning','카드뉴스':'success'};
@@ -128,8 +130,10 @@ const mins = t => { const h=+(t.match(/(\d+)시간/)||[0,0])[1], m=+(t.match(/(\
 
 // ---------- 셸: 안마다 다른 GNB, 기능은 동일 ----------
 const NAV = [['home','홈',I.home],['contents','콘텐츠',I.play],['careers','커리어',I.brief],['skills','스킬',I.bolt]];
-const navHref = k => k==='careers' ? 'javascript:void 0' : href({page:k, id:null, o:null});
-const navAttr = k => k==='careers' ? 'data-toast="커리어 페이지는 시안 범위 밖이에요"' : `data-nav="${k}"`;
+// A-1은 커리어 중심: 커리어 페이지가 있고 스킬 메뉴는 없음 (스킬은 패널로만)
+const navList = () => S.v==='a1' ? NAV.filter(([k])=>k!=='skills') : NAV;
+const navHref = k => k==='careers' && S.v!=='a1' ? 'javascript:void 0' : href({page:k, id:null, o:null});
+const navAttr = k => k==='careers' && S.v!=='a1' ? 'data-toast="커리어 페이지는 시안 범위 밖이에요"' : `data-nav="${k}"`;
 function renderShell(){
   const v = S.v;
   const hp = `<div class="hp"><button class="hl" id="hpBtn" aria-expanded="false" aria-haspopup="menu">HU Plus ${I.down}</button>
@@ -148,9 +152,9 @@ function renderShell(){
       <a class="ghost" data-login>마이클래스</a><a class="ghost" data-toast="프리미엄 콘텐츠는 시안 범위 밖이에요">프리미엄</a></nav></div>`;
   // A-1: 스킬 갤럭시를 대표 메뉴로 (누르면 전체 화면 갤럭시)
   const gxNav = v==='a1' ? `<a class="rl gx-nav" href="javascript:void 0" data-galaxy="2">${I.galaxy}갤럭시</a>` : '';
-  $('#rail').innerHTML = NAV.map(([k,l,ic])=>`<a class="rl" href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + gxNav
+  $('#rail').innerHTML = navList().map(([k,l,ic])=>`<a class="rl" href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + gxNav
     + `<a class="rl" data-login>${I.user}${v==='a1'?'마이클래스':'마이'}</a><a class="rl sep" data-toast="프리미엄 콘텐츠는 시안 범위 밖이에요">${I.trophy}프리미엄</a>`;
-  $('#tabbar').innerHTML = NAV.map(([k,l,ic])=>`<a href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + (v==='a1'?`<a href="javascript:void 0" data-galaxy="2">${I.galaxy}갤럭시</a>`:'') + `<a data-login>${I.user}마이</a>`;
+  $('#tabbar').innerHTML = navList().map(([k,l,ic])=>`<a href="${navHref(k)}" ${navAttr(k)} data-navkey="${k}">${ic}${l}</a>`).join('') + (v==='a1'?`<a href="javascript:void 0" data-galaxy="2">${I.galaxy}갤럭시</a>`:'') + `<a data-login>${I.user}마이</a>`;
   $('#msheet').innerHTML = `<div class="dim" data-msheet></div><div class="panel">
     <div style="display:flex;align-items:center;justify-content:space-between"><span class="logo"><i></i>Hunet University</span><button class="gicon" data-msheet aria-label="닫기">${I.x}</button></div>
     ${search}
@@ -161,7 +165,7 @@ function renderShell(){
   bindQForms(document.body);
 }
 function syncShell(){
-  const key = {home:'home',contents:'contents',content:'contents',skills:'skills',skill:'skills'}[S.page];
+  const key = {home:'home',contents:'contents',content:'contents',skills:'skills',skill:'skills',careers:'careers',career:'careers'}[S.page];
   $$('[data-navkey]').forEach(a=>a.classList.toggle('on', a.dataset.navkey===key));
   const gxOn = (S.o||'').startsWith('galaxy');
   $$('.rl.gx-nav, #tabbar [data-galaxy]').forEach(a=>a.classList.toggle('on', gxOn));
@@ -272,7 +276,7 @@ function mountGalaxy(el, sid, opts={}){
     let h='';
     if (t==='skill'){ const s=skillById(id); h=`<span class="k" style="color:${GX.skill}">스킬</span><h4>${s.k}</h4><p><span class="num">${s.n.toLocaleString()}</span>명 학습 · ${s.g}</p><div style="display:flex;gap:var(--spacing-2)"><button class="btn primary xs" data-gx-go="${id}">중심으로 보기</button><button class="btn outline xs" data-s="${id}">스킬 상세</button></div>`; }
     if (t==='content'){ const c=byId(id); h=`${th(c.img)}<span class="k" style="color:${GX.content}">${c.type}</span><h4>${c.title}</h4><p>${[c.p,c.t].filter(Boolean).join(' · ')}</p><button class="btn primary xs" data-c="${c.id}">콘텐츠 보기</button>`; }
-    if (t==='career'){ const c=CAREERS.find(x=>x.id==id); h=`${th(c.img)}<span class="k" style="color:${GX.career}">커리어</span><h4>${c.k}</h4><p>${c.e} · 필요 스킬 ${c.sk.length}개</p><button class="btn outline xs" data-toast="커리어 페이지는 시안 범위 밖이에요">커리어 보기</button>`; }
+    if (t==='career'){ const c=CAREERS.find(x=>x.id==id); h=`${th(c.img)}<span class="k" style="color:${GX.career}">커리어</span><h4>${c.k}</h4><p>${c.g} · 필요 스킬 ${c.sk.length}개</p><button class="btn outline xs" data-toast="커리어 페이지는 시안 범위 밖이에요">커리어 보기</button>`; }
     info.innerHTML = h; info.classList.add('on');
   };
   stage.addEventListener('pointerover', e => { const n=e.target.closest('.gn'); if(!n||n.dataset.gt==='center') return; stage.classList.add('gx-dim'); n.classList.add('hl'); $(`.gl-link[data-for="${n.dataset.gt}:${n.dataset.gid}"]`, stage)?.classList.add('hl'); });
@@ -326,7 +330,8 @@ function applyTheme(){
 // ---------- A-1 오른쪽 패널 ----------
 // 패널 폭: 경계선 드래그로 조절, 마지막 폭을 기억 (localStorage)
 const PW_KEY = 'hu3-pw', PW_DEF = 480, PW_MIN = 400;
-const pwMax = () => Math.max(PW_MIN, document.documentElement.clientWidth - 88 - 480);
+const PW_MAX = 760, MAIN_MIN = 560;
+const pwMax = () => Math.max(PW_MIN, Math.min(PW_MAX, document.documentElement.clientWidth - 88 - MAIN_MIN));
 let PW = PW_DEF;
 const setPW = w => { PW = Math.round(Math.min(pwMax(), Math.max(PW_MIN, w))); document.body.style.setProperty('--pw', PW+'px'); return PW; };
 const savePW = () => store.set(PW_KEY, PW);
