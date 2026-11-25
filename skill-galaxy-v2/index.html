@@ -1814,22 +1814,25 @@ function planFan(n,fresh,base,cx,cy,sc,self=true,ctx=null){
   if(self&&n.parent){const p=W.nodes.get(n.parent);if(p&&!segClear(p.tx,p.ty,cx,cy,new Set([...skip,p.id])))return null}
   const virt=[...(ctx?ctx.virt:[]),{x:cx,y:cy,B:labBox(n.id,ns,true)}],out=new Array(kk),placed=[];
   if(!kk)return out;
-  fresh.forEach((it,i)=>{if(!it.fix)return;const sb=wSize(it.n.id),wm=W.nodes.get(it.n.id),ex=!!(wm&&wm.expanded),sbb=ex?Math.max(sb,cs):sb;   // 제자리 노드는 먼저 자리를 차지한다
-    out[i]={x:it.fix.x,y:it.fix.y,a:Math.atan2(it.fix.y-cy,it.fix.x-cx)};virt.push({x:it.fix.x,y:it.fix.y,B:labBox(it.n.id,sbb,ex)});placed.push({x:it.fix.x,y:it.fix.y,r:sbb/2})});
   // 갈래별 구역 나누기(개수에 비례, 구역 사이는 조금 띄움)
-  const groups=[];fresh.forEach((it,i)=>{const g=groups[groups.length-1];if(g&&g.d===it.d)g.idx.push(i);else groups.push({d:it.d,idx:[i]})});
-  const full=base===null,GU=groups.length>1?.9:0,units=kk+GU*(full?groups.length:groups.length-1);
+  const groups=[];fresh.forEach((it,i)=>{let g=groups.find(x=>x.d===it.d);if(!g){g={d:it.d,idx:[]};groups.push(g)}g.idx.push(i)});
+  const full=base===null,GU=groups.length>1?1.3:0,units=kk+GU*(full?groups.length:groups.length-1);   // GU = 갈래 사이 간격(노드 1.3개 몫)
   const spread=full?Math.PI*2:Math.min(Math.PI*1.55,Math.max(Math.PI*.5,units*.42));   // 부모 쪽(뒤)은 비워 둔다
-  let u=0;const start=full?-Math.PI/2-spread*(groups[0].idx.length/units)/2:base-spread/2;
-  groups.forEach(g=>{g.s0=start+spread*u/units;u+=g.idx.length;g.s1=start+spread*u/units;u+=GU});
+  // 이미 있던 자식이 있으면 갈래 순서를 지금 놓인 방향대로 — 기존 노드는 자기 구역 근처에서만 움직이고, 새 갈래는 남은 쪽에 붙는다
+  const ref=full?-Math.PI/2:base,rel=a=>{let d=a-ref;while(d>Math.PI)d-=2*Math.PI;while(d<=-Math.PI)d+=2*Math.PI;return d};
+  groups.forEach(g=>{const as=g.idx.filter(i=>fresh[i].cur).map(i=>rel(Math.atan2(fresh[i].cur.y-cy,fresh[i].cur.x-cx)));g.m=as.length?as.reduce((a,b)=>a+b,0)/as.length:null});
+  const old=groups.filter(g=>g.m!==null).sort((a,b)=>a.m-b.m),neu=groups.filter(g=>g.m===null);
+  const ordered=!old.length?groups:full?[...old,...neu]:(Math.min(...old.map(g=>g.m))+Math.max(...old.map(g=>g.m))>0?[...neu,...old]:[...old,...neu]);   // 남은 자리가 넓은 쪽에 새 갈래
+  let u=0;const w0=spread*(ordered[0].idx.length/units);
+  const start=full?(old.length?ref+old[0].m-w0/2:-Math.PI/2-w0/2):base-spread/2;
+  ordered.forEach(g=>{g.s0=start+spread*u/units;u+=g.idx.length;g.s1=start+spread*u/units;u+=GU});
   // 둘레: 안쪽 반지름과 둘레 사이 간격, 그리고 둘레 수 상한
   const r0=Math.max(ns/2+34,E.R0*(base===null?.68:.5))*sc,dr=(isMobile()?48:56)*sc;   // 가운데('나')는 첫 둘레를 조금 넓게
   let need=kk*1.5,rr=r0,rings=0;while(need>0&&rings<40){need-=Math.max(1,spread*rr/84);rr+=dr;rings++}
   const maxK=Math.max(rings+3,Math.ceil((E.R0*3.2-r0)/dr)+1);   // 자리가 붐비면 바깥 둘레까지 채운다(멀리 옮기기 전에)
-  for(const g of groups){
+  for(const g of ordered){
     const mid=(g.s0+g.s1)/2,half=Math.max((g.s1-g.s0)/2,.02);
     for(const i of g.idx){
-      if(fresh[i].fix)continue;
       const id=fresh[i].n.id,sb=wSize(id),wm=W.nodes.get(id),ex=!!(wm&&wm.expanded),sbb=ex?Math.max(sb,cs):sb;   // 펼쳤던 노드는 커질 자리까지
       let hit=null;
       ring:for(let k=0;k<maxK;k++){
@@ -1868,7 +1871,7 @@ function wExpand(id,delay0,opts,canMove){
   }
   // 이미 붙어 있는 자식 중 아직 펼치지 않은 노드는 새 노드와 한 부채로 다시 배치한다(갈래를 더할 때 서로 비켜 앉게)
   const path=new Set(W.steps.map(st=>st.id));
-  const movable=[...W.nodes.values()].filter(m=>m.parent===id&&!m.expanded&&!path.has(m.id)).map(m=>({n:byId.get(m.id),d:m.d,why:m.why,isNew:false,fix:{x:m.tx,y:m.ty}}));   // 이미 있던 자식은 제자리에 둔다(멀리서 다시 모이지 않게)
+  const movable=[...W.nodes.values()].filter(m=>m.parent===id&&!m.expanded&&!path.has(m.id)).map(m=>({n:byId.get(m.id),d:m.d,why:m.why,isNew:false,cur:{x:m.tx,y:m.ty}}));   // 이미 있던 자식: 지금 놓인 방향으로 갈래 순서를 정한다(갈래별 묶음·간격은 그대로 지킨다)
   const rank=new Map();neighbors(src,'skill').concat(neighbors(src,'career'),neighbors(src,'content')).forEach((it,i)=>rank.set(it.n.id,i));
   const list=[...movable,...fresh].sort((a,b)=>ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||(rank.get(a.n.id)??999)-(rank.get(b.n.id)??999));
   const mvSet=new Set(movable.map(x=>x.n.id));
@@ -1877,9 +1880,8 @@ function wExpand(id,delay0,opts,canMove){
   let plan=null,moved=false;
   for(const sc of [1,1.15,1.3]){plan=planFan(n,list,base,n.tx,n.ty,sc,true,{skip:baseSkip,virt:[]});if(plan)break}
   // ①' 이미 펼친 노드에 더 뽑을 때: 같은 성격 노드가 나와 있던 구역에 붙여 놓고, 주변 노드를 바깥으로 벌린다
-  if(!plan&&!first)plan=makeRoom(n,list,base,{skip:baseSkip,virt:[]});
   // ② 모자라면 부모에서 이어지는 직선을 따라, 펼칠 공간이 다 확보되는 가장 가까운 곳까지 나간다(펼쳐 둔 가지는 가지째 함께)
-  if(!plan&&n.parent&&first){   // 처음 펼칠 때만 — 이미 펼친 노드를 옮기면 화면이 튄다
+  if(!plan&&n.parent){   // 자리가 모자라면 부모에서 이어지는 직선을 따라 옮겨서 연다 — 이미 있던 자식도 통째로 함께(흩어지지 않게)
     const p=W.nodes.get(n.parent),d0=Math.hypot(n.tx-p.tx,n.ty-p.ty)||1,a0=Math.atan2(n.ty-p.ty,n.tx-p.tx);
     const sub=[],st=[id];while(st.length){const x=st.pop();if(mvSet.has(x))continue;sub.push(x);for(const m of W.nodes.values())if(m.parent===x)st.push(m.id)}
     const skip=new Set([...sub,...mvSet]);
@@ -1888,7 +1890,8 @@ function wExpand(id,delay0,opts,canMove){
       for(const sid of sub){if(sid===id)continue;const m=W.nodes.get(sid),F=m.expanded||m.ts>=cs-1,ss=F?Math.max(m.ts,cs):m.ts;
         if(!clearPt(m.tx+dx,m.ty+dy,ss,skip,virt,sid,F)){ok=false;break}virt.push({x:m.tx+dx,y:m.ty+dy,B:labBox(sid,ss,F)})}
       if(!ok)continue;
-      for(const sc of [1,1.2,1.4]){plan=planFan(n,list,a0,x,y,sc,true,{skip,virt});if(plan)break}
+      const L2=list.map(it=>it.cur?{...it,cur:{x:it.cur.x+dx,y:it.cur.y+dy}}:it);   // 같이 옮긴 자리 기준으로 방향 계산
+      for(const sc of [1,1.2,1.4]){plan=planFan(n,L2,a0,x,y,sc,true,{skip,virt});if(plan)break}
       if(plan){
         for(const sid of sub){const m=W.nodes.get(sid);m.tx+=dx;m.ty+=dy}
         W.steps.forEach(s2=>{if(skip.has(s2.id)&&s2.cam){s2.cam.x+=dx;s2.cam.y+=dy}});
@@ -2349,7 +2352,8 @@ function renderAvRow(){   // 프로필 고르기: 기본 이미지 · 사진 · 
 $('avFile').onchange=e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
   const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{const sz=256,cv=document.createElement('canvas');cv.width=cv.height=sz;const g=cv.getContext('2d'),mm=Math.min(img.width,img.height);
     g.drawImage(img,(img.width-mm)/2,(img.height-mm)/2,mm,mm,0,0,sz,sz);avCustom=cv.toDataURL('image/jpeg',.86);avPick='custom';renderAvRow()};img.src=rd.result};rd.readAsDataURL(f)};
-$('loginGo').onclick=()=>{S.avatar=avPick;if(avPick==='custom')S.avatarData=avCustom;$('login').hidden=true;toast('김휴넷 님, 반가워요. 먼저 목표 커리어를 골라 주세요');openGoal()};
+$('loginGo').onclick=()=>{S.avatar=avPick==='default'?'photo':avPick;if(avPick==='custom')S.avatarData=avCustom;   // 데모: 기본 이미지를 골라도 성장 시작 때 뒤집히는 프로필은 사진으로
+  $('login').hidden=true;toast('김휴넷 님, 반가워요. 먼저 목표 커리어를 골라 주세요');openGoal()};
 $('loginX').onclick=()=>{$('login').hidden=true};
 $('login').addEventListener('pointerdown',e=>{if(e.target===$('login'))$('login').hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('login').hidden)$('login').hidden=true});
@@ -2635,6 +2639,7 @@ const SKY={cam:{x:0,y:0}};
   function draw(){
     const sr=stage.getBoundingClientRect();let html='';
     const dk=S.bg!=='light',v2=S.style!=='v1',K=v2?(dk?{b:'#4C4D53',n:[196,199,206],p:'#4F8DFF'}:{b:'#C3C6CC',n:[150,155,166],p:'#2F7BFF'}):(dk?{p:'#8FB0FF',l:'#C3CCE0',b:'#7E89A3'}:{p:'#2F6BFF',l:'#A3A8B2',b:'#BFC3CB'}),L=[];   // 새 스타일: 회색 선·섞을 중간색 / 이전: 지나온 길·지금 노드·나머지 색
+    const dc=d=>'rgb('+(PAL[d]||PAL.me).join(',')+')';   // 갈래 색(세 갈래 아이콘과 같은 색)
     const ec=(da,db)=>{const a=PAL[da]||PAL.me,b=PAL[db]||PAL.me;return 'rgb('+[0,1,2].map(i=>Math.round((a[i]+b[i])/2*.62+K.n[i]*.38)).join(',')+')'};   // 양 끝 노드 색을 섞고 살짝 눌러 준다
     const hovering=stage.classList.contains('hovering'),cHover=stage.classList.contains('center-hover');
     if(S.mode==='dive'){
@@ -2651,7 +2656,7 @@ const SKY={cam:{x:0,y:0}};
         if(A)for(const [id,p] of lastLayout.map){
           if(p.role==='center')continue;const el=els.get(id);if(!el)continue;const B=rectOf(el,sr);if(!B)continue;
           const strong=p.rank<3,f=(cHover||hoverId===id)?1:hovering?.22:.6,o=opOf(el)*f;if(o<.01)continue;
-          L.push({A,B,ra:A.r,rb:B.r,c:strong?(v2?ec(byId.get(S.center).d,p.d):K.l):K.b,o,w:strong?(v2?2.4:2.6):1.2});
+          L.push({A,B,ra:A.r,rb:B.r,c:strong?(v2?dc(p.d):K.l):K.b,o,w:strong?(v2?2.4:2.6):1.2});
         }}
     }else if(W.steps.length){
       const focus=W.focus,pathSet=W.pathSet||new Set();
@@ -2666,7 +2671,7 @@ const SKY={cam:{x:0,y:0}};
         const base=grow?Math.max(.0,par.o)*Math.min(1,child.o*1.5):Math.max(.35,Math.min(A.o,B.o));
         const o=base*(onPath?1:live?1:.8)*(onPath||hv||grow?1:.6);if(o<.01)continue;
         const rc=grow&&child.s>0?RC.r*(child.sb/child.s):RC.r;   // 펼치는 중엔 다 커졌을 때의 가장자리까지만
-        L.push({A:RA,B:RC,ra:RA.r,rb:RC.r,c:v2?(onPath?K.p:(live||hv)?ec(A.d,B.d):K.b):(onPath?K.p:live?K.l:K.b),o,w:onPath?2.4:live?2:(v2?1.1:1.2)});
+        L.push({A:RA,B:RC,ra:RA.r,rb:RC.r,c:v2?(onPath?K.p:(live||hv)?dc(child.d):K.b):(onPath?K.p:live?K.l:K.b),o,w:onPath?2.4:live?2:(v2?1.1:1.2)});
       }
     }
     const at=(e,k)=>`stroke="${e.c}" stroke-opacity="${e.o.toFixed(3)}" stroke-width="${(e.w*k).toFixed(2)}" stroke-linecap="round"`;
