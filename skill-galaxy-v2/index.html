@@ -712,7 +712,7 @@ html.v2.dark .g-back{color:var(--text-3)}
       <button class="icon-btn" id="rootBtn" aria-label="처음 출발점으로">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg><span class="lbl">출발점</span>
       </button>
-      <button class="icon-btn" id="clearTrail" aria-label="지나온 길 초기화">
+      <button class="icon-btn" id="clearTrail" aria-label="초기화 — 처음 방문 화면으로">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span class="lbl">초기화</span>
       </button>
     </div>
@@ -1253,7 +1253,7 @@ function renderTrail(){
   }).join('');
   $('trail').querySelectorAll('.step').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(i!==p.length-1)go(p[i],'지나온 길')});
   const tr=$('trail');tr.scrollLeft=tr.scrollWidth;
-  $('backBtn').disabled=p.length<2;$('rootBtn').disabled=S.center===S.root;$('clearTrail').disabled=p.length<2&&!S.fwd.length;
+  $('backBtn').disabled=p.length<2;$('rootBtn').disabled=S.center===S.root;$('clearTrail').disabled=S.mode!=='expand'&&p.length<2&&!S.fwd.length;   // 펼쳐 나가기에서는 늘 누를 수 있다(초기화 = 처음 방문 화면)
 }
 const moves=()=>S.log.filter(x=>!x.act).length;
 function renderCount(){$('logCount').textContent=new Set(S.log.filter(x=>!x.act).map(x=>x.id)).size}
@@ -1817,7 +1817,7 @@ function planFan(n,fresh,base,cx,cy,sc,self=true,ctx=null){
   // 갈래별 구역 나누기(개수에 비례, 구역 사이는 조금 띄움)
   const groups=[];fresh.forEach((it,i)=>{let g=groups.find(x=>x.d===it.d);if(!g){g={d:it.d,idx:[]};groups.push(g)}g.idx.push(i)});
   const full=base===null,GU=groups.length>1?1.3:0,units=kk+GU*(full?groups.length:groups.length-1);   // GU = 갈래 사이 간격(노드 1.3개 몫)
-  const spread=full?Math.PI*2:Math.min(Math.PI*1.55,Math.max(Math.PI*.5,units*.42));   // 부모 쪽(뒤)은 비워 둔다
+  const spread=full?Math.PI*2:Math.min(Math.PI*1.05,Math.max(Math.PI*.5,units*.42));   // 앞쪽 반원까지만 — 옆·뒤(부모 쪽 다른 가지 자리)로 감기지 않게, 많으면 바깥 둘레로·자리가 없으면 앞으로 옮겨서 연다
   // 이미 있던 자식이 있으면 갈래 순서를 지금 놓인 방향대로 — 기존 노드는 자기 구역 근처에서만 움직이고, 새 갈래는 남은 쪽에 붙는다
   const ref=full?-Math.PI/2:base,rel=a=>{let d=a-ref;while(d>Math.PI)d-=2*Math.PI;while(d<=-Math.PI)d+=2*Math.PI;return d};
   groups.forEach(g=>{const as=g.idx.filter(i=>fresh[i].cur).map(i=>rel(Math.atan2(fresh[i].cur.y-cy,fresh[i].cur.x-cx)));g.m=as.length?as.reduce((a,b)=>a+b,0)/as.length:null});
@@ -1826,6 +1826,12 @@ function planFan(n,fresh,base,cx,cy,sc,self=true,ctx=null){
   let u=0;const w0=spread*(ordered[0].idx.length/units);
   const start=full?(old.length?ref+old[0].m-w0/2:-Math.PI/2-w0/2):base-spread/2;
   ordered.forEach(g=>{g.s0=start+spread*u/units;u+=g.idx.length;g.s1=start+spread*u/units;u+=GU});
+  // 이미 있던 노드는 자기 갈래 구역 안이고 겹치지 않으면 제자리 — 더 펼친 노드(연관도 낮음)는 그 바깥 빈자리에
+  const inSec=(g,a)=>{let d=a-g.s0;while(d<0)d+=2*Math.PI;while(d>=2*Math.PI)d-=2*Math.PI;return d<=(g.s1-g.s0)+.03};
+  for(const g of ordered)for(const i of g.idx){const it=fresh[i];if(!it.cur)continue;const a=Math.atan2(it.cur.y-cy,it.cur.x-cx);if(!inSec(g,a))continue;
+    const sb=wSize(it.n.id),wm=W.nodes.get(it.n.id),ex=!!(wm&&wm.expanded),sbb=ex?Math.max(sb,cs):sb;
+    if(!clearPt(it.cur.x,it.cur.y,sbb,skip,virt,it.n.id,ex))continue;
+    out[i]={x:it.cur.x,y:it.cur.y,a};virt.push({x:it.cur.x,y:it.cur.y,B:labBox(it.n.id,sbb,ex)});placed.push({x:it.cur.x,y:it.cur.y,r:sbb/2})}
   // 둘레: 안쪽 반지름과 둘레 사이 간격, 그리고 둘레 수 상한
   const r0=Math.max(ns/2+34,E.R0*(base===null?.68:.5))*sc,dr=(isMobile()?48:56)*sc;   // 가운데('나')는 첫 둘레를 조금 넓게
   let need=kk*1.5,rr=r0,rings=0;while(need>0&&rings<40){need-=Math.max(1,spread*rr/84);rr+=dr;rings++}
@@ -1833,6 +1839,7 @@ function planFan(n,fresh,base,cx,cy,sc,self=true,ctx=null){
   for(const g of ordered){
     const mid=(g.s0+g.s1)/2,half=Math.max((g.s1-g.s0)/2,.02);
     for(const i of g.idx){
+      if(out[i])continue;   // 제자리에 둔 노드
       const id=fresh[i].n.id,sb=wSize(id),wm=W.nodes.get(id),ex=!!(wm&&wm.expanded),sbb=ex?Math.max(sb,cs):sb;   // 펼쳤던 노드는 커질 자리까지
       let hit=null;
       ring:for(let k=0;k<maxK;k++){
@@ -2693,7 +2700,7 @@ let tt;function toast(m,act){const t=$('toast');t.classList.toggle('act',!!act);
 
 /* ---------- 지나온 길 초기화: 지금 위치를 새 출발점으로 ---------- */
 $('clearTrail').onclick=()=>{
-  if(S.mode==='expand'){if(W.nodes.size>1){placeMe(false);toast('지나온 길과 펼친 점을 비웠어요. 지금 위치가 새 출발점이에요')}return}
+  if(S.mode==='expand'){S.auth=false;S.owned=[];S.goal=null;S.log=[];saveSet();save();placeMe(false);toast('처음 방문 화면으로 돌아왔어요');return}   // 초기화 = 로그아웃하고 비로그인 처음 화면부터
   if(busy||(S.path.length<2&&!S.fwd.length))return;
   const snap={path:[...S.path],fwd:[...S.fwd],root:S.root};
   S.path=[S.center];S.fwd=[];S.root=S.center;
