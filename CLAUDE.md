@@ -1,6 +1,10 @@
 # prototype 저장소
 
 - 모든 답변·설명은 한국어로.
-- 주 작업: `next-one/` 스킬 학습 프로토타입. 이어서 작업할 때는 먼저 [next-one/HANDOFF.md](next-one/HANDOFF.md)를 읽을 것(컨셉·작업 규칙·화면 구조·최근 변경·열린 것).
-- 로컬 실행: `python3 -m http.server 8765 --bind 127.0.0.1` → http://localhost:8765/next-one/index.html (`.claude/launch.json`의 `prototype-static`)
-- 사용자가 "푸시"라고 할 때만 커밋·푸시(main). 커밋 메시지는 `next-one: 요약`, 끝에 `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- HU 리뉴얼 폴더는 `hu-renewal-project/` 아래에 모아 관리: `hu-renewal/`(이전 시안) · `hu-renewal-v2/`(V2 보관) · `hu-renewal-v3/`(현재 작업) · `hu-renewal-v4/`(Dovetail 톤 시안). 푸시할 때도 이 구조 그대로.
+- 현재 작업: `hu-renewal-project/hu-renewal-v3/` HU 리뉴얼 V3(2026-11-27 V4를 만든 뒤 다시 V3를 고치기로 함). 이어서 작업할 때는 먼저 [hu-renewal-project/hu-renewal-v3/README.md](hu-renewal-project/hu-renewal-v3/README.md)를 읽을 것. `hu-renewal-v4/`는 V3를 복사해 Dovetail 톤(글꼴·크기·색·부품, 콘텐츠 최대 폭 1200)을 입힌 시안(README 참고). `hu-renewal-v2/`는 V2 보관본(수정하지 않음). 세 폴더 모두 V2↔V3↔V4 전환 버튼이 있다. V1은 Figma 원본(폴더 없음). 기존 `hu-renewal-project/hu-renewal/`의 디자인은 쓰지 않으며, 그 폴더는 이전 시안으로 보존하고 수정하지 않음. **화면 흐름·기능은 HU V1(Figma HU-project)과 같게 두고 개선만 하며, 새 기능은 "추가 제안"으로 표시.** 글자 크기는 14~24만(본문 16, 중요 20 볼드) — **단 V4는 Dovetail 기준 12·14·16·20(12px 허용, 2026-11-27 사용자 지정).** V3 왼쪽 메뉴 글자는 13px(사용자 지정 예외).
+- HU 리뉴얼에서 말하는 **스킬 갤럭시 = `skill-galaxy-v2/index.html#me` 화면을 iframe으로 넣는 것**으로 본다(2026-11-27 사용자 지정). V3·V4에서의 경로: `../../skill-galaxy-v2/index.html#me`. 갤럭시를 새로 그리지 않는다.
+- `next-one/` 스킬 학습 프로토타입: 이어서 작업할 때는 먼저 [next-one/HANDOFF.md](next-one/HANDOFF.md)를 읽을 것(컨셉·작업 규칙·화면 구조·최근 변경·열린 것).
+- 로컬 실행: `python3 .claude/serve_nocache.py` (캐시 없는 http.server, 127.0.0.1:8765) → http://127.0.0.1:8765/<폴더>/index.html (HU 리뉴얼은 http://127.0.0.1:8765/hu-renewal-project/hu-renewal-v3/index.html) (`.claude/launch.json`의 `prototype-static`). 이 컴퓨터에서는 `localhost:8765`가 다른 프로그램과 겹치니 `127.0.0.1`로 열 것.
+- HU 리뉴얼 v2의 **이미지는 전부 AI 제작 강의 썸네일**, **제목은 그 강의명 그대로**. 강의는 `hu-renewal-project/hu-renewal-v4/data/courses.js`(v2·v3에도 같은 파일)(`HU_COURSES`)에서 과정코드로 고르고 `course('과정코드')`로 꺼내 씀. 출처는 [온라인 썸네일 검수 페이지](https://hunet-global-learning.s3.ap-northeast-2.amazonaws.com/vod/output/hunet/html/thumbnail_compare/online/index.html)(2026-05-14 데이터). AI 썸네일: `https://hunetdown.cdn.hunet.co.kr/cms/thumbnail/elearning/<과정코드>.png`(800×450, 16:9, 강의명이 이미지 안에 들어 있음). 기존 썸네일(`img.hunet.co.kr/files/Process/Course/Sample/…`)·다른 이미지는 쓰지 않음.
+- 사용자가 "푸시"라고 할 때만 커밋·푸시(main). 커밋 메시지는 `<폴더명>: 요약`(예 `hu-renewal-v2: 요약`), 끝에 `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.

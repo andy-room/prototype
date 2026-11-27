@@ -1,0 +1,226 @@
+/* =========================================================
+   HU 리뉴얼 v4 — 레퍼런스: Dovetail 워크스페이스(홈·메뉴·설정 화면) 톤
+   · V3 틀(LNB │ 마이 대시보드 │ 콘텐츠)과 기능은 그대로, 글꼴·크기·색·부품만 Dovetail 쪽으로
+   · 글꼴 Inter(+ 한글 Pretendard), 크기 12·14·16·20(V4만 12px 허용)
+   · 색: 바탕 #F5F5F5 · 판 #FAFAFA · 흰 면 · 글자 #0A0A0A / #3B3B3B / #898989 · 선은 1px 링(rgba 10,10,10 .16)
+   · 모서리 8px 하나로 통일, 선택은 파란 옅은 면(#0044FF 16%), 강조 보라 #9601FF는 아주 조금
+   · 콘텐츠는 최대 폭(--maxw) 안에서 가운데
+   home.css 다음에 불러와 덮어쓴다
+   ========================================================= */
+:root{
+  --font-default: 'Inter', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-number: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+  --tracking-16: 0;
+  --ink: #0A0A0A; --t2: #3B3B3B; --t3: #898989;
+  --typography-black-100: #0A0A0A;
+  --typography-black-80: #3B3B3B;
+  --typography-black-60: #6E6E6E;
+  --typography-black-45: #898989;
+  --ring: rgba(10,10,10,.16); --ring-1: 0 0 0 1px var(--ring);
+  --soft: rgba(10,10,10,.08);
+  --line: rgba(10,10,10,.10); --line-layout: rgba(10,10,10,.10); --line-strong: rgba(10,10,10,.28); --line-outline: rgba(10,10,10,.20);
+  --canvas: #FAFAFA; --fill: #F5F5F5; --bg-muted: #EBEBEB; --bg-strong: #F0F0F0;
+  --on-bg: rgba(0,68,255,.12); --on-c: #0044FF; --violet: #9601FF; --badge: #D8D8D8;
+  --fs-xs: 12px; --fs-s: 14px; --fs-m: 16px; --fs-l: 20px; --fs-xl: 20px;
+  --top: 56px; --lnb: 76px; --dash: 340px; --maxw: 1200px;
+  --r: 8px;
+}
+body{background:#F5F5F5;font-family:var(--font-default);color:var(--ink);letter-spacing:0}
+.num{font-family:var(--font-number);font-feature-settings:'tnum'}
+
+/* ---------- 바깥 판: 창 안쪽 8px에 둥근 판 하나(위쪽 바 + 세 단) ---------- */
+.top{height:var(--top);margin:8px 8px 0;padding:0 var(--spacing-4);gap:var(--spacing-6);border-radius:var(--r) var(--r) 0 0;background:var(--canvas);border-bottom:0;box-shadow:var(--ring-1);position:relative;z-index:30}
+.app{margin:0 8px 8px;height:calc(100vh - var(--top) - 16px);border-radius:0 0 var(--r) var(--r);box-shadow:var(--ring-1);background:var(--canvas)}
+.brand i{width:32px;height:32px;border-radius:var(--r);font-size:var(--fs-xs)}
+.brand b{font-size:var(--fs-xs);font-weight:600;letter-spacing:.02em}
+.top-meta{gap:var(--spacing-5);font-size:var(--fs-s);color:var(--t2)}
+.top-meta svg{width:16px;height:16px}
+.tsearch{height:36px;width:300px;border-radius:var(--r);background:var(--fill);box-shadow:var(--ring-1);color:var(--t3)}
+.tsearch input{font-size:var(--fs-s)}
+.tright{font-size:var(--fs-s);gap:var(--spacing-4);font-weight:500}
+.ac-box{top:44px;border-radius:var(--r);box-shadow:var(--ring-1),0 8px 24px rgba(10,10,10,.10)}
+.ac-box p{font-size:var(--fs-xs);color:var(--t3)}
+.ac-box a{border-radius:var(--r);font-size:var(--fs-s);padding:8px var(--spacing-3)}
+
+/* ---------- 왼쪽 메뉴: 아이콘 + 12px 글자, 선택은 파란 옅은 면 ---------- */
+.lnb{background:#fff;box-shadow:1px 0 0 var(--ring);padding:var(--spacing-3) 0;gap:2px;align-items:center}
+.lnb a{width:60px;height:52px;border-radius:var(--r);font-size:var(--fs-xs);font-weight:500;color:var(--t2);gap:3px}
+.lnb a svg{width:20px;height:20px}
+.lnb a:hover{background:var(--fill)}
+.lnb a.on{background:var(--on-bg);color:var(--on-c);font-weight:600}
+.lnb a.on::before{display:none}
+.lnb hr{width:44px;height:1px;margin:var(--spacing-3) 0;background:var(--line)}
+.lp-btn{font-size:var(--fs-xs);font-weight:500;color:var(--t2)}
+.lp.on .lp-btn{border-bottom-color:var(--line)}
+.lp-av{width:36px;height:36px;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ring)}
+
+/* ---------- 마이 대시보드 ---------- */
+.dash{background:#fff;border:0;box-shadow:1px 0 0 var(--ring);padding:var(--spacing-5) var(--spacing-4) var(--spacing-16)}
+@media (min-width:901px){ body:not(.dash-full) .dash>*{min-width:calc(var(--dash) - var(--spacing-4) * 2)} }
+.dh h2{font-size:var(--fs-m);font-weight:600}
+.dh a{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.dtog{width:28px;height:28px;border-radius:var(--r);box-shadow:var(--ring-1);color:var(--t2)}
+.dtog svg{width:16px;height:16px}
+.prof{margin-top:var(--spacing-5);gap:var(--spacing-3)}
+.prof .av{width:56px;height:56px;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ring)}
+.prof b{font-size:var(--fs-m);font-weight:600}
+.prof small{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.lv{margin-top:var(--spacing-4);padding:var(--spacing-4);border-radius:var(--r);background:var(--fill)}
+.lv-n{height:22px;padding:0 8px;border-radius:var(--r);background:var(--ink);font-size:var(--fs-xs);font-weight:600}
+.lv-h b{font-size:var(--fs-s);font-weight:600}
+.lv-pt{font-size:var(--fs-m);font-weight:600}
+.lv-bar{height:6px;background:#E3E3E3}
+.lv-note{font-size:var(--fs-xs);font-weight:500;color:var(--t2)}
+.lv-g{border-top-color:var(--line)}
+.lv-g dt{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.lv-g dd{font-size:var(--fs-s);font-weight:600}
+.ds{padding:var(--spacing-5) 0;border-bottom-color:var(--line)}
+.lbl{font-size:var(--fs-xs);font-weight:500;color:var(--t3);letter-spacing:0}
+.lbl .live,.lbl .lk{font-size:var(--fs-xs)}
+.ds .bd{margin-top:var(--spacing-3)}
+.tiles div,.fromto div{height:44px;padding:0 var(--spacing-3);border-radius:var(--r);background:var(--fill);font-size:var(--fs-xs);font-weight:500;color:var(--t2)}
+.tiles b,.fromto b{font-size:var(--fs-s);font-weight:600}
+.tiles b small{font-size:var(--fs-xs)}
+.sw{width:40px;height:24px}
+.sw::after{width:18px;height:18px}
+.sw.on::after{left:19px}
+.ck{font-size:var(--fs-s);gap:var(--spacing-2)}
+.ck i{width:18px;height:18px;border-radius:5px;box-shadow:inset 0 0 0 1px var(--line-strong);font-size:var(--fs-xs)}
+.mini{grid-template-columns:64px minmax(0,1fr)}
+.mini .th{border-radius:6px}
+.mini b{font-size:var(--fs-xs);font-weight:600}
+.mini small{font-size:var(--fs-xs);color:var(--t3)}
+.note{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.gx-now .gi{width:40px;height:40px;border-radius:var(--r)}
+.gx-now{grid-template-columns:40px minmax(0,1fr)}
+.gx-now small,.gx-now p{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.gx-now b{font-size:var(--fs-s);font-weight:600}
+.hist{height:80px}
+.hist .h{width:14px;height:14px;margin-left:-7px}
+body.dash-full .dash{background:var(--canvas);padding:var(--spacing-8) var(--spacing-8) var(--spacing-20)}
+body.dash-full .dash>*{max-width:var(--maxw);margin-inline:auto}
+body.dash-full .dh h2{font-size:var(--fs-l);font-weight:600}
+.fbox{padding:var(--spacing-5);border-radius:var(--r);background:#fff;box-shadow:var(--ring-1)}
+.fd-hero .prof .av{width:80px;height:80px}
+
+/* ---------- 콘텐츠 영역: 최대 폭 안에서 가운데 ---------- */
+.main{background:var(--canvas);padding:var(--spacing-8) var(--spacing-8) var(--spacing-20)}
+#gx,#view{max-width:var(--maxw);margin-inline:auto}
+.gx.fs{max-width:none}
+.mh h1{font-size:var(--fs-l);font-weight:600;letter-spacing:0;line-height:1.2}
+.mh p{font-size:var(--fs-m);color:var(--t2)}
+.sec{margin-top:var(--spacing-5);padding:var(--spacing-5) var(--spacing-5) var(--spacing-6);border-radius:var(--r);background:#fff;box-shadow:var(--ring-1)}
+.sec-h{margin-bottom:var(--spacing-4)}
+.sec-h h2{font-size:var(--fs-m);font-weight:500}
+.sec-h p{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.sec-h a,.sec-h .lk{font-size:var(--fs-s);font-weight:500;color:var(--ink)}
+.cards{gap:var(--spacing-3);grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.cards.icons{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+
+/* 버튼 · 칩 · 알약 (Dovetail: 8px 모서리, 1px 링, 14/500 · 작은 칩 12/500) */
+.btn{height:34px;padding:0 var(--spacing-3);border-radius:var(--r);font-size:var(--fs-s);font-weight:500;gap:6px}
+.btn.ink{background:var(--ink);box-shadow:0 4px 4px -4px rgba(10,10,10,.32)}
+.btn.ink:hover{background:#262626}
+.btn.line{background:#fff;box-shadow:var(--ring-1)}
+.btn.line:hover{background:var(--fill)}
+.btn.sm{height:30px;font-size:var(--fs-xs)}
+.btn svg{width:16px;height:16px}
+.chip{height:22px;padding:0 8px;border-radius:var(--r);background:#EBEBEB;font-size:var(--fs-xs);font-weight:500;color:var(--t2)}
+.chip.ink{background:var(--ink);color:#fff}
+.pills{gap:6px}
+.pill{height:32px;padding:0 var(--spacing-3);border-radius:var(--r);box-shadow:var(--ring-1);font-size:var(--fs-s);font-weight:500;color:var(--ink)}
+.pill:hover{box-shadow:0 0 0 1px var(--line-strong);background:var(--fill)}
+.pill.on{background:var(--on-bg);color:var(--on-c);box-shadow:none;font-weight:600}
+.pill.sm{height:26px;padding:0 8px;font-size:var(--fs-xs)}
+.pill svg{width:14px;height:14px}
+
+/* 카드: 평소 선 없음 → 마우스를 올리면 1px 링 + 옅은 그림자 */
+.card{padding:8px;border-radius:var(--r)}
+.card:hover{box-shadow:var(--ring-1),0 6px 16px rgba(10,10,10,.06)}
+.card.on{box-shadow:0 0 0 1.5px var(--on-c)}
+.card .media,.card .media .th{border-radius:6px}
+.card .media.icon{height:112px;background:var(--fill)}
+.card .media.icon .fi{width:40px;height:40px}
+.card .cb{padding:var(--spacing-3) 4px 4px}
+.card h3,.card.ic-card h3,.peeking .card h3{font-size:var(--fs-m);font-weight:600;line-height:1.4}
+.card .sub{font-size:var(--fs-xs);font-weight:500;color:var(--t2)}
+.card .mt{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.card .mt svg{width:13px;height:13px}
+.card .pr{font-size:var(--fs-s);font-weight:600}
+.card .pr small{font-size:var(--fs-xs)}
+.card .hrt{width:26px;height:26px}
+.card .hrt svg{width:18px;height:18px}
+.card .pg{font-size:var(--fs-xs)}
+
+/* 홈 세 개념 카드 */
+.ic3{padding:8px;border-radius:var(--r);box-shadow:var(--ring-1)}
+.ic3 .art{border-radius:6px}
+.ic3 .ib{padding:var(--spacing-4) 8px 8px}
+.ic3 .eb{font-size:var(--fs-xs);color:var(--on-c)}
+.ic3 h3{font-size:var(--fs-m);font-weight:600}
+.ic3 p{font-size:var(--fs-xs);font-weight:500;color:var(--t2);line-height:1.5;margin-bottom:var(--spacing-4)}
+
+/* 갤럭시 */
+.gx-bar b{font-size:var(--fs-m);font-weight:600}
+.gx-hint{font-size:var(--fs-xs);font-weight:500;color:var(--t3)}
+.gx-b{height:30px;padding:0 10px;border-radius:var(--r);font-size:var(--fs-xs);background:#fff;box-shadow:var(--ring-1)}
+.gx-f{border-radius:var(--r);box-shadow:var(--ring-1)}
+.gx-grip i{background:#CFCFCF}
+
+/* 밀려 나오는 정보 패널 */
+.peek{border-radius:var(--r);background:var(--fill)}
+.pk-h{background:var(--fill)}
+.pk-nav{width:30px;height:30px;border-radius:var(--r);box-shadow:var(--ring-1)}
+.pk-nav svg{width:16px;height:16px}
+.pk-n{font-size:var(--fs-xs)}
+.pk-media{border-radius:6px}
+.pk-t{font-size:var(--fs-l);font-weight:600}
+.pk-d{font-size:var(--fs-s);color:var(--t2)}
+.pk-kv div{height:40px;border-radius:var(--r);font-size:var(--fs-xs);font-weight:500;color:var(--t3);box-shadow:var(--ring-1)}
+.pk-kv b{font-size:var(--fs-s);font-weight:600}
+.pk-price{font-size:var(--fs-m);font-weight:600}
+.pk-cur{font-size:var(--fs-s);color:var(--t2)}
+.pk-mini b{font-size:var(--fs-xs);font-weight:600}
+.pk-mini small{font-size:var(--fs-xs);color:var(--t3)}
+.pk-act .btn{height:38px}
+.pk-act .btn.hb{flex:0 0 38px}
+.pk-more{font-size:var(--fs-xs);font-weight:500}
+
+/* 상세 · 상자 */
+.back{font-size:var(--fs-s);font-weight:500}
+.dt,.box{border-radius:var(--r);box-shadow:var(--ring-1);background:#fff}
+.dt h1{font-size:var(--fs-l);font-weight:600}
+.dt .desc,.txt{font-size:var(--fs-s);color:var(--t2)}
+.dt .kv div{height:44px;border-radius:var(--r);background:var(--fill);font-size:var(--fs-xs)}
+.dt .kv b{font-size:var(--fs-s);font-weight:600}
+.dt .price{font-size:var(--fs-l);font-weight:600}
+.box h2{font-size:var(--fs-m);font-weight:600}
+.big-ic{border-radius:var(--r);background:var(--fill)}
+.cur summary{font-size:var(--fs-s)}
+.cur li,.rv p,.hb div{font-size:var(--fs-s)}
+
+/* 로그인 · 온보딩 (Dovetail 로그인과 같은 결) */
+body.bare{background:#fff}
+.ob .mark.sq{width:56px;height:56px;border-radius:var(--r);font-size:var(--fs-s)}
+.ob.login h2{font-size:var(--fs-l);font-weight:600}
+.ob .sub{font-size:var(--fs-s);color:var(--t2)}
+body.bare .fld label{border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--line-outline);padding:10px 14px}
+body.bare .fld label:focus-within{box-shadow:inset 0 0 0 2px var(--violet)}
+.fld small{font-size:var(--fs-xs);font-weight:500}
+body.bare .btn.ac{height:48px;border-radius:var(--r);background:#0A0716}
+.ob.login .alt{font-size:var(--fs-s)}
+.ob h2{font-weight:600}
+
+/* 공통 작은 것 */
+.toast{border-radius:var(--r);font-size:var(--fs-s);padding:10px 16px}
+.hint,.cnt{font-size:var(--fs-xs)}
+
+@media (max-width:900px){
+  .top{margin:0;border-radius:0;box-shadow:0 1px 0 var(--ring)}
+  .app{margin:0;height:auto;border-radius:0;box-shadow:none}
+  .lnb{box-shadow:0 -1px 0 var(--ring);align-items:stretch}
+  .lnb a{width:auto;height:64px;border-radius:0}
+  .lnb a.on{background:none}
+  .main{padding:var(--spacing-5) var(--spacing-4) 168px}
+}
+body.bare .app{margin:0;height:auto;border-radius:0;box-shadow:none;background:#fff}

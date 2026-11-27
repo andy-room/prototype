@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>HU 리뉴얼 v2 컨셉 제안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
+<link rel="stylesheet" href="css/hds-tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/concepts.css?v=2">
+</head>
+<body class="board">
+
+<header class="bd-head">
+  <p class="bd-kicker">HU 리뉴얼 v2 · 컨셉 제안 · 2026-11-27</p>
+  <h1>스킬로 이어지는 학습을 한눈에 보여 주는 세 가지 방법</h1>
+  <p class="bd-lead">기존 시안의 디자인은 쓰지 않고 새로 시작해요. 세 컨셉 모두 같은 강의 데이터를 쓰고, 이미지는 AI가 만든 강의 썸네일만, 제목은 그 강의명 그대로 넣었어요.</p>
+  <nav class="bd-jump" aria-label="컨셉 바로가기">
+    <a href="#orbit"><b>01</b> 궤도</a>
+    <a href="#collect"><b>02</b> 스킬 도감</a>
+    <a href="#ask"><b>03</b> 질문</a>
+    <a href="#compare">비교</a>
+    <a href="index.html">톤앤매너 시안 →</a>
+  </nav>
+</header>
+
+<section class="bd-heard">
+  <h3>세 컨셉이 함께 지키는 것</h3>
+  <ol class="bd-rules">
+    <li>콘텐츠·스킬·커리어의 연결이 모든 화면에 보인다</li>
+    <li>영역 경계를 분명히 하고, 글자는 작게, 카드는 낮게</li>
+    <li>상세는 사이드 패널로 열어 탐색 흐름을 끊지 않는다</li>
+    <li>이미지는 AI 강의 썸네일만, 제목은 강의명 그대로</li>
+  </ol>
+</section>
+
+<section class="cp" id="orbit">
+  <div class="cp-head">
+    <span class="cp-no">01</span>
+    <div>
+      <h2>궤도 <small>Orbit</small></h2>
+      <p class="cp-one">가까울수록 깊게 이어져 있어요. 지금 보고 있는 것을 중심에 두고, 관련된 스킬·강의·커리어가 거리 순으로 둘러싸요.</p>
+    </div>
+  </div>
+  <div class="mk-wrap"><div class="mk" id="mkOrbit"></div></div>
+  <p class="mk-hint">목업 안의 강의 썸네일을 눌러 보세요. 누른 강의가 중심으로 오고, 지나온 길은 위쪽 탐험 경로에 쌓여요.</p>
+  <div class="cp-cols">
+    <div><h4>왜 이 컨셉</h4><p>스킬로 이어진 관계를 첫 화면의 주인공으로 세워요. 다만 점과 선 대신 <b>거리</b> 하나로 관계를 말해서, 처음 온 사람도 "가까운 게 더 관련 있다"만 알면 읽을 수 있어요. 누를 때마다 중심이 바뀌어서 둘러보는 재미가 생겨요.</p></div>
+    <div><h4>화면 구성</h4><ul><li>가운데: 지금 보고 있는 강의(또는 스킬·커리어)</li><li>첫 궤도: 그 강의가 키우는 스킬</li><li>둘째 궤도: 같은 스킬을 키우는 강의</li><li>바깥: 이어지는 커리어</li><li>오른쪽: 상세 패널, 위쪽: 탐험 경로</li></ul></div>
+    <div><h4>시각 언어 · 리스크</h4><p>어두운 무대 위에서 썸네일만 빛나게 해 탐험하는 느낌을 줘요. 스킬마다 색을 하나씩 정해 궤도의 선과 점에 써요.</p><p class="risk">리스크: 노드가 많아지면 겹쳐요. 궤도마다 최대 개수를 정해야 하고, 강의와 스킬 사이의 연관도 데이터가 필요해요.</p></div>
+  </div>
+</section>
+
+<section class="cp" id="collect">
+  <div class="cp-head">
+    <span class="cp-no">02</span>
+    <div>
+      <h2>스킬 도감 <small>Collect</small></h2>
+      <p class="cp-one">배울수록 채워져요. 스킬을 도감처럼 모으고, 강의는 그 칸을 채우는 이번 주 퀘스트가 돼요.</p>
+    </div>
+  </div>
+  <div class="mk-wrap"><div class="mk" id="mkCollect"></div></div>
+  <div class="cp-cols">
+    <div><h4>왜 이 컨셉</h4><p>배운 만큼 눈에 보이게 쌓여요. 강의 하나를 들으면 어느 스킬이 얼마나 찼는지 바로 보이니, 스킬 기반 학습이 설명 없이도 느껴져요. 모으는 재미가 다시 올 이유가 돼요.</p></div>
+    <div><h4>화면 구성</h4><ul><li>왼쪽: 목표 커리어, 레벨, 이번 달 별</li><li>가운데: 나의 스킬 도감(채운 칸·빈 칸)</li><li>아래: 이번 주 퀘스트 강의 3개와 보상 포인트</li><li>빈 칸을 누르면 그 스킬을 채울 강의가 열려요</li></ul></div>
+    <div><h4>시각 언어 · 리스크</h4><p>밝은 바탕에 스킬 색으로 칸을 칠해요. 채워진 정도가 곧 위계라서 장식이 거의 필요 없어요.</p><p class="risk">리스크: 스킬 레벨과 포인트 기준을 새로 정해야 해요. 처음 온 사람은 도감이 비어 있으니 온보딩에서 몇 칸을 미리 채워 줘야 해요.</p></div>
+  </div>
+</section>
+
+<section class="cp" id="ask">
+  <div class="cp-head">
+    <span class="cp-no">03</span>
+    <div>
+      <h2>질문 <small>Ask</small></h2>
+      <p class="cp-one">질문 하나로 시작해요. 답은 스킬 설명 → 강의 → 학습 플랜 → 커리어로 이어진 한 장의 지도가 돼요.</p>
+    </div>
+  </div>
+  <div class="mk-wrap"><div class="mk" id="mkAsk"></div></div>
+  <div class="cp-cols">
+    <div><h4>왜 이 컨셉</h4><p>유저가 스킬명을 몰라도 돼요. 자기 말로 물으면 HU가 스킬을 쉬운 말로 풀어 주고, 그 스킬을 키우는 강의와 순서까지 제안해요. 온톨로지가 "답의 구조"로 드러나서 복잡함이 숨어요. 처음 온 사람(콜드 스타트)에게 가장 강해요.</p></div>
+    <div><h4>화면 구성</h4><ul><li>위: 질문 입력과 예시 질문</li><li>왼쪽: 필요한 스킬 3가지, 각각 쉬운 설명과 강의 2개</li><li>오른쪽: 바로 시작할 학습 플랜과 이어지는 커리어</li><li>되묻기 칩으로 답을 좁혀 가요</li></ul></div>
+    <div><h4>시각 언어 · 리스크</h4><p>흰 바탕에 읽기 좋은 문단과 썸네일만 둬요. 휴넷 레드는 "플랜 저장" 한 곳에만 써요.</p><p class="risk">리스크: 답의 질이 곧 서비스 품질이에요. 엉뚱한 답을 막을 검수 기준과 호출 비용 관리가 필요해요.</p></div>
+  </div>
+</section>
+
+<section class="bd-compare" id="compare">
+  <h2>한눈에 비교</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th></th><th>01 궤도</th><th>02 스킬 도감</th><th>03 질문</th></tr></thead>
+    <tbody>
+      <tr><th>첫 화면이 던지는 말</th><td>무엇과 이어져 있나 둘러보세요</td><td>내 스킬을 채워 보세요</td><td>무엇이든 물어보세요</td></tr>
+      <tr><th>온톨로지를 보여 주는 방식</th><td>거리(궤도)</td><td>채움(도감 칸)</td><td>답의 구조(설명→강의→커리어)</td></tr>
+      <tr><th>가장 잘 맞는 사람</th><td>둘러보며 발견하는 사람</td><td>꾸준히 돌아오는 사람</td><td>처음 온 사람, 목표가 분명한 사람</td></tr>
+      <tr><th>게이미피케이션</th><td>탐험 경로 기록</td><td>레벨·별·퀘스트</td><td>플랜 진행률</td></tr>
+      <tr><th>필요한 데이터</th><td>강의·스킬 연관도</td><td>스킬 레벨·포인트 기준</td><td>질문 이해와 답 생성(LLM)</td></tr>
+      <tr><th>강점</th><td>관계가 한눈에 보임</td><td>성취감과 재방문</td><td>쉬운 첫 진입</td></tr>
+    </tbody>
+  </table></div>
+  <p class="bd-note">세 컨셉은 섞을 수 있어요. 예를 들어 첫 방문은 <b>질문</b>으로 시작해 도감 몇 칸을 채우고, 홈은 <b>궤도</b>로 보여 주는 식이에요.</p>
+</section>
+
+<footer class="bd-foot">강의 썸네일·강의명 출처: 온라인 썸네일 검수 페이지(2026-05-14 데이터) · AI 썸네일만 사용</footer>
+
+<script src="data/courses.js?v=1"></script>
+<script src="js/data.js?v=2"></script>
+<script src="js/concepts.js?v=2"></script>
+</body>
+</html>

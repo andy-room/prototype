@@ -1,0 +1,39 @@
+/* =========================================================
+   HU 리뉴얼 v2 — HDS 기반 스타일
+   · 색·크기·간격·모서리·그림자는 hds-tokens.css 토큰만 사용
+   ========================================================= */
+
+/* ---------- 기본 ---------- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font-default);font-size:var(--text-16);letter-spacing:var(--tracking-16);line-height:var(--leading-body);color:var(--typography-black-100);background:var(--bg-surface);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;word-break:keep-all;overflow-wrap:break-word}
+button,input,select{font:inherit;color:inherit;letter-spacing:inherit}
+button{background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+svg{flex:none}
+:focus-visible{outline:var(--border-2) solid var(--brand-company-primary);outline-offset:var(--spacing-0-5);border-radius:var(--radius-sm)}
+.num{font-family:var(--font-number);font-variant-numeric:tabular-nums}
+.clamp1,.clamp2,.clamp3{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+.clamp1{-webkit-line-clamp:1}.clamp2{-webkit-line-clamp:2}.clamp3{-webkit-line-clamp:3}
+
+/* ---------- HDS 타이포 유틸 ---------- */
+.t12{font-size:var(--text-12);letter-spacing:var(--tracking-12)}
+.t14{font-size:var(--text-14);letter-spacing:var(--tracking-14)}
+.t16{font-size:var(--text-16);letter-spacing:var(--tracking-16)}
+.t18{font-size:var(--text-18);letter-spacing:var(--tracking-18);line-height:var(--leading-heading)}
+.t20{font-size:var(--text-20);letter-spacing:var(--tracking-20);line-height:var(--leading-heading)}
+.t24{font-size:var(--text-24);letter-spacing:var(--tracking-24);line-height:var(--leading-heading)}
+.t28{font-size:var(--text-28);letter-spacing:var(--tracking-28);line-height:var(--leading-heading)}
+.t32{font-size:var(--text-32);letter-spacing:var(--tracking-32);line-height:var(--leading-heading)}
+.t40{font-size:var(--text-40);letter-spacing:var(--tracking-40);line-height:var(--leading-heading)}
+.t48{font-size:var(--text-48);letter-spacing:var(--tracking-48);line-height:var(--leading-heading)}
+.w4{font-weight:var(--font-regular)}.w5{font-weight:var(--font-medium)}.w7{font-weight:var(--font-bold)}
+.c100{color:var(--typography-black-100)}.c80{color:var(--typography-black-80)}.c60{color:var(--typography-black-60)}.c45{color:var(--typography-black-45)}
+.cred{color:var(--brand-company-primary)}
+
+/* ---------- 강의 썸네일 (AI 제작본 800×450, 16:9) ---------- */
+.th{position:relative;aspect-ratio:16/9;border-radius:var(--radius-md);background:var(--bg-strong);overflow:hidden;isolation:isolate}
+.th img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.th.ok img{opacity:1}
+.th::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 var(--border-1) rgba(0,0,0,.04);pointer-events:none}

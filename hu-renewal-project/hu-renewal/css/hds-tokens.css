@@ -1,0 +1,274 @@
+/* HDS (Hunet Design System) 토큰 — 원본: github.com/andy-room/hds  src/tokens/*.css
+ * 프로토타입 테마 전환을 직접 제어하기 위해 @media (prefers-color-scheme) 블록만 제외하고 그대로 옮김.
+ * 폰트 패밀리는 CDN 웹폰트 이름에 맞춰 'Pretendard Variable', 'SUIT Variable'을 앞에 추가함. */
+/* HDS Color Tokens — Theme Collection
+ *
+ * 구조: Atomic(원시값) → Semantic → Theme(light/dark) → 컴포넌트
+ * 컴포넌트에는 Theme 토큰만 사용합니다.
+ *
+ * Atomic 색상 (참조용 — 컴포넌트에 직접 사용 금지)
+ * gray: #F7F7F8(100) ... #0F0F10(1800)
+ * blue: #EBF3FF ... #0052CC
+ * red: #FFF7F7 ... #C82536
+ */
+
+/* ─── Light mode (기본값) ─── */
+:root {
+  /* Brand */
+  --brand-hunet-red: #FA2E43;
+  --brand-gonom-violet: #6541F2;
+  /* company-* = 활성 브랜드 컬러 세트. 기본값은 hunet-red 기준 */
+  --brand-company-primary:  #FA2E43;
+  --brand-company-strong:   #C82536;
+  --brand-company-muted:    #FA2E43;
+  --brand-company-subtle:   #FDABB4;
+  --brand-company-faint:    #FFF7F7;
+  --brand-company-ghost:    rgba(250, 46, 67, 0.08);
+
+  /* Background */
+  --bg-surface:  #FFFFFF;
+  --bg-page:     #F7F7F8;
+  --bg-dim:      rgba(0, 0, 0, 0.5);
+  --bg-strong:   #F4F4F5;
+  --bg-muted:    #EAEBEC;
+  --bg-subtle:   #DBDCDF;
+  --bg-faint:    #C2C4C8;
+  --bg-ghost:    rgba(23, 23, 25, 0.06);
+
+  /* Static (라이트·다크 무관 고정값) */
+  --static-white: #FFFFFF;
+  --static-black: #000000;
+
+  /* Line */
+  --line-layout:  #E1E2E4;
+  --line-outline: #C2C4C8;
+  --line-strong:  #AEB0B6;
+  --line-heavy:   #70737C;
+
+  /* Interaction */
+  --interaction-button-neutral: rgba(255, 255, 255, 0.96);
+  --interaction-button-subtle:  rgba(255, 255, 255, 0.4);
+  --interaction-selected-fill:  #EBF3FF;
+  --interaction-overlay-bg:     rgba(0, 0, 0, 0.5);
+  --interaction-overlay-outline: rgba(255, 255, 255, 0.4);
+  --interaction-text-hover:     rgba(23, 23, 25, 0.06);
+  --interaction-text-pressed:   rgba(23, 23, 25, 0.1);
+
+  /* Typography */
+  --typography-black-100:      #171719;
+  --typography-black-80:       rgba(23, 23, 25, 0.8);
+  --typography-black-60:       rgba(23, 23, 25, 0.6);
+  --typography-black-45:       rgba(23, 23, 25, 0.45);
+  --typography-black-disabled: rgba(23, 23, 25, 0.25);
+  --typography-white-100:      #FFFFFF;
+  --typography-white-80:       rgba(255, 255, 255, 0.8);
+  --typography-white-60:       rgba(255, 255, 255, 0.6);
+  --typography-white-45:       rgba(255, 255, 255, 0.45);
+  --typography-white-disabled: rgba(255, 255, 255, 0.25);
+
+  /* Icon */
+  --icon-reset-color-round:   #70737C;
+  --icon-success-color-round: #009933;
+  --icon-warning-color-round: #FF9200;
+  --icon-error-color-round:   #FA2E43;
+  --icon-info-color-round:    #0066FF;
+  --icon-solid:               #171719;
+
+  /* Role colors (상태별 배경) */
+  --role-success-bg: #EBFAF0;
+  --role-success-fg: #009933;
+  --role-warning-bg: #FFF6EB;
+  --role-warning-fg: #FF9200;
+  --role-error-bg:   #FFF7F7;
+  --role-error-fg:   #FA2E43;
+  --role-info-bg:    #EBF3FF;
+  --role-info-fg:    #0066FF;
+}
+
+/* ─── Dark mode ─── */
+
+
+[data-theme='dark'] {
+  --bg-surface:  #1B1C1E;
+  --bg-page:     #0F0F10;
+  --bg-strong:   #212225;
+  --bg-muted:    #292A2D;
+  --bg-subtle:   #333438;
+  --bg-faint:    #46474C;
+  --bg-ghost:    rgba(247, 247, 248, 0.06);
+
+  --line-layout:  #333438;
+  --line-outline: #46474C;
+  --line-strong:  #70737C;
+  --line-heavy:   #AEB0B6;
+
+  --interaction-button-neutral: rgba(24, 28, 30, 0.86);
+  --interaction-button-subtle:  rgba(24, 28, 30, 0.5);
+  --interaction-selected-fill:  rgba(51, 133, 255, 0.15);
+  --interaction-text-hover:     rgba(247, 247, 248, 0.06);
+  --interaction-text-pressed:   rgba(247, 247, 248, 0.1);
+
+  --typography-black-100:      #F7F7F8;
+  --typography-black-80:       rgba(247, 247, 248, 0.8);
+  --typography-black-60:       rgba(247, 247, 248, 0.6);
+  --typography-black-45:       rgba(247, 247, 248, 0.45);
+  --typography-black-disabled: rgba(247, 247, 248, 0.25);
+
+  --icon-solid: #F7F7F8;
+
+  --role-success-bg: rgba(0, 153, 51, 0.15);
+  --role-warning-bg: rgba(255, 146, 0, 0.15);
+  --role-error-bg:   rgba(250, 46, 67, 0.15);
+  --role-info-bg:    rgba(0, 102, 255, 0.15);
+}
+
+/* HDS Typography Tokens
+ * font/family/default → Pretendard (한글·한자·특수문자·heading·body 전체)
+ * font/family/number  → SUIT (숫자·영문 전용)
+ */
+
+:root {
+  /* Font families */
+  --font-default: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-number: 'SUIT Variable', 'SUIT', 'Pretendard Variable', 'Pretendard', sans-serif;
+
+  /* Font sizes */
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-40: 40px;
+  --text-48: 48px;
+  --text-64: 64px;
+
+  /* Font weights */
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-bold: 700;
+
+  /* Line heights */
+  --leading-body: 1.6em;    /* body */
+  --leading-heading: 1.4em; /* heading */
+
+  /* Letter spacing — body (size → tracking) */
+  --tracking-12: -0.0417em;
+  --tracking-14: -0.0357em;
+  --tracking-16: -0.0313em;
+  --tracking-18: -0.0278em;
+  --tracking-20: -0.035em;
+  --tracking-24: -0.0292em;
+  --tracking-28: -0.025em;
+  --tracking-32: -0.0219em;
+  --tracking-40: -0.0175em;
+  --tracking-48: -0.0146em;
+  --tracking-64: -0.0109em;
+}
+
+/* HDS Spacing Tokens
+ * 4px 베이스 그리드, Tailwind CSS 스케일 기준 네이밍 (spacing/{n})
+ * 최소 단위: 2px (spacing/0.5)
+ */
+
+:root {
+  --spacing-0: 0px;
+  --spacing-0-5: 2px;   /* 최소 간격 */
+  --spacing-1: 4px;     /* 인라인 요소 간격 */
+  --spacing-2: 8px;     /* 소형 컴포넌트 내부 패딩 */
+  --spacing-3: 12px;    /* 기본 내부 패딩, 버튼 간 간격 */
+  --spacing-4: 16px;    /* 컴팩트 레이아웃 패딩 */
+  --spacing-5: 20px;    /* 기본 패딩 */
+  --spacing-6: 24px;    /* 컴포넌트 내부 여백 */
+  --spacing-8: 32px;    /* 섹션 내부 여백, 카드 패딩 */
+  --spacing-10: 40px;   /* 섹션 간 간격 */
+  --spacing-12: 48px;   /* 큰 섹션 간격 */
+  --spacing-16: 64px;   /* 레이아웃 단위 간격 */
+  --spacing-20: 80px;   /* 페이지 레벨 간격 */
+  --spacing-24: 96px;   /* 히어로 섹션 여백 */
+  --spacing-32: 128px;  /* 대형 레이아웃 여백 */
+  --spacing-40: 160px;  /* 최대 여백 */
+}
+
+/* HDS Border Radius Tokens */
+
+:root {
+  --radius-none: 0px;       /* 각진 요소 */
+  --radius-sm: 4px;         /* 소형 컴포넌트 */
+  --radius-md: 8px;         /* 버튼, 인풋 */
+  --radius-lg: 16px;        /* 카드 */
+  --radius-xl: 20px;        /* 대형 카드 */
+  --radius-2xl: 32px;       /* 특수 강조 카드, 히어로 영역 */
+  --radius-3xl: 40px;       /* 대형 이미지 컨테이너 */
+  --radius-full: 9999px;    /* 완전 원형 요소 */
+}
+
+/* HDS Border Width Tokens */
+
+:root {
+  --border-1: 1px;  /* 기본 테두리, 구분선 */
+  --border-2: 2px;  /* 강조 항목 */
+  --border-3: 3px;  /* 활성 탭 인디케이터 */
+  --border-4: 4px;  /* 강한 강조 항목 */
+}
+
+/* HDS Shadow Tokens
+ * Light mode 기준. Dark mode는 동일 토큰명에 별도 값 적용.
+ */
+
+:root {
+  --shadow-xs: 0px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  --shadow-sm:
+    0px 1px 4px 0px rgba(0, 0, 0, 0.05),
+    0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0px 1px 4px -1px rgba(0, 0, 0, 0.05),
+    0px 4px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0px 4px 4px -4px rgba(0, 0, 0, 0.05),
+    0px 16px 32px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0px 4px 4px -4px rgba(0, 0, 0, 0.05),
+    0px 16px 16px -8px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0px 16px 32px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode — 불투명도를 높여 대비 보정 */
+
+
+[data-theme='dark'] {
+  --shadow-xs: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+  --shadow-sm:
+    0px 1px 4px 0px rgba(0, 0, 0, 0.15),
+    0px 1px 4px 0px rgba(0, 0, 0, 0.3);
+  --shadow-md:
+    0px 1px 4px -1px rgba(0, 0, 0, 0.15),
+    0px 4px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg:
+    0px 4px 4px -4px rgba(0, 0, 0, 0.15),
+    0px 16px 32px -4px rgba(0, 0, 0, 0.3);
+}
+
+/* HDS Liquid Tokens — Breakpoints
+ * 5단계 반응형 모드: xsmall ~ xlarge
+ */
+
+:root {
+  --breakpoint-xsmall:  375px;
+  --breakpoint-small:   768px;
+  --breakpoint-medium:  1024px;
+  --breakpoint-large:   1440px;
+  --breakpoint-xlarge:  2500px;
+}
+
+/*
+ * 사용 예시 (CSS media query):
+ * @media (max-width: 767px)  → xsmall
+ * @media (max-width: 1023px) → small
+ * @media (max-width: 1439px) → medium
+ * @media (max-width: 2499px) → large
+ * @media (min-width: 2500px) → xlarge
+ */
+

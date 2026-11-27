@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" data-accent="blue">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 현행 서비스 CDN 이미지를 그대로 쓰기 위해 리퍼러 미전송 -->
+<meta name="referrer" content="no-referrer">
+<title>HU 리뉴얼 v2</title>
+<!-- HDS 폰트: Pretendard(기본) · SUIT(숫자/영문) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
+<link rel="stylesheet" href="css/hds-tokens.css?v=12">
+<link rel="stylesheet" href="css/app.css?v=12">
+<link rel="stylesheet" href="css/home.css?v=12">
+</head>
+<body>
+  <nav class="lnb" id="lnb" aria-label="주 메뉴"></nav>
+  <header class="gnb" id="gnb"></header>
+  <main id="view"></main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 시안 도구: 화면 이동 · 강조색 비교 (HDS 색만) -->
+  <div class="tool" aria-label="시안 도구">
+    <div class="tool-ver" role="group" aria-label="버전"><a data-v="v2" class="on" href="index.html">V2</a><a data-v="v3" href="../hu-renewal-v3/index.html">V3</a><a data-v="v4" href="../hu-renewal-v4/index.html">V4</a></div>
+    <span class="tool-sep"></span>
+    <div class="tool-scenes" role="group" aria-label="화면 이동">
+      <a href="#guest">비로그인 홈</a><a href="#login">로그인</a><a href="#onboard">온보딩</a><a href="#mycareer">마이커리어</a><a href="#home">로그인 홈</a><a href="#contents">콘텐츠</a><a href="#c/HLSP91107">콘텐츠 상세</a><a href="#skills/코칭">스킬</a><a href="#careers/서비스 기획자">커리어</a><a href="#premium">프리미엄</a><a href="#search/AI">검색</a><a href="#myclass">마이클래스</a>
+    </div>
+    <span class="tool-sep"></span>
+    <div class="tool-ac" role="group" aria-label="강조색 바꾸기">
+      <button data-accent="blue" aria-label="블루"></button><button data-accent="red" aria-label="휴넷 레드"></button><button data-accent="violet" aria-label="바이올렛"></button>
+    </div>
+    <a class="tool-link" href="concepts.html">컨셉 제안</a>
+  </div>
+
+  <script>document.querySelectorAll('.tool-ver a').forEach(a => a.addEventListener('click', e => { if (a.classList.contains('on')) return; e.preventDefault(); location.href = a.getAttribute('href') + location.hash; }));</script>
+
+  <!-- 강의 목록(AI 썸네일) → 강의 헬퍼 → 화면 -->
+  <script src="data/courses.js?v=12"></script>
+  <script src="js/data.js?v=12"></script>
+  <script src="js/app.js?v=12"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 현행 서비스 CDN 이미지를 그대로 쓰기 위해 리퍼러 미전송 -->
+<meta name="referrer" content="no-referrer">
+<title>HU 리뉴얼 v3</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
+<link rel="stylesheet" href="css/hds-tokens.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/home.css?v=58">
+</head>
+<body>
+  <header class="top" id="top"></header>
+  <div class="app">
+    <nav class="lnb" id="lnb" aria-label="주 메뉴"></nav>
+    <aside class="dash" id="dash" aria-label="마이 대시보드"></aside>
+    <main class="main" id="main">
+      <section class="gx" id="gx" aria-label="스킬 갤럭시" hidden>
+        <div class="gx-bar"><b>Skill Galaxy</b><span class="sp"></span><button class="gx-b" data-gx="tall"></button><button class="gx-b" data-gx="fs"></button></div>
+        <div class="gx-f" id="gxF"><div class="gx-ad" id="gxAd" aria-live="polite"></div></div>
+        <button class="gx-grip" id="gxGrip" aria-label="갤럭시 높이 조절"><i></i></button>
+      </section>
+      <div id="view"></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- 시안 도구: 버전 전환 · 화면 이동 -->
+  <div class="tool" aria-label="시안 도구">
+    <div class="tool-ver" role="group" aria-label="버전"><a data-v="v2" href="../hu-renewal-v2/index.html">V2</a><a data-v="v3" class="on" href="index.html">V3</a><a data-v="v4" href="../hu-renewal-v4/index.html">V4</a></div>
+    <div class="tool-ac" role="group" aria-label="사이트 톤 바꾸기"><button data-accent="base" title="기본" aria-label="기본 톤"></button><button data-accent="red" title="레드" aria-label="레드 톤"></button><button data-accent="blue" title="블루" aria-label="블루 톤"></button><button data-accent="violet" title="보라" aria-label="보라 톤"></button></div>
+    <span class="tool-sep"></span>
+    <div class="tool-scenes" role="group" aria-label="화면 이동">
+      <a href="#guest">비로그인 홈</a><a href="#login">로그인</a><a href="#onboard">온보딩</a><a href="#mycareer">마이커리어</a><a href="#home">로그인 홈</a><a href="#contents">콘텐츠</a><a href="#c/HLSP91107">콘텐츠 상세</a><a href="#skills">스킬</a><a href="#careers">커리어</a><a href="#premium">프리미엄</a><a href="#search/AI">검색</a><a href="#myclass">마이클래스</a>
+    </div>
+  </div>
+  <script>document.querySelectorAll('.tool-ver a').forEach(a => a.addEventListener('click', e => { if (a.classList.contains('on')) return; e.preventDefault(); location.href = a.getAttribute('href') + location.hash; }));</script>
+
+  <!-- 강의 목록(AI 썸네일) → 강의 헬퍼 → 화면 -->
+  <script src="data/courses.js?v=1"></script>
+  <script src="js/data.js?v=1"></script>
+  <script src="js/app.js?v=59"></script>
+</body>
+</html>
