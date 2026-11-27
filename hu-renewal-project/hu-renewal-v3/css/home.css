@@ -308,7 +308,7 @@ body.bare .main{padding:0;background:none}
 /* ---------- 반응형 ---------- */
 @media (max-width:1440px){ :root{--dash:360px} .top-meta .opt{display:none} }
 @media (max-width:1200px){ .brand b,.top-meta{display:none} }
-@media (max-width:900px){
+@media (max-width:767px){
   :root{--top:64px}
   .app{display:block;height:auto}
   .app>*{overflow:visible}
@@ -362,7 +362,7 @@ body.bare .main{padding:0;background:none}
 @keyframes gxIn{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
 /* 콘텐츠 영역을 꽉 채우는 스킬 갤럭시 */
 .gx[hidden]{display:none}
-@media (max-width:900px){
+@media (max-width:767px){
   .dtog{display:none}
   .lv-g{grid-template-columns:1fr 1fr 1fr}
   .sec{padding:var(--spacing-5) var(--spacing-4) var(--spacing-6);border-radius:16px}
@@ -482,7 +482,7 @@ body.gx-fs .tool{display:none}
 .pk-more:hover{color:var(--ink)}
 .pk-more svg{width:16px;height:16px}
 
-@media (max-width:900px){
+@media (max-width:767px){
   .lp{display:none}
   body.dash-off .dash,body.dash-full .dash{display:block}
   body.no-dash .dash{display:none}
@@ -495,7 +495,7 @@ body.gx-fs .tool{display:none}
 }
 /* 접고 펴는 동안 대시보드 안 배치가 흔들리지 않게(폭이 줄어도 안쪽은 원래 폭 그대로, 바깥만 잘린다) */
 .prof .av,.lp-av{max-width:none}
-@media (min-width:901px){ body:not(.dash-full) .dash>*{min-width:calc(var(--dash) - var(--spacing-6) * 2 - 2px)} }
+@media (min-width:768px){ body:not(.dash-full) .dash>*{min-width:calc(var(--dash) - var(--spacing-6) * 2 - 2px)} }
 .sec.pk-ready.peeking{grid-template-columns:minmax(0,1fr) min(380px,42%)}
 .peeking .cards,.peeking .cards.icons{grid-template-columns:repeat(auto-fill,minmax(196px,1fr))}
 .peeking .card h3{font-size:var(--fs-m)}
@@ -543,7 +543,7 @@ body.gx-fs .tool{display:none}
 .tool.show{transform:translate(-50%,0);opacity:1}
 .tool-tab{display:none;position:fixed;left:12px;bottom:12px;z-index:36;height:32px;padding:0 12px;border-radius:var(--radius-full);background:rgba(23,23,25,.85);color:#fff;font-size:var(--fs-s);font-weight:var(--font-bold)}
 @media (hover:none){ .tool-tab{display:block} }
-@media (max-width:900px){ .tool-tab{bottom:84px} .lnb{border-right:0} }
+@media (max-width:767px){ .tool-tab{bottom:84px} .lnb{border-right:0} }
 
 /* ---------- 7차 ---------- */
 /* 콘텐츠는 최대 폭 1440 안에서 가운데 */
@@ -586,7 +586,7 @@ body.dash-full .dash>*{max-width:1600px;margin-inline:auto}
 .dash::-webkit-scrollbar{width:8px;height:0}
 .dash::-webkit-scrollbar-thumb{border-radius:4px;background:transparent}
 .dash:hover::-webkit-scrollbar-thumb{background:rgba(23,23,25,.28)}
-@media (max-width:900px){ .ad-t{font-size:var(--fs-l)} .ad-d{display:none} .gx-f{height:56vh} }
+@media (max-width:767px){ .ad-t{font-size:var(--fs-l)} .ad-d{display:none} .gx-f{height:56vh} }
 .gx-b[hidden]{display:none}
 .ad-in{position:relative;z-index:1}
 
@@ -617,7 +617,7 @@ body.gx-big .tool,body.gx-big .tool-tab{display:none}
 .lnb a[data-dom].on .ni .l{opacity:0;transform:scale(1.2)}
 .lnb a[data-dom].on .ni .f{opacity:1;transform:none;filter:drop-shadow(0 3px 6px color-mix(in srgb,var(--dc) 40%,transparent))}
 .lnb a[data-dom].on::before{background:var(--dc)}
-@media (max-width:900px){ .lnb a[data-dom].on{background:none} }
+@media (max-width:767px){ .lnb a[data-dom].on{background:none} }
 
 /* ---------- 9차: 왼쪽 메뉴 기호 단순화(번개·재생·깃발만, 그림자 없음) · 아이콘 크게 · 글자 13 ---------- */
 .lnb a{font-size:13px}
@@ -821,7 +821,7 @@ html:not([data-ac]) .nn-b b{color:#D41E33}
 .pk-rz:hover i,.sec.rz .pk-rz i{opacity:1;transform:none}
 .pk-rz:hover::before,.sec.rz .pk-rz::before{opacity:.25}
 .sec.rz .pk-rz i{background:var(--ac,#171719)}
-@media (max-width:900px){ .pk-rz{display:none!important} .peek{height:auto} }
+@media (max-width:767px){ .pk-rz{display:none!important} .peek{height:auto} }
 
 /* ---------- 18차: 정보 패널 — 화면 안쪽 바닥 여백, 아래 버튼 고정, 크게 보기 ---------- */
 .peek{max-height:calc(100vh - var(--top) - 64px);border-radius:16px;display:flex;flex-direction:column}
@@ -962,7 +962,7 @@ body.bare .main{padding:0}
 .bd-steps li i{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;background:rgba(255,255,255,.1);color:transparent;transition:background .3s,color .3s}
 .bd-steps li.on{color:#fff}
 .bd-steps li.on i{background:#17B26A;color:#fff}
-@media (max-width:900px){
+@media (max-width:767px){
   .au{grid-template-columns:1fr}
   .au-side{min-height:300px;padding:var(--spacing-6) var(--spacing-5)}
   .au-art{min-height:160px}
@@ -1042,7 +1042,7 @@ body.bare .main{padding:0}
 .top .tsearch input{font-size:var(--fs-m)}
 .top .tright{justify-self:end}
 .top .ac-box{left:0;right:0;width:auto;top:56px}
-@media (max-width:900px){ .top{grid-template-columns:auto 1fr auto} }
+@media (max-width:767px){ .top{grid-template-columns:auto 1fr auto} }
 
 /* 로그인 왼쪽·홈 만들기: 새로 그리지 않고 로그인 전 배너의 키비주얼(gxGuestArt)을 배너와 비슷한 크기로 */
 .au-art .ad-art{width:100%;max-width:520px}
@@ -1081,3 +1081,192 @@ body.bare .main,body.bare .app{transition:none}
 .au-art,.bd-vis{position:relative}
 /* 왼쪽 메뉴 선택 표시는 아이콘(솔리드)·색만 — 왼쪽 막대 없음 */
 .lnb a.on::before{display:none}
+
+/* =====================================================================
+   29차: 태블릿·모바일 반응형 — PC(1200~)는 그대로, 같은 경험을 손에 맞게
+   태블릿 768~1199: 왼쪽 메뉴 유지 · 마이 대시보드는 왼쪽 서랍 · 정보 패널은 오른쪽 시트
+   모바일 ~767: 아래 탭 · 위쪽 바(검색·알림·프로필) · 마이 대시보드 전체 화면 서랍 · 정보 패널은 아래 시트
+   ===================================================================== */
+.tm,.tcancel{display:none}
+.gx-tap{display:none}
+.scrim{position:fixed;inset:0;z-index:55;background:rgba(12,12,16,.4);opacity:0;pointer-events:none;transition:opacity .3s}
+
+@media (max-width:1199px){
+  /* 마이 대시보드 = 서랍(밀어내지 않고 위에 덮는다) */
+  body.dash-ov .app,body.no-dash .app{grid-template-columns:var(--lnb) minmax(0,1fr)}
+  body.dash-ov .dash{position:fixed;z-index:60;top:var(--top);bottom:0;left:var(--lnb);width:min(420px,calc(100vw - var(--lnb)));padding:var(--spacing-6) var(--spacing-6) var(--spacing-16);border-right:var(--border-1) solid var(--line);overflow-y:auto;overscroll-behavior:contain;
+    transform:translateX(calc(-100% - var(--lnb)));visibility:hidden;box-shadow:12px 0 40px rgba(0,0,0,.12)}
+  body.dov-anim.dash-ov .dash{transition:transform .38s cubic-bezier(.22,.9,.25,1),visibility 0s linear .38s}
+  body.dash-ov.dov-open .dash{transform:none;visibility:visible}
+  body.dov-anim.dash-ov.dov-open .dash{transition:transform .38s cubic-bezier(.22,.9,.25,1)}   /* 처음 열 때부터만 움직임(불러올 때 닫히는 모습이 보이지 않게) */
+  body.dov-open .scrim,body.pk-open .scrim{opacity:1;pointer-events:auto}
+  body.dash-ov .dash>*{min-width:0}
+  .dash .dtog.dx{display:flex;width:36px;height:36px;border-radius:10px}
+  .dash .dtog.dx svg{width:18px;height:18px}
+  .dash .ds.m-hide{display:block}
+  .lp{display:flex}
+  /* 정보 패널 = 오른쪽에서 덮는 시트(목록은 그대로) */
+  .sec.pk-ready,.sec.pk-ready.peeking{display:block}
+  .pk-rz{display:none!important}
+  .peek{position:fixed;z-index:62;top:var(--top);right:0;bottom:0;left:auto;width:min(460px,86vw);height:auto!important;max-height:none;border-radius:20px 0 0 20px;
+    opacity:1;transform:translateX(105%);pointer-events:none;box-shadow:-12px 0 40px rgba(0,0,0,.14);transition:transform .38s cubic-bezier(.22,.9,.25,1)}
+  .peeking .peek{transform:none;pointer-events:auto}
+  .peeking .cards,.peeking .cards.icons{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  .peek .pk-b{overflow-y:auto;overscroll-behavior:contain}
+  #gx,#view{max-width:none}
+}
+
+@media (max-width:767px){
+  :root{--top:56px;--tab:64px}
+  body{padding-bottom:env(safe-area-inset-bottom,0px)}
+  /* 위쪽 바: 로고 · (빈칸) · 검색 · 알림 · 프로필 */
+  .top{display:flex;gap:var(--spacing-2);padding:0 var(--spacing-3) 0 var(--spacing-4);height:var(--top)}
+  .brand i{width:36px;height:36px;border-radius:10px;font-size:var(--fs-s)}
+  .top .tright{margin-left:auto;gap:var(--spacing-1)}
+  .tm{position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;color:var(--ink)}
+  .tm:active{background:var(--fill)}
+  .tm .ic{width:22px;height:22px}
+  .tm .ni{display:flex}.tm .ni .f{display:none}
+  .tm.on{background:var(--fill)}
+  .tm .nbadge{top:6px;left:auto;right:6px}
+  .tm-av img{width:32px;height:32px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line-strong)}
+  body.dov-open .tm-av img{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ac,var(--ink))}
+  .top .btn.sm{height:36px}
+  /* 검색: 돋보기를 누르면 위쪽 바 전체가 검색 칸 */
+  body.m-search .top>.brand,body.m-search .top .tright{display:none}
+  body.m-search .top .tsearch{display:flex;flex:1;height:40px;border-radius:12px;padding:0 var(--spacing-3)}
+  body.m-search .tcancel{display:block;flex:none;height:40px;padding:0 var(--spacing-2);font-size:var(--fs-s);color:var(--typography-black-80)}
+  .top .ac-box{position:fixed;left:0;right:0;top:var(--top);max-height:calc(100dvh - var(--top));overflow:auto;border-radius:0 0 16px 16px}
+  /* 아래 탭 */
+  .lnb{height:calc(var(--tab) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  .lnb a{height:var(--tab);gap:3px}
+  .lnb .lp,.lnb [data-panel]{display:none!important}
+  .main{padding:var(--spacing-4) var(--spacing-4) calc(var(--tab) + 96px)}
+  .tool{bottom:calc(var(--tab) + 12px)}
+  .tool-tab{bottom:calc(var(--tab) + 12px)!important}
+  .toast{bottom:calc(var(--tab) + 72px)}
+  /* 마이 대시보드 = 화면 전체를 덮는 서랍(위쪽 바·아래 탭 위) */
+  body.dash-ov .dash{top:0;left:0;width:100vw;height:100dvh;z-index:70;border:0;padding:var(--spacing-3) var(--spacing-4) calc(var(--spacing-12) + env(safe-area-inset-bottom,0px));transform:translateX(-100%);box-shadow:none}
+  body.dash-ov .dash .dh{position:sticky;top:calc(var(--spacing-3) * -1);z-index:2;margin:0 calc(var(--spacing-4) * -1);padding:var(--spacing-3) var(--spacing-4);background:var(--side)}
+  body.dov-open{overflow:hidden}
+  body.dash-ov.dov-open .dash{transform:none}
+  /* 정보 패널 = 아래에서 올라오는 시트 */
+  .peek{top:auto;left:0;right:0;width:auto;height:auto!important;max-height:88dvh;border-radius:20px 20px 0 0;transform:translateY(105%);box-shadow:0 -12px 40px rgba(0,0,0,.18)}
+  .peek .pk-h{position:relative;padding-top:var(--spacing-5)}
+  .peek .pk-h::before{content:"";position:absolute;left:50%;top:8px;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:var(--line-strong)}
+  .peek .pk-foot{padding-bottom:calc(var(--spacing-3) + env(safe-area-inset-bottom,0px))}
+  body.pk-open{overflow:hidden}
+  .peeking .cards,.peeking .cards.icons{grid-template-columns:1fr}
+  /* 스킬 갤럭시: 페이지 안에서는 미리보기(스크롤이 갇히지 않게) → 누르면 전체 화면에서 탐색 */
+  .gx{margin-bottom:var(--spacing-6)}
+  .gx-bar{margin-bottom:var(--spacing-2)}
+  .gx-bar b{font-size:var(--fs-l)}
+  .gx [data-gx="tall"]{display:none!important}
+  .gx-f{border-radius:16px}
+  .gx:not(.gx-guest):not(.gx-mini) .gx-f{height:min(62svh,520px)!important;min-height:360px}
+  .gx.gx-guest:not(.gx-mini) .gx-f{height:min(62svh,520px)}
+  .gx.gx-mini .gx-f{height:auto!important;min-height:0}
+  .gx.gx-prev .gx-f iframe{pointer-events:none}
+  .gx.gx-prev:not(.gx-mini) .gx-tap{display:flex;position:absolute;inset:0;z-index:3;align-items:flex-end;justify-content:center;padding-bottom:var(--spacing-5);background:linear-gradient(to top,rgba(11,14,20,.55),transparent 38%)}
+  .gx-tap span{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 var(--spacing-4);border-radius:var(--radius-full);background:rgba(255,255,255,.96);color:var(--ink);font-size:var(--fs-s);font-weight:var(--font-bold);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .gx-tap span::before{content:"";width:8px;height:8px;border-radius:50%;background:#17B26A;box-shadow:0 0 0 3px rgba(23,178,106,.25)}
+  .gx.fs{padding:calc(var(--spacing-2) + env(safe-area-inset-top,0px)) var(--spacing-3) 0;height:100dvh}
+  .gx.fs .gx-f{border-radius:14px 14px 0 0;height:auto!important;min-height:0}
+  body.gx-big{overflow:hidden}
+  body.gx-big .main{padding:var(--spacing-4) var(--spacing-4) calc(var(--tab) + 96px)}
+  body.gx-big #view{padding:0}   /* 전체 화면을 닫았을 때 아래 페이지가 그대로 있게 */
+  .gx-ad{padding:var(--spacing-5)}
+  /* 홈 구역: 큰 카드 세 장은 옆으로 넘기기 */
+  .intro-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:var(--spacing-3);margin:0 calc(var(--spacing-4) * -1);padding:0 var(--spacing-4) var(--spacing-2);scrollbar-width:none}
+  .intro-grid::-webkit-scrollbar{display:none}
+  .intro-grid .ic3{flex:0 0 82%;scroll-snap-align:start}
+  .intro-grid .ic3 p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .fm-box{padding:var(--spacing-4);border-radius:16px}
+  .fm-av{width:40px;height:40px}
+  .sec-h h2{font-size:var(--fs-l)}
+  .rail-nav{display:none}
+  .mh h1{font-size:var(--fs-xl)}
+}
+@media (max-width:1199px){ .dash .dtog.dx .ni{display:flex}.dash .dtog.dx .ni .f{display:none}.dash .dtog.dx .ic{width:18px;height:18px} .dash .dh-r{gap:var(--spacing-2)} }
+@media (max-width:767px){
+  /* 목록 위 분류 칩은 한 줄로 옆으로 넘기기 */
+  .bar-f{flex-direction:column;align-items:stretch;gap:var(--spacing-3)}
+  .bar-f>.pills:first-child{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(var(--spacing-4) * -1);padding:2px var(--spacing-4);scrollbar-width:none}
+  .bar-f>.pills:first-child::-webkit-scrollbar{display:none}
+  .bar-f .pill{flex:none}
+  .dash .dtog.dx .ni{display:flex;align-items:center;justify-content:center;height:auto}
+}
+@media (max-width:767px){
+  /* 스킬·커리어 카드: 큰 그림 칸 대신 아이콘 + 글의 가로 행 */
+  .cards.icons,.sec .cards:has(> .ic-card){grid-template-columns:1fr;gap:var(--spacing-2)}
+  .ic-card{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:var(--spacing-3);padding:var(--spacing-3)}
+  .ic-card .media.icon{aspect-ratio:1;height:64px;width:64px;border-radius:14px;margin:0}
+  .ic-card .media.icon svg{width:30px;height:30px}
+  .ic-card .cb{padding:0}
+  .ic-card .sub.two{-webkit-line-clamp:1}
+  .ic-card .cf{margin-top:var(--spacing-1)}
+  /* 상세: 신청 버튼 줄은 아래 탭 위에 고정 */
+  .dt .act{position:sticky;bottom:calc(var(--tab) + 8px);z-index:5;margin:var(--spacing-5) calc(var(--spacing-3) * -1) 0;padding:var(--spacing-3);border-radius:16px;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.1)}
+  .dt .box{padding:var(--spacing-4)}
+}
+@media (max-width:767px){ .ic-card .sub{margin-top:2px} .ic-card .cf{margin-top:6px!important;padding-top:0!important;border-top:0!important} }
+@media (max-width:767px){
+  /* 로그인 흐름: 위 = 갤럭시 그림(낮게) · 아래 = 입력 */
+  .au{display:flex;flex-direction:column;min-height:100dvh}
+  .au-side{min-height:0;padding:var(--spacing-5) var(--spacing-5) var(--spacing-6)}
+  .au-art{flex:none;min-height:0;height:190px}
+  .au-art .ad-art{width:100%;max-width:340px}
+  .au-copy b{margin-top:var(--spacing-2);font-size:var(--fs-l)}
+  .au-copy p{display:none}
+  .au-main{flex:1;padding:var(--spacing-8) var(--spacing-5) var(--spacing-16)}
+  .au-card{width:100%;max-width:none}
+  .bd-vis{width:100%}
+}
+@media (max-width:767px){ .intro-grid{scroll-padding-inline:var(--spacing-4)} }
+/* 모바일 좌우 여백 = 16: 카드·상세의 안쪽 여백을 빼서 썸네일·글이 화면 끝 16px 선에 맞게 */
+@media (max-width:767px){
+  .card{padding:0}
+  .card .cb{padding:var(--spacing-3) 0 0}
+  .card .media{border-radius:12px}
+  .ic-card{padding:var(--spacing-2) 0}
+  .dt{padding:var(--spacing-2) 0 0;box-shadow:none;background:none}
+  .dt .act{margin-left:0;margin-right:0}
+  .fm-box .card .cb{padding-inline:0}
+}
+/* 30차: 모바일·태블릿 시트 다듬기 */
+@media (max-width:1199px){
+  .peek .pk-b{scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .peek .pk-b::-webkit-scrollbar{display:none}
+  .peek .pk-h{border-bottom:var(--border-1) solid transparent;transition:border-color .2s}
+  .peek.scrolled .pk-h{border-bottom-color:var(--line)}
+  .peek .pk-nav{width:40px;height:40px}
+  body.pk-open .scrim,body.dov-open .scrim{touch-action:none}
+}
+@media (max-width:767px){
+  .peek{max-height:calc(100dvh - var(--top) - 8px);height:auto!important;transition:transform .38s cubic-bezier(.22,.9,.25,1)}
+  .peek.drag{transition:none}
+  .peek .pk-h{padding:var(--spacing-5) var(--spacing-4) var(--spacing-2);touch-action:none;cursor:grab}
+  .peek .pk-b{padding:var(--spacing-2) var(--spacing-4) var(--spacing-5);min-width:0}
+  .peek .pk-act{padding:var(--spacing-3) var(--spacing-4) calc(var(--spacing-3) + env(safe-area-inset-bottom,0px))}
+  .peek .pk-media.icn{height:96px}
+  .peek .pk-media.icn svg{width:44px;height:44px}
+  html.lock,html.lock body{overflow:hidden;overscroll-behavior:none}
+}
+/* 모바일 목록: 카드 한 장이 한 화면을 다 쓰지 않게 2열 — 제목 2줄·분류·시간·차시·평점·가격은 PC와 같이 모두 표시 */
+@media (max-width:767px){
+  .sec .cards:not(.icons):not(:has(> .ic-card)){grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--spacing-6) var(--spacing-3)}
+  .sec .cards:not(.icons) .card .ct h3{font-size:var(--fs-s);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .sec .cards:not(.icons) .card .sub{font-size:var(--fs-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sec .cards:not(.icons) .card .cf{flex-direction:column;align-items:flex-start;gap:2px;margin-top:var(--spacing-2)}
+  .sec .cards:not(.icons) .card .cf .mt{font-size:var(--fs-s);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .sec .cards:not(.icons) .card .cf .mt svg{width:14px;height:14px}
+  .sec .cards:not(.icons) .card .cf>:last-child{font-size:var(--fs-m)}
+  .sec .cards:not(.icons) .card .pg{font-size:var(--fs-s)}
+  .sec.plus .cards,.cards:has(> .card.plus){grid-template-columns:1fr}
+}
+@media (max-width:767px){ .card:has(.pg) .cf>.pr{display:none} }
+/* 시트 위치 버그: PC 패널의 align-self:start가 남아 있으면, 화면에 고정한 패널이 내용 높이로 커지면서 위쪽 바 위로 밀려 올라갔다 → 덮는 모드에서는 정렬을 기본으로 */
+@media (max-width:1199px){ .peek{align-self:stretch;justify-self:stretch;grid-row:auto;grid-column:auto} }
+@media (max-width:767px){ .au-art{height:150px} .au-side{padding:var(--spacing-4) var(--spacing-4) var(--spacing-5)} .au-main{padding:var(--spacing-6) var(--spacing-4) var(--spacing-16)} }
+/* 태블릿 세로: 갤럭시 안 정보 패널(아래 시트)이 지도를 가리지 않게 칸을 더 높게 */
+@media (min-width:768px) and (max-width:1199px) and (orientation:portrait){ .gx:not(.gx-mini):not(.tall):not(.fs) .gx-f{height:min(64vh,760px)} }

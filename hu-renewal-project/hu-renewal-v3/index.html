@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
 <link rel="stylesheet" href="css/hds-tokens.css?v=1">
 <link rel="stylesheet" href="css/app.css?v=1">
-<link rel="stylesheet" href="css/home.css?v=58">
+<link rel="stylesheet" href="css/home.css?v=76">
 </head>
 <body>
   <header class="top" id="top"></header>
@@ -20,12 +20,13 @@
     <main class="main" id="main">
       <section class="gx" id="gx" aria-label="스킬 갤럭시" hidden>
         <div class="gx-bar"><b>Skill Galaxy</b><span class="sp"></span><button class="gx-b" data-gx="tall"></button><button class="gx-b" data-gx="fs"></button></div>
-        <div class="gx-f" id="gxF"><div class="gx-ad" id="gxAd" aria-live="polite"></div></div>
+        <div class="gx-f" id="gxF"><div class="gx-ad" id="gxAd" aria-live="polite"></div><button class="gx-tap" id="gxTap" aria-label="스킬 갤럭시 전체 화면으로 탐색하기"><span>눌러서 갤럭시 탐색하기</span></button></div>
         <button class="gx-grip" id="gxGrip" aria-label="갤럭시 높이 조절"><i></i></button>
       </section>
       <div id="view"></div>
     </main>
   </div>
+  <div class="scrim" id="scrim"></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- 시안 도구: 버전 전환 · 화면 이동 -->
@@ -42,6 +43,6 @@
   <!-- 강의 목록(AI 썸네일) → 강의 헬퍼 → 화면 -->
   <script src="data/courses.js?v=1"></script>
   <script src="js/data.js?v=1"></script>
-  <script src="js/app.js?v=59"></script>
+  <script src="js/app.js?v=66"></script>
 </body>
 </html>

@@ -269,12 +269,18 @@ function renderChrome(page) {
   const authed = S.auth, on = SECTION[page] || '';
   const now = new Date(), hhmm = now.toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' });
   document.getElementById('top').innerHTML = `<a class="brand" href="#${authed ? 'home' : 'guest'}"><i>HU</i><b>HUNET<br>UNIVERSITY</b></a>
-    <label class="tsearch">${I.search}<input id="gq" placeholder="원하는 콘텐츠를 검색해 보세요" autocomplete="off" value="${page === 'search' ? esc(S.q) : ''}"><div class="ac-box" id="acBox"></div></label>
-    <div class="tright"><a class="pc" href="javascript:void 0">HU Plus</a><a class="pc" href="javascript:void 0">기업교육 ↗</a>${authed ? '' : '<a class="btn ink sm" href="#login">로그인</a>'}</div>`;
+    <label class="tsearch">${I.search}<input id="gq" placeholder="원하는 콘텐츠를 검색해 보세요" autocomplete="off" value="${page === 'search' ? esc(S.q) : ''}"><div class="ac-box" id="acBox"></div></label><button class="tcancel" data-mcancel>취소</button>
+    <div class="tright"><a class="pc" href="javascript:void 0">HU Plus</a><a class="pc" href="javascript:void 0">기업교육 ↗</a><button class="tm" data-msearch aria-label="검색">${I.search}</button>${authed ? `<button class="tm" data-mpanel="noti" aria-label="알림">${navIco('bell')}<em class="nbadge" ${unread() ? '' : 'hidden'}>${unread()}</em></button><button class="tm tm-av" data-mdash aria-label="마이 대시보드"><img src="${AV}" alt=""></button>` : '<a class="btn ink sm" href="#login">로그인</a>'}</div>`;
   const nav = [['home', authed ? '#home' : '#guest', 'home', '홈'], ['contents', '#contents', 'play', '콘텐츠'], ['careers', '#careers', 'career', '커리어'], ['skills', '#skills', 'skill', '스킬'], ['myclass', authed ? '#myclass' : '#login', 'myclass', '마이클래스'], ['premium', '#premium', 'premium', '프리미엄']];
   document.getElementById('lnb').innerHTML = `<div class="lp on ${lpCur() ? 'cur' : ''}"><button class="lp-btn" id="lpBtn" aria-label="${authed ? '마이 대시보드' : '로그인'}"><img class="lp-av" src="${authed ? AV : AV_DEF}" alt=""><span>${authed ? NAME : '로그인'}</span></button></div>` + nav.map(([k, h, icn, l], i) => { const d = NAVDOM[k]; return `<a href="${h}" class="${on === k ? 'on' : ''} ${i === 5 ? 'pc' : ''}" ${d ? `data-dom="${d}"` : ''}>${d ? navSym(d) : navIco(icn)}<span>${l}</span></a>`; }).join('') + `<hr><a class="pc ${authed && S.panel === 'noti' ? 'on' : ''}" href="javascript:void 0" data-panel="noti">${navIco('bell')}<span>알림</span><em class="nbadge" ${authed && unread() ? '' : 'hidden'}>${unread()}</em></a><a class="pc ${authed && S.panel === 'set' ? 'on' : ''}" href="javascript:void 0" data-panel="set">${navIco('gear')}<span>설정</span></a>`;
   document.querySelectorAll('.lnb [data-panel]').forEach(a => a.onclick = e => { e.preventDefault(); openPanel(a.dataset.panel); });
-  document.getElementById('lpBtn').onclick = () => { if (!S.auth) return go('login'); if (S.panel !== 'dash') { S.panel = 'dash'; if (S.dash === 'closed') setDash('open'); else renderDash(); syncLnbPanel(); return; } setDash(S.dash === 'closed' ? 'open' : 'closed'); };   // 프로필 = 마이 대시보드 열기·닫기
+  const top = document.getElementById('top');   // 모바일 위쪽 바: 검색(누르면 바 전체가 검색 칸) · 알림 · 프로필(마이 대시보드 서랍)
+  top.querySelector('[data-msearch]').onclick = () => { document.body.classList.add('m-search'); document.getElementById('gq').focus(); };
+  top.querySelector('[data-mcancel]').onclick = () => { document.body.classList.remove('m-search'); document.getElementById('acBox').classList.remove('on'); };
+  top.querySelectorAll('[data-mpanel]').forEach(b => b.onclick = () => openPanel(b.dataset.mpanel));
+  top.querySelectorAll('[data-mdash]').forEach(b => b.onclick = () => { if (S.dov && S.panel === 'dash') return dovSet(false); S.panel = 'dash'; renderDash(); dovSet(true); });
+  syncTopM();
+  document.getElementById('lpBtn').onclick = () => { if (!S.auth) return go('login'); if (!wide()) { if (S.dov && S.panel === 'dash') return dovSet(false); S.panel = 'dash'; renderDash(); dovSet(true); return; } if (S.panel !== 'dash') { S.panel = 'dash'; if (S.dash === 'closed') setDash('open'); else renderDash(); syncLnbPanel(); return; } setDash(S.dash === 'closed' ? 'open' : 'closed'); };   // 프로필 = 마이 대시보드 열기·닫기
   const gq = document.getElementById('gq'), box = document.getElementById('acBox');
   const mark = (t, q) => { const i = t.indexOf(q); return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(q) + '</mark>' + esc(t.slice(i + q.length)); };
   gq.oninput = () => {
@@ -292,7 +298,19 @@ function renderChrome(page) {
 
 /* ---------- 두 번째 패널: 마이 대시보드 (모든 페이지에서 고정) ---------- */
 const fold = (key, label, body, extra = '') => `<section class="ds ${S.open[key] ? '' : 'closed'} ${extra}"><div class="lbl fold" data-fold="${key}">${label}${S.open[key] ? I.up : I.chev}</div><div class="bd">${body}</div></section>`;
-const wide = () => innerWidth > 900;   // 접기·전체 보기는 데스크톱에서만(모바일은 위아래로 쌓는다)
+/* 화면 폭: PC(1200~) = 지금 틀 그대로 · 태블릿(768~1199) = 왼쪽 메뉴 + 서랍형 마이 대시보드 · 모바일(~767) = 아래 탭 + 전체 화면 서랍 */
+const vp = () => innerWidth >= 1200 ? 'pc' : innerWidth >= 768 ? 'tab' : 'mo';
+const wide = () => vp() === 'pc';   // 접기·크게 보기는 PC에서만(태블릿·모바일은 서랍으로 연다)
+const dclose = `<button class="dtog dx" data-dclose aria-label="마이 대시보드 닫기">${I.close}</button>`;
+function dovSet(on) {   // 태블릿·모바일: 마이 대시보드 서랍 열기·닫기
+  S.dov = !!on; const b = document.body;
+  if (!b.classList.contains('dov-anim')) { b.classList.add('dov-anim'); void document.getElementById('dash').offsetWidth; }
+  b.classList.toggle('dov-open', S.dov && b.classList.contains('dash-ov'));
+  if (S.dov) document.getElementById('dash').scrollTop = 0;
+  syncLnbPanel(); syncTopM(); lockSync();
+}
+const lockSync = () => { const b = document.body; document.documentElement.classList.toggle('lock', vp() === 'mo' && (b.classList.contains('pk-open') || b.classList.contains('dov-open') || b.classList.contains('gx-big'))); };   // 모바일: 시트·서랍·갤럭시 전체 화면이 열리면 뒤 페이지는 멈춘다
+function syncTopM() { document.querySelectorAll('.top [data-mpanel]').forEach(b => b.classList.toggle('on', !!S.dov && S.panel === b.dataset.mpanel)); const n = document.querySelector('.top .nbadge'); if (n) { const k = unread(); n.textContent = k; n.hidden = !k; } }
 /* 프로필 아래 '지금 수준' — 레벨·포인트·상위 % + 스킬 갤럭시의 목표 커리어·가진 스킬(갤럭시와 연동) */
 function levelHTML() {   // 레벨은 없애고 '나의 스킬 포인트' + 같은 커리어 학습자 중 상위 %
   const fresh = S.fresh, m = GX.me, pt = fresh ? 0 : 4740;
@@ -344,12 +362,13 @@ S.panel = 'dash'; S.nf = '전체'; S.set = { remind: true, rec: true, point: tru
 const unread = () => NOTI.filter(n => !n.read).length;
 function openPanel(p) {   // 알림·설정을 누르면 대시보드 자리에서 열고, 다시 누르면 마이 대시보드로
   if (!S.auth) return go('login');
+  if (!wide()) { if (S.dov && S.panel === p) return dovSet(false); S.panel = p; renderDash(); dovSet(true); return; }   // 서랍: 고른 패널로 열고, 같은 것을 다시 누르면 닫는다
   S.panel = S.panel === p ? 'dash' : p;
   if (S.dash === 'closed') setDash('open'); else { if (S.dash === 'full') { S.dash = 'open'; saveDash(); } renderDash(); }
   syncLnbPanel();
 }
 function syncLnbPanel() { const lp = document.querySelector('.lp'); if (lp) lp.classList.toggle('cur', lpCur()); document.querySelectorAll('.lnb [data-panel]').forEach(a => a.classList.toggle('on', S.auth && S.panel === a.dataset.panel)); const b = document.querySelector('.lnb .nbadge'); if (b) { const n = unread(); b.textContent = n; b.hidden = !n || !S.auth; } }
-const panelHead = (t, right = '') => `<button class="pback" data-panel-go="dash">${I.left}<span>마이 대시보드</span></button><div class="dh"><div class="dh-l"><h2>${t}</h2></div><span class="dh-r">${right}<button class="dtog" data-dmode="closed" title="접기" aria-label="패널 접기">${I.left}</button></span></div>`;
+const panelHead = (t, right = '') => `<button class="pback" data-panel-go="dash">${I.left}<span>마이 대시보드</span></button><div class="dh"><div class="dh-l"><h2>${t}</h2></div><span class="dh-r">${right}${wide() ? `<button class="dtog" data-dmode="closed" title="접기" aria-label="패널 접기">${I.left}</button>` : dclose}</span></div>`;
 function notiPanel() {
   const F = ['전체', '안 읽음', '학습', '추천', '공지'], cur = current[0] === 'noti' ? (current[1] || NOTI[0].id) : '';
   const list = NOTI.filter(n => S.nf === '전체' || (S.nf === '안 읽음' ? !n.read : S.nf === '공지' ? ['공지', '이벤트'].includes(n.type) : S.nf === '학습' ? ['학습', '수강', '스킬'].includes(n.type) : ['추천', '커리어'].includes(n.type)));
@@ -419,13 +438,14 @@ function dashParts() {
 }
 function renderDash(syncLp = true) {
   const el = document.getElementById('dash'), body = document.body, desk = wide();
-  const mode = !S.auth ? 'none' : desk ? S.dash : 'open';
+  const mode = !S.auth ? 'none' : desk ? S.dash : 'drawer';
   body.classList.toggle('no-dash', mode === 'none');
+  body.classList.toggle('dash-ov', mode === 'drawer'); body.classList.toggle('dov-open', mode === 'drawer' && !!S.dov);
   body.classList.toggle('dash-off', mode === 'closed');
   body.classList.toggle('dash-full', mode === 'full');
   const lp = document.querySelector('.lp'); if (lp) lp.classList.toggle('cur', lpCur());
   if (mode === 'none') { el.innerHTML = ''; return; }
-  if (S.panel !== 'dash' && mode !== 'full') { el.innerHTML = S.panel === 'noti' ? notiPanel() : setPanel(); bindPanel(el); el.querySelectorAll('[data-dmode]').forEach(b => b.onclick = () => setDash(b.dataset.dmode)); el.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => { S.auth = false; S.panel = 'dash'; S.nudged = false; S.careers = []; S.fresh = false; toast('로그아웃했어요'); go('guest'); }); el.scrollTop = 0; return; }
+  if (S.panel !== 'dash' && mode !== 'full') { el.innerHTML = S.panel === 'noti' ? notiPanel() : setPanel(); bindPanel(el); el.querySelectorAll('[data-dclose]').forEach(b => b.onclick = () => dovSet(false)); el.querySelectorAll('[data-dmode]').forEach(b => b.onclick = () => setDash(b.dataset.dmode)); el.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => { S.auth = false; S.panel = 'dash'; S.nudged = false; S.careers = []; S.fresh = false; toast('로그아웃했어요'); go('guest'); }); el.scrollTop = 0; return; }
   const P = dashParts();
   if (mode === 'full') {
     el.innerHTML = `<div class="dh dh-plain">${dashCtl()}</div>
@@ -438,7 +458,7 @@ function renderDash(syncLp = true) {
         <section class="fbox"><div class="lbl">관심 목록 · ${S.saved.size}</div><div class="bd">${P.saved}</div><div class="bd">${P.alarm}</div></section>
       </div><div class="logout-row">${logoutBtn}</div></div>`;
   } else {
-    el.innerHTML = `<div class="dh dh-prof">${P.prof}${desk ? dashCtl() : `<span class="dh-r"><a href="#myclass">편집 ${I.pencil}</a></span>`}</div>
+    el.innerHTML = `<div class="dh dh-prof">${P.prof}${desk ? dashCtl() : `<span class="dh-r"><a href="#myclass">편집 ${I.pencil}</a>${vp() === 'mo' ? `<button class="dtog dx" data-dpanel="set" aria-label="설정">${navIco('gear')}</button>` : ''}${dclose}</span>`}</div>
       <div class="lv" id="gxLv">${levelHTML()}</div>
       ${nudgeHTML()}
       <section class="ds" id="gxNow">${gxNowHTML()}</section>
@@ -454,19 +474,23 @@ function renderDash(syncLp = true) {
   const sw = document.getElementById('sw'); if (sw) sw.onclick = () => { S.alarm = !S.alarm; renderDash(); };
   el.querySelectorAll('[data-period]').forEach(b => b.onclick = () => { S.period = b.dataset.period; renderDash(); });
   el.querySelectorAll('[data-dmode]').forEach(b => b.onclick = () => setDash(b.dataset.dmode));
+  el.querySelectorAll('[data-dclose]').forEach(b => b.onclick = () => dovSet(false));
+  el.querySelectorAll('[data-dpanel]').forEach(b => b.onclick = () => openPanel(b.dataset.dpanel));   // 모바일: 설정은 서랍 머리에서
   nudgeRun();
   el.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => { S.auth = false; S.panel = 'dash'; S.nudged = false; S.careers = []; S.fresh = false; toast('로그아웃했어요'); go('guest'); });
   el.querySelectorAll('[data-fold]').forEach(b => b.onclick = () => { S.open[b.dataset.fold] = !S.open[b.dataset.fold]; renderDash(); });
 }
 const saveDash = () => { try { localStorage.setItem('hu-v3-dash', S.dash); } catch (e) {} };
 let dashT;
-const lpCur = () => S.auth && S.dash !== 'closed' && S.panel === 'dash';   // 왼쪽 메뉴 프로필 = 마이 대시보드 메뉴(열려 있으면 선택 표시)
+const lpCur = () => S.auth && S.panel === 'dash' && (wide() ? S.dash !== 'closed' : !!S.dov);   // 왼쪽 메뉴 프로필 = 마이 대시보드 메뉴(열려 있으면 선택 표시)
 function setDash(mode) {
+  if (!wide()) { dovSet(mode !== 'closed'); return; }
   if (mode === 'full' && S.panel !== 'dash') { S.panel = 'dash'; syncLnbPanel(); }
   S.dash = mode; saveDash(); renderDash(); syncLnbPanel();
 }
 let wasWide = wide();
-addEventListener('resize', () => { if (wide() !== wasWide) { wasWide = wide(); if (!document.body.classList.contains('bare')) renderDash(); } });
+let wasVp = vp();
+addEventListener('resize', () => { if (vp() !== wasVp) { wasVp = vp(); wasWide = wide(); S.dov = false; document.body.classList.remove('m-search'); if (!document.body.classList.contains('bare')) { renderChrome(current[0]); renderDash(); } if (PK && PK.sec.isConnected) closePeek(PK.sec); gxSync(); } });
 
 /* ---------- 스킬 갤럭시(iframe) — skill-galaxy-v2/index.html#me 를 그대로 넣고, 갤럭시 패널의 변화를 대시보드로 받아 온다 ---------- */
 const GX_SRC = '../../skill-galaxy-v2/index.html#me', GX_SKEY = 'skill-galaxy-settings-v1';
@@ -486,7 +510,7 @@ function mountGalaxy(show) {
   if (!show) { if (GXV.fs || GXV.tall) { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); if (GXV.tall) document.getElementById('gxF').style.height = gxPrevH; GXV.fs = GXV.tall = false; gxSync(); } return; }
   const mode = S.auth ? 'member' : 'guest';
   if (gxMode === mode && box.querySelector('iframe')) return;   // 같은 상태면 다시 불러오지 않는다(탐색 위치 유지)
-  gxMode = mode; gxPreset(S.auth);
+  gxMode = mode; gxPreset(S.auth); box.classList.toggle('gx-guest', !S.auth);
   document.getElementById('gxF').style.height = S.auth ? '' : GX_MIN + 'px';   // 로그인 전 = 배너로 시작, 로그인 후 = 펼친 갤럭시로 시작
   { const fr = document.getElementById('gxF'), old = fr.querySelector('iframe'); if (old) old.remove(); fr.insertAdjacentHTML('afterbegin', `<iframe src="${GX_SRC}" title="스킬 갤럭시"></iframe>`); }
   gxAdI = 0; gxAdDraw();
@@ -499,10 +523,12 @@ const GXV = { tall: false, fs: false };
 const GX_MIN = 300, GX_AD = 400;
 function gxSync() {
   const box = document.getElementById('gx');
-  box.classList.toggle('tall', GXV.tall); box.classList.toggle('fs', GXV.fs); document.body.classList.toggle('gx-big', GXV.tall || GXV.fs);
+  box.classList.toggle('tall', GXV.tall); box.classList.toggle('fs', GXV.fs); document.body.classList.toggle('gx-big', GXV.tall || GXV.fs); lockSync();
   const mini = box.classList.contains('gx-mini'), bt = box.querySelector('[data-gx="tall"]'), bf = box.querySelector('[data-gx="fs"]');
   bt.innerHTML = GXV.tall ? `${I.shrink}작게 보기` : `${I.expand}크게 보기`; bt.hidden = GXV.fs || mini;
-  bf.innerHTML = GXV.fs ? `${I.close}전체 화면 닫기` : `${I.galaxy}전체 화면`;
+  bf.innerHTML = GXV.fs ? `${I.close}${vp() === 'mo' ? '닫기' : '전체 화면 닫기'}` : `${I.galaxy}${vp() === 'mo' ? '탐색하기' : '전체 화면'}`;
+  const prev = vp() === 'mo' && !GXV.fs; box.classList.toggle('gx-prev', prev);
+  try { const d = box.querySelector('iframe').contentDocument; d.documentElement.classList.toggle('hu-prev', prev); d.documentElement.classList.toggle('hu-mo', vp() === 'mo'); } catch (e) {}
 }
 let gxPrevH = '';
 function gxFit() {   // 크게 보기: 콘텐츠 영역(main)의 아래 끝까지 정확히 — 여백이 줄어드는 애니메이션이 끝난 뒤의 위치로 계산
@@ -572,7 +598,8 @@ function gxAdDraw() {
 function gxAdRun() { clearInterval(gxAdT); if (document.getElementById('gx').classList.contains('gx-mini') && gxAdSlides().length > 1) gxAdT = setInterval(() => { if (!document.getElementById('gxAd').matches(':hover')) { gxAdI++; gxAdDraw(); } }, 5000); }
 (function gxControls() {
   const box = document.getElementById('gx'), fr = document.getElementById('gxF'), grip = document.getElementById('gxGrip');
-  const setFs = on => { GXV.fs = on; if (on && box.requestFullscreen && !document.fullscreenElement) box.requestFullscreen().catch(() => {}); if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {}); gxSync(); };
+  // 전체 화면: PC·태블릿은 브라우저 전체 화면, 모바일은 화면을 덮는 층으로(iOS 지원·주소창 유지)
+  const setFs = on => { GXV.fs = on; if (on && vp() !== 'mo' && box.requestFullscreen && !document.fullscreenElement) box.requestFullscreen().catch(() => {}); if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {}); gxSync(); };
   box.querySelectorAll('[data-gx]').forEach(b => b.onclick = () => {
     const k = b.dataset.gx;
     if (k === 'fs') return setFs(!GXV.fs);
@@ -580,7 +607,8 @@ function gxAdRun() { clearInterval(gxAdT); if (document.getElementById('gx').cla
     else { GXV.tall = false; fr.style.height = gxPrevH; gxSync(); }   // 크게 보기 = 위쪽 바 아래를 브라우저 가로·세로 전체로
   });
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && GXV.fs) { GXV.fs = false; gxSync(); } });
-  document.getElementById('gxAd').onclick = () => gxOpen();
+  document.getElementById('gxAd').onclick = () => { gxOpen(); if (vp() === 'mo') setFs(true); };   // 모바일은 배너를 누르면 바로 전체 화면 탐색
+  document.getElementById('gxTap').onclick = () => { if (box.classList.contains('gx-mini')) gxOpen(); setFs(true); };   // 모바일: 페이지 안 갤럭시는 미리보기 → 누르면 전체 화면에서 탐색
   addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (GXV.fs) setFs(false); else if (GXV.tall) { GXV.tall = false; fr.style.height = gxPrevH; gxSync(); } });
   let rz; const nudge = () => { clearTimeout(rz); rz = setTimeout(() => { const f = fr.querySelector('iframe'); try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {} }, 140); };   // 크기가 바뀐 뒤 갤럭시가 다시 재도록(별 배경·지도 깨짐 방지)
   new ResizeObserver(() => { nudge(); const mini = !GXV.fs && !GXV.tall && fr.getBoundingClientRect().height < GX_AD; if (mini !== box.classList.contains('gx-mini')) { box.classList.toggle('gx-mini', mini); if (mini) gxAdDraw(); try { fr.querySelector('iframe').contentDocument.documentElement.classList.toggle('hu-mini', mini); } catch (e) {} gxSync(); gxAdRun(); } }).observe(fr);
@@ -599,13 +627,15 @@ function gxBridge(f) {
     + ''   // 갤럭시 머리 줄(로고·검색·탐색 기록·목표 프로필)은 HU 틀에서 뺀다
     + '.p-top{padding:12px 16px!important}.p-head{gap:10px;align-items:center}.p-ico{width:34px;height:34px;border-radius:10px}.p-ico svg{width:18px;height:18px}.p-name h2{font-size:16px}.p-name .sub{font-size:12px;margin-top:1px}'
     + '.stats{display:flex!important;gap:6px;margin:10px 0!important}.stat{flex:1;display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:7px 10px;border-radius:9px}.stat dd{margin:0!important;font-size:14px}.cta{height:36px;font-size:13px;border-radius:9px}.tabs{padding:10px 16px 0!important}'   // 오른쪽 패널 윗부분을 낮게
-    + 'html.hu-mini .top,html.hu-mini .trailbar,html.hu-mini #panel,html.hu-mini .legend,html.hu-mini .hint,html.hu-mini .viewseg,html.hu-mini .tidybtn,html.hu-mini .gauge,html.hu-mini .nudge,html.hu-mini .resume,html.hu-mini .hero,html.hu-mini .tiltbadge{display:none!important}';   // 배너 모드에서는 별 지도만 남긴다
+    + 'html.hu-mini .top,html.hu-mini .trailbar,html.hu-mini #panel,html.hu-mini .legend,html.hu-mini .hint,html.hu-mini .viewseg,html.hu-mini .tidybtn,html.hu-mini .gauge,html.hu-mini .nudge,html.hu-mini .resume,html.hu-mini .hero,html.hu-mini .tiltbadge{display:none!important}'
+    + 'html.hu-prev #panel,html.hu-prev .trailbar,html.hu-prev .hint,html.hu-prev .viewseg,html.hu-prev .tidybtn,html.hu-prev .nudge,html.hu-prev .resume,html.hu-prev .tip{display:none!important}html.hu-prev .app{grid-template-rows:minmax(0,1fr)!important}html.hu-prev .stage{height:100%!important}html.hu-prev .legend{pointer-events:none}'   // 모바일 미리보기: 패널·도구 없이 지도와 범례만(누르면 전체 화면)
+    + 'html.hu-mo .hint{top:100px!important;bottom:auto!important;left:50%!important;transform:translateX(-50%)!important;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}html.hu-mo .legend{left:12px!important;right:12px!important}html.hu-mo .chip{height:28px!important;padding:0 10px!important;font-size:12px!important}html.hu-mo .trailbar{padding:8px 12px!important}html.hu-mo .panel{height:min(78dvh,calc(100% - 56px))!important}';   // 모바일 전체 화면: 안내 문구는 정리하기 줄 아래로(노드를 가리지 않게), 범례 칩은 작게
   st.textContent += 'html.hu-guest .scene,html.hu-guest #sEdges,html.hu-guest .legend,html.hu-guest .picker,html.hu-guest .uilayer,html.hu-guest .gauge,html.hu-guest .tiltbadge,html.hu-guest .lens,html.hu-guest .tip,html.hu-guest .trailbar{display:none!important}'
     + 'html.hu-guest .app.guest .hero{top:50%!important;transform:translate(-50%,-50%)!important;text-align:center;animation:none!important}html.hu-guest .hero-h{font-size:clamp(22px,2.4vw,30px)!important}html.hu-guest .hero-cta{background:none!important;color:#fff!important;height:auto!important;padding:6px 2px!important;border-radius:0!important;text-decoration:underline;text-underline-offset:6px;text-decoration-color:rgba(255,255,255,.45)}html.hu-guest .hero-cta::after{content:" →"}html.hu-guest .hero-cta:hover{text-decoration-color:#fff}';   // 로그인 전: 흐르는 우주 배경 + 가운데 안내 문구·흰 버튼만
   d.documentElement.classList.toggle('hu-guest', !S.auth);
   [60, 400].forEach(t => setTimeout(() => { try { f.contentWindow.dispatchEvent(new Event('resize')); } catch (e) {} }, t));   // 머리 줄을 숨긴 뒤 별 배경을 칸 높이에 맞춰 다시 그리게
   d.documentElement.classList.toggle('hu-mini', document.getElementById('gx').classList.contains('gx-mini'));
-  d.head.appendChild(st);
+  d.head.appendChild(st); gxSync();
   // 로그인은 HU 흐름(#login → 온보딩)으로 보낸다
   d.addEventListener('click', e => { if (e.target.closest('#heroGo,#loginBtn')) { e.preventDefault(); e.stopImmediatePropagation(); go('login'); } }, true);
   const lg = d.getElementById('login');
@@ -817,7 +847,7 @@ function renderMyclass() {
   const tabs = ['학습 중', '학습 완료', '관심 목록', '증명서'];
   const T = S.mcTab || '학습 중';
   const data = { '학습 중': S.fresh ? [] : [['HLSP91107', 45], ['HLAP21002', 12], ['HLAP01419', 27], ['HLSP28153', 61]], '학습 완료': S.fresh ? [] : [['HLSP78181', 100], ['HLSP38380', 100], ['HLAP08209', 100]], '관심 목록': [...S.saved].map(cd => [cd, 0]), '증명서': S.fresh ? [] : [['HLSP78181', 100], ['HLSP38380', 100]] }[T];
-  view.innerHTML = `${mh(`마이클래스 · ${T} ${data.length}개`, '왼쪽 마이 대시보드와 함께 나의 학습을 관리해요')}
+  view.innerHTML = `${mh(`마이클래스 · ${T} ${data.length}개`, wide() ? '왼쪽 마이 대시보드와 함께 나의 학습을 관리해요' : '프로필을 누르면 마이 대시보드에서 학습 현황을 함께 볼 수 있어요')}
     <section class="sec list"><div class="bar-f"><div class="pills">${tabs.map(t => `<button class="pill ${T === t ? 'on' : ''}" data-mc="${t}">${t}</button>`).join('')}</div><div class="pills"><button class="pill sm">최근 학습순 ${I.down}</button></div></div>
     ${data.length ? `<div class="cards">${data.map(([cd, p]) => card(course(cd), T === '관심 목록' ? {} : { prog: p, right: `<span class="pr">${p}<small>%</small></span>` })).join('')}</div>` : `<div class="nores">아직 ${T} 항목이 없어요. 홈의 추천에서 첫 강의를 골라 보세요.</div>`}</section>`;
   view.querySelectorAll('[data-mc]').forEach(b => b.onclick = () => { S.mcTab = b.dataset.mc; renderMyclass(); });
@@ -984,6 +1014,8 @@ function peekDraw() {
   pk.innerHTML = `<div class="pk-h"><button class="pk-nav" data-pk="-1" ${i <= 0 ? 'disabled' : ''} aria-label="이전">${I.left}</button><span class="pk-n">${i >= 0 ? `<b>${i + 1}</b> / ${keys.length}` : '연결된 항목'}</span><button class="pk-nav" data-pk="1" ${i < 0 || i >= keys.length - 1 ? 'disabled' : ''} aria-label="다음">${I.right}</button><span class="sp"></span><button class="pk-nav" data-pk="full" title="상세 페이지로 크게 보기" aria-label="상세 페이지로 크게 보기">${I.expand}</button><button class="pk-nav" data-pk="x" aria-label="닫기">${I.close}</button></div><div class="pk-b">${peekBody(key)}</div>`;
   const act = pk.querySelector('.pk-b .pk-act'); if (act) { const f = act.cloneNode(true); f.classList.add('pk-foot'); pk.appendChild(f); }   // 하트·수강 신청은 패널 아래에 고정
   pk.scrollTop = 0;
+  const pb = pk.querySelector('.pk-b'); if (pb) pb.onscroll = () => pk.classList.toggle('scrolled', pb.scrollTop > 4);
+  pkSwipe(pk);
   sec.querySelectorAll('.card.on').forEach(c => c.classList.remove('on'));
   const cur = i >= 0 ? sec.querySelector(`.sec-main .card[data-go="${CSS.escape(keys[i])}"]`) : null;
   if (cur) { cur.classList.add('on'); cur.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' }); }
@@ -1000,12 +1032,13 @@ function openPeek(sec, key) {
   const keys = [...sec.querySelectorAll('.sec-main .card[data-go]')].map(c => c.dataset.go).filter((k, j, a) => a.indexOf(k) === j);
   PK = { sec, keys, key, i: keys.indexOf(key) };
   peekDraw();
-  sec.classList.add('peeking'); pkFit();
+  sec.classList.add('peeking'); document.body.classList.add('pk-open'); lockSync(); pkFit();
 }
 /* 패널 높이 = 패널 위 끝부터 브라우저 바닥까지(붙기 전에도 바닥에 닿게) */
 function pkFit() {
-  if (!PK || !PK.sec.isConnected || innerWidth <= 900) return;
+  if (!PK || !PK.sec.isConnected) return;
   const pk = PK.sec.querySelector(':scope > .peek'); if (!pk) return;
+  if (!wide()) { pk.style.height = ''; return; }   // 태블릿·모바일은 화면 위에 뜨는 시트(높이는 CSS)
   pk.style.height = Math.max(320, innerHeight - pk.getBoundingClientRect().top - 16) + 'px';   // 지금 위치에서 브라우저 바닥 16px 위까지(아래 둥근 모서리가 화면 안에)
 }
 let pkRaf; const pkFitSoon = () => { cancelAnimationFrame(pkRaf); pkRaf = requestAnimationFrame(() => { pkFit(); requestAnimationFrame(pkFit); }); };
@@ -1025,8 +1058,17 @@ function pkResize(sec, rz) {
   rz.addEventListener('pointerup', end); rz.addEventListener('pointercancel', end);
   rz.addEventListener('dblclick', () => { S.pkw = 0; sec.style.removeProperty('--pkw'); try { localStorage.removeItem('hu-v3-pkw'); } catch (e) {} });   // 두 번 누르면 기본 너비
 }
+/* 모바일 아래 시트: 머리(손잡이 줄)를 아래로 끌어 닫기 */
+function pkSwipe(pk) {
+  const h = pk.querySelector('.pk-h'); if (!h || h.dataset.sw) return; h.dataset.sw = '1';
+  let y0 = null, dy = 0;
+  h.addEventListener('pointerdown', e => { if (vp() !== 'mo' || e.target.closest('button')) return; y0 = e.clientY; dy = 0; pk.classList.add('drag'); h.setPointerCapture(e.pointerId); });
+  h.addEventListener('pointermove', e => { if (y0 === null) return; dy = Math.max(0, e.clientY - y0); pk.style.transform = `translateY(${dy}px)`; });
+  const end = () => { if (y0 === null) return; y0 = null; pk.classList.remove('drag'); pk.style.transform = ''; if (dy > 90 && PK) closePeek(PK.sec); };
+  h.addEventListener('pointerup', end); h.addEventListener('pointercancel', end);
+}
 function closePeek(sec) {
-  sec.classList.remove('peeking'); sec.querySelectorAll('.card.on').forEach(c => c.classList.remove('on'));
+  sec.classList.remove('peeking'); document.body.classList.remove('pk-open'); lockSync(); sec.querySelectorAll('.card.on').forEach(c => c.classList.remove('on'));
   if (PK && PK.sec === sec) PK = null;
 }
 function stepPeek(d) { if (!PK || PK.i < 0) return; const j = PK.i + d; if (j < 0 || j >= PK.keys.length) return; PK.i = j; PK.key = PK.keys[j]; peekDraw(); }
@@ -1053,6 +1095,7 @@ function render() {
   document.body.classList.toggle('bare', ['login', 'onboard', 'mycareer', 'building'].includes(page));
   if (S.dash === 'full' && current[0] && (current[0] !== page || current[1] !== arg)) S.dash = 'open';   // 다른 화면으로 가면 크게 보기는 풀린다
   current = [page, arg];
+  S.dov = false; document.body.classList.remove('dov-open', 'pk-open', 'm-search'); document.documentElement.classList.remove('lock');   // 화면이 바뀌면 서랍·시트·검색 칸은 닫는다
   if (S.fromPeek && location.hash.slice(1) !== S.fromPeek.key && location.hash.slice(1) !== S.fromPeek.from) S.fromPeek = null;
   renderAll(); mainEl.scrollTop = 0; window.scrollTo(0, 0);
   if (S.fromPeek && location.hash.slice(1) === S.fromPeek.key) view.insertAdjacentHTML('afterbegin', `<div class="dt-tools"><button class="btn line sm" data-shrink title="목록 옆 패널로 돌아가기">${I.shrink}패널로 줄이기</button></div>`);   // 상세 = 줄이기 버튼
@@ -1075,7 +1118,7 @@ document.addEventListener('click', e => {
     return; }
   const gg = e.target.closest('[data-gxgo]');
   if (gg) { const id = gg.dataset.gxgo; if (gg.hasAttribute('data-gxhome') || !GX.doc) { go(S.auth ? 'home' : 'guest'); return; }   // 대시보드에서 고르면 갤럭시가 그 노드로 이동
-    const it = GX.doc.querySelector(`#list .item[data-id="${CSS.escape(id)}"]`); if (it) it.click(); const fr = document.getElementById('gxF'); if (fr && document.getElementById('gx').classList.contains('gx-mini')) gxOpen(); mainEl.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const it = GX.doc.querySelector(`#list .item[data-id="${CSS.escape(id)}"]`); if (it) it.click(); const fr = document.getElementById('gxF'); if (fr && document.getElementById('gx').classList.contains('gx-mini')) gxOpen(); if (S.dov) dovSet(false); mainEl.scrollTo({ top: 0, behavior: 'smooth' }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const mt = e.target.closest('[data-mctab]'); if (mt) { S.mcTab = mt.dataset.mctab; if (current[0] === 'myclass') renderMyclass(); else go('myclass'); return; }
   const rb = e.target.closest('[data-rail]');
   if (rb) { const tr = rb.closest('.sec').querySelector('.rail-track'); if (tr) railGo(tr, +rb.dataset.rail); return; }
@@ -1090,6 +1133,8 @@ document.addEventListener('click', e => {
   if (sec && current[0] !== 'home' && current[0] !== 'guest') { if (PK && PK.sec === sec && PK.key === t.dataset.go && sec.classList.contains('peeking')) closePeek(sec); else openPeek(sec, t.dataset.go); return; }
   go(t.dataset.go);
 });
+document.getElementById('scrim').onclick = () => { if (S.dov) dovSet(false); if (PK && PK.sec.isConnected) closePeek(PK.sec); };
+addEventListener('keydown', e => { if (e.key === 'Escape' && S.dov) dovSet(false); });
 /* 시안 도구: 사이트 톤 — 기본(지금) · 레드 · 블루 · 보라 */
 (function toolAccent() {
   const set = a => { if (a && a !== 'base') document.documentElement.dataset.ac = a; else delete document.documentElement.dataset.ac; document.querySelectorAll('.tool-ac button').forEach(b => b.classList.toggle('on', b.dataset.accent === (a || 'base'))); try { localStorage.setItem('hu-v3-accent', a || 'base'); } catch (e) {} };
